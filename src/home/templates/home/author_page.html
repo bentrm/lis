@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block content %}
+  <div class="container">
+
+    <div class="row">
+      <div class="col">
+        <p>{{ page.names.first }}</p>
+      </div>
+    </div>
+
+    {% if sub_pages %}
+    <div class="row">
+      {% for sub_page in sub_pages %}
+        <article class="col-12">
+          <h3>{{ sub_page.i18n_title }}</h3>
+          {% for block in sub_page.i18n_body %}
+            {% if block.block_type == "heading" %}
+              <h4>{{ block.value }}</h4>
+            {% elif block.block_type == "paragraph" %}
+              {% include_block block %}
+            {% elif block.block_type == "quote" %}
+              <blockquote class="blockquote">
+                {{block.value|safe }}
+              </blockquote>
+            {% elif block.block_type == "gallery" %}
+              {% for i in block.value %}
+                {% image i width-300 class="img-fluid" %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if memories %}
+    <div class="row">
+      <div class="col">
+        <h1>Erinnerungen</h1>
+      </div>
+    </div>
+
+    {% for memory in memories %}
+    <div class="row">
+      <div class="col-12">
+        <h2>{{ memory.i18n_title }}</h2>
+      </div>
+
+      {% for sub_page in memory.get_children.specific %}
+      <article class="col-lg-4">
+        <h3>{{ sub_page.i18n_title }}</h3>
+        {% for block in sub_page.i18n_body %}
+          {% if block.block_type == "heading" %}
+            <h4>{{ block.value }}</h4>
+          {% elif block.block_type == "paragraph" %}
+            {% include_block block %}
+          {% elif block.block_type == "quote" %}
+            <blockquote class="blockquote">
+              {{block.value|safe }}
+            </blockquote>
+          {% elif block.block_type == "gallery" %}
+            {% for i in block.value %}
+              {% image i width-300 class="img-fluid" %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </article>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+  {% endif %}
+
+  </div>
+{% endblock %}
