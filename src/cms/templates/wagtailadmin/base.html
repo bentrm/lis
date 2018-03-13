@@ -1,0 +1,6 @@
+{% extends "wagtailadmin/base.html" %}
+{% load staticfiles %}
+
+{% block extra_css %}{{ super }}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}" />
+{% endblock %}
