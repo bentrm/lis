@@ -145,15 +145,16 @@ LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
     ("de", "Deutsch"),
     ("cz", "český"),
 ]
-WAGTAILSEARCH_BACKENDS = {
-    'default': {
-        'BACKEND': 'wagtail.search.backends.elasticsearch5',
-        'URLS': ['http://localhost:9200'],
-    }
-}
+# WAGTAILSEARCH_BACKENDS = {
+#     'default': {
+#         'BACKEND': 'wagtail.search.backends.elasticsearch5',
+#         'URLS': ['http://localhost:9200'],
+#     }
+# }
 
 # Geotools
-SPATIALITE_LIBRARY_PATH='/usr/local/lib/mod_spatialite.dylib'
+GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
+SPATIALITE_LIBRARY_PATH = os.environ.get('SPATIALITE_LIBRARY_PATH')
 
 # Map widgets
 MAP_WIDGETS = {
