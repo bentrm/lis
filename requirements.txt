@@ -1,4 +1,4 @@
 Django==2.0.2
-wagtail==2.0
+wagtail>=2.0.0,<2.1.0
 elasticsearch>=5.0.0,<6.0.0
 django-map-widgets==0.1.9
