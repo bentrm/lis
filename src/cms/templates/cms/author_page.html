@@ -1,0 +1,53 @@
+{% extends "cms/base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-12">
+      <h1 class="display-1">LIS</h1>
+      <h2 class="display-2">{{ page }}</h2>
+    </div>
+
+    <div class="col-12">
+
+      <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        {% for child in page.get_children %}
+          <li class="nav-item">
+            <a class="nav-link" id="nav-{{ child.slug }}-link" data-toggle="tab" href="#nav-{{ child.slug }}" role="tab" aria-controls="nav-{{ child.slug }}" aria-selected="false">
+              {{ child }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="tab-content" id="nav-tab-content">
+
+        {% for child in page.get_children.specific %}
+          <div class="tab-pane fade" id="nav-{{ child.slug }}" role="tabpanel" aria-labelledby="nav-{{ child.slug }}">
+
+            <article class="mt-2">
+              {% include_block child.i18n_body %}
+            </article>
+
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block js %}{{ block.super }}
+  <script>
+    $(function () {
+      var hash = window.location.hash;
+      if (hash) {
+        $(`#${hash.slice(1)}-link`).tab('show');
+      }
+    })
+  </script>
+{% endblock %}
