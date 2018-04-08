@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
     "modelcluster",
     "taggit",
-    #"wagtailmedia",
 
     "mapwidgets",
 
@@ -154,9 +153,8 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 # Geotools
-SPATIALITE_LIBRARY_PATH = "/usr/lib/mod_spatialite.so.7"
-GEOS_LIBRARY_PATH = "/usr/lib/libgeos_c.so.1"
-GDAL_LIBRARY_PATH = "/usr/lib/libgdal.so.20"
+GDAL_LIBRARY_PATH = os.environ["GDAL_LIBRARY_PATH"]
+SPATIALITE_LIBRARY_PATH = os.environ["SPATIALITE_LIBRARY_PATH"]
 
 # Map widgets
 MAP_WIDGETS = {
