@@ -16,7 +16,6 @@ from wagtail.core.fields import StreamField
 from wagtail.core.models import Orderable, Page, CollectionMember
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, StreamFieldPanel, \
     PageChooserPanel, MultiFieldPanel
-from wagtail.images.blocks import ImageChooserBlock
 from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
