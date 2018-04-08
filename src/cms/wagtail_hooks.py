@@ -28,12 +28,12 @@ def as_page_object(self):
     # copy over properties that are derievied from out custom i18n class
     if isinstance(obj, I18nPage):
         obj.draft_title_de = specific_page.draft_title_de
-        obj.draft_title_cz = specific_page.draft_title_cz
+        obj.draft_title_cs = specific_page.draft_title_cs
     elif isinstance(obj, AuthorPage):
         author_name = specific_page.names.first()
         obj.draft_title = author_name.full_name()
         obj.draft_title_de = author_name.full_name_de()
-        obj.draft_title_cz = author_name.full_name_cz()
+        obj.draft_title_cs = author_name.full_name_cs()
 
     obj.live = self.page.live
     obj.has_unpublished_changes = self.page.has_unpublished_changes

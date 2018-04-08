@@ -1,0 +1,47 @@
+version: '3.5'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - http.cors.allow-origin=http://localhost:1358
+      - http.cors.enabled=true
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
+  django:
+    image: bentrm/lis:1.0.0
+    tty: true
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    ports:
+      - 8000:8000
+    depends_on:
+      - elasticsearch
+    volumes:
+      - type: bind
+        source: ./src
+        target: /src
+    entrypoint: /venv/bin/python
+    command: ./manage.py runserver 0.0.0.0:8000
+volumes:
+  esdata:

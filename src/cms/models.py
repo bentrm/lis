@@ -1,6 +1,8 @@
+"""Custom page models that describe the LIS data schema."""
 import logging
 
 import datetime
+
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -9,15 +11,17 @@ from django.utils import text, translation, dates
 from django.utils.translation import ugettext_lazy as _
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
-from wagtail.core import blocks
 from wagtail.core.fields import StreamField
 
-from wagtail.core.models import Orderable, Page
+from wagtail.core.models import Orderable, Page, CollectionMember
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, StreamFieldPanel, \
     PageChooserPanel, MultiFieldPanel
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
+
+from cms.blocks import TextBlock
 
 logger = logging.getLogger('wagtail.core')
 
@@ -25,46 +29,48 @@ BLANK_TEXT = "_blank"
 
 
 def validate_date(year=None, month=None, day=None):
+    """Validate a given date for semantic integrity."""
     if year and month and day:
         datetime.datetime(year, month, day)
-    elif month == 2 and day > 29:
-        raise ValueError(_("February can't have more than 29 days."))
-    elif not month % 2 and day > 30:
-        raise ValueError(_("Day is out of range for month."))
+    elif month and day:
+        if month == 2 and day > 29:
+            raise ValueError(_("February can't have more than 29 days."))
+        elif not month % 2 and day > 30:
+            raise ValueError(_("Day is out of range for month."))
 
 
 class TranslatedField(object):
-    """
-    Helper class to add a getter method returning multilingual field content in the current selected user language.
-    """
+    """Helper class to add multilingual accessor properties to user content."""
 
-    def __init__(self, en_field, de_field, cz_field):
+    def __init__(self, en_field, de_field, cs_field):
         self.en_field = en_field
         self.de_field = de_field
-        self.cz_field = cz_field
+        self.cs_field = cs_field
 
     def __get__(self, instance, owner):
         lang = translation.get_language()
+        default_value = getattr(instance, self.en_field) or ""
         if lang == "de":
-            return getattr(instance, self.de_field) or getattr(instance, self.en_field)
-        if lang == "cz":
-            return getattr(instance, self.cz_field) or getattr(instance, self.en_field)
-        else:
-            return getattr(instance, self.en_field)
+            return getattr(instance, self.de_field) or default_value
+        if lang == "cs":
+            return getattr(instance, self.cs_field) or default_value
+        return default_value
 
 
-class ImageMedia(AbstractImage):
+class Media(models.Model):
+    """Implements the basic Media interface that will be used by custom media classes like images and documents."""
+
     title_de = models.CharField(
         max_length=255,
         null=True, blank=True,
         verbose_name=_("Title (de)")
     )
-    title_cz = models.CharField(
+    title_cs = models.CharField(
         max_length=255,
         null=True, blank=True,
         verbose_name=_("Title (cz)")
     )
-    i18n_title = TranslatedField("title", "title_de", "title_cz")
+    i18n_title = TranslatedField("title", "title_de", "title_cs")
 
     alt_title = models.CharField(
         max_length=1024,
@@ -76,38 +82,100 @@ class ImageMedia(AbstractImage):
         null=True, blank=True,
         verbose_name=_("Alternative title (de)")
     )
-    alt_title_cz = models.CharField(
+    alt_title_cs = models.CharField(
         max_length=1024,
         null=True, blank=True,
         verbose_name=_("Alternative title (cz)")
     )
-    i18n_alt_title = TranslatedField("alt_title", "alt_title_de", "alt_title_cz")
+    i18n_alt_title = TranslatedField("alt_title", "alt_title_de", "alt_title_cs")
+
+    caption = models.CharField(
+        max_length=1024,
+        null=True, blank=True,
+        verbose_name=_("Media caption")
+    )
+    caption_de = models.CharField(
+        max_length=1024,
+        null=True, blank=True,
+        verbose_name=_("Media caption (de)")
+    )
+    caption_cs = models.CharField(
+        max_length=1024,
+        null=True, blank=True,
+        verbose_name=_("Media caption (cz)")
+    )
+    i18n_caption = TranslatedField("caption", "caption_de", "caption_cs")
 
     admin_form_fields = (
         "title",
         "title_de",
-        "title_cz",
+        "title_cs",
         "file",
         "collection",
         "alt_title",
         "alt_title_de",
-        "alt_title_cz",
+        "alt_title_cs",
+        "caption",
+        "caption_de",
+        "caption_cs",
         "tags",
+    )
+
+    search_fields = CollectionMember.search_fields + [
+        index.SearchField('title', partial_match=True, boost=10),
+        index.FilterField('title'),
+        index.SearchField('title_de', partial_match=True, boost=10),
+        index.FilterField('title_de'),
+        index.SearchField('title_cs', partial_match=True, boost=10),
+        index.FilterField('title_cs'),
+        index.SearchField('alt_title', partial_match=True, boost=5),
+        index.FilterField('alt_title'),
+        index.SearchField('alt_title_de', partial_match=True, boost=5),
+        index.FilterField('alt_title_de'),
+        index.SearchField('alt_title_cs', partial_match=True, boost=5),
+        index.FilterField('alt_title_cs'),
+        index.SearchField('caption', partial_match=True, boost=2),
+        index.FilterField('caption'),
+        index.SearchField('caption_de', partial_match=True, boost=2),
+        index.FilterField('caption_de'),
+        index.SearchField('caption_cs', partial_match=True, boost=2),
+        index.FilterField('caption_cs'),
+        index.RelatedFields('tags', [
+            index.SearchField('name', partial_match=True, boost=10),
+        ]),
+        index.FilterField('uploaded_by_user'),
+    ]
+
+    def __str__(self):
+        return self.i18n_title
+
+    class Meta:
+        abstract = True
+
+
+class ImageMedia(Media, AbstractImage):
+    """Custom image implementation to add meta data properties as described by the LIS data schema."""
+
+    admin_form_fields = Media.admin_form_fields + (
         "focal_point_x",
         "focal_point_y",
         "focal_point_width",
         "focal_point_height",
     )
 
-    def __str__(self):
-        return self.i18n_title
-
     class Meta:
         db_table = "image"
 
 
 class ImageMediaRendition(AbstractRendition):
+    """Custom image rendition implementation to link to our custom image model."""
+
     image = models.ForeignKey(ImageMedia, on_delete=models.CASCADE, related_name='renditions')
+
+    @property
+    def alt(self):
+        """Return the alternative title in the current selected user language."""
+        return self.image.i18n_alt_title
 
     class Meta:
         db_table = "image_rendition"
@@ -116,137 +184,59 @@ class ImageMediaRendition(AbstractRendition):
         )
 
 
-class Name(models.Model):
-    title = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Title")
-    )
-    title_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Title")
-    )
-    title_cz = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Title")
-    )
-    i18n_title = TranslatedField("title", "title_de", "title_cz")
-
-    first_name = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("First name")
-    )
-    first_name_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("First name")
-    )
-    first_name_cz = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("First name")
-    )
-    i18n_first_name = TranslatedField("first_name", "first_name_de", "first_name_cz")
-
-    last_name = models.CharField(
-        max_length=255,
-        verbose_name=_("Last name")
-    )
-    last_name_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Last name")
-    )
-    last_name_cz = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Last name")
-    )
-    i18n_last_name = TranslatedField("last_name", "last_name_de", "last_name_cz")
-
-    birth_name = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Birth name")
-    )
-    birth_name_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Birth name")
-    )
-    birth_name_cz = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_("Birth name")
-    )
-    i18n_birth_name = TranslatedField("birth_name", "birth_name_de", "birth_name_cz")
-
-    is_pseudonym = models.BooleanField(default=False)
-
-    def clean(self):
-        super(Name, self).clean()
-        if not self.first_name and not self.last_name:
-            raise ValidationError(_("Name entries must at least define a first name or a last name."))
-
-    def full_name(self):
-        return " ".join(x.strip() for x in [self.title, self.first_name, self.last_name] if x)
-
-    def full_name_de(self):
-        return " ".join(x.strip() for x in [self.title_de, self.first_name_de, self.last_name_de] if x)
-
-    def full_name_cz(self):
-        return " ".join(x.strip() for x in [self.title_cz, self.first_name_cz, self.last_name_cz] if x)
-
-    def __str__(self):
-        return " ".join(x.strip() for x in [self.i18n_title, self.i18n_first_name, self.i18n_last_name] if x)
+class DocumentMedia(Media, AbstractDocument):
+    """Custom document implementation to add meta data properties as described by the LIS data schema."""
 
     class Meta:
-        abstract = True
+        db_table = "document"
 
 
 class I18nPage(Page):
-    """
-    An abstract base page class that supports translated content.
-    """
+    """An abstract base page class that supports translated content."""
 
     title_de = models.CharField(
         verbose_name=_('title'),
         max_length=255,
         blank=True,
-        help_text=_("The page title as you'd like it to be seen by the public")
-    )
-    title_cz = models.CharField(
+        help_text=_("The page title as you'd like it to be seen by the public"))
+    title_cs = models.CharField(
         verbose_name=_('title'),
         max_length=255,
         blank=True,
-        help_text=_("The page title as you'd like it to be seen by the public")
-    )
+        help_text=_("The page title as you'd like it to be seen by the public"))
+    i18n_title = TranslatedField("title", "title_de", "title_cs")
+
     draft_title_de = models.CharField(
         max_length=255,
         blank=True,
-        editable=False
-    )
-    draft_title_cz = models.CharField(
+        editable=False)
+    draft_title_cs = models.CharField(
         max_length=255,
         blank=True,
-        editable=False
-    )
+        editable=False)
+    i18n_draft_title = TranslatedField("draft_title", "draft_title_de", "draft_title_cs")
 
-    i18n_title = TranslatedField("title", "title_de", "title_cz")
-    i18n_draft_title = TranslatedField("draft_title", "draft_title_de", "draft_title_cz")
+    editor = models.CharField(
+        max_length=2048,
+        verbose_name=_("Editor"),
+        help_text=_("Name of the author of this content."))
 
     search_fields = Page.search_fields + [
-        index.SearchField("title_de"),
-        index.SearchField("title_cz"),
-    ]
+        index.SearchField('title_de', partial_match=True, boost=2),
+        index.SearchField('title_cs', partial_match=True, boost=2)]
 
-    content_panels = Page.content_panels + [
-        FieldPanel("title_de"),
-        FieldPanel("title_cz"),
-    ]
+    content_panels = [
+        FieldPanel("title", classname="full title"),
+        FieldPanel("title_de", classname="full title"),
+        FieldPanel("title_cs", classname="full title")]
+
+    meta_panels = [
+        FieldPanel("owner"),
+        FieldPanel("editor")]
+
+    edit_handler = TabbedInterface([
+        ObjectList(content_panels, heading=_("Content")),
+        ObjectList(meta_panels, heading=_("Meta"))])
 
     is_creatable = False
 
@@ -265,12 +255,13 @@ class I18nPage(Page):
     def full_clean(self, *args, **kwargs):
         if not self.draft_title_de:
             self.draft_title_de = self.title_de
-        if not self.draft_title_cz:
-            self.draft_title_cz = self.title_cz
-
+        if not self.draft_title_cs:
+            self.draft_title_cs = self.title_cs
         super(I18nPage, self).full_clean(*args, **kwargs)
 
     def save_revision(self, user=None, submitted_for_moderation=False, approved_go_live_at=None, changed=True):
+        print(f"Clean: {type(self)}")
+
         self.full_clean()
 
         # Create revision
@@ -288,10 +279,10 @@ class I18nPage(Page):
 
         self.draft_title = self.title
         self.draft_title_de = self.title_de
-        self.draft_title_cz = self.title_cz
+        self.draft_title_cs = self.title_cs
         update_fields.append("draft_title")
         update_fields.append("draft_title_de")
-        update_fields.append("draft_title_cz")
+        update_fields.append("draft_title_cs")
 
         if changed:
             self.has_unpublished_changes = True
@@ -398,8 +389,8 @@ class LiteraryPeriodsPage(CategoryPage):
 class LiteraryPeriodPage(I18nPage):
     description = models.TextField(blank=True)
     description_de = models.TextField(blank=True)
-    description_cz = models.TextField(blank=True)
-    i18n_description = TranslatedField("description", "description_de", "description_cz")
+    description_cs = models.TextField(blank=True)
+    i18n_description = TranslatedField("description", "description_de", "description_cs")
 
     parent_page_types = ["LiteraryPeriodsPage", "LiteraryPeriodPage"]
 
@@ -411,17 +402,16 @@ class LiteraryPeriodPage(I18nPage):
         FieldPanel("title_de"),
         FieldPanel("description_de"),
     ]
-    content_panels_cz = [
-        FieldPanel("title_cz"),
-        FieldPanel("description_cz"),
+    content_panels_cs = [
+        FieldPanel("title_cs"),
+        FieldPanel("description_cs"),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
         ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cz, heading=_("Content (CZ)"), classname="i18n cz"),
-        ObjectList(Page.promote_panels, heading='Promote'),
-        ObjectList(Page.settings_panels, heading='Settings', classname="settings"),
+        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
 
@@ -502,10 +492,10 @@ class AuthorPage(I18nPage):
                 ),
                 MultiFieldPanel(
                     children=[
-                        FieldPanel("title_cz"),
-                        FieldPanel("first_name_cz"),
-                        FieldPanel("last_name_cz"),
-                        FieldPanel("birth_name_cz"),
+                        FieldPanel("title_cs"),
+                        FieldPanel("first_name_cs"),
+                        FieldPanel("last_name_cs"),
+                        FieldPanel("birth_name_cs"),
                     ],
                     heading=_("Czech")
                 ),
@@ -536,13 +526,15 @@ class AuthorPage(I18nPage):
             "literary_periods",
             label=_("Literary periods"),
             min_num=0,
-            help_text=_("The literary periods the author has been active in.")
+            help_text=_("The literary periods the author has been active in."),
+            panels=[PageChooserPanel("literary_period", "cms.LiteraryPeriodPage")]
         ),
         InlinePanel(
             "literary_categories",
             label=_("Literary categories"),
             min_num=0,
-            help_text=_("The literary categories the author is associated with.")
+            help_text=_("The literary categories the author is associated with."),
+            panels=[PageChooserPanel("literary_category", "cms.LiteraryCategoryPage")]
         )
     ]
 
@@ -553,14 +545,16 @@ class AuthorPage(I18nPage):
             index.SearchField("title"),
             index.SearchField("first_name"),
             index.SearchField("last_name"),
-            index.FilterField("is_birth_name"),
+            index.FilterField("birth_name"),
             index.FilterField("is_pseudonym"),
         ]),
         index.FilterField("date_of_birth_year"),
         index.FilterField("date_of_death_year"),
     ]
 
-    edit_handler = ObjectList(content_panels, heading=_("Content (EN)"))
+    edit_handler = TabbedInterface([
+        ObjectList(content_panels, heading=_("General")),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field("slug").default = BLANK_TEXT
@@ -571,13 +565,13 @@ class AuthorPage(I18nPage):
             self.title = BLANK_TEXT
         if not self.title_de:
             self.title_de = BLANK_TEXT
-        if not self.title_cz:
-            self.title_cz = BLANK_TEXT
+        if not self.title_cs:
+            self.title_cs = BLANK_TEXT
         name = self.names.first()
         if name:
             self.title = name.full_name()
             self.title_de = name.full_name_de()
-            self.title_cz = name.full_name_cz()
+            self.title_cs = name.full_name_cs()
             self.slug = text.slugify(self.title)
 
         validate_date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
@@ -586,7 +580,7 @@ class AuthorPage(I18nPage):
     def get_context(self, request, *args, **kwargs):
         context = super(AuthorPage, self).get_context(request, *args, **kwargs)
         context["sub_pages"] = self.get_children().specific()
-        context["memories"] = self.memories.specific()
+        # context["memorial_sites"] = self.memorial_sites.all().specific()
         return context
 
     class Meta:
@@ -594,8 +588,94 @@ class AuthorPage(I18nPage):
         verbose_name_plural = _("Authors")
 
 
-class AuthorPageName(Orderable, Name):
+class AuthorPageName(Orderable):
     author = ParentalKey("AuthorPage", related_name="names")
+
+    title = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Title")
+    )
+    title_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Title")
+    )
+    title_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Title")
+    )
+    i18n_title = TranslatedField("title", "title_de", "title_cs")
+
+    first_name = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("First name")
+    )
+    first_name_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("First name")
+    )
+    first_name_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("First name")
+    )
+    i18n_first_name = TranslatedField("first_name", "first_name_de", "first_name_cs")
+
+    last_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Last name")
+    )
+    last_name_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Last name")
+    )
+    last_name_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Last name")
+    )
+    i18n_last_name = TranslatedField("last_name", "last_name_de", "last_name_cs")
+
+    birth_name = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Birth name")
+    )
+    birth_name_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Birth name")
+    )
+    birth_name_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Birth name")
+    )
+    i18n_birth_name = TranslatedField("birth_name", "birth_name_de", "birth_name_cs")
+
+    is_pseudonym = models.BooleanField(default=False)
+
+    def clean(self):
+        super(AuthorPageName, self).clean()
+        if not self.first_name and not self.last_name:
+            raise ValidationError(_("Name entries must at least define a first name or a last name."))
+
+    def full_name(self):
+        return " ".join(x.strip() for x in [self.title, self.first_name, self.last_name] if x)
+
+    def full_name_de(self):
+        return " ".join(x.strip() for x in [self.title_de, self.first_name_de, self.last_name_de] if x)
+
+    def full_name_cs(self):
+        return " ".join(x.strip() for x in [self.title_cs, self.first_name_cs, self.last_name_cs] if x)
+
+    def __str__(self):
+        return " ".join(x.strip() for x in [self.i18n_title, self.i18n_first_name, self.i18n_last_name] if x)
 
 
 class AuthorLiteraryPeriod(Orderable):
@@ -662,28 +742,28 @@ class LocationPage(I18nPage):
 
     description = models.TextField(blank=True)
     description_de = models.TextField(blank=True)
-    description_cz = models.TextField(blank=True)
-    i18n_description = TranslatedField("description", "description_de", "description_cz")
+    description_cs = models.TextField(blank=True)
+    i18n_description = TranslatedField("description", "description_de", "description_cs")
 
     address = models.TextField(blank=True)
     address_de = models.TextField(blank=True)
-    address_cz = models.TextField(blank=True)
-    i18n_address = TranslatedField("address", "address_de", "address_cz")
+    address_cs = models.TextField(blank=True)
+    i18n_address = TranslatedField("address", "address_de", "address_cs")
 
     directions = models.TextField(blank=True)
     directions_de = models.TextField(blank=True)
-    directions_cz = models.TextField(blank=True)
-    i18n_directions = TranslatedField("directions", "directions_de", "directions_cz")
+    directions_cs = models.TextField(blank=True)
+    i18n_directions = TranslatedField("directions", "directions_de", "directions_cs")
 
     coordinates = PointField(null=True, blank=True)
 
     search_fields = I18nPage.search_fields + [
         index.SearchField("description"),
         index.SearchField("description_de"),
-        index.SearchField("description_cz"),
+        index.SearchField("description_cs"),
         index.SearchField("directions"),
         index.SearchField("directions_de"),
-        index.SearchField("directions_cz"),
+        index.SearchField("directions_cs"),
     ]
 
     parent_page_types = ["LocationsPage"]
@@ -704,18 +784,19 @@ class LocationPage(I18nPage):
         FieldPanel("address_de"),
         FieldPanel("directions_de"),
     ]
-    content_panels_cz = [
-        FieldPanel("title_cz", classname="full title"),
-        FieldPanel("description_cz"),
-        FieldPanel("address_cz"),
-        FieldPanel("directions_cz"),
+    content_panels_cs = [
+        FieldPanel("title_cs", classname="full title"),
+        FieldPanel("description_cs"),
+        FieldPanel("address_cs"),
+        FieldPanel("directions_cs"),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading=_("General")),
         ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
         ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cz, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
     def __str__(self):
@@ -728,37 +809,57 @@ class LocationPage(I18nPage):
 
 
 class MemorialSitePage(I18nPage):
-    author = models.ForeignKey(
-        "wagtailcore.Page",
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="memories"
-    )
-
     parent_page_types = ["LocationPage"]
 
     content_panels = [
-        PageChooserPanel("author", "cms.AuthorPage"),
+        InlinePanel(
+            "authors",
+            label=_("Authors"),
+            min_num=0,
+            help_text=_("The authors that this memorial site is dedicated to."),
+            panels=[
+                PageChooserPanel("author", "cms.AuthorPage")
+            ]
+        )
     ]
 
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("General"))
+        ObjectList(content_panels, heading=_("General")),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
     def clean(self):
-        author = self.author.specific
-        self.title = author.title
-        self.title_de = author.title
-        self.title_cz = author.title
-        self.slug = text.slugify(self.title)
+        """Clean page properties defaulting to the authors name of the memorial site."""
 
         super(MemorialSitePage, self).clean()
+
+    def full_clean(self, *args, **kwargs):
+        title = ", ".join([x.author.title for x in self.authors.all()])
+        self.title = title
+        self.slug = text.slugify(self.title)
+        print(f"Full: {self}: {self.title}: {self.slug}")
+        super(MemorialSitePage, self).full_clean(*args, **kwargs)
 
     class Meta:
         verbose_name = _("Memorial site")
         verbose_name_plural = _("Memorial sites")
-        db_table = "mermorial_site"
+        db_table = "mermorial_site"  # TODO: fix typo
+
+
+class MemorialSiteAuthor(Orderable):
+    """Join page type to add multiple authors to one memorial site."""
+
+    memorial_site = ParentalKey("MemorialSitePage", related_name="authors")
+    author = models.ForeignKey(
+        AuthorPage,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="memorial_sites"
+    )
+
+    class Meta:
+        db_table = "memorial_site_author"
 
 
 class HeadingWithContentPage(I18nPage):
@@ -774,47 +875,24 @@ class HeadingWithContentPage(I18nPage):
     level = models.CharField(max_length=12, choices=LEVEL_CHOICES)
     body = StreamField(
         block_types=[
-            ("heading", blocks.PageChooserBlock(target_model="cms.TextTypePage")),
-            ("paragraph", blocks.RichTextBlock(
-                features=[
-                    "bold",
-                    "italic",
-                    "strikethrough",
-                    "sup",
-                    "ol",
-                    "ul",
-                    "hr",
-                    "blockquote"
-                ]
-            )),
-            ("quote", blocks.BlockQuoteBlock()),
-            ("image", ImageChooserBlock()),
-            ("gallery", blocks.ListBlock(ImageChooserBlock(label=_("Image")))),
+            ("paragraph", TextBlock())
         ],
         blank=True
     )
     body_de = StreamField(
         block_types=[
-            ("heading", blocks.PageChooserBlock(target_model="cms.TextTypePage")),
-            ("paragraph", blocks.RichTextBlock(features=["bold", "italic", "ol", "ul", "document-link"])),
-            ("quote", blocks.BlockQuoteBlock()),
-            ("image", ImageChooserBlock()),
-            ("gallery", blocks.ListBlock(ImageChooserBlock(label=_("Image")))),
+            ("paragraph", TextBlock())
         ],
         blank=True
     )
-    body_cz = StreamField(
+    body_cs = StreamField(
         block_types=[
-            ("heading", blocks.PageChooserBlock(target_model="cms.TextTypePage")),
-            ("paragraph", blocks.RichTextBlock(features=["bold", "italic", "ol", "ul", "document-link"])),
-            ("quote", blocks.BlockQuoteBlock()),
-            ("image", ImageChooserBlock()),
-            ("gallery", blocks.ListBlock(ImageChooserBlock(label=_("Image")))),
+            ("paragraph", TextBlock())
         ],
         blank=True
     )
 
-    i18n_body = TranslatedField("body", "body_de", "body_cz")
+    i18n_body = TranslatedField("body", "body_de", "body_cs")
 
     is_creatable = False
     parent_page_types = ["AuthorPage", "MemorialSitePage"]
@@ -822,7 +900,7 @@ class HeadingWithContentPage(I18nPage):
     search_fields = I18nPage.search_fields + [
         index.SearchField("body"),
         index.SearchField("body_de"),
-        index.SearchField("body_cz"),
+        index.SearchField("body_cs"),
     ]
 
     content_panels = [
@@ -831,20 +909,21 @@ class HeadingWithContentPage(I18nPage):
     content_panels_de = [
         StreamFieldPanel("body_de"),
     ]
-    content_panels_cz = [
-        StreamFieldPanel("body_cz"),
+    content_panels_cs = [
+        StreamFieldPanel("body_cs"),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
         ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cz, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
     def clean(self):
         self.title = self.get_level_display()
         self.title_de = self.get_level_display()
-        self.title_cz = self.get_level_display()
+        self.title_cs = self.get_level_display()
         super(HeadingWithContentPage, self).clean()
 
     class Meta:

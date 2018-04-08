@@ -1,0 +1,38 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<section class="row">
+
+  <div class="col-12">
+    <h3>{% include_block value.heading %}</h3>
+  </div>
+
+  {% if value.images %}
+
+  <div class="col-8">
+    {% include_block value.content %}
+  </div>
+
+  <div class="col-4">
+    <div class="row">
+      {% for image in value.images %}
+        <div class="col-12">
+          {% image image fill-350x350 as tmp_image %}
+          <figure class="figure">
+            <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+            <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+          </figure>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% else %}
+
+  <div class="col-12">
+    {% include_block value.content %}
+  </div>
+
+  {% endif %}
+  </div>
+
+</section>

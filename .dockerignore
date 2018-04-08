@@ -1,0 +1,8 @@
+.git
+.idea
+venv
+
+.DS_Store
+.gitignore
+Dockerfile
+stack.yml

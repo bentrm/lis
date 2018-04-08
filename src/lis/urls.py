@@ -12,12 +12,11 @@ from search import views as search_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
-
+    path('i18n/', include('django.conf.urls.i18n')),
+    re_path(r'^search/$', search_views.search, name='search'),
     re_path(r'^cms/', include(wagtailadmin_urls)),
     re_path(r'^documents/', include(wagtaildocs_urls)),
-    re_path(r'^pages/', include(wagtail_urls)),
-
-    re_path(r'^search/$', search_views.search, name='search'),
+    re_path(r'^', include(wagtail_urls)),
 ]
 
 
