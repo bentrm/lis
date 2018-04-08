@@ -16,7 +16,7 @@ from wagtail.core.models import Orderable, Page
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, StreamFieldPanel, \
     PageChooserPanel, MultiFieldPanel
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.images.models import AbstractImage, Image, AbstractRendition
+from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
 
 logger = logging.getLogger('wagtail.core')
@@ -379,7 +379,7 @@ class ContactTypesPage(CategoryPage):
 
 
 class ContactTypePage(I18nPage):
-    parent_page_types = ["ContactTypesPage",]
+    parent_page_types = ["ContactTypesPage"]
 
     class Meta:
         verbose_name = _("Contact type")
@@ -401,7 +401,7 @@ class LiteraryPeriodPage(I18nPage):
     description_cz = models.TextField(blank=True)
     i18n_description = TranslatedField("description", "description_de", "description_cz")
 
-    parent_page_types = ["LiteraryPeriodsPage", "LiteraryPeriodPage",]
+    parent_page_types = ["LiteraryPeriodsPage", "LiteraryPeriodPage"]
 
     content_panels = [
         FieldPanel("title"),
