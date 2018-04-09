@@ -11,21 +11,28 @@ from django.utils import text, translation, dates
 from django.utils.translation import ugettext_lazy as _
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
-from wagtail.core.fields import StreamField
 
 from wagtail.core.models import Orderable, Page, CollectionMember
 from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, StreamFieldPanel, \
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, \
     PageChooserPanel, MultiFieldPanel
 from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
 
-from cms.blocks import TextBlock
-
 logger = logging.getLogger('wagtail.core')
 
 BLANK_TEXT = "_blank"
+EDITOR_FEATURES = [
+    "bold",
+    "italic",
+    "strikethrough",
+    "sup",
+    "ol",
+    "ul",
+    "hr",
+    "blockquote",
+    "link"]
 
 
 def validate_date(year=None, month=None, day=None):
@@ -706,6 +713,144 @@ class AuthorLiteraryCategory(Orderable):
         db_table = "author_literary_category"
 
 
+class Level1Page(I18nPage):
+    parent_page_types = ["AuthorPage"]
+
+    TEXT_TYPES = (
+        ("i18n_biography", _("Biography")),
+        ("i18n_works", _("Works")))
+
+    biography = RichTextField(blank=True, features=EDITOR_FEATURES)
+    biography_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    biography_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
+
+    works = RichTextField(blank=True, features=EDITOR_FEATURES)
+    works_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    works_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_works = TranslatedField("works", "works_de", "works_cs")
+
+    default_panels = [
+        FieldPanel("title", classname="full title"),
+        FieldPanel("biography"),
+        FieldPanel("works")]
+    german_panels = [
+        FieldPanel("title_de", classname="full title"),
+        FieldPanel("biography_de"),
+        FieldPanel("works_de")]
+    czech_panels = [
+        FieldPanel("title_cs", classname="full title"),
+        FieldPanel("biography_cs"),
+        FieldPanel("works_cs")]
+    edit_handler = TabbedInterface([
+        ObjectList(default_panels, heading=_("English"), classname="i18n en"),
+        ObjectList(german_panels, heading=_("German"), classname="i18n de"),
+        ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+
+    @classmethod
+    def can_create_at(cls, parent):
+        return super(Level1Page, cls).can_create_at(parent) and not cls.objects.exists()
+
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('title').default = "Discover"
+        self._meta.get_field('title_de').default = "Entdecken"
+        self._meta.get_field('title_cs').default = "Discover*"
+        super(I18nPage, self).__init__(*args, **kwargs)
+
+    def __str__(self):
+        return f"I. {self.i18n_title}"
+
+    class Meta:
+        db_table = "level_1"
+        verbose_name = _("I. Discover page")
+
+
+class Level2Page(Level1Page):
+    perception = RichTextField(blank=True, features=EDITOR_FEATURES)
+    perception_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    perception_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_perception = TranslatedField("perception", "perception_de", "perception_cs")
+
+    default_panels = Level1Page.default_panels + [
+        FieldPanel("perception")]
+    german_panels = Level1Page.german_panels + [
+        FieldPanel("perception_de")]
+    czech_panels = Level1Page.czech_panels + [
+        FieldPanel("perception_cs")]
+
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('title').default = "Deepen"
+        self._meta.get_field('title_de').default = "Vertiefen"
+        self._meta.get_field('title_cs').default = "Deepen*"
+        super(I18nPage, self).__init__(*args, **kwargs)
+
+    def __str__(self):
+        return f"II. {self.i18n_title}"
+
+    class Meta:
+        db_table = "level_2"
+        verbose_name = _("II. Deepen page")
+
+
+class Level3Page(I18nPage):
+    primary_literature = RichTextField(blank=True, features=EDITOR_FEATURES)
+    primary_literature_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    primary_literature_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
+
+    testimony = RichTextField(blank=True, features=EDITOR_FEATURES)
+    testimony_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    testimony_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
+
+    secondary_literature = RichTextField(blank=True, features=EDITOR_FEATURES)
+    secondary_literature_de = RichTextField(blank=True, features=EDITOR_FEATURES)
+    secondary_literature_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    i18n_secondary_literature = TranslatedField(
+        "secondary_literature",
+        "secondary_literature_de",
+        "secondary_literature_cs")
+
+    default_panels = [
+        FieldPanel("title", classname="full title"),
+        FieldPanel("primary_literature"),
+        FieldPanel("testimony"),
+        FieldPanel("secondary_literature")]
+    german_panels = [
+        FieldPanel("title_de", classname="full title"),
+        FieldPanel("primary_literature_de"),
+        FieldPanel("testimony_de"),
+        FieldPanel("secondary_literature_de")]
+    czech_panels = [
+        FieldPanel("title_cs", classname="full title"),
+        FieldPanel("primary_literature_cs"),
+        FieldPanel("testimony_cs"),
+        FieldPanel("secondary_literature_cs")]
+    edit_handler = TabbedInterface([
+        ObjectList(default_panels, heading=_("English"), classname="i18n en"),
+        ObjectList(german_panels, heading=_("German"), classname="i18n de"),
+        ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+
+    @classmethod
+    def can_create_at(cls, parent):
+        return super(Level3Page, cls).can_create_at(parent) and not cls.objects.exists()
+
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('title').default = "Research"
+        self._meta.get_field('title_de').default = "Forschen"
+        self._meta.get_field('title_cs').default = "Research*"
+        super(I18nPage, self).__init__(*args, **kwargs)
+
+    def __str__(self):
+        return f"III. {self.i18n_title}"
+
+    class Meta:
+        db_table = "level_3"
+        verbose_name = _("III. Research page")
+
+
 class LocationTypesPage(CategoryPage):
     parent_page_types = ["HomePage"]
 
@@ -875,99 +1020,99 @@ class MemorialSiteAuthor(Orderable):
         db_table = "memorial_site_author"
 
 
-class HeadingWithContentPage(I18nPage):
-    LEVEL_DISCOVER = "I"
-    LEVEL_DEEPEN = "II"
-    LEVEL_RESEARCH = "III"
-    LEVEL_CHOICES = (
-        (LEVEL_DISCOVER, _("I. Discover")),
-        (LEVEL_DEEPEN, _("II. Deepen")),
-        (LEVEL_RESEARCH, _("III. Research")),
-    )
-
-    level = models.CharField(max_length=12, choices=LEVEL_CHOICES)
-    body = StreamField(
-        block_types=[
-            ("paragraph", TextBlock())
-        ],
-        blank=True
-    )
-    body_de = StreamField(
-        block_types=[
-            ("paragraph", TextBlock())
-        ],
-        blank=True
-    )
-    body_cs = StreamField(
-        block_types=[
-            ("paragraph", TextBlock())
-        ],
-        blank=True
-    )
-
-    i18n_body = TranslatedField("body", "body_de", "body_cs")
-
-    is_creatable = False
-    parent_page_types = ["AuthorPage", "MemorialSitePage"]
-
-    search_fields = I18nPage.search_fields + [
-        index.SearchField("body"),
-        index.SearchField("body_de"),
-        index.SearchField("body_cs"),
-    ]
-
-    content_panels = [
-        StreamFieldPanel("body"),
-    ]
-    content_panels_de = [
-        StreamFieldPanel("body_de"),
-    ]
-    content_panels_cs = [
-        StreamFieldPanel("body_cs"),
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
-        ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
-    ])
-
-    def clean(self):
-        self.title = self.get_level_display()
-        self.title_de = self.get_level_display()
-        self.title_cs = self.get_level_display()
-        super(HeadingWithContentPage, self).clean()
-
-    class Meta:
-        abstract = True
-
-
-class DiscoverPage(HeadingWithContentPage):
-
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DISCOVER
-        super(DiscoverPage, self).__init__(*args, **kwargs)
-
-    class Meta:
-        verbose_name = _("I. Discover")
-
-
-class DeepenPage(HeadingWithContentPage):
-
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DEEPEN
-        super(DeepenPage, self).__init__(*args, **kwargs)
-
-    class Meta:
-        verbose_name = _("II. Deepen")
-
-
-class ResearchPage(HeadingWithContentPage):
-
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_RESEARCH
-        super(ResearchPage, self).__init__(*args, **kwargs)
-
-    class Meta:
-        verbose_name = _("III. Research")
+# class HeadingWithContentPage(I18nPage):
+#     LEVEL_DISCOVER = "I"
+#     LEVEL_DEEPEN = "II"
+#     LEVEL_RESEARCH = "III"
+#     LEVEL_CHOICES = (
+#         (LEVEL_DISCOVER, _("I. Discover")),
+#         (LEVEL_DEEPEN, _("II. Deepen")),
+#         (LEVEL_RESEARCH, _("III. Research")),
+#     )
+#
+#     level = models.CharField(max_length=12, choices=LEVEL_CHOICES)
+#     body = StreamField(
+#         block_types=[
+#             ("paragraph", TextBlock())
+#         ],
+#         blank=True
+#     )
+#     body_de = StreamField(
+#         block_types=[
+#             ("paragraph", TextBlock())
+#         ],
+#         blank=True
+#     )
+#     body_cs = StreamField(
+#         block_types=[
+#             ("paragraph", TextBlock())
+#         ],
+#         blank=True
+#     )
+#
+#     i18n_body = TranslatedField("body", "body_de", "body_cs")
+#
+#     is_creatable = False
+#     parent_page_types = ["AuthorPage", "MemorialSitePage"]
+#
+#     search_fields = I18nPage.search_fields + [
+#         index.SearchField("body"),
+#         index.SearchField("body_de"),
+#         index.SearchField("body_cs"),
+#     ]
+#
+#     content_panels = [
+#         StreamFieldPanel("body"),
+#     ]
+#     content_panels_de = [
+#         StreamFieldPanel("body_de"),
+#     ]
+#     content_panels_cs = [
+#         StreamFieldPanel("body_cs"),
+#     ]
+#
+#     edit_handler = TabbedInterface([
+#         ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
+#         ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
+#         ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+#         ObjectList(I18nPage.meta_panels, heading=_("Meta")),
+#     ])
+#
+#     def clean(self):
+#         self.title = self.get_level_display()
+#         self.title_de = self.get_level_display()
+#         self.title_cs = self.get_level_display()
+#         super(HeadingWithContentPage, self).clean()
+#
+#     class Meta:
+#         abstract = True
+#
+#
+# class DiscoverPage(HeadingWithContentPage):
+#
+#     def __init__(self, *args, **kwargs):
+#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DISCOVER
+#         super(DiscoverPage, self).__init__(*args, **kwargs)
+#
+#     class Meta:
+#         verbose_name = _("I. Discover")
+#
+#
+# class DeepenPage(HeadingWithContentPage):
+#
+#     def __init__(self, *args, **kwargs):
+#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DEEPEN
+#         super(DeepenPage, self).__init__(*args, **kwargs)
+#
+#     class Meta:
+#         verbose_name = _("II. Deepen")
+#
+#
+# class ResearchPage(HeadingWithContentPage):
+#
+#     def __init__(self, *args, **kwargs):
+#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_RESEARCH
+#         super(ResearchPage, self).__init__(*args, **kwargs)
+#
+#     class Meta:
+#         verbose_name = _("III. Research")
