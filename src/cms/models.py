@@ -14,6 +14,7 @@ from modelcluster.fields import ParentalKey
 from wagtail.core.fields import StreamField
 
 from wagtail.core.models import Orderable, Page, CollectionMember
+from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, StreamFieldPanel, \
     PageChooserPanel, MultiFieldPanel
 from wagtail.documents.models import AbstractDocument
@@ -767,23 +768,21 @@ class LocationPage(I18nPage):
 
     parent_page_types = ["LocationsPage"]
 
-    general_panels = [
-        PageChooserPanel("location_type", "cms.LocationTypePage"),
-        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
-    ]
-    content_panels = [
+    default_panels = [
         FieldPanel("title", classname="full title"),
+        PageChooserPanel("location_type", "cms.LocationTypePage"),
         FieldPanel("description"),
         FieldPanel("address"),
         FieldPanel("directions"),
+        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
-    content_panels_de = [
+    german_panels = [
         FieldPanel("title_de", classname="full title"),
         FieldPanel("description_de"),
         FieldPanel("address_de"),
         FieldPanel("directions_de"),
     ]
-    content_panels_cs = [
+    czech_panels = [
         FieldPanel("title_cs", classname="full title"),
         FieldPanel("description_cs"),
         FieldPanel("address_cs"),
@@ -791,10 +790,9 @@ class LocationPage(I18nPage):
     ]
 
     edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_("General")),
-        ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
-        ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(default_panels, heading=_("English")),
+        ObjectList(german_panels, heading=_("German"), classname="i18n en"),
+        ObjectList(czech_panels, heading=_("Czech"), classname="i18n de"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
@@ -808,9 +806,14 @@ class LocationPage(I18nPage):
 
 
 class MemorialSitePage(I18nPage):
+    description = RichTextField(blank=True)
+    description_de = RichTextField(blank=True)
+    description_cs = RichTextField(blank=True)
+    i18n_description = TranslatedField("description", "description_de", "description_cs")
+
     parent_page_types = ["LocationPage"]
 
-    content_panels = [
+    default_panels = [
         InlinePanel(
             "authors",
             label=_("Authors"),
@@ -819,11 +822,22 @@ class MemorialSitePage(I18nPage):
             panels=[
                 PageChooserPanel("author", "cms.AuthorPage")
             ]
-        )
+        ),
+        FieldPanel("description")
+    ]
+
+    german_panels = [
+        FieldPanel("description_de")
+    ]
+
+    czech_panels = [
+        FieldPanel("description_cs")
     ]
 
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("General")),
+        ObjectList(default_panels, heading=_("English")),
+        ObjectList(german_panels, heading=_("German")),
+        ObjectList(czech_panels, heading=_("Czech")),
         ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
