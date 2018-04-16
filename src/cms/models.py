@@ -673,15 +673,19 @@ class AuthorPageName(Orderable):
             raise ValidationError(_("Name entries must at least define a first name or a last name."))
 
     def full_name(self):
+        """Return the full name of the author in english language."""
         return " ".join(x.strip() for x in [self.title, self.first_name, self.last_name] if x)
 
     def full_name_de(self):
+        """Return the full name of the author in german language."""
         return " ".join(x.strip() for x in [self.title_de, self.first_name_de, self.last_name_de] if x)
 
     def full_name_cs(self):
+        """Return the full name of the author in czech language."""
         return " ".join(x.strip() for x in [self.title_cs, self.first_name_cs, self.last_name_cs] if x)
 
     def __str__(self):
+        """Return the full name of the author in the current session language."""
         return " ".join(x.strip() for x in [self.i18n_title, self.i18n_first_name, self.i18n_last_name] if x)
 
 
@@ -750,6 +754,7 @@ class Level1Page(I18nPage):
 
     @classmethod
     def can_create_at(cls, parent):
+        """Determine the valid location of the page in the page hierarchy."""
         return super(Level1Page, cls).can_create_at(parent) and not cls.objects.exists()
 
     def __init__(self, *args, **kwargs):
@@ -766,7 +771,9 @@ class Level1Page(I18nPage):
         verbose_name = _("I. Discover page")
 
 
-class Level2Page(Level1Page):
+class Level2Page(I18nPage):
+    parent_page_types = ["AuthorPage"]
+
     perception = RichTextField(blank=True, features=EDITOR_FEATURES)
     perception_de = RichTextField(blank=True, features=EDITOR_FEATURES)
     perception_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
@@ -778,6 +785,11 @@ class Level2Page(Level1Page):
         FieldPanel("perception_de")]
     czech_panels = Level1Page.czech_panels + [
         FieldPanel("perception_cs")]
+
+    @classmethod
+    def can_create_at(cls, parent):
+        """Determine the valid location of the page in the page hierarchy."""
+        return super(Level2Page, cls).can_create_at(parent) and not cls.objects.exists()
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Deepen"
@@ -794,6 +806,8 @@ class Level2Page(Level1Page):
 
 
 class Level3Page(I18nPage):
+    parent_page_types = ["AuthorPage"]
+
     primary_literature = RichTextField(blank=True, features=EDITOR_FEATURES)
     primary_literature_de = RichTextField(blank=True, features=EDITOR_FEATURES)
     primary_literature_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
@@ -835,6 +849,7 @@ class Level3Page(I18nPage):
 
     @classmethod
     def can_create_at(cls, parent):
+        """Determine the valid location of the page in the page hierarchy."""
         return super(Level3Page, cls).can_create_at(parent) and not cls.objects.exists()
 
     def __init__(self, *args, **kwargs):
