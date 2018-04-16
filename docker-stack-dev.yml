@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   db:
-    image: mdillon/postgis:9.6-alpine
+    image: mdillon/postgis:10-alpine
     deploy:
       restart_policy:
         condition: any
@@ -53,15 +53,14 @@ services:
           cpus: '1.0'
           memory: 512M
     ports:
-      - 80:8000
+      - 8000:8000
     depends_on:
       - db
       - elasticsearch
     volumes:
       - type: bind
         source: ./src
-        target: /src
-    entrypoint: /venv/bin/python
+        target: /src    
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
 volumes:
   pgdata:

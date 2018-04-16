@@ -97,8 +97,12 @@ WSGI_APPLICATION = "lis.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.contrib.gis.db.backends.spatialite",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "django",
+        "USER": "django",
+        "PASSWORD": "***PASSWORD***",
+        "HOST": "db",
+        "PORT": "5432",
     }
 }
 

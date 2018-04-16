@@ -1,6 +1,7 @@
-FROM bentrm/geopython:3.6-alpine
+FROM bentrm/geopython:latest
 
 COPY requirements.txt /requirements.txt
+ENV LIBRARY_PATH=/lib:/usr/lib
 
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step.
 # Correct the path to your production requirements file, if needed.
@@ -36,5 +37,7 @@ ADD src /src
 # uWSGI will listen on this port
 EXPOSE 8000
 
-ENTRYPOINT ["/venv/bin/gunicorn"]
-CMD ["lis.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# ENTRYPOINT ["/venv/bin/gunicorn"]
+# CMD ["lis.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+
+CMD ["/venv/bin/python", "./manage.py", "runserver", "0.0.0.0:8000"]
