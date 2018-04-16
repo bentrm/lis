@@ -1,0 +1,13 @@
+.object .multiple fieldset {
+  width: 100%;
+}
+
+.object .multiple .multi-field legend {
+  color: #333;
+  font-size: 1.1em;
+  font-weight: 500;
+  height: auto;
+  position: relative;
+  text-transform: none;
+  width: auto;
+}
