@@ -17,6 +17,10 @@
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+        {% block head %}
+          <meta http-equiv="refresh" content="0; url=/cms" />
+        {% endblock %}
+
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
 
@@ -28,19 +32,7 @@
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
 
-        {% block header %}
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              {% get_current_language as LANGUAGE_CODE %}
-              {% get_available_languages as LANGUAGE_CODES %}
-              {% for lang_code in LANGUAGE_CODES %}
-                <p>{{lang_code}}</p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-        {% endblock %}
+        {% block header %}{% endblock %}
 
         {% block content %}{% endblock %}
 
