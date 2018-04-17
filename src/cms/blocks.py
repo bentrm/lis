@@ -28,3 +28,6 @@ class ParagraphStructBlock(blocks.StructBlock):
     editor = blocks.CharBlock(
         required=True,
         help_text=_("Author or translator of the content."))
+
+    class Meta:
+        template = "cms/blocks/paragraph_struct_block.html"

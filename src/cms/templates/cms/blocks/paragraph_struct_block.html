@@ -1,15 +1,28 @@
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 
 <section class="row">
-
-  <div class="col-12">
-    <h3>{% include_block value.heading %}</h3>
-  </div>
 
   {% if value.images %}
 
   <div class="col-8">
-    {% include_block value.content %}
+    <div class="row">
+      <div class="col-12">
+        {% include_block value.content %}
+      </div>
+
+      {% if value.footnotes %}
+      <div class="col-12">
+        <p>{% trans 'Footnotes' %}</p>
+        <ol>
+        {% for footnote in value.footnotes %}
+          <li>{{footnote|safe}}</li>
+        {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+    </div>
   </div>
 
   <div class="col-4">
@@ -32,7 +45,17 @@
     {% include_block value.content %}
   </div>
 
-  {% endif %}
+  {% if value.footnotes %}
+  <div class="col-12">
+    <p>{% trans 'Footnotes' %}</p>
+    <ol>
+    {% for footnote in value.footnotes %}
+      <li>{{footnote|safe}}</li>
+    {% endfor %}
+    </ol>
   </div>
+  {% endif %}
+
+  {% endif %}  
 
 </section>

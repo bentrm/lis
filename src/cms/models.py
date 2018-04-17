@@ -750,6 +750,9 @@ class AuthorLiteraryPeriod(Orderable):
         verbose_name=_("Literary period"),
         help_text=_("Literary period that the author has been active in."))
 
+    def __str__(self):
+        return str(self.literary_period)
+
     class Meta:
         db_table = "author_literary_period"
 
@@ -767,14 +770,38 @@ class AuthorLiteraryCategory(Orderable):
         verbose_name=_("Literary category"),
         help_text=_("Literary category that the author has been active in."))
 
+    def __str__(self):
+        return str(self.literary_category)
+
     class Meta:
         db_table = "author_literary_category"
 
 
-class Level1Page(I18nPage):
+class LevelMixin(models.Model):
+    """A simple mixin that adds methods to list the models text types as an iterable."""
+
+    TEXT_TYPES = ()
+
+    def get_texts(self):
+        texts = []
+        for text_type in self.TEXT_TYPES:
+            attr = "i18n_" + text_type
+            prop = getattr(self, attr, None)
+            print(prop)
+            if prop:
+                texts.append((_(text_type.capitalize()), prop))
+        return texts
+
+    class Meta:
+        abstract = True
+
+
+class Level1Page(I18nPage, LevelMixin):
     """The 'Discover' page of the LIS domain."""
 
     parent_page_types = ["AuthorPage"]
+
+    TEXT_TYPES = ("biography", "works")
 
     biography = StreamField(
         [(_("Paragraph"), ParagraphStructBlock())],
@@ -851,10 +878,12 @@ class Level1Page(I18nPage):
         verbose_name = _("I. Discover page")
 
 
-class Level2Page(I18nPage):
+class Level2Page(I18nPage, LevelMixin):
     """The 'Deepen' page of the LIS domain."""
 
     parent_page_types = ["AuthorPage"]
+
+    TEXT_TYPES = ("biography", "works", "perception")
 
     biography = StreamField(
         [(_("Paragraph"), ParagraphStructBlock())],
@@ -952,10 +981,12 @@ class Level2Page(I18nPage):
         verbose_name = _("II. Deepen page")
 
 
-class Level3Page(I18nPage):
+class Level3Page(I18nPage, LevelMixin):
     """The 'Research' page of the LIS domain."""
 
     parent_page_types = ["AuthorPage"]
+
+    TEXT_TYPES = ("primary_literature", "testimony", "secondary_literature")
 
     primary_literature = StreamField(
         [(_("Paragraph"), ParagraphStructBlock())],
@@ -1320,11 +1351,12 @@ class MemorialSitePage(I18nPage):
         """Set the title of the page to the authors name that are referenced by the memorial."""
         title = ", ".join([x.author.title for x in self.authors.all()])
         self.title = title
+        print(title)
         self.slug = text.slugify(self.title)
         super(MemorialSitePage, self).full_clean(*args, **kwargs)
 
     def __str__(self):
-        return _("Memorial site") + super(MemorialSitePage, self).__str__()
+        return f"{_('Memorial site')} {super(MemorialSitePage, self).__str__()}"
 
     class Meta:
         verbose_name = _("Memorial site")

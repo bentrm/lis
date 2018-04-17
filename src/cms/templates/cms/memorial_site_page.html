@@ -3,11 +3,42 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-12">
+  <div class="row mt-4">
+
+    <div class="col-8">
       <h1 class="display-1">LIS</h1>
       <h2 class="display-2">{{ page }}</h2>
     </div>
+
+    <div class="col-4">
+      {% image page.title_image fill-350x350 as tmp_image %}
+      <figure class="figure">
+        <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+        <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+      </figure>
+    </div>
+
+    <div class="col-12">
+      {{page.description|safe}}
+    </div>
+
+    {% for author in page.authors.all %}
+      <div class="col-12">
+        <h2>{{author.author}}</h3>
+      </div>
+      {% for child in author.author.get_children.specific %}
+      <div class="col-12">
+        <h2>{{child}}</h2>
+        <article class="mt-2">
+          {% for text in child.get_texts %}
+            <h3>{{text.0}}</h3>
+            {{ text.1|safe}}
+          {% endfor %}
+        </article>
+      </div>
+      {% endfor %}
+    {% endfor %}
+
   </div>
 
   <div class="row">
@@ -38,15 +69,4 @@
 
     </div>
   </div>
-{% endblock %}
-
-{% block js %}{{ block.super }}
-  <script>
-    $(function () {
-      var hash = window.location.hash;
-      if (hash) {
-        $(`#${hash.slice(1)}-link`).tab('show');
-      }
-    })
-  </script>
 {% endblock %}

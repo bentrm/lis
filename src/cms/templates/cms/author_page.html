@@ -1,60 +1,40 @@
 {% extends "cms/base.html" %}
-
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 
 {% block content %}
+<div class="row mt-4">
 
-  <div class="row">
-    <div class="col-12">
-      <h1 class="display-1">LIS</h1>
-      <h2 class="display-2">{{ page }}</h2>
-    </div>
+  <div class="col-8">
+    <h1 class="display-1">LIS</h1>
+    <h2 class="display-2">{{ page }}</h2>
+    <p>{% trans 'Date of birth' %}: {{page.date_of_birth_day}}.{{page.date_of_birth_month}}.{{page.date_of_birth_year}}</p>
+    <p>{% trans 'Date of death' %}: {{page.date_of_death_day}}.{{page.date_of_death_month}}.{{page.date_of_death_year}}</p>
 
-    <div class="col-12">
-
-      <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-        {% for child in page.get_children %}
-          <li class="nav-item">
-            <a class="nav-link" id="nav-{{ child.slug }}-link" data-toggle="tab" href="#nav-{{ child.slug }}" role="tab" aria-controls="nav-{{ child.slug }}" aria-selected="false">
-              {{child}}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-
-      <div class="tab-content" id="nav-tab-content">
-
-        {% for child in page.get_children.specific %}
-          <div class="tab-pane fade" id="nav-{{ child.slug }}" role="tabpanel" aria-labelledby="nav-{{ child.slug }}">
-
-            <article class="mt-2">
-              {% for type in child.TEXT_TYPES %}
-              {% with type.0 as prop %}
-                <section>
-                  <h3>{{type.1}}</h3>
-                  {{child.prop|safe}}
-                </section>
-              {% endwith %}
-              {% endfor %}
-            </article>
-
-          </div>
-        {% endfor %}
-      </div>
-
-    </div>
-
+    <p>{% trans 'Categories' %}: {% for cat in page.literary_categories.all %}{{cat}} {% endfor %}</p>
+    <p>{% trans 'Periods' %}: {% for per in page.literary_periods.all %}{{per}} {% endfor %}</p>
   </div>
 
-{% endblock %}
+  <div class="col-4">
+    {% image page.title_image fill-350x350 as tmp_image %}
+    <figure class="figure">
+      <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+      <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+    </figure>
+  </div>
 
-{% block js %}{{ block.super }}
-  <script>
-    $(function () {
-      var hash = window.location.hash;
-      if (hash) {
-        $(`#${hash.slice(1)}-link`).tab('show');
-      }
-    })
-  </script>
+  {% for child in page.get_children.specific %}
+  <div class="col-12">
+    <h2>{{child}}</h2>
+    <article class="mt-2">
+      {% for text in child.get_texts %}
+        <h3>{{text.0}}</h3>
+        {{ text.1|safe}}
+      {% endfor %}
+    </article>
+  </div>
+  {% endfor %}
+
+</div>
 {% endblock %}
