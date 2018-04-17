@@ -1,6 +1,6 @@
 """Custom page models that describe the LIS data schema."""
-import logging
 
+import logging
 import datetime
 
 from django.contrib.gis.db.models import PointField
@@ -13,12 +13,15 @@ from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
 from wagtail.core.models import Orderable, Page, CollectionMember
-from wagtail.core.fields import RichTextField
+from wagtail.core.fields import RichTextField, StreamField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, \
-    PageChooserPanel, MultiFieldPanel
+    PageChooserPanel, MultiFieldPanel, StreamFieldPanel
 from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
+from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
+
+from .blocks import ParagraphStructBlock
 
 logger = logging.getLogger('wagtail.core')
 
@@ -267,8 +270,6 @@ class I18nPage(Page):
         super(I18nPage, self).full_clean(*args, **kwargs)
 
     def save_revision(self, user=None, submitted_for_moderation=False, approved_go_live_at=None, changed=True):
-        print(f"Clean: {type(self)}")
-
         self.full_clean()
 
         # Create revision
@@ -351,23 +352,6 @@ class LiteraryCategoryPage(I18nPage):
         db_table = "literary_category"
 
 
-class TextTypesPage(CategoryPage):
-    parent_page_types = ["cms.HomePage"]
-
-    class Meta:
-        verbose_name = _("Text types")
-        db_table = "text_types"
-
-
-class TextTypePage(I18nPage):
-    parent_page_types = ["TextTypesPage"]
-
-    class Meta:
-        verbose_name = _("Text type")
-        verbose_name_plural = _("Text types")
-        db_table = "text_type"
-
-
 class ContactTypesPage(CategoryPage):
     parent_page_types = ["HomePage"]
 
@@ -440,6 +424,13 @@ class AuthorPage(I18nPage):
         (SEX_FEMALE, _("Female")),
     )
 
+    title_image = models.ForeignKey(
+        ImageMedia,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default=SEX_UNKNOWN)
     date_of_birth_year = models.PositiveSmallIntegerField(
         _("Year of birth"),
@@ -475,6 +466,7 @@ class AuthorPage(I18nPage):
     )
 
     content_panels = [
+        ImageChooserPanel("title_image"),
         InlinePanel(
             "names",
             panels=[
@@ -724,28 +716,28 @@ class Level1Page(I18nPage):
         ("i18n_biography", _("Biography")),
         ("i18n_works", _("Works")))
 
-    biography = RichTextField(blank=True, features=EDITOR_FEATURES)
-    biography_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    biography_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    biography = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    biography_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    biography_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
-    works = RichTextField(blank=True, features=EDITOR_FEATURES)
-    works_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    works_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    works = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    works_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    works_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
     default_panels = [
         FieldPanel("title", classname="full title"),
-        FieldPanel("biography"),
-        FieldPanel("works")]
+        StreamFieldPanel("biography", ),
+        StreamFieldPanel("works", )]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
-        FieldPanel("biography_de"),
-        FieldPanel("works_de")]
+        StreamFieldPanel("biography_de", ),
+        StreamFieldPanel("works_de", )]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
-        FieldPanel("biography_cs"),
-        FieldPanel("works_cs")]
+        StreamFieldPanel("biography_cs", ),
+        StreamFieldPanel("works_cs", )]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
@@ -761,7 +753,7 @@ class Level1Page(I18nPage):
         self._meta.get_field('title').default = "Discover"
         self._meta.get_field('title_de').default = "Entdecken"
         self._meta.get_field('title_cs').default = "Discover*"
-        super(I18nPage, self).__init__(*args, **kwargs)
+        super(Level1Page, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return f"I. {self.i18n_title}"
@@ -774,9 +766,9 @@ class Level1Page(I18nPage):
 class Level2Page(I18nPage):
     parent_page_types = ["AuthorPage"]
 
-    perception = RichTextField(blank=True, features=EDITOR_FEATURES)
-    perception_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    perception_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    perception = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    perception_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    perception_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_perception = TranslatedField("perception", "perception_de", "perception_cs")
 
     default_panels = Level1Page.default_panels + [
@@ -795,7 +787,7 @@ class Level2Page(I18nPage):
         self._meta.get_field('title').default = "Deepen"
         self._meta.get_field('title_de').default = "Vertiefen"
         self._meta.get_field('title_cs').default = "Deepen*"
-        super(I18nPage, self).__init__(*args, **kwargs)
+        super(Level2Page, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return f"II. {self.i18n_title}"
@@ -808,19 +800,19 @@ class Level2Page(I18nPage):
 class Level3Page(I18nPage):
     parent_page_types = ["AuthorPage"]
 
-    primary_literature = RichTextField(blank=True, features=EDITOR_FEATURES)
-    primary_literature_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    primary_literature_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    primary_literature = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    primary_literature_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    primary_literature_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
-    testimony = RichTextField(blank=True, features=EDITOR_FEATURES)
-    testimony_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    testimony_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    testimony = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    testimony_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    testimony_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
 
-    secondary_literature = RichTextField(blank=True, features=EDITOR_FEATURES)
-    secondary_literature_de = RichTextField(blank=True, features=EDITOR_FEATURES)
-    secondary_literature_cs = RichTextField(blank=True, features=EDITOR_FEATURES)
+    secondary_literature = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    secondary_literature_de = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
+    secondary_literature_cs = StreamField([(_("Paragraph"), ParagraphStructBlock())], blank=True)
     i18n_secondary_literature = TranslatedField(
         "secondary_literature",
         "secondary_literature_de",
@@ -828,19 +820,19 @@ class Level3Page(I18nPage):
 
     default_panels = [
         FieldPanel("title", classname="full title"),
-        FieldPanel("primary_literature"),
-        FieldPanel("testimony"),
-        FieldPanel("secondary_literature")]
+        StreamFieldPanel("primary_literature", ),
+        StreamFieldPanel("testimony", ),
+        StreamFieldPanel("secondary_literature", )]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
-        FieldPanel("primary_literature_de"),
-        FieldPanel("testimony_de"),
-        FieldPanel("secondary_literature_de")]
+        StreamFieldPanel("primary_literature_de", ),
+        StreamFieldPanel("testimony_de", ),
+        StreamFieldPanel("secondary_literature_de", )]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
-        FieldPanel("primary_literature_cs"),
-        FieldPanel("testimony_cs"),
-        FieldPanel("secondary_literature_cs")]
+        StreamFieldPanel("primary_literature_cs", ),
+        StreamFieldPanel("testimony_cs", ),
+        StreamFieldPanel("secondary_literature_cs", )]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
@@ -856,7 +848,7 @@ class Level3Page(I18nPage):
         self._meta.get_field('title').default = "Research"
         self._meta.get_field('title_de').default = "Forschen"
         self._meta.get_field('title_cs').default = "Research*"
-        super(I18nPage, self).__init__(*args, **kwargs)
+        super(Level3Page, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return f"III. {self.i18n_title}"
@@ -892,6 +884,13 @@ class LocationsPage(CategoryPage):
 
 
 class LocationPage(I18nPage):
+    title_image = models.ForeignKey(
+        ImageMedia,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     location_type = models.ForeignKey(
         "LocationTypePage",
         null=True,
@@ -915,7 +914,7 @@ class LocationPage(I18nPage):
     directions_cs = models.TextField(blank=True)
     i18n_directions = TranslatedField("directions", "directions_de", "directions_cs")
 
-    coordinates = PointField(null=True, blank=True)
+    coordinates = PointField()
 
     search_fields = I18nPage.search_fields + [
         index.SearchField("description"),
@@ -930,7 +929,19 @@ class LocationPage(I18nPage):
 
     default_panels = [
         FieldPanel("title", classname="full title"),
+        ImageChooserPanel("title_image"),
         PageChooserPanel("location_type", "cms.LocationTypePage"),
+        InlinePanel(
+            "contacts",
+            label=_("Contacts"),
+            min_num=0,
+            panels=[
+                PageChooserPanel("contact_type", "cms.ContactTypePage"),
+                FieldPanel("name"),
+                FieldPanel("name_de"),
+                FieldPanel("name_cs")
+            ],
+            help_text=_("The authors that this memorial site is dedicated to.")),
         FieldPanel("description"),
         FieldPanel("address"),
         FieldPanel("directions"),
@@ -965,7 +976,41 @@ class LocationPage(I18nPage):
         db_table = "location"
 
 
+class LocationPageContact(Orderable):
+    location = ParentalKey("LocationPage", related_name="contacts")
+    contact_type = models.ForeignKey(
+        ContactTypePage,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="contacts"
+    )
+
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_("Name (en)")
+    )
+    name_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Name (de)")
+    )
+    name_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Name (cs)")
+    )
+    i18n_name = TranslatedField("name", "name_de", "name_cs")
+
+
 class MemorialSitePage(I18nPage):
+    title_image = models.ForeignKey(
+        ImageMedia,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     description = RichTextField(blank=True)
     description_de = RichTextField(blank=True)
     description_cs = RichTextField(blank=True)
@@ -974,6 +1019,7 @@ class MemorialSitePage(I18nPage):
     parent_page_types = ["LocationPage"]
 
     default_panels = [
+        ImageChooserPanel("title_image"),
         InlinePanel(
             "authors",
             label=_("Authors"),
@@ -1010,8 +1056,10 @@ class MemorialSitePage(I18nPage):
         title = ", ".join([x.author.title for x in self.authors.all()])
         self.title = title
         self.slug = text.slugify(self.title)
-        print(f"Full: {self}: {self.title}: {self.slug}")
         super(MemorialSitePage, self).full_clean(*args, **kwargs)
+
+    def __str__(self):
+        return _("Memorial site") + super(MemorialSitePage, self).__str__()
 
     class Meta:
         verbose_name = _("Memorial site")
@@ -1033,101 +1081,3 @@ class MemorialSiteAuthor(Orderable):
 
     class Meta:
         db_table = "memorial_site_author"
-
-
-# class HeadingWithContentPage(I18nPage):
-#     LEVEL_DISCOVER = "I"
-#     LEVEL_DEEPEN = "II"
-#     LEVEL_RESEARCH = "III"
-#     LEVEL_CHOICES = (
-#         (LEVEL_DISCOVER, _("I. Discover")),
-#         (LEVEL_DEEPEN, _("II. Deepen")),
-#         (LEVEL_RESEARCH, _("III. Research")),
-#     )
-#
-#     level = models.CharField(max_length=12, choices=LEVEL_CHOICES)
-#     body = StreamField(
-#         block_types=[
-#             ("paragraph", TextBlock())
-#         ],
-#         blank=True
-#     )
-#     body_de = StreamField(
-#         block_types=[
-#             ("paragraph", TextBlock())
-#         ],
-#         blank=True
-#     )
-#     body_cs = StreamField(
-#         block_types=[
-#             ("paragraph", TextBlock())
-#         ],
-#         blank=True
-#     )
-#
-#     i18n_body = TranslatedField("body", "body_de", "body_cs")
-#
-#     is_creatable = False
-#     parent_page_types = ["AuthorPage", "MemorialSitePage"]
-#
-#     search_fields = I18nPage.search_fields + [
-#         index.SearchField("body"),
-#         index.SearchField("body_de"),
-#         index.SearchField("body_cs"),
-#     ]
-#
-#     content_panels = [
-#         StreamFieldPanel("body"),
-#     ]
-#     content_panels_de = [
-#         StreamFieldPanel("body_de"),
-#     ]
-#     content_panels_cs = [
-#         StreamFieldPanel("body_cs"),
-#     ]
-#
-#     edit_handler = TabbedInterface([
-#         ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
-#         ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-#         ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
-#         ObjectList(I18nPage.meta_panels, heading=_("Meta")),
-#     ])
-#
-#     def clean(self):
-#         self.title = self.get_level_display()
-#         self.title_de = self.get_level_display()
-#         self.title_cs = self.get_level_display()
-#         super(HeadingWithContentPage, self).clean()
-#
-#     class Meta:
-#         abstract = True
-#
-#
-# class DiscoverPage(HeadingWithContentPage):
-#
-#     def __init__(self, *args, **kwargs):
-#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DISCOVER
-#         super(DiscoverPage, self).__init__(*args, **kwargs)
-#
-#     class Meta:
-#         verbose_name = _("I. Discover")
-#
-#
-# class DeepenPage(HeadingWithContentPage):
-#
-#     def __init__(self, *args, **kwargs):
-#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_DEEPEN
-#         super(DeepenPage, self).__init__(*args, **kwargs)
-#
-#     class Meta:
-#         verbose_name = _("II. Deepen")
-#
-#
-# class ResearchPage(HeadingWithContentPage):
-#
-#     def __init__(self, *args, **kwargs):
-#         self._meta.get_field("level").default = HeadingWithContentPage.LEVEL_RESEARCH
-#         super(ResearchPage, self).__init__(*args, **kwargs)
-#
-#     class Meta:
-#         verbose_name = _("III. Research")

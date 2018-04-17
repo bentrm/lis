@@ -1,16 +1,14 @@
+"""Custom block types that the user content can be represented in."""
+
 from django.utils.translation import ugettext as _
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 
-class TextBlock(blocks.StructBlock):
-    heading = blocks.PageChooserBlock(
-        required=True,
-        target_model="cms.TextTypePage",
-        help_text=_(""))
+class ParagraphStructBlock(blocks.StructBlock):
     images = blocks.ListBlock(ImageChooserBlock())
     content = blocks.RichTextBlock(
-        required=False,
+        required=True,
         features=[
             "bold",
             "italic",
@@ -19,8 +17,14 @@ class TextBlock(blocks.StructBlock):
             "ol",
             "ul",
             "hr",
-            "blockquote"])
-    editor = blocks.CharBlock(help_text=_("Author or translator of the content."))
-
-    class Meta:
-        template = "cms/blocks/text_block.html"
+            "link",
+            "blockquote"
+        ],
+        help_text=_("Content of the text block."))
+    footnotes = blocks.ListBlock(
+        blocks.RichTextBlock(features=["bold", "italic", "strikethrough", "link"]),
+        help_text=_("Citations and comments. The item number can be linked in the content, i.e. '[1]'.")
+    )
+    editor = blocks.CharBlock(
+        required=True,
+        help_text=_("Author or translator of the content."))
