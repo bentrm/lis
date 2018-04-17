@@ -6,10 +6,6 @@ from .base import *  # noqa
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "www.lis-map.eu",
-]
-
 try:
     from .local import *  # noqa
 except ImportError:
