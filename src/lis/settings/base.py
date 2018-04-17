@@ -25,6 +25,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Security
 
 ALLOWED_HOSTS = [
+    "localhost",
     "www.lis-map.eu",
 ]
 
@@ -33,7 +34,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     "cms",
     "search",
-
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -45,12 +45,9 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.core",
-
     "modelcluster",
     "taggit",
-
     "mapwidgets",
-
     "django.contrib.gis",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -137,10 +134,10 @@ STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, "static"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.environ.get("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 STATIC_URL = "/static/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 MEDIA_URL = "/media/"
 
 
@@ -161,8 +158,9 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 # Geotools
-GDAL_LIBRARY_PATH = os.environ["GDAL_LIBRARY_PATH"]
-SPATIALITE_LIBRARY_PATH = os.environ["SPATIALITE_LIBRARY_PATH"]
+GDAL_LIBRARY_PATH = os.environ.get("GDAL_LIBRARY_PATH")
+GEOS_LIBRARY_PATH = os.environ.get("GEOS_LIBRARY_PATH")
+SPATIALITE_LIBRARY_PATH = os.environ.get("SPATIALITE_LIBRARY_PATH")
 
 # Map widgets
 MAP_WIDGETS = {
