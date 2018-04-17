@@ -1,0 +1,756 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-17 21:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cms/blocks.py:23
+msgid "Content of the text block."
+msgstr "Textinhalt"
+
+#: cms/blocks.py:26
+msgid ""
+"Citations and comments. The item number can be linked in the content, i.e. "
+"'[1]'."
+msgstr ""
+"Zitate, Kommentare und Quellangaben. Der Eintrag kann anhand seiner "
+"Nummerierung im Textinhalt verlinkt werden, bspw. '[1]'."
+
+#: cms/blocks.py:30
+msgid "Author or translator of the content."
+msgstr "Autor oder Übersetzer des Textinhalts."
+
+#: cms/edit_handlers.py:27
+msgid ":"
+msgstr ":"
+
+#: cms/edit_handlers.py:37
+msgid "ReadOnlyPanel"
+msgstr "Schreibgeschützt"
+
+#: cms/models.py:47
+msgid "February can't have more than 29 days."
+msgstr "Februar hat nie mehr als 29 Tage."
+
+#: cms/models.py:49
+msgid "Day is out of range for month."
+msgstr "Tag liegt nicht im angegeben Monat."
+
+#: cms/models.py:76
+msgid "Title (de)"
+msgstr "Titel (de)"
+
+#: cms/models.py:77
+msgid "Title as it will be used in german translations."
+msgstr "Titel der in deutschen Übersetzungen angegeben wird."
+
+#: cms/models.py:82
+msgid "Title (cz)"
+msgstr "Titel (cz)"
+
+#: cms/models.py:83
+msgid "Title as it will be used in czech translations."
+msgstr "Titel der in tschechischen Übersetzungen angegeben wird."
+
+#: cms/models.py:90
+msgid "Alternative title"
+msgstr "Alternativer Titel"
+
+#: cms/models.py:91
+msgid ""
+"Title that will be presented in mouse over tooltips and to screen readers."
+msgstr ""
+"Titel der in Tooltips und bei der Nutzung von Screen Readern genutzt wird."
+
+#: cms/models.py:96
+msgid "Alternative title (de)"
+msgstr "Alternativer Titel (de)"
+
+#: cms/models.py:97
+msgid "Alternative title in german translations."
+msgstr "Alternativer Titel in deutschen Übersetzungen."
+
+#: cms/models.py:102
+msgid "Alternative title (cz)"
+msgstr "Alternativer Titel (cz)"
+
+#: cms/models.py:103
+msgid "Alternative title in czech translations."
+msgstr "Alternativer Titel in tschechischen Übersetzungen."
+
+#: cms/models.py:110
+msgid "Media caption"
+msgstr "Bildunterschrift"
+
+#: cms/models.py:111
+msgid "A caption that may be presented in the context of the media item."
+msgstr "Eine Bildunterschrift die im Kontext der Datei angezeigt werden kann."
+
+#: cms/models.py:116
+msgid "Media caption (de)"
+msgstr "Bildunterschrift (de)"
+
+#: cms/models.py:117
+msgid "The media caption in german translations."
+msgstr "Bildunterschrift die in deutschen Übersetzungen verwendet wird."
+
+#: cms/models.py:122
+msgid "Media caption (cz)"
+msgstr "Bildunterschrift (cz)"
+
+#: cms/models.py:123
+msgid "The media caption in czech translations."
+msgstr "Die Bildunterschrift in tschechischen Übersetzungen."
+
+#: cms/models.py:195
+msgid "Image rendition"
+msgstr "Bildmanipulation"
+
+#: cms/models.py:196
+msgid "The image this rendition is based on."
+msgstr "Das Originalbild von dem diese Manipulation abgeleitet wurde."
+
+#: cms/models.py:223 cms/models.py:228 cms/models.py:649 cms/models.py:654
+#: cms/models.py:659
+msgid "Title"
+msgstr "Titel"
+
+#: cms/models.py:224 cms/models.py:229
+msgid "The page title as you'd like it to be seen by the public"
+msgstr "Der Seitentitel wie er öffentlich erscheinen soll."
+
+#: cms/models.py:236 cms/models.py:242
+msgid "Draft title"
+msgstr "Entwurfstitel"
+
+#: cms/models.py:237 cms/models.py:243
+msgid "The page title as given in the latest draft."
+msgstr "Der Seitentitel wie er im letzten Entwurf angegeben wurde."
+
+#: cms/models.py:248
+msgid "Editor"
+msgstr "Editor"
+
+#: cms/models.py:249
+msgid "Name or initials of the author of this content page."
+msgstr "Name oder Initialen des Authors dieser Inhaltsseite."
+
+#: cms/models.py:265
+msgid "Content"
+msgstr "Inhalt"
+
+#: cms/models.py:266 cms/models.py:449 cms/models.py:605 cms/models.py:853
+#: cms/models.py:956 cms/models.py:1061 cms/models.py:1230 cms/models.py:1344
+msgid "Meta"
+msgstr "Metainformationen"
+
+#: cms/models.py:357
+msgid "Homepage"
+msgstr "Homepage"
+
+#: cms/models.py:367 cms/models.py:378 cms/models.py:584
+msgid "Literary categories"
+msgstr "Genre"
+
+#: cms/models.py:377 cms/models.py:770
+msgid "Literary category"
+msgstr "Genre"
+
+#: cms/models.py:388 cms/models.py:399
+msgid "Contact types"
+msgstr "Kontakttypen"
+
+#: cms/models.py:398
+msgid "Contact type"
+msgstr "Kontakttyp"
+
+#: cms/models.py:409 cms/models.py:577
+msgid "Literary periods"
+msgstr "Literaturperioden"
+
+#: cms/models.py:420 cms/models.py:424 cms/models.py:428 cms/models.py:1140
+#: cms/models.py:1144 cms/models.py:1148 cms/models.py:1286 cms/models.py:1290
+#: cms/models.py:1294
+msgid "Description"
+msgstr "Beschreibung"
+
+#: cms/models.py:421 cms/models.py:425 cms/models.py:429
+msgid "A general description of the literary period and its significants."
+msgstr ""
+"Eine allgemeine Beschreibung der Literaturepoche und ihrer Bedeutsamkeit."
+
+#: cms/models.py:446
+msgid "Content (EN)"
+msgstr "Inhalt (EN)"
+
+#: cms/models.py:447
+msgid "Content (DE)"
+msgstr "Inhalt (DE)"
+
+#: cms/models.py:448
+msgid "Content (CZ)"
+msgstr "Inhalt (CZ)"
+
+#: cms/models.py:459 cms/models.py:638 cms/models.py:1319
+msgid "Authors"
+msgstr "Autoren"
+
+#: cms/models.py:472
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: cms/models.py:473
+msgid "Male"
+msgstr "Männlich"
+
+#: cms/models.py:474
+msgid "Female"
+msgstr "Weiblich"
+
+#: cms/models.py:483 cms/models.py:1128 cms/models.py:1282
+msgid "Title image"
+msgstr "Titelbild"
+
+#: cms/models.py:484
+msgid "A meaningful image that will be used to present the author to the user."
+msgstr "Ein prägnates Bild das den Autor darstellt."
+
+#: cms/models.py:489
+msgid "Year of birth"
+msgstr "Geburtsjahr"
+
+#: cms/models.py:490
+msgid "The year that the author is born in."
+msgstr "Das Kalenderjahr in dem der Autor geboren ist."
+
+#: cms/models.py:495
+msgid "Month of birth"
+msgstr "Geburtsmonat"
+
+#: cms/models.py:496
+msgid "The month that the author is born in."
+msgstr "Der Monat in dem der Autor geboren ist."
+
+#: cms/models.py:500
+msgid "Day of birth"
+msgstr "Geburtstag"
+
+#: cms/models.py:501
+msgid "The day that the author is born in."
+msgstr "Der Tag an dem der Autor geboren ist."
+
+#: cms/models.py:505
+msgid "Year of death"
+msgstr "Todesjahr"
+
+#: cms/models.py:506
+msgid "The year that the author has died in."
+msgstr "Das Jahr in dem der Autor gestorben ist."
+
+#: cms/models.py:511
+msgid "Month of death"
+msgstr "Todesmonat"
+
+#: cms/models.py:512
+msgid "The month that the author has died in."
+msgstr "Der Monat in dem der Autor gestorben ist."
+
+#: cms/models.py:516
+msgid "Day of death"
+msgstr "Todestag"
+
+#: cms/models.py:517
+msgid "The day that the author has died at."
+msgstr "Der Tag an dem der Autor gestorben ist."
+
+#: cms/models.py:531 cms/models.py:850 cms/models.py:953 cms/models.py:1058
+#: cms/models.py:1227 cms/models.py:1341
+msgid "English"
+msgstr "Englisch"
+
+#: cms/models.py:541 cms/models.py:851 cms/models.py:954 cms/models.py:1059
+#: cms/models.py:1228 cms/models.py:1342
+msgid "German"
+msgstr "Deutsch"
+
+#: cms/models.py:550 cms/models.py:852 cms/models.py:955 cms/models.py:1060
+#: cms/models.py:1229 cms/models.py:1343
+msgid "Czech"
+msgstr "Tschechisch"
+
+#: cms/models.py:554
+msgid "Names"
+msgstr "Namen"
+
+#: cms/models.py:556
+msgid "The name of the author."
+msgstr "Der Name des Autors."
+
+#: cms/models.py:565 cms/templates/cms/author_page.html:12
+msgid "Date of birth"
+msgstr "Geburtstag"
+
+#: cms/models.py:573 cms/templates/cms/author_page.html:13
+msgid "Date of death"
+msgstr "Todestag"
+
+#: cms/models.py:579
+msgid "The literary periods the author has been active in."
+msgstr "Die Literaturepochen in denen der Autor aktiv war."
+
+#: cms/models.py:586
+msgid "The literary categories the author is associated with."
+msgstr "Die Genre in denen der Autor aktiv war."
+
+#: cms/models.py:604
+msgid "General"
+msgstr "Allgemein"
+
+#: cms/models.py:637 cms/models.py:742 cms/models.py:1378
+msgid "Author"
+msgstr "Autor"
+
+#: cms/models.py:650
+msgid "The academic title of the author if any."
+msgstr "Der akademische Titel des Autors."
+
+#: cms/models.py:655
+msgid "The academic title of the author in german language."
+msgstr "Der akademische Titel des Autors in deutscher Sprache."
+
+#: cms/models.py:660
+msgid "The academic title of the author in czech language."
+msgstr "Der akademische Titel des Autors in tschechischer Sprache."
+
+#: cms/models.py:666 cms/models.py:670 cms/models.py:675
+msgid "First name"
+msgstr "Vorname"
+
+#: cms/models.py:671
+msgid ""
+"The first name in german language if different from international spelling."
+msgstr ""
+"Der Vorname in deutscher Sprache wenn dieser sich von der international "
+"gebrächlichen Schreibweise unterscheidet."
+
+#: cms/models.py:676 cms/models.py:691
+msgid ""
+"The first name in czech language if different from international spelling."
+msgstr ""
+"Der Vorname in tschechischer Sprache wenn dieser sich von der international "
+"gebräuchlichen Schreibweise unterscheidet."
+
+#: cms/models.py:681 cms/models.py:685 cms/models.py:690
+msgid "Last name"
+msgstr "Nachname"
+
+#: cms/models.py:686
+msgid ""
+"The last name in german language if different from international spelling."
+msgstr ""
+"Der Nachname in deutscher Sprache wenn dieser sich von der international "
+"gebräuchlichen Schreibweise unterscheidet."
+
+#: cms/models.py:697 cms/models.py:702 cms/models.py:707
+msgid "Birth name"
+msgstr "Geburtsname"
+
+#: cms/models.py:698
+msgid "Birth name of the author if different from last name."
+msgstr "Geburtsname des Autors wenn dieser sich vom Nachnamen unterscheidet."
+
+#: cms/models.py:703 cms/models.py:708
+msgid "Birth name of the author if different from international spelling."
+msgstr ""
+"Geburtsname des Autors wenn dieser sich von der international gebräuchlichen "
+"Schreibweise unterscheidet."
+
+#: cms/models.py:717
+msgid "Name entries must at least define a first name or a last name."
+msgstr "Ein Name muss zumindest einen Vor- oder Nachnamen umfassen."
+
+#: cms/models.py:743
+msgid "Author that this mapping is referencing."
+msgstr "Autor der durch die Zuweisung referenziert wird."
+
+#: cms/models.py:750
+msgid "Literary period"
+msgstr "Literaturepoche"
+
+#: cms/models.py:751
+msgid "Literary period that the author has been active in."
+msgstr "Literaturepoche in der der Autor aktiv war."
+
+#: cms/models.py:771
+msgid "Literary category that the author has been active in."
+msgstr "Genre in der der Autor aktiv war."
+
+#: cms/models.py:804 cms/models.py:809 cms/models.py:814 cms/models.py:821
+#: cms/models.py:826 cms/models.py:831 cms/models.py:886 cms/models.py:891
+#: cms/models.py:896 cms/models.py:903 cms/models.py:908 cms/models.py:913
+#: cms/models.py:920 cms/models.py:925 cms/models.py:930 cms/models.py:989
+#: cms/models.py:994 cms/models.py:999 cms/models.py:1006 cms/models.py:1011
+#: cms/models.py:1016 cms/models.py:1023 cms/models.py:1028 cms/models.py:1033
+msgid "Paragraph"
+msgstr "Abschnitt"
+
+#: cms/models.py:806 cms/models.py:811 cms/models.py:816 cms/models.py:888
+#: cms/models.py:893 cms/models.py:898
+msgid "Biography"
+msgstr "Biographie"
+
+#: cms/models.py:807 cms/models.py:812 cms/models.py:817 cms/models.py:889
+#: cms/models.py:894 cms/models.py:899
+msgid "An introductory biography of the author aimed at casual users."
+msgstr "Eine einleitende Biographie die sich an allgemein Besucher richtet."
+
+#: cms/models.py:823 cms/models.py:828 cms/models.py:833 cms/models.py:905
+#: cms/models.py:910 cms/models.py:915
+msgid "Works"
+msgstr "Werke"
+
+#: cms/models.py:824 cms/models.py:829 cms/models.py:834 cms/models.py:906
+#: cms/models.py:911 cms/models.py:916
+msgid "An introduction to the works of the author aimed at casual users."
+msgstr ""
+"Eine Einleitung zu den Werken des Autors die sich an allgemeine Besucher "
+"richtet."
+
+#: cms/models.py:875
+msgid "I. Discover page"
+msgstr "I. Entdecken"
+
+#: cms/models.py:922 cms/models.py:927 cms/models.py:932
+msgid "Perception"
+msgstr "Rezeption"
+
+#: cms/models.py:923 cms/models.py:928 cms/models.py:933
+msgid ""
+"A continuative description of the perception of the author for interested "
+"user."
+msgstr ""
+"Eine tiefergehende Beschreibung der Rezeption des Autors für interessierte "
+"Besucher."
+
+#: cms/models.py:978
+msgid "II. Deepen page"
+msgstr "II. Vertiefen"
+
+#: cms/models.py:991 cms/models.py:996 cms/models.py:1001
+msgid "Primary literature"
+msgstr "Primärliteratur"
+
+#: cms/models.py:992 cms/models.py:997 cms/models.py:1002
+msgid ""
+"Further presentation of primary literature of the author for academic user."
+msgstr ""
+"Tiefergehende Zusammenfassung der Primärliteratur zum Autor für akademische "
+"Besucher."
+
+#: cms/models.py:1008 cms/models.py:1013 cms/models.py:1018
+msgid "Testimony"
+msgstr "Zeugnisse"
+
+#: cms/models.py:1009 cms/models.py:1014 cms/models.py:1019
+msgid "TODO"
+msgstr "TODO"
+
+#: cms/models.py:1025 cms/models.py:1030 cms/models.py:1035
+msgid "Secondary literature"
+msgstr "Sekundärliteratur"
+
+#: cms/models.py:1026 cms/models.py:1031 cms/models.py:1036
+msgid ""
+"Further secondary literature about the author and his works aimed at "
+"academic users."
+msgstr ""
+"Tiefergehnde Zusammenfassung der Sekundärliteratur zum Autor für akademische "
+"Besucher."
+
+#: cms/models.py:1083
+msgid "III. Research page"
+msgstr "III. Forschen"
+
+#: cms/models.py:1092 cms/models.py:1103
+msgid "Location types"
+msgstr "Ortstypen"
+
+#: cms/models.py:1102
+msgid "Location type"
+msgstr "Ortstyp"
+
+#: cms/models.py:1113 cms/models.py:1238
+msgid "Locations"
+msgstr "Orte"
+
+#: cms/models.py:1129
+msgid ""
+"A meaningful image that will be used to present the location to the user."
+msgstr "Ein aussagekräftiges Bild zum Präsentieren des Ortes."
+
+#: cms/models.py:1136
+msgid "Location type)"
+msgstr "Ortstyp"
+
+#: cms/models.py:1141 cms/models.py:1145 cms/models.py:1149
+msgid ""
+"A short general description of the location without any relation to specific "
+"authors."
+msgstr ""
+"Eine kurze, allgemeine Beschreibung zum Ort ohne spezifischen Bezug zu einem "
+"Autor."
+
+#: cms/models.py:1154 cms/models.py:1158 cms/models.py:1162
+msgid "Address"
+msgstr "Adresse"
+
+#: cms/models.py:1155 cms/models.py:1159 cms/models.py:1163
+msgid "The postal address of the location if any."
+msgstr "Die Postadresse dieses Ortes wenn zutreffend."
+
+#: cms/models.py:1168 cms/models.py:1172 cms/models.py:1176
+msgid "Direction"
+msgstr "Wegbeschreibung"
+
+#: cms/models.py:1169 cms/models.py:1173 cms/models.py:1177
+msgid "A short informative description of directions to find the location."
+msgstr "Eine kurze Wegbeschreibung um den Ort aufzufinden."
+
+#: cms/models.py:1181
+msgid "Coordinates"
+msgstr "Koordinaten"
+
+#: cms/models.py:1182
+msgid "The actual geographic location."
+msgstr "Die eigentliche geographische Position."
+
+#: cms/models.py:1199
+msgid "Contacts"
+msgstr "Kontakte"
+
+#: cms/models.py:1207 cms/models.py:1321
+msgid "The authors that this memorial site is dedicated to."
+msgstr "Die Autoren der dieses Andenken gewidmet ist."
+
+#: cms/models.py:1237
+msgid "Location"
+msgstr "Ort"
+
+#: cms/models.py:1256
+msgid "Name (en)"
+msgstr "Name (en)"
+
+#: cms/models.py:1261
+msgid "Name (de)"
+msgstr "Name (de)"
+
+#: cms/models.py:1266
+msgid "Name (cs)"
+msgstr "Name (cs)"
+
+#: cms/models.py:1283
+msgid ""
+"A meaningful image that will be used to present the memorial site to the "
+"user."
+msgstr ""
+"Ein aussagekräftiges Bild das genutzt wird um die Erinnerungsstelle "
+"gegenüber dem Nutzer zu präsentieren."
+
+#: cms/models.py:1287 cms/models.py:1291 cms/models.py:1295
+msgid ""
+"A description of the memorial site and its significants to the referenced "
+"authors."
+msgstr ""
+"Eine Beschreibung der Erinnerungsstelle und ihres Bezugs zu den "
+"referenzierten Autoren für allgemeine Besucher."
+
+#: cms/models.py:1300 cms/models.py:1304 cms/models.py:1308
+msgid "Detailed description"
+msgstr "Detailierte Beschreibung"
+
+#: cms/models.py:1301 cms/models.py:1305 cms/models.py:1309
+msgid ""
+"A detailed description of the memorial site and its significants to the "
+"referenced authors."
+msgstr ""
+"Eine detailliertere Beschreibung der Erinnerungsstel und ihres Bezugs zu den "
+"referenzierten Autoren für interessierte Besucher."
+
+#: cms/models.py:1359 cms/models.py:1370
+msgid "Memorial site"
+msgstr "Erinnerungsstelle"
+
+#: cms/models.py:1360
+msgid "Memorial sites"
+msgstr "Erinnerungsstellen"
+
+#: cms/models.py:1371
+msgid "The memorial site this mapping references to."
+msgstr "Die Erinnerungsstelle auf die die Zuordnung referenziert."
+
+#: cms/models.py:1379
+msgid "The author that is remebered by this memorial site."
+msgstr "Der Autor dem mit dieser Erinnerungsstelle gedacht wird."
+
+#: cms/templates/cms/author_page.html:15
+msgid "Categories"
+msgstr "Kategorien"
+
+#: cms/templates/cms/author_page.html:16
+msgid "Periods"
+msgstr "Epochen"
+
+#: cms/templates/cms/blocks/paragraph_struct_block.html:17
+#: cms/templates/cms/blocks/paragraph_struct_block.html:50
+msgid "Footnotes"
+msgstr "Fußnoten"
+
+#: cms/templates/wagtailadmin/admin_base.html:32
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: cms/templates/wagtailadmin/admin_base.html:33
+msgid "Delete"
+msgstr "Löschen"
+
+#: cms/templates/wagtailadmin/admin_base.html:34
+msgid "Page"
+msgstr "Seite"
+
+#: cms/templates/wagtailadmin/admin_base.html:35
+msgid "Pages"
+msgstr "Seiten"
+
+#: cms/templates/wagtailadmin/admin_base.html:36
+msgid "Loading…"
+msgstr "Laden…"
+
+#: cms/templates/wagtailadmin/admin_base.html:37
+msgid "No results"
+msgstr "Keine Ergebnisse"
+
+#: cms/templates/wagtailadmin/admin_base.html:38
+msgid "Server Error"
+msgstr "Serverfehler"
+
+#: cms/templates/wagtailadmin/admin_base.html:39
+msgid "See children"
+msgstr "Unterseiten anzeigen"
+
+#: cms/templates/wagtailadmin/admin_base.html:40
+msgid "See all"
+msgstr "Alles anzeigen"
+
+#: cms/templates/wagtailadmin/admin_base.html:41
+msgid "Close explorer"
+msgstr "Explorer schließen"
+
+#: cms/templates/wagtailadmin/admin_base.html:42
+msgid "Alt text"
+msgstr "Alternativer text"
+
+#: cms/templates/wagtailadmin/admin_base.html:43
+msgid "Write here…"
+msgstr "Schreiben…"
+
+#: cms/templates/wagtailadmin/admin_base.html:44
+msgid "Horizontal line"
+msgstr "Horizontale Linie"
+
+#: cms/templates/wagtailadmin/admin_base.html:45
+msgid "Line break"
+msgstr "Zeilenumbruch"
+
+#: cms/templates/wagtailadmin/admin_base.html:46
+msgid "Undo"
+msgstr "Rückgängig"
+
+#: cms/templates/wagtailadmin/admin_base.html:47
+msgid "Redo"
+msgstr "Wiederherstellen"
+
+#: cms/templates/wagtailadmin/admin_base.html:48
+msgid "Reload the page"
+msgstr "Seite neu laden"
+
+#: cms/templates/wagtailadmin/admin_base.html:49
+msgid "Reload saved content"
+msgstr "Gespeicherten Inhalt neu laden"
+
+#: cms/templates/wagtailadmin/admin_base.html:50
+msgid "Show latest content"
+msgstr "Aktuellsten Inhalt anzeigen"
+
+#: cms/templates/wagtailadmin/admin_base.html:51
+msgid "Show error"
+msgstr "Fehler anzeigen"
+
+#: cms/templates/wagtailadmin/admin_base.html:52
+msgid ""
+"The editor just crashed. Content has been reset to the last saved version."
+msgstr ""
+"Der Editor ist abgestürzt. Der Inhalt wurde auf den letzten gespeicherten "
+"Zustand zurückgesetzt."
+
+#: cms/templates/wagtailadmin/home.html:4
+msgid "Welcome to the LIS admin."
+msgstr "Willkommen zum LIS Admin."
+
+#: cms/templates/wagtailimages/images/results.html:6
+#, python-format
+msgid ""
+"\n"
+"            There is one match\n"
+"        "
+msgid_plural ""
+"\n"
+"            There are %(counter)s matches\n"
+"        "
+msgstr[0] ""
+"\n"
+"            Es gibt einen Treffer\n"
+"        "
+msgstr[1] ""
+"\n"
+"            Es gibt %(counter)s Treffer\n"
+"        "
+
+#: cms/templates/wagtailimages/images/results.html:15
+msgid "Latest images"
+msgstr "Aktuellste Bilder"
+
+#: cms/templates/wagtailimages/images/results.html:33
+#, python-format
+msgid "Sorry, no images match \"<em>%(query_string)s</em>\""
+msgstr "Leider keine Bilder für \"<em>%(query_string)s</em>\" gefunden"
+
+#: cms/templates/wagtailimages/images/results.html:39
+#, python-format
+msgid ""
+"You haven't uploaded any images in this collection. Why not <a href="
+"\"%(wagtailimages_add_image_url)s\">upload one now</a>?"
+msgstr ""
+"Sie haben noch keine Bilder zu dieser Collection hochgeladen. Warum <a href="
+"\"%(wagtailimages_add_image_url)s\">nicht einfach jetzt</a>?"
+
+#: cms/templates/wagtailimages/images/results.html:41
+#, python-format
+msgid ""
+"You haven't uploaded any images. Why not <a href="
+"\"%(wagtailimages_add_image_url)s\">upload one now</a>?"
+msgstr ""
+"Sie haben keine Bilder hochgeladen. Warum <a href="
+"\"%(wagtailimages_add_image_url)s\">nicht jetzt</a>?"
