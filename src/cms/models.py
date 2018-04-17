@@ -804,34 +804,34 @@ class Level1Page(I18nPage, LevelMixin):
     TEXT_TYPES = ("biography", "works")
 
     biography = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     biography_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     biography_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
     works = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
     works_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
     works_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
@@ -886,51 +886,51 @@ class Level2Page(I18nPage, LevelMixin):
     TEXT_TYPES = ("biography", "works", "perception")
 
     biography = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     biography_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     biography_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at casual users."))
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
     works = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
     works_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
     works_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Works"),
         help_text=_("An introduction to the works of the author aimed at casual users."))
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
     perception = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Perception"),
         help_text=_("A continuative description of the perception of the author for interested user."))
     perception_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Perception"),
         help_text=_("A continuative description of the perception of the author for interested user."))
     perception_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Perception"),
         help_text=_("A continuative description of the perception of the author for interested user."))
@@ -989,51 +989,51 @@ class Level3Page(I18nPage, LevelMixin):
     TEXT_TYPES = ("primary_literature", "testimony", "secondary_literature")
 
     primary_literature = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
         help_text=_("Further presentation of primary literature of the author for academic user."))
     primary_literature_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
         help_text=_("Further presentation of primary literature of the author for academic user."))
     primary_literature_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
         help_text=_("Further presentation of primary literature of the author for academic user."))
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
     testimony = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
         help_text=_("TODO"))
     testimony_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
         help_text=_("TODO"))
     testimony_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
         help_text=_("TODO"))
     i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
 
     secondary_literature = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Secondary literature"),
         help_text=_("Further secondary literature about the author and his works aimed at academic users."))
     secondary_literature_de = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Secondary literature"),
         help_text=_("Further secondary literature about the author and his works aimed at academic users."))
     secondary_literature_cs = StreamField(
-        [(_("Paragraph"), ParagraphStructBlock())],
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Secondary literature"),
         help_text=_("Further secondary literature about the author and his works aimed at academic users."))
