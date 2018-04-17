@@ -57,7 +57,7 @@ services:
       - http.cors.allow-credentials=true
 
   django:
-    image: bentrm/lis:latest
+    image: registry.gitlab.com/bentrm/lis
     tty: true
     deploy:
       restart_policy:
