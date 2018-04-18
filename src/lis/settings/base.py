@@ -24,10 +24,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 # Security
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "www.lis-map.eu",
-]
+ALLOWED_HOSTS = os.environ.get("VIRTUAL_HOST", "localhost").split(",")
 
 # Application definition
 
