@@ -78,8 +78,8 @@ services:
       - static:/static
       - media:/media
     environment:
-      VIRTUAL_HOST: www.lis-map.eu
-      LETSENCRYPT_HOST: www.lis-map.eu
+      VIRTUAL_HOST: ***HOST***
+      LETSENCRYPT_HOST: ***HOST***
       LETSENCRYPT_EMAIL: ***EMAIL***
       MEDIA_ROOT: /media
       STATIC_ROOT: /static

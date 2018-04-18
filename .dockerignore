@@ -1,8 +1,16 @@
 .git
 .idea
+src/media
+src/static
 venv
 
 .DS_Store
+.dockerignore
+.editorconfig
 .gitignore
+docker-stack-dev.yml
+docker-stack.yml
 Dockerfile
-stack.yml
+requirements-dev.txt
+requirements.txt
+setup.cfg

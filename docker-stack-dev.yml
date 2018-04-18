@@ -65,6 +65,6 @@ services:
         target: /src
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
 
-volumes:
+volumes:  
   pgdata:
   esdata:
