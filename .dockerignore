@@ -12,5 +12,4 @@ docker-stack-dev.yml
 docker-stack.yml
 Dockerfile
 requirements-dev.txt
-requirements.txt
 setup.cfg
