@@ -413,7 +413,7 @@ class LiteraryPeriodsPage(CategoryPage):
 class LiteraryPeriodPage(I18nPage):
     """A page that describes a literary period."""
 
-    parent_page_types = ["LiteraryPeriodsPage", "LiteraryPeriodPage"]
+    parent_page_types = ["LiteraryPeriodsPage"]
 
     description = models.TextField(
         blank=True,
@@ -824,10 +824,18 @@ class AuthorLanguage(Orderable):
             db_table = "author_language"
 
 
-class LevelMixin(models.Model):
+class LevelPage(I18nPage):
     """A simple mixin that adds methods to list the models text types as an iterable."""
 
+    parent_page_types = ["AuthorPage"]
+
     TEXT_TYPES = ()
+
+    @classmethod
+    def can_create_at(cls, parent):
+        """Determine the valid location of the page in the page hierarchy."""
+        print("called")
+        return super(LevelPage, cls).can_create_at(parent) and not parent.get_children().exact_type(cls)
 
     def get_texts(self):
         """Return the text type fields of the page as an iterable."""
@@ -843,10 +851,8 @@ class LevelMixin(models.Model):
         abstract = True
 
 
-class Level1Page(I18nPage, LevelMixin):
+class Level1Page(LevelPage):
     """The 'Discover' page of the LIS domain."""
-
-    parent_page_types = ["AuthorPage"]
 
     TEXT_TYPES = ("biography", "works")
 
@@ -902,11 +908,6 @@ class Level1Page(I18nPage, LevelMixin):
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
 
-    @classmethod
-    def can_create_at(cls, parent):
-        """Determine the valid location of the page in the page hierarchy."""
-        return super(Level1Page, cls).can_create_at(parent) and not cls.objects.exists()
-
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Discover"
         self._meta.get_field('title_de').default = "Entdecken"
@@ -925,10 +926,8 @@ class Level1Page(I18nPage, LevelMixin):
         verbose_name = _("I. Discover page")
 
 
-class Level2Page(I18nPage, LevelMixin):
+class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
-
-    parent_page_types = ["AuthorPage"]
 
     TEXT_TYPES = ("biography", "works", "perception")
 
@@ -1005,11 +1004,6 @@ class Level2Page(I18nPage, LevelMixin):
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
 
-    @classmethod
-    def can_create_at(cls, parent):
-        """Determine the valid location of the page in the page hierarchy."""
-        return super(Level2Page, cls).can_create_at(parent) and not cls.objects.exists()
-
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Deepen"
         self._meta.get_field('title_de').default = "Vertiefen"
@@ -1028,10 +1022,8 @@ class Level2Page(I18nPage, LevelMixin):
         verbose_name = _("II. Deepen page")
 
 
-class Level3Page(I18nPage, LevelMixin):
+class Level3Page(LevelPage):
     """The 'Research' page of the LIS domain."""
-
-    parent_page_types = ["AuthorPage"]
 
     TEXT_TYPES = ("primary_literature", "testimony", "secondary_literature")
 
@@ -1109,11 +1101,6 @@ class Level3Page(I18nPage, LevelMixin):
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
-
-    @classmethod
-    def can_create_at(cls, parent):
-        """Determine the valid location of the page in the page hierarchy."""
-        return super(Level3Page, cls).can_create_at(parent) and not cls.objects.exists()
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Research"
