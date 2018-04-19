@@ -1,4 +1,6 @@
 .idea/
 venv/
 src/media/
+src/static/
 *.sqlite3
+*.db
