@@ -450,6 +450,27 @@ class LiteraryPeriodPage(I18nPage):
     ])
 
 
+class LanguagesPage(CategoryPage):
+    """A category page to place languages pages in spoken by the authors."""
+
+    parent_page_types = ["HomePage"]
+
+    class Meta:
+        verbose_name = _("Languages")
+        db_table = "languages"
+
+
+class LanguagePage(I18nPage):
+    """A page that describes a contact type."""
+
+    parent_page_types = ["LanguagesPage"]
+
+    class Meta:
+        verbose_name = _("Language")
+        verbose_name_plural = _("Languages")
+        db_table = "language"
+
+
 class AuthorsPage(CategoryPage):
     """A category page to place author pages in."""
 
@@ -571,6 +592,13 @@ class AuthorPage(I18nPage):
                 FieldPanel("date_of_death_year")
             ],
             heading=_("Date of death")
+        ),
+        InlinePanel(
+            "languages",
+            label=_("Languages"),
+            min_num=0,
+            help_text=_("The languages that the author has been active in."),
+            panels=[PageChooserPanel("language", "cms.LanguagePage")]
         ),
         InlinePanel(
             "literary_periods",
@@ -776,6 +804,25 @@ class AuthorLiteraryCategory(Orderable):
     class Meta:
         db_table = "author_literary_category"
 
+class AuthorLanguage(Orderable):
+    """Join relation that creates a connection between an author and the languages he has been active in."""
+
+    author = ParentalKey("AuthorPage", related_name="languages")
+    language = models.ForeignKey(
+        "LanguagePage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="authors",
+        verbose_name=_("Language"),
+        help_text=_("Language that the author has been active in."))
+
+    def __str__(self):
+        return str(self.language)
+
+        class Meta:
+            db_table = "author_language"
+
 
 class LevelMixin(models.Model):
     """A simple mixin that adds methods to list the models text types as an iterable."""
@@ -783,11 +830,11 @@ class LevelMixin(models.Model):
     TEXT_TYPES = ()
 
     def get_texts(self):
+        """Return the text type fields of the page as an iterable."""
         texts = []
         for text_type in self.TEXT_TYPES:
             attr = "i18n_" + text_type
             prop = getattr(self, attr, None)
-            print(prop)
             if prop:
                 texts.append((_(text_type.capitalize()), prop))
         return texts

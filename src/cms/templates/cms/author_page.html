@@ -12,6 +12,8 @@
     <p>{% trans 'Date of birth' %}: {{page.date_of_birth_day}}.{{page.date_of_birth_month}}.{{page.date_of_birth_year}}</p>
     <p>{% trans 'Date of death' %}: {{page.date_of_death_day}}.{{page.date_of_death_month}}.{{page.date_of_death_year}}</p>
 
+    <p>{% trans 'Languages' %}: {% for cat in page.languages.all %}{{cat}} {% endfor %}</p>
+    <p>{% trans 'Categories' %}: {% for cat in page.literary_categories.all %}{{cat}} {% endfor %}</p>
     <p>{% trans 'Categories' %}: {% for cat in page.literary_categories.all %}{{cat}} {% endfor %}</p>
     <p>{% trans 'Periods' %}: {% for per in page.literary_periods.all %}{{per}} {% endfor %}</p>
   </div>
