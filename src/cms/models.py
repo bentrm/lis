@@ -104,21 +104,18 @@ class Media(models.Model):
     )
     i18n_alt_title = TranslatedField("alt_title", "alt_title_de", "alt_title_cs")
 
-    caption = models.CharField(
-        max_length=1024,
-        null=True, blank=True,
+    caption = RichTextField(
+        blank=True,
         verbose_name=_("Media caption"),
         help_text=_("A caption that may be presented in the context of the media item.")
     )
-    caption_de = models.CharField(
-        max_length=1024,
-        null=True, blank=True,
+    caption_de = RichTextField(
+        blank=True,
         verbose_name=_("Media caption (de)"),
         help_text=_("The media caption in german translations.")
     )
-    caption_cs = models.CharField(
-        max_length=1024,
-        null=True, blank=True,
+    caption_cs = RichTextField(
+        blank=True,
         verbose_name=_("Media caption (cz)"),
         help_text=_("The media caption in czech translations.")
     )
