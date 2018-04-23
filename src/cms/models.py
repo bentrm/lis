@@ -44,9 +44,9 @@ def validate_date(year=None, month=None, day=None):
         datetime.datetime(year, month, day)
     elif month and day:
         if month == 2 and day > 29:
-            raise ValueError(_("February can't have more than 29 days."))
+            raise ValueError(_("February cannot have more than 29 days."))
         elif not month % 2 and day > 30:
-            raise ValueError(_("Day is out of range for month."))
+            raise ValueError(_("Day is out of range for the indicated month."))
 
 
 class TranslatedField(object):
@@ -73,14 +73,12 @@ class Media(models.Model):
     title_de = models.CharField(
         max_length=255,
         null=True, blank=True,
-        verbose_name=_("Title (de)"),
-        help_text=_("Title as it will be used in german translations.")
+        verbose_name=_("German title")
     )
     title_cs = models.CharField(
         max_length=255,
         null=True, blank=True,
-        verbose_name=_("Title (cz)"),
-        help_text=_("Title as it will be used in czech translations.")
+        verbose_name=_("Czech title")
     )
     i18n_title = TranslatedField("title", "title_de", "title_cs")
 
@@ -88,39 +86,37 @@ class Media(models.Model):
         max_length=1024,
         null=True, blank=True,
         verbose_name=_("Alternative title"),
-        help_text=_("Title that will be presented in mouse over tooltips and to screen readers.")
+        help_text=_("Title that may be shown in tooltips and is used by screen readers.")
     )
     alt_title_de = models.CharField(
         max_length=1024,
         null=True, blank=True,
-        verbose_name=_("Alternative title (de)"),
-        help_text=_("Alternative title in german translations.")
+        verbose_name=_("German alternative title")
     )
     alt_title_cs = models.CharField(
         max_length=1024,
         null=True, blank=True,
-        verbose_name=_("Alternative title (cz)"),
-        help_text=_("Alternative title in czech translations.")
+        verbose_name=_("Czech alternative title")
     )
     i18n_alt_title = TranslatedField("alt_title", "alt_title_de", "alt_title_cs")
 
     caption = models.CharField(
         max_length=1024,
         null=True, blank=True,
-        verbose_name=_("Media caption"),
-        help_text=_("A caption that may be presented in the context of the media item.")
+        verbose_name=_("Caption"),
+        help_text=_("A caption that may be presented with the file.")
     )
     caption_de = models.CharField(
         max_length=1024,
         null=True, blank=True,
-        verbose_name=_("Media caption (de)"),
-        help_text=_("The media caption in german translations.")
+        verbose_name=_("German caption"),
+        help_text=_("Caption in German translations.")
     )
     caption_cs = models.CharField(
         max_length=1024,
         null=True, blank=True,
-        verbose_name=_("Media caption (cz)"),
-        help_text=_("The media caption in czech translations.")
+        verbose_name=_("Czech caption"),
+        help_text=_("Caption in Czech translations.")
     )
     i18n_caption = TranslatedField("caption", "caption_de", "caption_cs")
 
@@ -221,12 +217,12 @@ class I18nPage(Page):
         max_length=255,
         blank=True,
         verbose_name=_("Title"),
-        help_text=_("The page title as you'd like it to be seen by the public"))
+        help_text=_("German title of the page."))
     title_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Title"),
-        help_text=_("The page title as you'd like it to be seen by the public"))
+        help_text=_("Czech title of the page."))
     i18n_title = TranslatedField("title", "title_de", "title_cs")
 
     draft_title_de = models.CharField(
@@ -234,13 +230,13 @@ class I18nPage(Page):
         blank=True,
         editable=False,
         verbose_name=_("Draft title"),
-        help_text=_("The page title as given in the latest draft."))
+        help_text=_("German title of the page as given in the latest draft."))
     draft_title_cs = models.CharField(
         max_length=255,
         blank=True,
         editable=False,
         verbose_name=_("Draft title"),
-        help_text=_("The page title as given in the latest draft."))
+        help_text=_("Czech page title as given in the latest draft."))
     i18n_draft_title = TranslatedField("draft_title", "draft_title_de", "draft_title_cs")
 
     editor = models.CharField(
@@ -263,7 +259,7 @@ class I18nPage(Page):
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading=_("Content")),
-        ObjectList(meta_panels, heading=_("Meta"))])
+        ObjectList(meta_panels, heading=_("Meta information"))])
 
     is_creatable = False
 
@@ -359,12 +355,12 @@ class HomePage(CategoryPage):
 
 
 class LiteraryCategoriesPage(CategoryPage):
-    """A category page to place literary categories in."""
+    """A category page to place literary genres in."""
 
     parent_page_types = ["HomePage"]
 
     class Meta:
-        verbose_name = _("Literary categories")
+        verbose_name = _("Literary genre")
         db_table = "literary_categories"
 
 
@@ -374,29 +370,29 @@ class LiteraryCategoryPage(I18nPage):
     parent_page_types = ["LiteraryCategoriesPage"]
 
     class Meta:
-        verbose_name = _("Literary category")
-        verbose_name_plural = _("Literary categories")
+        verbose_name = _("Literary genre")
+        verbose_name_plural = _("Literary genres")
         db_table = "literary_category"
 
 
 class ContactTypesPage(CategoryPage):
-    """A category page to place contact types in."""
+    """A category page to place types of contact in."""
 
     parent_page_types = ["HomePage"]
 
     class Meta:
-        verbose_name = _("Contact types")
+        verbose_name = _("Types of contact")
         db_table = "contact_types"
 
 
 class ContactTypePage(I18nPage):
-    """A page that describes a contact type."""
+    """A page that describes a type of contact."""
 
     parent_page_types = ["ContactTypesPage"]
 
     class Meta:
         verbose_name = _("Contact type")
-        verbose_name_plural = _("Contact types")
+        verbose_name_plural = _("Types of contact")
         db_table = "contact_type"
 
 
@@ -418,15 +414,15 @@ class LiteraryPeriodPage(I18nPage):
     description = models.TextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significants."))
+        help_text=_("A general description of the literary period and its significance."))
     description_de = models.TextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significants."))
+        help_text=_("A general description of the literary period and its significance."))
     description_cs = models.TextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significants."))
+        help_text=_("A general description of the literary period and its significance."))
     i18n_description = TranslatedField("description", "description_de", "description_cs")
 
     content_panels = [
@@ -443,9 +439,9 @@ class LiteraryPeriodPage(I18nPage):
     ]
 
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("Content (EN)"), classname="i18n en"),
-        ObjectList(content_panels_de, heading=_("Content (DE)"), classname="i18n de"),
-        ObjectList(content_panels_cs, heading=_("Content (CZ)"), classname="i18n cz"),
+        ObjectList(content_panels, heading=_("Content"), classname="i18n en"),
+        ObjectList(content_panels_de, heading=_("German content"), classname="i18n de"),
+        ObjectList(content_panels_cs, heading=_("Czech content"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta")),
     ])
 
@@ -519,23 +515,23 @@ class AuthorPage(I18nPage):
         null=True, blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(31)],
         verbose_name=_("Day of birth"),
-        help_text=_("The day that the author is born in."))
+        help_text=_("The day that the author is born on."))
     date_of_death_year = models.PositiveSmallIntegerField(
         null=True, blank=True,
         validators=[MinValueValidator(0), MaxValueValidator(9999)],
         verbose_name=_("Year of death"),
-        help_text=_("The year that the author has died in."))
+        help_text=_("The year that the author died in."))
     date_of_death_month = models.PositiveSmallIntegerField(
         choices=dates.MONTHS.items(),
         null=True, blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
         verbose_name=_("Month of death"),
-        help_text=_("The month that the author has died in."))
+        help_text=_("The month that the author died in."))
     date_of_death_day = models.PositiveSmallIntegerField(
         null=True, blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(31)],
         verbose_name=_("Day of death"),
-        help_text=_("The day that the author has died at."))
+        help_text=_("The day that the author died at."))
 
     content_panels = [
         ImageChooserPanel("title_image"),
@@ -609,9 +605,9 @@ class AuthorPage(I18nPage):
         ),
         InlinePanel(
             "literary_categories",
-            label=_("Literary categories"),
+            label=_("Literary genres"),
             min_num=0,
-            help_text=_("The literary categories the author is associated with."),
+            help_text=_("The literary genres the author is associated with."),
             panels=[PageChooserPanel("literary_category", "cms.LiteraryCategoryPage")]
         )
     ]
@@ -675,17 +671,17 @@ class AuthorPageName(Orderable):
         max_length=255,
         blank=True,
         verbose_name=_("Title"),
-        help_text=_("The academic title of the author if any."))
+        help_text=_("Academic title of the author if any."))
     title_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Title"),
-        help_text=_("The academic title of the author in german language."))
+        help_text=_("Academic title of the author in German."))
     title_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Title"),
-        help_text=_("The academic title of the author in czech language."))
+        help_text=_("Academic title of the author in Czech."))
     i18n_title = TranslatedField("title", "title_de", "title_cs")
 
     first_name = models.CharField(
@@ -696,12 +692,12 @@ class AuthorPageName(Orderable):
         max_length=255,
         blank=True,
         verbose_name=_("First name"),
-        help_text=_("The first name in german language if different from international spelling."))
+        help_text=_("The first name in German if different from international spelling."))
     first_name_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("First name"),
-        help_text=_("The first name in czech language if different from international spelling."))
+        help_text=_("The first name in Czech if different from international spelling."))
     i18n_first_name = TranslatedField("first_name", "first_name_de", "first_name_cs")
 
     last_name = models.CharField(
@@ -711,12 +707,12 @@ class AuthorPageName(Orderable):
         max_length=255,
         blank=True,
         verbose_name=_("Last name"),
-        help_text=_("The last name in german language if different from international spelling."))
+        help_text=_("The last name in German if different from international spelling."))
     last_name_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Last name"),
-        help_text=_("The first name in czech language if different from international spelling."))
+        help_text=_("The first name in Czech if different from international spelling."))
     i18n_last_name = TranslatedField("last_name", "last_name_de", "last_name_cs")
 
     birth_name = models.CharField(
@@ -742,7 +738,7 @@ class AuthorPageName(Orderable):
         """Check wether any valid name has been set."""
         super(AuthorPageName, self).clean()
         if not self.first_name and not self.last_name:
-            raise ValidationError(_("Name entries must at least define a first name or a last name."))
+            raise ValidationError(_("Name entries must at least contain a first name or a last name."))
 
     def full_name(self):
         """Return the full name of the author in english language."""
@@ -776,7 +772,7 @@ class AuthorLiteraryPeriod(Orderable):
         on_delete=models.SET_NULL,
         related_name="authors",
         verbose_name=_("Literary period"),
-        help_text=_("Literary period that the author has been active in."))
+        help_text=_("Literary period that the author is associated with."))
 
     def __str__(self):
         return str(self.literary_period)
@@ -786,7 +782,7 @@ class AuthorLiteraryPeriod(Orderable):
 
 
 class AuthorLiteraryCategory(Orderable):
-    """Join relation that creates a connection between an author and the literary category he has been involved in."""
+    """Join relation that creates a connection between an author and the literary genre he has been involved in."""
 
     author = ParentalKey("AuthorPage", related_name="literary_categories")
     literary_category = models.ForeignKey(
@@ -795,8 +791,8 @@ class AuthorLiteraryCategory(Orderable):
         blank=False,
         on_delete=models.SET_NULL,
         related_name="authors",
-        verbose_name=_("Literary category"),
-        help_text=_("Literary category that the author has been active in."))
+        verbose_name=_("Literary genre"),
+        help_text=_("Literary genre that the author is associated with."))
 
     def __str__(self):
         return str(self.literary_category)
@@ -804,8 +800,9 @@ class AuthorLiteraryCategory(Orderable):
     class Meta:
         db_table = "author_literary_category"
 
+
 class AuthorLanguage(Orderable):
-    """Join relation that creates a connection between an author and the languages he has been active in."""
+    """Join relation that creates a connection between an author and the languages he is associated with."""
 
     author = ParentalKey("AuthorPage", related_name="languages")
     language = models.ForeignKey(
@@ -860,34 +857,34 @@ class Level1Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
     works = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     works_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     works_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
     default_panels = [
@@ -923,7 +920,7 @@ class Level1Page(LevelPage):
 
     class Meta:
         db_table = "level_1"
-        verbose_name = _("I. Discover page")
+        verbose_name = _("I. Discovery")
 
 
 class Level2Page(LevelPage):
@@ -935,51 +932,51 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at casual users."))
+        help_text=_("An introductory biography of the author aimed at laymen."))
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
     works = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     works_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     works_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Works"),
-        help_text=_("An introduction to the works of the author aimed at casual users."))
+        verbose_name=_("Literary works"),
+        help_text=_("An introduction to the works of the author aimed at laymen."))
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
     perception = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Perception"),
-        help_text=_("A continuative description of the perception of the author for interested user."))
+        verbose_name=_("Reception"),
+        help_text=_("A more in-depth description for interested users on how the author has been received."))
     perception_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Perception"),
-        help_text=_("A continuative description of the perception of the author for interested user."))
+        verbose_name=_("Reception"),
+        help_text=_("A more in-depth description for interested users on how the author has been received."))
     perception_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Perception"),
-        help_text=_("A continuative description of the perception of the author for interested user."))
+        verbose_name=_("Reception"),
+        help_text=_("A more in-depth description for interested users on how the author has been received."))
     i18n_perception = TranslatedField("perception", "perception_de", "perception_cs")
 
     default_panels = [
@@ -1019,7 +1016,7 @@ class Level2Page(LevelPage):
 
     class Meta:
         db_table = "level_2"
-        verbose_name = _("II. Deepen page")
+        verbose_name = _("II. Delving deeper")
 
 
 class Level3Page(LevelPage):
@@ -1031,17 +1028,17 @@ class Level3Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
-        help_text=_("Further presentation of primary literature of the author for academic user."))
+        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
     primary_literature_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
-        help_text=_("Further presentation of primary literature of the author for academic user."))
+        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
     primary_literature_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Primary literature"),
-        help_text=_("Further presentation of primary literature of the author for academic user."))
+        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
     testimony = StreamField(
@@ -1117,16 +1114,16 @@ class Level3Page(LevelPage):
 
     class Meta:
         db_table = "level_3"
-        verbose_name = _("III. Research page")
+        verbose_name = _("III. Research literature")
 
 
 class LocationTypesPage(CategoryPage):
-    """A category page to place location types in."""
+    """A category page to place types of location in."""
 
     parent_page_types = ["HomePage"]
 
     class Meta:
-        verbose_name = _("Location types")
+        verbose_name = _("Types of locations")
         db_table = "location_types"
 
 
@@ -1136,8 +1133,8 @@ class LocationTypePage(I18nPage):
     parent_page_types = ["LocationTypesPage"]
 
     class Meta:
-        verbose_name = _("Location type")
-        verbose_name_plural = _("Location types")
+        verbose_name = _("Type of location")
+        verbose_name_plural = _("Types of locations")
         db_table = "location_type"
 
 
@@ -1170,7 +1167,7 @@ class LocationPage(I18nPage):
         blank=False,
         on_delete=models.SET_NULL,
         related_name="locations",
-        verbose_name=_("Location type)"))
+        verbose_name=_("Type of location"))
 
     description = models.TextField(
         blank=True,
@@ -1202,20 +1199,20 @@ class LocationPage(I18nPage):
 
     directions = models.TextField(
         blank=True,
-        verbose_name=_("Direction"),
-        help_text=_("A short informative description of directions to find the location."))
+        verbose_name=_("How to get there"),
+        help_text=_("A short description of directions to find the location."))
     directions_de = models.TextField(
         blank=True,
-        verbose_name=_("Direction"),
-        help_text=_("A short informative description of directions to find the location."))
+        verbose_name=_("How to get there"),
+        help_text=_("A short description of directions to find the location."))
     directions_cs = models.TextField(
         blank=True,
-        verbose_name=_("Direction"),
-        help_text=_("A short informative description of directions to find the location."))
+        verbose_name=_("How to get there"),
+        help_text=_("A short description of directions to find the location."))
     i18n_directions = TranslatedField("directions", "directions_de", "directions_cs")
 
     coordinates = PointField(
-        verbose_name=_("Coordinates"),
+        verbose_name=_("Location coordinates"),
         help_text=_("The actual geographic location."))
 
     search_fields = I18nPage.search_fields + [
@@ -1233,7 +1230,7 @@ class LocationPage(I18nPage):
         PageChooserPanel("location_type", "cms.LocationTypePage"),
         InlinePanel(
             "contacts",
-            label=_("Contacts"),
+            label=_("Contact information"),
             min_num=0,
             panels=[
                 PageChooserPanel("contact_type", "cms.ContactTypePage"),
@@ -1295,12 +1292,12 @@ class LocationPageContact(Orderable):
     name_de = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Name (de)")
+        verbose_name=_("German name")
     )
     name_cs = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Name (cs)")
+        verbose_name=_("Czech name")
     )
     i18n_name = TranslatedField("name", "name_de", "name_cs")
 
@@ -1321,29 +1318,29 @@ class MemorialSitePage(I18nPage):
     description = RichTextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A description of the memorial site and its significance to the referenced authors."))
     description_de = RichTextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A description of the memorial site and its significance to the referenced authors."))
     description_cs = RichTextField(
         blank=True,
         verbose_name=_("Description"),
-        help_text=_("A description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A description of the memorial site and its significance to the referenced authors."))
     i18n_description = TranslatedField("description", "description_de", "description_cs")
 
     detailed_description = RichTextField(
         blank=True,
         verbose_name=_("Detailed description"),
-        help_text=_("A detailed description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     detailed_description_de = RichTextField(
         blank=True,
         verbose_name=_("Detailed description"),
-        help_text=_("A detailed description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     detailed_description_cs = RichTextField(
         blank=True,
         verbose_name=_("Detailed description"),
-        help_text=_("A detailed description of the memorial site and its significants to the referenced authors."))
+        help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     i18n_detailed_description = TranslatedField(
         "detailed_description",
         "detailed_description_de",

@@ -23,7 +23,8 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("Content of the text block."))
     footnotes = blocks.ListBlock(
         blocks.RichTextBlock(features=["bold", "italic", "strikethrough", "link"]),
-        help_text=_("Citations and comments. The item number can be linked in the content, i.e. '[1]'.")
+        help_text=_("Citations, comments and references. The entry can be linked in the content box of the paragraph "
+                    "by its respective identifier, i.e. '[1]'.")
     )
     editor = blocks.CharBlock(
         required=True,
