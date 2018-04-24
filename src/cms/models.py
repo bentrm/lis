@@ -213,6 +213,15 @@ class DocumentMedia(Media, AbstractDocument):
 class I18nPage(Page):
     """An abstract base page class that supports translated content."""
 
+    ORIGINAL_LANGUAGE_ENGLISH = "en"
+    ORIGINAL_LANGUAGE_GERMAN = "de"
+    ORIGINAL_LANGUAGE_CZECH = "cs"
+    ORIGINAL_LANGUAGE = (
+        (ORIGINAL_LANGUAGE_ENGLISH, _("English")),
+        (ORIGINAL_LANGUAGE_GERMAN, _("German")),
+        (ORIGINAL_LANGUAGE_CZECH, _("Czech")),
+    )
+
     title_de = models.CharField(
         max_length=255,
         blank=True,
@@ -243,6 +252,12 @@ class I18nPage(Page):
         max_length=2048,
         verbose_name=_("Editor"),
         help_text=_("Name or initials of the author of this content page."))
+    original_language = models.CharField(
+        max_length=3,
+        choices=ORIGINAL_LANGUAGE,
+        default=ORIGINAL_LANGUAGE_GERMAN,
+        verbose_name=_("Original language"),
+        help_text=_("The language this content has been originally written in."))
 
     search_fields = Page.search_fields + [
         index.SearchField('title_de', partial_match=True, boost=2),
@@ -255,7 +270,8 @@ class I18nPage(Page):
 
     meta_panels = [
         FieldPanel("owner"),
-        FieldPanel("editor")]
+        FieldPanel("editor"),
+        FieldPanel("original_language")]
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading=_("Content")),
@@ -442,7 +458,7 @@ class LiteraryPeriodPage(I18nPage):
         ObjectList(content_panels, heading=_("Content"), classname="i18n en"),
         ObjectList(content_panels_de, heading=_("German content"), classname="i18n de"),
         ObjectList(content_panels_cs, heading=_("Czech content"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
     ])
 
 
@@ -630,7 +646,7 @@ class AuthorPage(I18nPage):
 
     edit_handler = TabbedInterface([
         ObjectList(content_panels, heading=_("General")),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field("slug").default = BLANK_TEXT
@@ -863,6 +879,7 @@ class Level1Page(LevelPage):
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
+        default=[],
         verbose_name=_("Biography"),
         help_text=_("An introductory biography of the author aimed at laymen."))
     biography_de = StreamField(
@@ -910,7 +927,7 @@ class Level1Page(LevelPage):
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Discover"
@@ -1006,7 +1023,7 @@ class Level2Page(LevelPage):
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Deepen"
@@ -1104,7 +1121,7 @@ class Level3Page(LevelPage):
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta"))])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('title').default = "Research"
@@ -1268,7 +1285,7 @@ class LocationPage(I18nPage):
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German"), classname="i18n en"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n de"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
     ])
 
     def __str__(self):
@@ -1382,7 +1399,7 @@ class MemorialSitePage(I18nPage):
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German")),
         ObjectList(czech_panels, heading=_("Czech")),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta")),
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
     ])
 
     def full_clean(self, *args, **kwargs):

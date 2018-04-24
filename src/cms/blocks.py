@@ -12,13 +12,16 @@ class FootnoteStructBlock(blocks.StructBlock):
     """A structured block to model a linkable footnote."""
 
     tag = blocks.CharBlock(
-        required=True,
+        required=False,
         label=_("Linkable tag"),
         help_text=_("A tag that allows to link the footnote with the paragraphs text content in the form '[tag]'."))
     footnote = blocks.RichTextBlock(
         features=RICH_TEXT_FEATURES_FOOTNOTE,
         label=_("Footnote"),
         help_text=_("Citations, comments and references."))
+
+    class Meta:
+        form_classname = "footnote-struct-block struct-block"
 
 
 class ParagraphStructBlock(blocks.StructBlock):
@@ -30,6 +33,7 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("An optional heading to structure comprehensive text content."))
     images = blocks.ListBlock(
         ImageChooserBlock(),
+        default=[],
         label=_("Images"),
         help_text=_("Images that will be displayed alongside the text content of the paragraph."))
     content = blocks.RichTextBlock(
@@ -39,6 +43,7 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("The actual text content of this paragraph."))
     footnotes = blocks.ListBlock(
         FootnoteStructBlock(),
+        default=[],
         label=_("Footnotes"),
         help_text=_("Optional footnotes to the text content."))
     editor = blocks.CharBlock(
@@ -47,4 +52,5 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("Author or translator of the content."))
 
     class Meta:
+        form_classname = "paragraph-struct-block struct-block"
         template = "cms/blocks/paragraph_struct_block.html"

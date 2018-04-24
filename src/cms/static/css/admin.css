@@ -1,3 +1,8 @@
+.Draftail-Editor .Draftail-Toolbar {
+  background-color: #e6e6e6;
+  color: #333;
+}
+
 .object .multiple fieldset {
   width: 100%;
 }
@@ -10,4 +15,11 @@
   position: relative;
   text-transform: none;
   width: auto;
+}
+
+li.sequence-member .footnote-struct-block.struct-block > ul.fields {
+  border: 1px solid #e6e6e6;
+  margin: auto;
+  padding: 1em;
+  width: 90%;
 }
