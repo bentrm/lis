@@ -216,12 +216,12 @@ class I18nPage(Page):
     title_de = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Title"),
+        verbose_name=_("German title"),
         help_text=_("German title of the page."))
     title_cs = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Title"),
+        verbose_name=_("Czech title"),
         help_text=_("Czech title of the page."))
     i18n_title = TranslatedField("title", "title_de", "title_cs")
 
@@ -499,7 +499,11 @@ class AuthorPage(I18nPage):
         related_name='+',
         verbose_name=_("Title image"),
         help_text=_("A meaningful image that will be used to present the author to the user."))
-    sex = models.CharField(max_length=1, choices=SEX_CHOICES, default=SEX_UNKNOWN)
+    sex = models.CharField(
+        max_length=1,
+        choices=SEX_CHOICES,
+        default=SEX_UNKNOWN,
+        verbose_name=_("Sex"))
     date_of_birth_year = models.PositiveSmallIntegerField(
         null=True, blank=True,
         validators=[MinValueValidator(0), MaxValueValidator(9999)],
@@ -732,7 +736,10 @@ class AuthorPageName(Orderable):
         help_text=_("Birth name of the author if different from international spelling."))
     i18n_birth_name = TranslatedField("birth_name", "birth_name_de", "birth_name_cs")
 
-    is_pseudonym = models.BooleanField(default=False)
+    is_pseudonym = models.BooleanField(
+        default=False,
+        verbose_name=_("Is pseudonym"),
+        help_text=_("This name has been used as a pseudonym by the author."))
 
     def clean(self):
         """Check wether any valid name has been set."""
@@ -1287,7 +1294,7 @@ class LocationPageContact(Orderable):
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_("Name (en)")
+        verbose_name=_("Name")
     )
     name_de = models.CharField(
         max_length=255,
