@@ -4,33 +4,43 @@ from django.utils.translation import ugettext as _
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
+RICH_TEXT_FEATURES_FOOTNOTE = ["bold", "italic", "strikethrough", "link"]
+RICH_TEXT_FEATURES_CONTENT = ["bold", "italic", "strikethrough", "sup", "ol", "ul", "hr", "link", "blockquote"]
+
+
+class FootnoteStructBlock(blocks.StructBlock):
+    """A structured block to model a linkable footnote."""
+
+    tag = blocks.CharBlock(
+        required=True,
+        label=_("Linkable tag"),
+        help_text=_("A tag that allows to link the footnote with the paragraphs text content in the form '[tag]'."))
+    footnote = blocks.RichTextBlock(
+        features=RICH_TEXT_FEATURES_FOOTNOTE,
+        label=_("Footnote"),
+        help_text=_("Citations, comments and references."))
+
 
 class ParagraphStructBlock(blocks.StructBlock):
+    """A structured block of content mapping the 'HeadingWithContent' domain model entity to a Wagtail entity."""
+
+    heading = blocks.CharBlock(
+        required=False,
+        label=_("Optional heading"),
+        help_text=_("An optional heading to structure comprehensive text content."))
     images = blocks.ListBlock(
         ImageChooserBlock(),
         label=_("Images"),
         help_text=_("Images that will be displayed alongside the text content of the paragraph."))
     content = blocks.RichTextBlock(
         required=True,
-        features=[
-            "bold",
-            "italic",
-            "strikethrough",
-            "sup",
-            "ol",
-            "ul",
-            "hr",
-            "link",
-            "blockquote"
-        ],
+        features=RICH_TEXT_FEATURES_CONTENT,
         label=_("Content"),
         help_text=_("The actual text content of this paragraph."))
     footnotes = blocks.ListBlock(
-        blocks.RichTextBlock(features=["bold", "italic", "strikethrough", "link"]),
+        FootnoteStructBlock(),
         label=_("Footnotes"),
-        help_text=_("Citations, comments and references. The entry can be linked in the content box of the paragraph "
-                    "by its respective identifier, i.e. '[1]'.")
-    )
+        help_text=_("Optional footnotes to the text content."))
     editor = blocks.CharBlock(
         required=True,
         label=_("Editor"),
