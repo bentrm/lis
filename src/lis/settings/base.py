@@ -150,7 +150,7 @@ LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
 WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "wagtail.search.backends.elasticsearch5",
-        "URLS": ["http://elasticsearch:9200"],
+        "URLS": ["elasticsearch"],
     }
 }
 

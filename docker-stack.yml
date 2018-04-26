@@ -17,8 +17,6 @@ services:
           memory: 512M
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     networks:
       - lis
     environment:
@@ -40,9 +38,6 @@ services:
         limits:
           cpus: '1.0'
           memory: 512M
-    ports:
-      - 9200:9200
-      - 9300:9300
     networks:
       - lis
     volumes:
@@ -68,9 +63,7 @@ services:
       resources:
         limits:
           cpus: '1.0'
-          memory: 512M
-    ports:
-      - 8000:8000
+          memory: 512M    
     networks:
       - lis
       - proxy
