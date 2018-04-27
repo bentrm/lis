@@ -950,7 +950,7 @@ class Level1Page(LevelPage):
 class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
 
-    TEXT_TYPES = ("biography", "works", "perception")
+    TEXT_TYPES = ("biography", "works", "reception")
 
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
@@ -986,38 +986,38 @@ class Level2Page(LevelPage):
         help_text=_("An introduction to the works of the author aimed at laymen."))
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
-    perception = StreamField(
+    reception = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Reception"),
         help_text=_("A more in-depth description for interested users on how the author has been received."))
-    perception_de = StreamField(
+    reception_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Reception"),
         help_text=_("A more in-depth description for interested users on how the author has been received."))
-    perception_cs = StreamField(
+    reception_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Reception"),
         help_text=_("A more in-depth description for interested users on how the author has been received."))
-    i18n_perception = TranslatedField("perception", "perception_de", "perception_cs")
+    i18n_reception = TranslatedField("reception", "reception_de", "reception_cs")
 
     default_panels = [
         FieldPanel("title", classname="full title"),
         StreamFieldPanel("biography"),
         StreamFieldPanel("works"),
-        StreamFieldPanel("perception")]
+        StreamFieldPanel("reception")]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
         StreamFieldPanel("biography_de"),
         StreamFieldPanel("works_de"),
-        StreamFieldPanel("perception_de")]
+        StreamFieldPanel("reception_de")]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
         StreamFieldPanel("biography_cs"),
         StreamFieldPanel("works_cs"),
-        StreamFieldPanel("perception_cs")]
+        StreamFieldPanel("reception_cs")]
 
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
