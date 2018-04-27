@@ -15,14 +15,29 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+def env(NAME, default=""):
+    """Return env variable or default."""
+    return os.environ.get(NAME, default)
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+# Build paths inside the project like this: os.path.join(SRC_DIR, ...)
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.dirname(PROJECT_DIR)
+BASE_DIR = os.path.dirname(SRC_DIR)
 
-# Security
+
+ADMINS = [
+    ("***Name***", "***Email***"),
+]
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env("DEBUG", True)
+DEBUG = DEBUG in ("True", "true", "t", "1", True)
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '***SECRET***'
 
 ALLOWED_HOSTS = os.environ.get("VIRTUAL_HOST", "localhost").split(",")
 
@@ -73,7 +88,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(PROJECT_DIR, "templates"),
+            os.path.join(SRC_DIR, "templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -118,25 +133,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
-
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATICFILES_DIRS = [
-    os.path.join(PROJECT_DIR, "static"),
+    os.path.join(SRC_DIR, "static"),
 ]
+STATIC_ROOT = env("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+STATIC_URL = env("STATIC_URL", "/static/")
 
-STATIC_ROOT = os.environ.get("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
-STATIC_URL = "/static/"
-
-MEDIA_ROOT = os.environ.get("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
-MEDIA_URL = "/media/"
-
+MEDIA_ROOT = env("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+MEDIA_URL = env("MEDIA_URL", "/media/")
 
 # Wagtail settings
 WAGTAIL_SITE_NAME = "lis"
@@ -150,7 +156,7 @@ LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
 WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "wagtail.search.backends.elasticsearch5",
-        "URLS": ["elasticsearch"],
+        "URLS": ["http://elasticsearch:9200"],
     }
 }
 
