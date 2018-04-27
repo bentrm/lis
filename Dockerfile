@@ -37,7 +37,4 @@ ADD src /src
 # uWSGI will listen on this port
 EXPOSE 8000
 
-# ENTRYPOINT ["/venv/bin/gunicorn"]
-# CMD ["lis.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
-
-CMD ["/venv/bin/python", "./manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/venv/bin/gunicorn", "lis.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

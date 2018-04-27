@@ -1,9 +1,6 @@
 .git
 .idea
-src/media
-src/static
 venv
-
 .DS_Store
 .dockerignore
 .editorconfig

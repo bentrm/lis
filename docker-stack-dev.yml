@@ -4,18 +4,21 @@ services:
   db:
     image: mdillon/postgis:10-alpine
     deploy:
+      placement:
+        constraints: [node.role == manager]
       restart_policy:
         condition: any
         delay: 0s
         max_attempts: 3
         window: 60s
+      resources:
+        limits:
+          cpus: '.5'
+          memory: 1G
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    deploy:
-      placement:
-        constraints: [node.role == manager]
     environment:
       POSTGRES_USER: django
       POSTGRES_PASSWORD: ***PASSWORD***
@@ -29,18 +32,19 @@ services:
         delay: 0s
         max_attempts: 3
         window: 60s
+      resources:
+        limits:
+          cpus: '.5'
+          memory: 1G
     ports:
       - 9200:9200
       - 9300:9300
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - http.cors.allow-origin=http://localhost:1358
-      - http.cors.enabled=true
-      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-      - http.cors.allow-credentials=true
 
   django:
     image: registry.gitlab.com/bentrm/lis:latest
@@ -53,7 +57,7 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '1.0'
+          cpus: '.5'
           memory: 512M
     ports:
       - 8000:8000
@@ -61,11 +65,39 @@ services:
       - db
       - elasticsearch
     volumes:
+      - static:/html/static
+      - media:/html/media
       - type: bind
         source: ./src
         target: /src
+    environment:
+      SECRET_KEY: ***SECRET***
+      STATIC_ROOT: /html/static
+      STATIC_URL: http://localhost:8001/static/
+      MEDIA_ROOT: /html/media
+      MEDIA_URL: http://localhost:8001/media/
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
+
+  web:
+    image: nginx:alpine
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: '.25'
+          memory: 256M
+    volumes:
+      - static:/usr/share/nginx/html/static:ro
+      - media:/usr/share/nginx/html/media:ro
+    ports:
+      - 8001:80
 
 volumes:
   pgdata:
   esdata:
+  static:
+  media:
