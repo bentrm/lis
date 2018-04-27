@@ -13,8 +13,8 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '1.0'
-          memory: 512M
+          cpus: '.5'
+          memory: 256M
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -36,8 +36,8 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '1.0'
-          memory: 512M
+          cpus: '.5'
+          memory: 1G
     networks:
       - lis
     volumes:
@@ -46,10 +46,6 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - http.cors.allow-origin=http://localhost:1358
-      - http.cors.enabled=true
-      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-      - http.cors.allow-credentials=true
 
   django:
     image: registry.gitlab.com/bentrm/lis:latest
@@ -62,30 +58,54 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '1.0'
-          memory: 512M    
+          cpus: '1'
+          memory: 512M
     networks:
       - lis
       - proxy
     volumes:
-      - static:/static
-      - media:/media
+      - static:/html/static
+      - media:/html/media
     environment:
       VIRTUAL_HOST: ***HOST***
       LETSENCRYPT_HOST: ***HOST***
       LETSENCRYPT_EMAIL: ***EMAIL***
-      MEDIA_ROOT: /media
-      STATIC_ROOT: /static
+      SECRET_KEY: ***SECRET***
+      STATIC_ROOT: /html/static
+      STATIC_URL: https://static.lis-map.eu/static/
+      MEDIA_ROOT: /html/media
+      MEDIA_URL: https://static.lis-map.eu/media/
     depends_on:
       - db
       - elasticsearch
-    command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
+
+  web:
+    image: nginx:alpine
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: '.25'
+          memory: 256M
+    networks:
+      - proxy
+    volumes:
+      - static:/usr/share/nginx/html/static:ro
+      - media:/usr/share/nginx/html/media:ro
+    environment:
+      VIRTUAL_HOST: static.lis-map.eu
+      LETSENCRYPT_HOST: static.lis-map.eu
+      LETSENCRYPT_EMAIL: ***EMAIL***
 
 volumes:
-  static:
-  media:
   pgdata:
   esdata:
+  static:
+  media:
 
 networks:
   lis:
