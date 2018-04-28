@@ -30,16 +30,20 @@ BASE_DIR = os.path.dirname(SRC_DIR)
 ADMINS = [
     ("***Name***", "***Email***"),
 ]
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT", "587")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS", True) in ("True", "true", "t", "1", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", True)
-DEBUG = DEBUG in ("True", "true", "t", "1", True)
+DEBUG = env("DEBUG", True) in ("True", "true", "t", "1", True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '***SECRET***'
 
-ALLOWED_HOSTS = os.environ.get("VIRTUAL_HOST", "localhost").split(",")
+ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 
 # Application definition
 
@@ -161,9 +165,9 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 # Geotools
-GDAL_LIBRARY_PATH = os.environ.get("GDAL_LIBRARY_PATH")
-GEOS_LIBRARY_PATH = os.environ.get("GEOS_LIBRARY_PATH")
-SPATIALITE_LIBRARY_PATH = os.environ.get("SPATIALITE_LIBRARY_PATH")
+GDAL_LIBRARY_PATH = env("GDAL_LIBRARY_PATH")
+GEOS_LIBRARY_PATH = env("GEOS_LIBRARY_PATH")
+SPATIALITE_LIBRARY_PATH = env("SPATIALITE_LIBRARY_PATH")
 
 # Map widgets
 MAP_WIDGETS = {
