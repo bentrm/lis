@@ -909,15 +909,12 @@ class Level1Page(LevelPage):
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
     default_panels = [
-        FieldPanel("title", classname="full title"),
         StreamFieldPanel("biography"),
         StreamFieldPanel("works")]
     german_panels = [
-        FieldPanel("title_de", classname="full title"),
         StreamFieldPanel("biography_de"),
         StreamFieldPanel("works_de")]
     czech_panels = [
-        FieldPanel("title_cs", classname="full title"),
         StreamFieldPanel("biography_cs"),
         StreamFieldPanel("works_cs")]
     edit_handler = TabbedInterface([
@@ -926,15 +923,16 @@ class Level1Page(LevelPage):
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field('title').default = "Discover"
-        self._meta.get_field('title_de').default = "Entdecken"
-        self._meta.get_field('title_cs').default = "Discover*"
-        super(Level1Page, self).__init__(*args, **kwargs)
-
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
         return f"I. {self.i18n_draft_title or self.i18n_title}"
+
+    def full_clean(self, *args, **kwargs):
+        """Set default title."""
+        self.title = "Discover"
+        self.title_de = "Entdecken"
+        self.title_cs = "Discover*"
+        super(Level1Page, self).full_clean(*args, **kwargs)
 
     def __str__(self):
         return f"I. {self.i18n_title}"
@@ -1035,21 +1033,18 @@ class Level2Page(LevelPage):
     i18n_full_texts = TranslatedField("full_texts", "full_texts_de", "full_texts_cs")
 
     default_panels = [
-        FieldPanel("title", classname="full title"),
         StreamFieldPanel("biography"),
         StreamFieldPanel("works"),
         StreamFieldPanel("reception"),
         StreamFieldPanel("connections"),
         StreamFieldPanel("full_texts")]
     german_panels = [
-        FieldPanel("title_de", classname="full title"),
         StreamFieldPanel("biography_de"),
         StreamFieldPanel("works_de"),
         StreamFieldPanel("reception_de"),
         StreamFieldPanel("connections_de"),
         StreamFieldPanel("full_texts_de")]
     czech_panels = [
-        FieldPanel("title_cs", classname="full title"),
         StreamFieldPanel("biography_cs"),
         StreamFieldPanel("works_cs"),
         StreamFieldPanel("reception_cs"),
@@ -1062,15 +1057,16 @@ class Level2Page(LevelPage):
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field('title').default = "Deepen"
-        self._meta.get_field('title_de').default = "Vertiefen"
-        self._meta.get_field('title_cs').default = "Deepen*"
-        super(Level2Page, self).__init__(*args, **kwargs)
-
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
         return f"II. {self.i18n_draft_title or self.i18n_title}"
+
+    def full_clean(self, *args, **kwargs):
+        """Set default title."""
+        self.title = "Deepen"
+        self.title_de = "Vertiefen"
+        self.title_cs = "Deepen*"
+        super(Level2Page, self).full_clean(*args, **kwargs)
 
     def __str__(self):
         return f"II. {self.i18n_title}"
@@ -1140,17 +1136,14 @@ class Level3Page(LevelPage):
         "secondary_literature_cs")
 
     default_panels = [
-        FieldPanel("title", classname="full title"),
         StreamFieldPanel("primary_literature"),
         StreamFieldPanel("testimony"),
         StreamFieldPanel("secondary_literature")]
     german_panels = [
-        FieldPanel("title_de", classname="full title"),
         StreamFieldPanel("primary_literature_de"),
         StreamFieldPanel("testimony_de"),
         StreamFieldPanel("secondary_literature_de")]
     czech_panels = [
-        FieldPanel("title_cs", classname="full title"),
         StreamFieldPanel("primary_literature_cs"),
         StreamFieldPanel("testimony_cs"),
         StreamFieldPanel("secondary_literature_cs")]
@@ -1160,15 +1153,16 @@ class Level3Page(LevelPage):
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
         ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field('title').default = "Research"
-        self._meta.get_field('title_de').default = "Forschen"
-        self._meta.get_field('title_cs').default = "Research*"
-        super(Level3Page, self).__init__(*args, **kwargs)
-
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
         return f"III. {self.i18n_draft_title or self.i18n_title}"
+
+    def full_clean(self, *args, **kwargs):
+        """Set default title."""
+        self.title = "Research"
+        self.title_de = "Forschen"
+        self.title_cs = "Research*"
+        super(Level3Page, self).full_clean(*args, **kwargs)
 
     def __str__(self):
         return f"III. {self.i18n_title}"
@@ -1282,8 +1276,7 @@ class LocationPage(I18nPage):
         index.SearchField("description_cs"),
         index.SearchField("directions"),
         index.SearchField("directions_de"),
-        index.SearchField("directions_cs"),
-    ]
+        index.SearchField("directions_cs")]
 
     default_panels = [
         FieldPanel("title", classname="full title"),
@@ -1293,13 +1286,12 @@ class LocationPage(I18nPage):
             "contacts",
             label=_("Contact information"),
             min_num=0,
+            help_text=_("The authors that this memorial site is dedicated to."),
             panels=[
                 PageChooserPanel("contact_type", "cms.ContactTypePage"),
                 FieldPanel("name"),
                 FieldPanel("name_de"),
-                FieldPanel("name_cs")
-            ],
-            help_text=_("The authors that this memorial site is dedicated to.")),
+                FieldPanel("name_cs")]),
         FieldPanel("description"),
         FieldPanel("address"),
         FieldPanel("directions"),
@@ -1309,21 +1301,17 @@ class LocationPage(I18nPage):
         FieldPanel("title_de", classname="full title"),
         FieldPanel("description_de"),
         FieldPanel("address_de"),
-        FieldPanel("directions_de"),
-    ]
+        FieldPanel("directions_de")]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
         FieldPanel("description_cs"),
         FieldPanel("address_cs"),
-        FieldPanel("directions_cs"),
-    ]
-
+        FieldPanel("directions_cs")]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German"), classname="i18n en"),
         ObjectList(czech_panels, heading=_("Czech"), classname="i18n de"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
-    ])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def __str__(self):
         return self.i18n_title
@@ -1348,18 +1336,15 @@ class LocationPageContact(Orderable):
 
     name = models.CharField(
         max_length=255,
-        verbose_name=_("Name")
-    )
+        verbose_name=_("Name"))
     name_de = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("German name")
-    )
+        verbose_name=_("German name"))
     name_cs = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Czech name")
-    )
+        verbose_name=_("Czech name"))
     i18n_name = TranslatedField("name", "name_de", "name_cs")
 
 
@@ -1414,8 +1399,7 @@ class MemorialSitePage(I18nPage):
             label=_("Authors"),
             min_num=1,
             help_text=_("The authors that this memorial site is dedicated to."),
-            panels=[PageChooserPanel("author", "cms.AuthorPage")]
-        ),
+            panels=[PageChooserPanel("author", "cms.AuthorPage")]),
         FieldPanel("description"),
         FieldPanel("detailed_description")]
     german_panels = [
@@ -1428,8 +1412,7 @@ class MemorialSitePage(I18nPage):
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German")),
         ObjectList(czech_panels, heading=_("Czech")),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
-    ])
+        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
 
     def full_clean(self, *args, **kwargs):
         """Set the title of the page to the authors name that are referenced by the memorial."""
