@@ -1412,11 +1412,9 @@ class MemorialSitePage(I18nPage):
         InlinePanel(
             "authors",
             label=_("Authors"),
-            min_num=0,
+            min_num=1,
             help_text=_("The authors that this memorial site is dedicated to."),
-            panels=[
-                PageChooserPanel("author", "cms.AuthorPage")
-            ]
+            panels=[PageChooserPanel("author", "cms.AuthorPage")]
         ),
         FieldPanel("description"),
         FieldPanel("detailed_description")]
@@ -1437,7 +1435,8 @@ class MemorialSitePage(I18nPage):
         """Set the title of the page to the authors name that are referenced by the memorial."""
         title = ", ".join([x.author.title for x in self.authors.all()])
         self.title = title
-        print(title)
+        self.title_de = title
+        self.title_cs = title
         self.slug = text.slugify(self.title)
         super(MemorialSitePage, self).full_clean(*args, **kwargs)
 
