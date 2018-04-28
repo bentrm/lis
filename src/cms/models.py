@@ -199,8 +199,7 @@ class ImageMediaRendition(AbstractRendition):
     class Meta:
         db_table = "image_rendition"
         unique_together = (
-            ("image", "filter_spec", "focal_point_key"),
-        )
+            ("image", "filter_spec", "focal_point_key"))
 
 
 class DocumentMedia(Media, AbstractDocument):
@@ -219,8 +218,7 @@ class I18nPage(Page):
     ORIGINAL_LANGUAGE = (
         (ORIGINAL_LANGUAGE_ENGLISH, _("English")),
         (ORIGINAL_LANGUAGE_GERMAN, _("German")),
-        (ORIGINAL_LANGUAGE_CZECH, _("Czech")),
-    )
+        (ORIGINAL_LANGUAGE_CZECH, _("Czech")))
 
     title_de = models.CharField(
         max_length=255,
@@ -854,7 +852,6 @@ class LevelPage(I18nPage):
     @classmethod
     def can_create_at(cls, parent):
         """Determine the valid location of the page in the page hierarchy."""
-        print("called")
         return super(LevelPage, cls).can_create_at(parent) and not parent.get_children().exact_type(cls)
 
     def get_texts(self):
@@ -950,7 +947,7 @@ class Level1Page(LevelPage):
 class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
 
-    TEXT_TYPES = ("biography", "works", "reception")
+    TEXT_TYPES = ("biography", "works", "reception", "connections", "full_texts")
 
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
@@ -1003,21 +1000,61 @@ class Level2Page(LevelPage):
         help_text=_("A more in-depth description for interested users on how the author has been received."))
     i18n_reception = TranslatedField("reception", "reception_de", "reception_cs")
 
+    connections = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Connections"),
+        help_text=_("TODO"))
+    connections_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Connections"),
+        help_text=_("TODO"))
+    connections_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Connections"),
+        help_text=_("TODO"))
+    i18n_connections = TranslatedField("connections", "connections_de", "connections_cs")
+
+    full_texts = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Full texts"),
+        help_text=_("TODO"))
+    full_texts_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Full texts"),
+        help_text=_("TODO"))
+    full_texts_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_("Full texts"),
+        help_text=_("TODO"))
+    i18n_full_texts = TranslatedField("full_texts", "full_texts_de", "full_texts_cs")
+
     default_panels = [
         FieldPanel("title", classname="full title"),
         StreamFieldPanel("biography"),
         StreamFieldPanel("works"),
-        StreamFieldPanel("reception")]
+        StreamFieldPanel("reception"),
+        StreamFieldPanel("connections"),
+        StreamFieldPanel("full_texts")]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
         StreamFieldPanel("biography_de"),
         StreamFieldPanel("works_de"),
-        StreamFieldPanel("reception_de")]
+        StreamFieldPanel("reception_de"),
+        StreamFieldPanel("connections_de"),
+        StreamFieldPanel("full_texts_de")]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
         StreamFieldPanel("biography_cs"),
         StreamFieldPanel("works_cs"),
-        StreamFieldPanel("reception_cs")]
+        StreamFieldPanel("reception_cs"),
+        StreamFieldPanel("connections_cs"),
+        StreamFieldPanel("full_texts_cs")]
 
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
@@ -1104,19 +1141,19 @@ class Level3Page(LevelPage):
 
     default_panels = [
         FieldPanel("title", classname="full title"),
-        StreamFieldPanel("primary_literature", ),
-        StreamFieldPanel("testimony", ),
-        StreamFieldPanel("secondary_literature", )]
+        StreamFieldPanel("primary_literature"),
+        StreamFieldPanel("testimony"),
+        StreamFieldPanel("secondary_literature")]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
-        StreamFieldPanel("primary_literature_de", ),
-        StreamFieldPanel("testimony_de", ),
-        StreamFieldPanel("secondary_literature_de", )]
+        StreamFieldPanel("primary_literature_de"),
+        StreamFieldPanel("testimony_de"),
+        StreamFieldPanel("secondary_literature_de")]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
-        StreamFieldPanel("primary_literature_cs", ),
-        StreamFieldPanel("testimony_cs", ),
-        StreamFieldPanel("secondary_literature_cs", )]
+        StreamFieldPanel("primary_literature_cs"),
+        StreamFieldPanel("testimony_cs"),
+        StreamFieldPanel("secondary_literature_cs")]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English"), classname="i18n en"),
         ObjectList(german_panels, heading=_("German"), classname="i18n de"),
@@ -1306,8 +1343,8 @@ class LocationPageContact(Orderable):
         null=True,
         blank=False,
         on_delete=models.SET_NULL,
-        related_name="contacts"
-    )
+        related_name="contacts",
+        verbose_name=_("Contact type"))
 
     name = models.CharField(
         max_length=255,
@@ -1382,19 +1419,13 @@ class MemorialSitePage(I18nPage):
             ]
         ),
         FieldPanel("description"),
-        FieldPanel("detailed_description")
-    ]
-
+        FieldPanel("detailed_description")]
     german_panels = [
         FieldPanel("description_de"),
-        FieldPanel("detailed_description_de")
-    ]
-
+        FieldPanel("detailed_description_de")]
     czech_panels = [
         FieldPanel("description_cs"),
-        FieldPanel("detailed_description_de")
-    ]
-
+        FieldPanel("detailed_description_de")]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German")),
