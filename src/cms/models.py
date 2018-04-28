@@ -929,9 +929,9 @@ class Level1Page(LevelPage):
 
     def full_clean(self, *args, **kwargs):
         """Set default title."""
-        self.title = "Discover"
+        self.title = "Discovery"
         self.title_de = "Entdecken"
-        self.title_cs = "Discover*"
+        self.title_cs = "Discovery*"
         super(Level1Page, self).full_clean(*args, **kwargs)
 
     def __str__(self):
@@ -1063,7 +1063,7 @@ class Level2Page(LevelPage):
 
     def full_clean(self, *args, **kwargs):
         """Set default title."""
-        self.title = "Deepen"
+        self.title = "Delving deeper"
         self.title_de = "Vertiefen"
         self.title_cs = "Deepen*"
         super(Level2Page, self).full_clean(*args, **kwargs)
@@ -1159,9 +1159,9 @@ class Level3Page(LevelPage):
 
     def full_clean(self, *args, **kwargs):
         """Set default title."""
-        self.title = "Research"
+        self.title = "Research literature"
         self.title_de = "Forschen"
-        self.title_cs = "Research*"
+        self.title_cs = "Research literature*"
         super(Level3Page, self).full_clean(*args, **kwargs)
 
     def __str__(self):
