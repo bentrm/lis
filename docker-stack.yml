@@ -79,9 +79,9 @@ services:
       DEFAULT_FROM_EMAIL: ***EMAIL***
       SECRET_KEY: ***SECRET***
       STATIC_ROOT: /html/static
-      STATIC_URL: https://static.lis-map.eu/static/
+      STATIC_URL: /static/
       MEDIA_ROOT: /html/media
-      MEDIA_URL: https://static.lis-map.eu/media/
+      MEDIA_URL: /media/
     depends_on:
       - db
       - elasticsearch
