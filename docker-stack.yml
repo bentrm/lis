@@ -70,9 +70,13 @@ services:
       VIRTUAL_HOST: ***HOST***
       LETSENCRYPT_HOST: ***HOST***
       LETSENCRYPT_EMAIL: ***EMAIL***
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       EMAIL_HOST: ***HOST***
       EMAIL_HOST_USER: ***EMAIL***
       EMAIL_HOST_PASSWORD: ***PASSWORD***
+      EMAIL_USE_TLS: 1
+      EMAIL_USE_SSL: 0
+      ADMIN_NOTIFICATION_FROM: ***EMAIL***
       SECRET_KEY: ***SECRET***
       STATIC_ROOT: /html/static
       STATIC_URL: https://static.lis-map.eu/static/
