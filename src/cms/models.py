@@ -13,7 +13,7 @@ from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
 from wagtail.core.models import Orderable, Page, CollectionMember
-from wagtail.core.fields import RichTextField, StreamField
+from wagtail.core.fields import StreamField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, \
     PageChooserPanel, MultiFieldPanel, StreamFieldPanel
 from wagtail.documents.models import AbstractDocument
@@ -1361,29 +1361,35 @@ class MemorialSitePage(I18nPage):
         related_name='+',
         verbose_name=_("Title image"),
         help_text=_("A meaningful image that will be used to present the memorial site to the user."))
-    description = RichTextField(
+    description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Description"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
-    description_de = RichTextField(
+    description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Description"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
-    description_cs = RichTextField(
+    description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Description"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
     i18n_description = TranslatedField("description", "description_de", "description_cs")
 
-    detailed_description = RichTextField(
+    detailed_description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Detailed description"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
-    detailed_description_de = RichTextField(
+    detailed_description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Detailed description"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
-    detailed_description_cs = RichTextField(
+    detailed_description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Detailed description"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
@@ -1400,14 +1406,14 @@ class MemorialSitePage(I18nPage):
             min_num=1,
             help_text=_("The authors that this memorial site is dedicated to."),
             panels=[PageChooserPanel("author", "cms.AuthorPage")]),
-        FieldPanel("description"),
-        FieldPanel("detailed_description")]
+        StreamFieldPanel("description"),
+        StreamFieldPanel("detailed_description")]
     german_panels = [
-        FieldPanel("description_de"),
-        FieldPanel("detailed_description_de")]
+        StreamFieldPanel("description_de"),
+        StreamFieldPanel("detailed_description_de")]
     czech_panels = [
-        FieldPanel("description_cs"),
-        FieldPanel("detailed_description_de")]
+        StreamFieldPanel("description_cs"),
+        StreamFieldPanel("detailed_description_de")]
     edit_handler = TabbedInterface([
         ObjectList(default_panels, heading=_("English")),
         ObjectList(german_panels, heading=_("German")),
