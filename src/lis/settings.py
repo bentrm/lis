@@ -30,12 +30,15 @@ BASE_DIR = os.path.dirname(SRC_DIR)
 ADMINS = [
     ("***Name***", "***Email***"),
 ]
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT", "587")
+EMAIL_PORT = int(env("EMAIL_PORT", 587))
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", True) in ("True", "true", "t", "1", True)
+EMAIL_USE_SSL = env("EMAIL_USE_SSL", True) in ("True", "true", "t", "1", True)
+
+EMAIL_SUBJECT_PREFIX = "[LIS] "
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", True) in ("True", "true", "t", "1", True)
