@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(SRC_DIR)
 ADMINS = [
     ("***Name***", "***Email***"),
 ]
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "postmaster@localhost")
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = int(env("EMAIL_PORT", 587))
@@ -156,7 +157,6 @@ WAGTAIL_SITE_NAME = "lis"
 WAGTAILIMAGES_IMAGE_MODEL = "cms.ImageMedia"
 WAGTAILDOCS_DOCUMENT_MODEL = "cms.DocumentMedia"
 WAGTAIL_USAGE_COUNT_ENABLED = True
-WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = env("ADMIN_NOTIFICATION_FROM", "webmaster@localhost")
 LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
     ("en", "English"),
     ("de", "Deutsch"),

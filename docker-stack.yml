@@ -76,7 +76,7 @@ services:
       EMAIL_HOST_PASSWORD: ***PASSWORD***
       EMAIL_USE_TLS: 1
       EMAIL_USE_SSL: 0
-      ADMIN_NOTIFICATION_FROM: ***EMAIL***
+      DEFAULT_FROM_EMAIL: ***EMAIL***
       SECRET_KEY: ***SECRET***
       STATIC_ROOT: /html/static
       STATIC_URL: https://static.lis-map.eu/static/
