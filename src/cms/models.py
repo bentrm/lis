@@ -854,6 +854,9 @@ class LevelPage(I18nPage):
         """Determine the valid location of the page in the page hierarchy."""
         return super(LevelPage, cls).can_create_at(parent) and not parent.get_children().exact_type(cls)
 
+    def get_url_parts(self, *args, **kwargs):
+        return self.get_parent().get_url_parts(*args, **kwargs)
+
     def get_texts(self):
         """Return the text type fields of the page as an iterable."""
         texts = []
