@@ -21,6 +21,9 @@ def env(NAME, default=""):
     return os.environ.get(NAME, default)
 
 
+CMS_VERSION = "1.0.0"
+
+
 # Build paths inside the project like this: os.path.join(SRC_DIR, ...)
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.dirname(PROJECT_DIR)
@@ -105,6 +108,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cms.context_processors.app_versions",
             ],
         },
     },
