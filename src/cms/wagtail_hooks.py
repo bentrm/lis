@@ -1,9 +1,19 @@
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.utils.html import format_html
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler, BlockElementHandler
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
 from cms.models import I18nPage, AuthorPage
+
+
+@hooks.register('insert_editor_css')
+def editor_css():
+    return format_html(
+        '<link rel="stylesheet" href="{}">',
+        static('css/admin.css')
+    )
 
 
 def as_page_object(self):

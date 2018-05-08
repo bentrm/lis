@@ -3,18 +3,12 @@
   color: #333;
 }
 
-.object .multiple fieldset {
+li.sequence-member .paragraph-struct-block.struct-block ul.fields {
   width: 100%;
 }
 
-.object .multiple .multi-field legend {
-  color: #333;
-  font-size: 1.1em;
-  font-weight: 500;
-  height: auto;
-  position: relative;
-  text-transform: none;
-  width: auto;
+li.sequence-member .paragraph-struct-block.struct-block .sequence-container .sequence-container-inner {
+    width: 100%;
 }
 
 li.sequence-member .footnote-struct-block.struct-block > ul.fields {
