@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% if value.tag %}
+<li>
+  <div class="d-flex">
+    <a href="#{{ value.tag|slugify }}" class="mr-2"><i class="fas fa-anchor"></i></a> {{ value.footnote|safe }}
+  </div>
+</li>
+{% else %}
+<li>{{ value.footnote|safe }}</li>
+{% endif %}

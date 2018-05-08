@@ -9,15 +9,17 @@
   <div class="col-8">
     <div class="row">
       <div class="col-12">
+        {% if value.heading %}
+        <h4>{{ value.heading }}</h4>
+        {% endif %}
         {% include_block value.content %}
       </div>
 
       {% if value.footnotes %}
       <div class="col-12">
-        <p>{% trans 'Footnotes' %}</p>
         <ol>
         {% for footnote in value.footnotes %}
-          <li>{{footnote|safe}}</li>
+          {% include_block footnote %}
         {% endfor %}
         </ol>
       </div>
@@ -42,20 +44,22 @@
   {% else %}
 
   <div class="col-12">
+    {% if value.heading %}
+    <h4>{{ value.heading }}</h4>
+    {% endif %}
     {% include_block value.content %}
   </div>
 
   {% if value.footnotes %}
   <div class="col-12">
-    <p>{% trans 'Footnotes' %}</p>
     <ol>
     {% for footnote in value.footnotes %}
-      <li>{{footnote|safe}}</li>
+      {% include_block footnote %}
     {% endfor %}
     </ol>
   </div>
   {% endif %}
 
-  {% endif %}  
+  {% endif %}
 
 </section>

@@ -22,7 +22,8 @@ class FootnoteStructBlock(blocks.StructBlock):
 
     class Meta:
         label = _("Footnote")
-        form_classname = "footnote-struct-block struct-block"        
+        form_classname = "footnote-struct-block struct-block"
+        template = "cms/blocks/footnote_struct_block.html"
 
 
 class ParagraphStructBlock(blocks.StructBlock):
