@@ -1001,38 +1001,40 @@ class Level2Page(LevelPage):
         help_text=_("A more in-depth description for interested users on how the author has been received."))
     i18n_reception = TranslatedField("reception", "reception_de", "reception_cs")
 
+    connections_help_text = _("A short description of important connections (i.e. people) that have been mentioned in the text.")
     connections = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Connections"),
-        help_text=_("TODO"))
+        help_text=connections_help_text)
     connections_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Connections"),
-        help_text=_("TODO"))
+        help_text=connections_help_text)
     connections_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Connections"),
-        help_text=_("TODO"))
+        help_text=connections_help_text)
     i18n_connections = TranslatedField("connections", "connections_de", "connections_cs")
 
+    full_texts_help_text = _("Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in the text about the author.")
     full_texts = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Full texts"),
-        help_text=_("TODO"))
+        help_text=full_texts_help_text)
     full_texts_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Full texts"),
-        help_text=_("TODO"))
+        help_text=full_texts_help_text)
     full_texts_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Full texts"),
-        help_text=_("TODO"))
+        help_text=full_texts_help_text)
     i18n_full_texts = TranslatedField("full_texts", "full_texts_de", "full_texts_cs")
 
     default_panels = [
@@ -1101,21 +1103,22 @@ class Level3Page(LevelPage):
         help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
+    testimony_help_text = _("Extant documents about the author by other people, e.g. correspondence with the author, lecture notes.")
     testimony = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
-        help_text=_("TODO"))
+        help_text=testimony_help_text)
     testimony_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
-        help_text=_("TODO"))
+        help_text=testimony_help_text)
     testimony_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_("Testimony"),
-        help_text=_("TODO"))
+        help_text=testimony_help_text)
     i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
 
     secondary_literature = StreamField(

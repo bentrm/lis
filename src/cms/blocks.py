@@ -21,7 +21,8 @@ class FootnoteStructBlock(blocks.StructBlock):
         help_text=_("Citations, comments and references."))
 
     class Meta:
-        form_classname = "footnote-struct-block struct-block"
+        label = _("Footnote")
+        form_classname = "footnote-struct-block struct-block"        
 
 
 class ParagraphStructBlock(blocks.StructBlock):
@@ -52,5 +53,6 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("Author or translator of the content."))
 
     class Meta:
+        label = _("Paragraph")
         form_classname = "paragraph-struct-block struct-block"
         template = "cms/blocks/paragraph_struct_block.html"
