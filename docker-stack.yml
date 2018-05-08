@@ -19,6 +19,8 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - lis
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: django
       POSTGRES_PASSWORD: ***PASSWORD***
