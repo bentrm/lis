@@ -1,6 +1,47 @@
 {% extends "wagtailadmin/base.html" %}
-{% load staticfiles %}
+{% load wagtailadmin_tags wagtailcore_tags staticfiles i18n %}
+
+{% block furniture %}
+    <div class="nav-wrapper">
+        <div class="inner">
+          <a href="{% url 'wagtailadmin_home' %}" class="logo" title="LIS CMS {{ CMS_VERSION }}">            
+              <div class="fa-4x">
+                <span class="fa-layers fa-fw">
+                  <i class="fas fa-bookmark" style="color: #AA3F39;"></i>
+                  <i class="fa-inverse fas fa-globe" style="color: #fff;" data-fa-transform="shrink-10 up-2"></i>
+                  <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-12 down-10" style="font-weight:200">{{CMS_VERSION}}</span>
+                </span>
+              </div>
+          </a>
+
+          {% menu_search %}
+          {% main_nav %}
+
+        </div>
+        <div class="explorer__wrapper" data-explorer-menu></div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content">
+            {# Always show messages div so it can be appended to by JS #}
+            <div class="messages">
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li class="{% message_tags message %}">{{ message|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div id="nav-toggle" class="nav-toggle icon text-replace">{% trans "Menu" %}</div>
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
 
 {% block branding_logo %}
-  <span>LIS CMS {{ CMS_VERSION }}</span>    
+  <span>LIS CMS {{ CMS_VERSION }}</span>
 {% endblock %}

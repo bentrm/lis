@@ -8,6 +8,13 @@ from wagtail.core.models import PageRevision
 from cms.models import I18nPage, AuthorPage
 
 
+@hooks.register("insert_global_admin_css")
+def admin_css():
+    return format_html(
+        '<script defer src="https://use.fontawesome.com/releases/v5.0.12/js/all.js" integrity="sha384-Voup2lBiiyZYkRto2XWqbzxHXwzcm4A5RfdfG6466bu5LqjwwrjXCMBQBLMWh7qR" crossorigin="anonymous"></script>'
+    )
+
+
 @hooks.register('insert_editor_css')
 def editor_css():
     return format_html(
