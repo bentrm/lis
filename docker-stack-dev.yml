@@ -76,6 +76,12 @@ services:
       STATIC_URL: /static/
       MEDIA_ROOT: /html/media
       MEDIA_URL: /media/
+      DB_ENGINE: django.contrib.gis.db.backends.postgis
+      DB_NAME: django
+      DB_USER: django
+      DB_PASSWORD: ***PASSWORD***
+      DB_HOST: db
+      DB_PORT: 5432
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
 
   web:
