@@ -74,6 +74,7 @@ services:
       LETSENCRYPT_HOST: ***HOST***
       LETSENCRYPT_EMAIL: ***EMAIL***
       DEBUG: 0
+      SECRET_KEY: ***SECRET***
       EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       EMAIL_HOST: ***HOST***
       EMAIL_HOST_USER: ***EMAIL***
@@ -81,7 +82,6 @@ services:
       EMAIL_USE_TLS: 1
       EMAIL_USE_SSL: 0
       DEFAULT_FROM_EMAIL: ***EMAIL***
-      SECRET_KEY: ***SECRET***
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_NAME: django
       DB_USER: django
