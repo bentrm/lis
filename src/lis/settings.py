@@ -21,7 +21,7 @@ def env(NAME, default=""):
     return os.environ.get(NAME, default)
 
 
-CMS_VERSION = "1.0.0"
+CMS_VERSION = "0.1.0"
 
 
 # Build paths inside the project like this: os.path.join(SRC_DIR, ...)
