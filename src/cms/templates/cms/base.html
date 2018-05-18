@@ -25,7 +25,12 @@
 {% block body %}
   <div class="container">
 
-    {% block header %}{% endblock %}
+    {% block header %}
+      <h1 class="display-1">
+        {% include "cms/includes/logo.html" %}
+        LIS
+      </h1>
+    {% endblock %}
 
     {% block content %}{% endblock %}
 

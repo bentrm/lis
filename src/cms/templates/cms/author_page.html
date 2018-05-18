@@ -7,10 +7,9 @@
 <div class="row mt-4">
 
   <div class="col-8">
-    <h1 class="display-1">LIS</h1>
     <h2 class="display-2">{{ page }}</h2>
-    <p>{% trans 'Date of birth' %}: {{page.date_of_birth_day}}.{{page.date_of_birth_month}}.{{page.date_of_birth_year}}</p>
-    <p>{% trans 'Date of death' %}: {{page.date_of_death_day}}.{{page.date_of_death_month}}.{{page.date_of_death_year}}</p>
+    <p>{% trans 'Date of birth' %}: {{page.formatted_date_of_birth}}</p>
+    <p>{% trans 'Date of death' %}: {{page.formatted_date_of_death}}</p>
 
     <p>{% trans 'Languages' %}: {% for lang in page.languages.all %}<span class="badge badge-pill badge-secondary mr-1">{{lang}}</span>{% endfor %}</p>
     <p>{% trans 'Categories' %}: {% for cat in page.literary_categories.all %}<span class="badge badge-pill badge-secondary mr-1">{{cat}}</span>{% endfor %}</p>
@@ -25,16 +24,12 @@
     </figure>
   </div>
 
-  {% for child in page.get_children.specific %}
-  <div class="col-12">
-    <h2>{{child}}</h2>
-    <article class="mt-2">
-      {% for text in child.get_texts %}
-        <h3>{{text.0}}</h3>
-        {{ text.1|safe}}
-      {% endfor %}
-    </article>
-  </div>
+  {% for child_page in page.get_children.specific %}
+    {% if request.is_preview %}
+      {% include "cms/includes/level.html" with page=child_page.get_latest_revision_as_page %}
+    {% else %}
+      {% include "cms/includes/level.html" with page=child_page %}
+    {% endif %}
   {% endfor %}
 
 </div>

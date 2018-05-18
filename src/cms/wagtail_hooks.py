@@ -8,21 +8,6 @@ from wagtail.core.models import PageRevision
 from cms.models import I18nPage, AuthorPage
 
 
-@hooks.register("insert_global_admin_css")
-def admin_css():
-    return format_html(
-        '<script defer src="https://use.fontawesome.com/releases/v5.0.12/js/all.js" integrity="sha384-Voup2lBiiyZYkRto2XWqbzxHXwzcm4A5RfdfG6466bu5LqjwwrjXCMBQBLMWh7qR" crossorigin="anonymous"></script>'
-    )
-
-
-@hooks.register('insert_editor_css')
-def editor_css():
-    return format_html(
-        '<link rel="stylesheet" href="{}">',
-        static('css/admin.css')
-    )
-
-
 def as_page_object(self):
     obj = self.page.specific_class.from_json(self.content_json)
     specific_page = self.page.specific
@@ -65,45 +50,21 @@ def as_page_object(self):
 # Patches the Wagtail PageRevision to work with our custom i18n implementation
 PageRevision.as_page_object = as_page_object
 
-# from .models import TextType, ContactType, LiteraryPeriod, LiteraryCategory
-#
-#
-# class LiteraryPeriodModelAdmin(ModelAdmin):
-#     model = LiteraryPeriod
-#     menu_icon = "time"
-#     menu_order = 500
-#     list_display = ("__str__",)
-#     search_fields = ("name",)
-#
-#
-# class LiteraryCategoryModelAdmin(ModelAdmin):
-#     model = LiteraryCategory
-#     menu_icon = "tag"
-#     menu_order = 501
-#     list_display = ("name", "description", "sort_order",)
-#     search_fields = ("name", "description",)
-#
-#
-# class TextTypeModelAdmin(ModelAdmin):
-#     model = TextType
-#     menu_icon = "pilcrow"
-#     menu_order = 502
-#     list_display = ("name",)
-#     search_fields = ("name",)
-#
-#
-# class ContactTypeModelAdmin(ModelAdmin):
-#     model = ContactType
-#     menu_icon = "mail"
-#     menu_order = 503
-#     list_display = ("name",)
-#     search_fields = ("name",)
-#
-#
-# modeladmin_register(LiteraryPeriodModelAdmin)
-# modeladmin_register(LiteraryCategoryModelAdmin)
-# modeladmin_register(TextTypeModelAdmin)
-# modeladmin_register(ContactTypeModelAdmin)
+
+@hooks.register("insert_global_admin_css")
+def admin_css():
+    return format_html(
+        "<script defer src='{}'></script>",
+        static("vendor/fontawesome/js/fontawesome-all.js")
+    )
+
+
+@hooks.register('insert_editor_css')
+def editor_css():
+    return format_html(
+        '<link rel="stylesheet" href="{}">',
+        static('css/admin.css')
+    )
 
 
 @hooks.register('register_rich_text_features')
@@ -121,8 +82,6 @@ def register_strikethrough_feature(features):
         'label': 'S',
         'icon': 'fas fa-strikethrough',
         'description': 'Strikethrough',
-        # This isn’t even required – Draftail has predefined styles for STRIKETHROUGH.
-        # 'style': {'textDecoration': 'line-through'},
     }
 
     features.register_editor_plugin(
@@ -138,7 +97,7 @@ def register_strikethrough_feature(features):
 
 
 @hooks.register('register_rich_text_features')
-def register_strikethrough_feature(features):
+def register_superscript_feature(features):
     feature_name = 'sup'
     type_ = 'SUPERSCRIPT'
     tag = 'sup'
@@ -147,7 +106,7 @@ def register_strikethrough_feature(features):
         'type': type_,
         'label': 'sup',
         'icon': 'fas fa-superscript',
-        'description': 'Superscript'
+        'description': 'Superscript',
     }
 
     features.register_editor_plugin(

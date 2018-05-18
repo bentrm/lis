@@ -1,0 +1,9 @@
+<div class="col-12">
+  <h2>{{page}}</h2>
+  <article class="mt-2">
+    {% for text in page.get_texts %}
+      <h3>{{text.0}}</h3>
+      {{ text.1|safe}}
+    {% endfor %}
+  </article>
+</div>
