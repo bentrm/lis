@@ -14,7 +14,7 @@ services:
       resources:
         limits:
           cpus: '.5'
-          memory: 512M
+          memory: 128M
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -25,8 +25,10 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    image: registry.gitlab.com/bentrm/elasticsearch-oss:5.6.9
     deploy:
+      placement:
+        constraints: [node.role == manager]
       restart_policy:
         condition: any
         delay: 0s
@@ -42,9 +44,9 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m -server"
+      - cluster.name=lis-cluster
       - discovery.type=single-node
-      - xpack.security.enabled=false
 
   django:
     image: registry.gitlab.com/bentrm/lis:latest
@@ -71,6 +73,7 @@ services:
         source: ./src
         target: /src
     environment:
+      DEBUG: 1
       SECRET_KEY: ***SECRET***
       STATIC_ROOT: /html/static
       STATIC_URL: /static/
@@ -83,24 +86,6 @@ services:
       DB_HOST: db
       DB_PORT: 5432
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
-
-  web:
-    image: nginx:alpine
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 0s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          cpus: '.25'
-          memory: 256M
-    volumes:
-      - static:/usr/share/nginx/html/static:ro
-      - media:/usr/share/nginx/html/media:ro
-    ports:
-      - 8001:80
 
 volumes:
   pgdata:

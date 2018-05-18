@@ -14,7 +14,7 @@ services:
       resources:
         limits:
           cpus: '.5'
-          memory: 256M
+          memory: 128M
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -27,7 +27,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    image: registry.gitlab.com/bentrm/elasticsearch-oss:5.6.9
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -39,15 +39,15 @@ services:
       resources:
         limits:
           cpus: '.5'
-          memory: 1G
+          memory: 512M
     networks:
       - lis
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m -server"
+      - cluster.name=lis-cluster
       - discovery.type=single-node
-      - xpack.security.enabled=false
 
   django:
     image: registry.gitlab.com/bentrm/lis:latest
@@ -73,7 +73,6 @@ services:
       VIRTUAL_PATH: /
       LETSENCRYPT_HOST: ***HOST***
       LETSENCRYPT_EMAIL: ***EMAIL***
-      DEBUG: 0
       SECRET_KEY: ***SECRET***
       EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       EMAIL_HOST: ***HOST***
@@ -107,7 +106,7 @@ services:
       resources:
         limits:
           cpus: '.25'
-          memory: 128M
+          memory: 64M
     networks:
       - lis
       - proxy
@@ -128,7 +127,7 @@ services:
       resources:
         limits:
           cpus: '.25'
-          memory: 128M
+          memory: 64M
     networks:
       - lis
       - proxy
