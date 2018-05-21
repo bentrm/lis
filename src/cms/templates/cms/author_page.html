@@ -5,45 +5,10 @@
 
 {% block content_main %}
 <div class="row">
+  {% include "cms/includes/author.html" with author=page %}
+</div>
 
-  <div class="col-8">
-    {% with date_of_birth=page.formatted_date_of_birth date_of_death=page.formatted_date_of_death %}
-
-    {% if date_of_birth %}
-    <p>{% trans 'Date of birth' %}: {{date_of_birth}}</p>
-    {% endif %}
-
-    {% if date_of_death %}
-    <p>{% trans 'Date of death' %}: {{date_of_death}}</p>
-    {% endif %}
-
-    {% endwith %}
-
-    {% if page.author_languages.all %}
-    <p>{% trans 'Languages' %}:
-      {% for author_language in page.author_languages.all %}
-      <span class="badge badge-pill badge-secondary mr-1">{{author_language}}</span>
-      {% endfor %}
-    </p>
-    {% endif %}
-
-    {% if page.author_literary_categories.all %}
-    <p>{% trans 'Categories' %}: {% for cat in page.author_literary_categories.all %}<span class="badge badge-pill badge-secondary mr-1">{{cat}}</span>{% endfor %}</p>
-    {% endif %}
-
-    {% if page.author_literary_periods.all %}
-    <p>{% trans 'Literary periods' %}: {% for per in page.author_literary_periods.all %}<span class="badge badge-pill badge-secondary mr-1">{{per}}</span>{% endfor %}</p>
-    {% endif %}
-  </div>
-
-  <div class="col-4">
-    {% image page.title_image fill-200x200 as tmp_image %}
-    <figure class="figure">
-      <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
-      <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
-    </figure>
-  </div>
-
+<div class="row">
   {% if request.is_preview %}
     {% for child_page in child_pages %}
       {% include "cms/includes/level.html" with page=child_page.get_latest_revision_as_page %}
@@ -53,6 +18,5 @@
       {% include "cms/includes/level.html" with page=child_page %}
     {% endfor %}
   {% endif %}
-
-</div>
+</div>  
 {% endblock %}

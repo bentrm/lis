@@ -13,7 +13,7 @@ from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
 from wagtail.core.models import Orderable, Page, CollectionMember
-from wagtail.core.fields import StreamField
+from wagtail.core.fields import StreamField, RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, TabbedInterface, ObjectList, \
     PageChooserPanel, MultiFieldPanel, StreamFieldPanel
 from wagtail.documents.models import AbstractDocument
@@ -50,9 +50,7 @@ def validate_date(year=None, month=None, day=None):
 
 
 def format_date(year=None, month=None, day=None):
-    print(year)
-    print(month)
-    print(day)
+    """Format date input in localized human readable string."""
     if year and month and day:
         return formats.date_format(datetime.datetime(year, month, day), format="DATE_FORMAT", use_l10n=True)
     elif year and month:
@@ -227,6 +225,12 @@ class DocumentMedia(Media, AbstractDocument):
 class I18nPage(Page):
     """An abstract base page class that supports translated content."""
 
+    HEADING_GENERAL = _("General")
+    HEADING_ENGLISH = _("English")
+    HEADING_GERMAN = _("German")
+    HEADING_CZECH = _("Czech")
+    HEADING_META = _("Meta information")
+
     ORIGINAL_LANGUAGE_ENGLISH = "en"
     ORIGINAL_LANGUAGE_GERMAN = "de"
     ORIGINAL_LANGUAGE_CZECH = "cs"
@@ -235,6 +239,7 @@ class I18nPage(Page):
         (ORIGINAL_LANGUAGE_GERMAN, _("German")),
         (ORIGINAL_LANGUAGE_CZECH, _("Czech")))
 
+    is_creatable = False
     icon_class = "fas fa-file"
 
     title_de = models.CharField(
@@ -278,21 +283,26 @@ class I18nPage(Page):
         index.SearchField('title_de', partial_match=True, boost=2),
         index.SearchField('title_cs', partial_match=True, boost=2)]
 
-    content_panels = [
-        FieldPanel("title", classname="full title"),
-        FieldPanel("title_de", classname="full title"),
-        FieldPanel("title_cs", classname="full title")]
-
+    english_panels = [
+        FieldPanel("title", classname="full title")
+    ]
+    german_panels = [
+        FieldPanel("title_de", classname="full title")
+    ]
+    czech_panels = [
+        FieldPanel("title_cs", classname="full title")
+    ]
     meta_panels = [
         FieldPanel("owner"),
         FieldPanel("editor"),
-        FieldPanel("original_language")]
-
+        FieldPanel("original_language")
+    ]
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("Content")),
-        ObjectList(meta_panels, heading=_("Meta information"))])
-
-    is_creatable = False
+        ObjectList(english_panels, heading=HEADING_ENGLISH),
+        ObjectList(german_panels, heading=HEADING_GERMAN),
+        ObjectList(czech_panels, heading=HEADING_CZECH),
+        ObjectList(meta_panels, heading=HEADING_META),
+    ])
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
@@ -366,6 +376,7 @@ class CategoryPage(I18nPage):
         return super(CategoryPage, cls).can_create_at(parent) and not cls.objects.exists()
 
     def get_context(self, request):
+        """Add child pages into the pages context."""
         context = super().get_context(request)
         child_pages = self.get_children().specific().live()
 
@@ -427,7 +438,6 @@ class ContactTypePage(I18nPage):
     """A page that describes a type of contact."""
 
     icon_class = "fas fa-tag"
-
     parent_page_types = ["ContactTypesPage"]
 
     class Meta:
@@ -451,41 +461,39 @@ class LiteraryPeriodPage(I18nPage):
     """A page that describes a literary period."""
 
     icon_class = "fas fa-tag"
-
     parent_page_types = ["LiteraryPeriodsPage"]
 
+    description_verbose_name = _("Description")
+    description_help_text = _("A general description of the literary period and its significance.")
     description = models.TextField(
         blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significance."))
+        verbose_name=description_verbose_name,
+        help_text=description_help_text)
     description_de = models.TextField(
         blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significance."))
+        verbose_name=description_verbose_name,
+        help_text=description_help_text)
     description_cs = models.TextField(
         blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A general description of the literary period and its significance."))
+        verbose_name=description_verbose_name,
+        help_text=description_help_text)
     i18n_description = TranslatedField("description", "description_de", "description_cs")
 
-    content_panels = [
-        FieldPanel("title"),
+    english_panels = I18nPage.english_panels + [
         FieldPanel("description"),
     ]
-    content_panels_de = [
-        FieldPanel("title_de"),
+    german_panels = I18nPage.german_panels + [
         FieldPanel("description_de"),
     ]
-    content_panels_cs = [
-        FieldPanel("title_cs"),
+    czech_panels = I18nPage.czech_panels + [
         FieldPanel("description_cs"),
     ]
 
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("Content"), classname="i18n en"),
-        ObjectList(content_panels_de, heading=_("German content"), classname="i18n de"),
-        ObjectList(content_panels_cs, heading=_("Czech content"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information")),
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META),
     ])
 
 
@@ -504,7 +512,6 @@ class LanguagePage(I18nPage):
     """A page that describes a contact type."""
 
     icon_class = "fas fa-tag"
-
     parent_page_types = ["LanguagesPage"]
 
     class Meta:
@@ -587,7 +594,19 @@ class AuthorPage(I18nPage):
         verbose_name=_("Day of death"),
         help_text=_("The day that the author died at."))
 
-    content_panels = [
+    search_fields = Page.search_fields + [
+        index.RelatedFields("names", [
+            index.SearchField("title"),
+            index.SearchField("first_name"),
+            index.SearchField("last_name"),
+            index.FilterField("birth_name"),
+            index.FilterField("is_pseudonym"),
+        ]),
+        index.FilterField("date_of_birth_year"),
+        index.FilterField("date_of_death_year"),
+    ]
+
+    general_panels = [
         ImageChooserPanel("title_image"),
         InlinePanel(
             "names",
@@ -599,7 +618,7 @@ class AuthorPage(I18nPage):
                         FieldPanel("last_name"),
                         FieldPanel("birth_name"),
                     ],
-                    heading=_("English"),
+                    heading=I18nPage.HEADING_ENGLISH,
                     classname="collapsible"
                 ),
                 MultiFieldPanel(
@@ -609,7 +628,7 @@ class AuthorPage(I18nPage):
                         FieldPanel("last_name_de"),
                         FieldPanel("birth_name_de"),
                     ],
-                    heading=_("German")
+                    heading=I18nPage.HEADING_GERMAN
                 ),
                 MultiFieldPanel(
                     children=[
@@ -618,7 +637,7 @@ class AuthorPage(I18nPage):
                         FieldPanel("last_name_cs"),
                         FieldPanel("birth_name_cs"),
                     ],
-                    heading=_("Czech")
+                    heading=I18nPage.HEADING_CZECH
                 ),
                 FieldPanel("is_pseudonym"),
             ],
@@ -666,28 +685,18 @@ class AuthorPage(I18nPage):
         )
     ]
 
-    search_fields = Page.search_fields + [
-        index.RelatedFields("names", [
-            index.SearchField("title"),
-            index.SearchField("first_name"),
-            index.SearchField("last_name"),
-            index.FilterField("birth_name"),
-            index.FilterField("is_pseudonym"),
-        ]),
-        index.FilterField("date_of_birth_year"),
-        index.FilterField("date_of_death_year"),
-    ]
-
     edit_handler = TabbedInterface([
-        ObjectList(content_panels, heading=_("General")),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
+        ObjectList(general_panels, heading=I18nPage.HEADING_GENERAL),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
     @property
     def formatted_date_of_birth(self):
+        """Format date of birth in human readable string."""
         return format_date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
 
     @property
     def formatted_date_of_death(self):
+        """Format date of death in human readable string."""
         return format_date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
     def full_clean(self, *args, **kwargs):
@@ -703,10 +712,10 @@ class AuthorPage(I18nPage):
         super(AuthorPage, self).full_clean(*args, **kwargs)
 
     def clean(self):
+        """Validate date components of input."""
         super(AuthorPage, self).clean()
         validate_date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
         validate_date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
-
 
     def get_context(self, request, *args, **kwargs):
         """Add more context information on view requests."""
@@ -908,6 +917,7 @@ class LevelPage(I18nPage):
         return super(LevelPage, cls).can_create_at(parent) and not parent.get_children().exact_type(cls)
 
     def serve(self, request, *args, **kwargs):
+        """Defer to the parent pages serve method."""
         return self.get_parent().specific.serve(request, *args, **kwargs)
 
     def get_texts(self):
@@ -929,55 +939,63 @@ class Level1Page(LevelPage):
 
     TEXT_TYPES = ("biography", "works")
 
+    biography_verbose_name = _("Biography")
+    biography_help_text = _("An introductory biography of the author aimed at laymen.")
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         default=[],
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_help_text)
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_help_text)
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_help_text)
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
+    works_verbose_name = _("Literary works")
+    works_help_text = _("An introduction to the works of the author aimed at laymen.")
     works = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Literary works"),
-        help_text=_("An introduction to the works of the author aimed at laymen."))
+        verbose_name=works_verbose_name,
+        help_text=works_help_text)
     works_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Literary works"),
-        help_text=_("An introduction to the works of the author aimed at laymen."))
+        verbose_name=works_verbose_name,
+        help_text=works_help_text)
     works_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Literary works"),
-        help_text=_("An introduction to the works of the author aimed at laymen."))
+        verbose_name=works_verbose_name,
+        help_text=works_help_text)
     i18n_works = TranslatedField("works", "works_de", "works_cs")
 
-    default_panels = [
+    english_panels = [
         StreamFieldPanel("biography"),
-        StreamFieldPanel("works")]
+        StreamFieldPanel("works")
+    ]
     german_panels = [
         StreamFieldPanel("biography_de"),
-        StreamFieldPanel("works_de")]
+        StreamFieldPanel("works_de")
+    ]
     czech_panels = [
         StreamFieldPanel("biography_cs"),
-        StreamFieldPanel("works_cs")]
+        StreamFieldPanel("works_cs")
+    ]
     edit_handler = TabbedInterface([
-        ObjectList(default_panels, heading=_("English"), classname="i18n en"),
-        ObjectList(german_panels, heading=_("German"), classname="i18n de"),
-        ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)
+    ])
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
@@ -1003,21 +1021,23 @@ class Level2Page(LevelPage):
 
     TEXT_TYPES = ("biography", "works", "reception", "connections", "full_texts")
 
+    biography_verbose_name = _("Biography")
+    biography_help_text = _("An introductory biography of the author aimed at laymen.")
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_verbose_name)
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_help_text)
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Biography"),
-        help_text=_("An introductory biography of the author aimed at laymen."))
+        verbose_name=biography_verbose_name,
+        help_text=biography_help_text)
     i18n_biography = TranslatedField("biography", "biography_de", "biography_cs")
 
     works = StreamField(
@@ -1054,43 +1074,50 @@ class Level2Page(LevelPage):
         help_text=_("A more in-depth description for interested users on how the author has been received."))
     i18n_reception = TranslatedField("reception", "reception_de", "reception_cs")
 
-    connections_help_text = _("A short description of important connections (i.e. people) that have been mentioned in the text.")
+    connections_verbose_name = _("Connections")
+    connections_help_text = _(
+        "A short description of important connections (i.e. people) that have been mentioned in the text."
+    )
     connections = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Connections"),
+        verbose_name=connections_verbose_name,
         help_text=connections_help_text)
     connections_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Connections"),
+        verbose_name=connections_verbose_name,
         help_text=connections_help_text)
     connections_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Connections"),
+        verbose_name=connections_verbose_name,
         help_text=connections_help_text)
     i18n_connections = TranslatedField("connections", "connections_de", "connections_cs")
 
-    full_texts_help_text = _("Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in the text about the author.")
+    full_texts_verbose_name = _("Full texts")
+    full_texts_help_text = _(
+        "Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in "
+        "the text about the author."
+    )
     full_texts = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Full texts"),
+        verbose_name=full_texts_verbose_name,
         help_text=full_texts_help_text)
     full_texts_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Full texts"),
+        verbose_name=full_texts_verbose_name,
         help_text=full_texts_help_text)
     full_texts_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Full texts"),
+        verbose_name=full_texts_verbose_name,
         help_text=full_texts_help_text)
     i18n_full_texts = TranslatedField("full_texts", "full_texts_de", "full_texts_cs")
 
-    default_panels = [
+    english_panels = [
         StreamFieldPanel("biography"),
         StreamFieldPanel("works"),
         StreamFieldPanel("reception"),
@@ -1110,10 +1137,10 @@ class Level2Page(LevelPage):
         StreamFieldPanel("full_texts_cs")]
 
     edit_handler = TabbedInterface([
-        ObjectList(default_panels, heading=_("English"), classname="i18n en"),
-        ObjectList(german_panels, heading=_("German"), classname="i18n de"),
-        ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
@@ -1139,62 +1166,79 @@ class Level3Page(LevelPage):
 
     TEXT_TYPES = ("primary_literature", "testimony", "secondary_literature")
 
+    primary_literature_verbose_name = _("Primary literature")
+    primary_literature_help_text = _(
+        "A more in-depth presentation of primary literature of the author for an academic user."
+    )
     primary_literature = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Primary literature"),
-        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
+        verbose_name=primary_literature_verbose_name,
+        help_text=primary_literature_help_text
+    )
     primary_literature_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Primary literature"),
-        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
+        verbose_name=primary_literature_verbose_name,
+        help_text=primary_literature_help_text
+    )
     primary_literature_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Primary literature"),
-        help_text=_("A more in-depth presentation of primary literature of the author for an academic user."))
+        verbose_name=primary_literature_verbose_name,
+        help_text=primary_literature_help_text
+    )
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
-    testimony_help_text = _("Extant documents about the author by other people, e.g. correspondence with the author, lecture notes.")
+    testimony_verbose_name = _("Testimony")
+    testimony_help_text = _(
+        "Extant documents about the author by other people, e.g. correspondence with the author, lecture notes."
+    )
     testimony = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Testimony"),
-        help_text=testimony_help_text)
+        verbose_name=testimony_verbose_name,
+        help_text=testimony_help_text
+    )
     testimony_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Testimony"),
-        help_text=testimony_help_text)
+        verbose_name=testimony_verbose_name,
+        help_text=testimony_help_text
+    )
     testimony_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Testimony"),
-        help_text=testimony_help_text)
+        verbose_name=testimony_verbose_name,
+        help_text=testimony_help_text
+    )
     i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
 
+    secondary_literature_verbose_name = _("Secondary literature")
+    secondary_literature_help_text = _(
+        "Further secondary literature about the author and his works aimed at academic users."
+    )
     secondary_literature = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Secondary literature"),
-        help_text=_("Further secondary literature about the author and his works aimed at academic users."))
+        verbose_name=secondary_literature_verbose_name,
+        help_text=secondary_literature_help_text)
     secondary_literature_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Secondary literature"),
-        help_text=_("Further secondary literature about the author and his works aimed at academic users."))
+        verbose_name=secondary_literature_verbose_name,
+        help_text=secondary_literature_help_text)
     secondary_literature_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Secondary literature"),
-        help_text=_("Further secondary literature about the author and his works aimed at academic users."))
+        verbose_name=secondary_literature_verbose_name,
+        help_text=secondary_literature_help_text)
     i18n_secondary_literature = TranslatedField(
         "secondary_literature",
         "secondary_literature_de",
         "secondary_literature_cs")
 
-    default_panels = [
+    english_panels = [
         StreamFieldPanel("primary_literature"),
         StreamFieldPanel("testimony"),
         StreamFieldPanel("secondary_literature")]
@@ -1207,10 +1251,10 @@ class Level3Page(LevelPage):
         StreamFieldPanel("testimony_cs"),
         StreamFieldPanel("secondary_literature_cs")]
     edit_handler = TabbedInterface([
-        ObjectList(default_panels, heading=_("English"), classname="i18n en"),
-        ObjectList(german_panels, heading=_("German"), classname="i18n de"),
-        ObjectList(czech_panels, heading=_("Czech"), classname="i18n cz"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
@@ -1324,10 +1368,10 @@ class LocationPage(I18nPage):
         index.SearchField("directions_de"),
         index.SearchField("directions_cs")]
 
-    default_panels = [
-        FieldPanel("title", classname="full title"),
+    general_panels = [
         ImageChooserPanel("title_image"),
         PageChooserPanel("location_type", "cms.LocationTypePage"),
+        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
         InlinePanel(
             "contacts",
             label=_("Contact information"),
@@ -1338,23 +1382,26 @@ class LocationPage(I18nPage):
                 FieldPanel("name"),
                 FieldPanel("name_de"),
                 FieldPanel("name_cs")]),
+    ]
+    english_panels = I18nPage.english_panels + [
         FieldPanel("address"),
         FieldPanel("directions"),
-        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
-    german_panels = [
-        FieldPanel("title_de", classname="full title"),
+    german_panels = I18nPage.german_panels + [
         FieldPanel("address_de"),
-        FieldPanel("directions_de")]
-    czech_panels = [
-        FieldPanel("title_cs", classname="full title"),
+        FieldPanel("directions_de"),
+    ]
+    czech_panels = I18nPage.czech_panels + [
         FieldPanel("address_cs"),
-        FieldPanel("directions_cs")]
+        FieldPanel("directions_cs"),
+    ]
     edit_handler = TabbedInterface([
-        ObjectList(default_panels, heading=_("English")),
-        ObjectList(german_panels, heading=_("German"), classname="i18n en"),
-        ObjectList(czech_panels, heading=_("Czech"), classname="i18n de"),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
+        ObjectList(general_panels, heading=I18nPage.HEADING_GENERAL),
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)
+    ])
 
     def __str__(self):
         return self.i18n_title
@@ -1406,44 +1453,65 @@ class MemorialSitePage(I18nPage):
         related_name='+',
         verbose_name=_("Title image"),
         help_text=_("A meaningful image that will be used to present the memorial site to the user."))
+
+    introduction_features = ["bold", "italic", "strikethrough"]
+    introduction_verbose_name = _("Introduction")
+    introduction_help_text = _("A short introduction text.")
+    introduction = RichTextField(
+        blank=True,
+        features=introduction_features,
+        verbose_name=introduction_verbose_name,
+        help_text=introduction_help_text)
+    introduction_de = RichTextField(
+        blank=True,
+        features=introduction_features,
+        verbose_name=introduction_verbose_name,
+        help_text=introduction_help_text)
+    introduction_cs = RichTextField(
+        blank=True,
+        features=introduction_features,
+        verbose_name=introduction_verbose_name,
+        help_text=introduction_help_text)
+    i18n_description = TranslatedField("introduction", "introduction_de", "introduction_cs")
+
     description = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Description"),
+        verbose_name=_("I. Memorial site"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
     description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Description"),
+        verbose_name=_("I. Memorial site"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
     description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Description"),
+        verbose_name=_("I. Memorial site"),
         help_text=_("A description of the memorial site and its significance to the referenced authors."))
     i18n_description = TranslatedField("description", "description_de", "description_cs")
 
     detailed_description = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Detailed description"),
+        verbose_name=_("II. Memorial site"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     detailed_description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Detailed description"),
+        verbose_name=_("II. Memorial site"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     detailed_description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=_("Detailed description"),
+        verbose_name=_("II. Memorial site"),
         help_text=_("A detailed description of the memorial site and its significance to the referenced authors."))
     i18n_detailed_description = TranslatedField(
         "detailed_description",
         "detailed_description_de",
         "detailed_description_cs")
 
-    default_panels = [
+    general_panels = [
         ImageChooserPanel("title_image"),
         InlinePanel(
             "authors",
@@ -1451,29 +1519,25 @@ class MemorialSitePage(I18nPage):
             min_num=1,
             help_text=_("The authors that this memorial site is dedicated to."),
             panels=[PageChooserPanel("author", "cms.AuthorPage")]),
+    ]
+    english_panels = I18nPage.english_panels + [
+        FieldPanel("introduction"),
         StreamFieldPanel("description"),
         StreamFieldPanel("detailed_description")]
-    german_panels = [
+    german_panels = I18nPage.german_panels + [
+        FieldPanel("introduction_de"),
         StreamFieldPanel("description_de"),
         StreamFieldPanel("detailed_description_de")]
-    czech_panels = [
+    czech_panels = I18nPage.czech_panels + [
+        FieldPanel("introduction_cs"),
         StreamFieldPanel("description_cs"),
-        StreamFieldPanel("detailed_description_de")]
+        StreamFieldPanel("detailed_description_cs")]
     edit_handler = TabbedInterface([
-        ObjectList(default_panels, heading=_("English")),
-        ObjectList(german_panels, heading=_("German")),
-        ObjectList(czech_panels, heading=_("Czech")),
-        ObjectList(I18nPage.meta_panels, heading=_("Meta information"))])
-
-    def full_clean(self, *args, **kwargs):
-        """Set the title of the page to the authors name that are referenced by the memorial."""
-        self.title = ", ".join([x.author.title for x in self.authors.all()])
-        self.title_de = ", ".join([x.author.title_de for x in self.authors.all()])
-        self.title_cs = ", ".join([x.author.title_cs for x in self.authors.all()])
-        super(MemorialSitePage, self).full_clean(*args, **kwargs)
-
-    def __str__(self):
-        return f"{_('Memorial site')} {super(MemorialSitePage, self).__str__()}"
+        ObjectList(general_panels, heading=I18nPage.HEADING_GENERAL),
+        ObjectList(english_panels, heading=I18nPage.HEADING_ENGLISH),
+        ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
+        ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
+        ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
     class Meta:
         verbose_name = _("Memorial site")

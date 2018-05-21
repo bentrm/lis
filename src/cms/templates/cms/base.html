@@ -1,4 +1,7 @@
-{% load static i18n wagtailuserbar %}
+{% load static %}
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailuserbar %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,6 +67,23 @@
     {% block content %}
 
       {% block content_heading %}
+      {% if page.get_ancestors|length > 1 %}
+      <div class="row">
+        <div class="col-12">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              {% for page in page.get_ancestors.specific %}
+              {% if not page.is_root %}
+              <li class="breadcrumb-item"><a href="{% pageurl page %}">{{ page }}</a></li>
+              {% endif %}
+              {% endfor %}
+              <li class="breadcrumb-item active" aria-current="page">{{ page }}</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      {% endif %}
+
       <div class="row">
         <div class="col-12">
           <h1 class="display-1">{{ page }}</h1>

@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="col-8">
+  {% with date_of_birth=author.formatted_date_of_birth date_of_death=author.formatted_date_of_death %}
+
+  {% if date_of_birth %}
+  <p>{% trans 'Date of birth' %}: {{date_of_birth}}</p>
+  {% endif %}
+
+  {% if date_of_death %}
+  <p>{% trans 'Date of death' %}: {{date_of_death}}</p>
+  {% endif %}
+
+  {% endwith %}
+
+  {% if author.author_languages.all %}
+  <p>{% trans 'Languages' %}:
+    {% for author_language in author.author_languages.all %}
+    <span class="badge badge-pill badge-secondary mr-1">{{author_language}}</span>
+    {% endfor %}
+  </p>
+  {% endif %}
+
+  {% if author.author_literary_categories.all %}
+  <p>{% trans 'Categories' %}: {% for cat in author.author_literary_categories.all %}<span class="badge badge-pill badge-secondary mr-1">{{cat}}</span>{% endfor %}</p>
+  {% endif %}
+
+  {% if author.author_literary_periods.all %}
+  <p>{% trans 'Literary periods' %}: {% for per in author.author_literary_periods.all %}<span class="badge badge-pill badge-secondary mr-1">{{per}}</span>{% endfor %}</p>
+  {% endif %}
+</div>
+
+<div class="col-4">
+  {% image author.title_image fill-200x200 as tmp_image %}
+  <figure class="figure">
+    <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+    <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+  </figure>
+</div>
