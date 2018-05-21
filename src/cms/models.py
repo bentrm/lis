@@ -239,6 +239,8 @@ class I18nPage(Page):
         (ORIGINAL_LANGUAGE_GERMAN, _("German")),
         (ORIGINAL_LANGUAGE_CZECH, _("Czech")))
 
+    RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough"]
+
     is_creatable = False
     icon_class = "fas fa-file"
 
@@ -465,16 +467,19 @@ class LiteraryPeriodPage(I18nPage):
 
     description_verbose_name = _("Description")
     description_help_text = _("A general description of the literary period and its significance.")
-    description = models.TextField(
+    description = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=description_verbose_name,
         help_text=description_help_text)
-    description_de = models.TextField(
+    description_de = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=description_verbose_name,
         help_text=description_help_text)
-    description_cs = models.TextField(
+    description_cs = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=description_verbose_name,
         help_text=description_help_text)
     i18n_description = TranslatedField("description", "description_de", "description_cs")
@@ -1331,30 +1336,36 @@ class LocationPage(I18nPage):
         related_name="locations",
         verbose_name=_("Type of location"))
 
-    address = models.TextField(
+    address = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("Address"),
         help_text=_("The postal address of the location if any."))
-    address_de = models.TextField(
+    address_de = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("Address"),
         help_text=_("The postal address of the location if any."))
-    address_cs = models.TextField(
+    address_cs = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("Address"),
         help_text=_("The postal address of the location if any."))
     i18n_address = TranslatedField("address", "address_de", "address_cs")
 
-    directions = models.TextField(
+    directions = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("How to get there"),
         help_text=_("A short description of directions to find the location."))
-    directions_de = models.TextField(
+    directions_de = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("How to get there"),
         help_text=_("A short description of directions to find the location."))
-    directions_cs = models.TextField(
+    directions_cs = RichTextField(
         blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("How to get there"),
         help_text=_("A short description of directions to find the location."))
     i18n_directions = TranslatedField("directions", "directions_de", "directions_cs")
@@ -1454,22 +1465,21 @@ class MemorialSitePage(I18nPage):
         verbose_name=_("Title image"),
         help_text=_("A meaningful image that will be used to present the memorial site to the user."))
 
-    introduction_features = ["bold", "italic", "strikethrough"]
     introduction_verbose_name = _("Introduction")
     introduction_help_text = _("A short introduction text.")
     introduction = RichTextField(
         blank=True,
-        features=introduction_features,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=introduction_verbose_name,
         help_text=introduction_help_text)
     introduction_de = RichTextField(
         blank=True,
-        features=introduction_features,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=introduction_verbose_name,
         help_text=introduction_help_text)
     introduction_cs = RichTextField(
         blank=True,
-        features=introduction_features,
+        features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=introduction_verbose_name,
         help_text=introduction_help_text)
     i18n_description = TranslatedField("introduction", "introduction_de", "introduction_cs")

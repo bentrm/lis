@@ -50,7 +50,7 @@ services:
       - discovery.type=single-node
 
   django:
-    image: registry.gitlab.com/bentrm/lis:latest
+    image: registry.gitlab.com/bentrm/lis:0.1.0
     tty: true
     deploy:
       restart_policy:
