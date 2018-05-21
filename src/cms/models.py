@@ -1287,20 +1287,6 @@ class LocationPage(I18nPage):
         related_name="locations",
         verbose_name=_("Type of location"))
 
-    description = models.TextField(
-        blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A short general description of the location without any relation to specific authors."))
-    description_de = models.TextField(
-        blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A short general description of the location without any relation to specific authors."))
-    description_cs = models.TextField(
-        blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A short general description of the location without any relation to specific authors."))
-    i18n_description = TranslatedField("description", "description_de", "description_cs")
-
     address = models.TextField(
         blank=True,
         verbose_name=_("Address"),
@@ -1334,9 +1320,6 @@ class LocationPage(I18nPage):
         help_text=_("The actual geographic location."))
 
     search_fields = I18nPage.search_fields + [
-        index.SearchField("description"),
-        index.SearchField("description_de"),
-        index.SearchField("description_cs"),
         index.SearchField("directions"),
         index.SearchField("directions_de"),
         index.SearchField("directions_cs")]
@@ -1355,19 +1338,16 @@ class LocationPage(I18nPage):
                 FieldPanel("name"),
                 FieldPanel("name_de"),
                 FieldPanel("name_cs")]),
-        FieldPanel("description"),
         FieldPanel("address"),
         FieldPanel("directions"),
         FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
     german_panels = [
         FieldPanel("title_de", classname="full title"),
-        FieldPanel("description_de"),
         FieldPanel("address_de"),
         FieldPanel("directions_de")]
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
-        FieldPanel("description_cs"),
         FieldPanel("address_cs"),
         FieldPanel("directions_cs")]
     edit_handler = TabbedInterface([
