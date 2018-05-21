@@ -8,10 +8,13 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.core import urls as wagtail_urls
 
+from cms import views as cms_views
+
 from search import views as search_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
+    re_path(r'^signup/$', cms_views.SignupView.as_view(), name="signup"),
     path("i18n/", include("django.conf.urls.i18n")),
     re_path(r"^search/$", search_views.search, name="search"),
     re_path(r"^cms/", include(wagtailadmin_urls)),
