@@ -4,45 +4,100 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>
     {% block title %}
       {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
     {% endblock %}
   </title>
-  <meta name="description" content="" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   {% block head %}
     {% block css %}
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+      <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% endblock %}
   {% endblock %}
 </head>
 <body>
 {% wagtailuserbar %}
 
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+
 {% block body %}
-  <div class="container">
-
+  <div class="container-fluid">
     {% block header %}
-      <h1 class="display-1">
-        {% include "cms/includes/logo.html" %}
-        LIS
-      </h1>
+    <div class="row">
+      <div class="col">
+        <nav class="navbar navbar-light bg-light my-4">
+          <a class="navbar-brand" href="/">
+            <span class="d-inline-block fa-4x">{% include "cms/includes/logo.html" %}</span>
+            <span class="display-1">LIS</span>
+          </a>
+          <div class="float-right">
+            <div>
+              <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}" />
+                {% for language in languages %}
+                    <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
+                        {{ language.code }}
+                    </button>
+                {% endfor %}
+              </form>
+            </div>
+
+            {% if request.is_preview %}
+              <span class="badge badge-warning">{% trans "Preview" %}</span>
+            {% endif %}
+            <a href="/cms" class="badge badge-light">{% trans "Admin" %}</a>
+          </div>
+        </nav>
+      </div>
+    </div>
     {% endblock %}
+  </div>
 
-    {% block content %}{% endblock %}
+  <div class="container">
+    {% block content %}
 
+      {% block content_heading %}
+      <div class="row">
+        <div class="col-12">
+          <h1 class="display-1">{{ page }}</h1>
+        </div>
+      </div>
+      {% endblock %}
+
+      {% block content_main %}
+      <div class="col-12">
+        <div class="list-group list-group-flush">
+          {% for child_page in child_pages %}
+          <a href="{{ child_page.url }}" class="list-group-item list-group-item-action">
+            <i class="{{child_page.icon_class}}"></i> {{ child_page }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endblock %}
+
+      {% block content_footer %}{% endblock %}
+    {% endblock %}
+  </div>
+
+  <div class="container-fluid">
     {% block footer %}{% endblock %}
   </div>
 {% endblock %}
 
 {% block js %}
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <script defer src="{% static "vendor/fontawesome/js/fontawesome-all.js" %}"></script>
+<script src="{% static 'vendor/jquery/js/jquery-3.3.1.slim.min.js' %}"></script>
+<script src="{% static 'vendor/popper/js/popper.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static "vendor/holder/js/holder.min.js" %}"></script>
+<script defer src="{% static "vendor/fontawesome/js/fontawesome-all.js" %}"></script>
 {% endblock %}
 </body>
 </html>
