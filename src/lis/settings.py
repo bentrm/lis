@@ -21,7 +21,7 @@ def env(NAME, default=""):
     return os.environ.get(NAME, default)
 
 
-CMS_VERSION = "0.1.0"
+CMS_VERSION = env("CMS_VERSION", default="0.0.1")
 
 
 # Build paths inside the project like this: os.path.join(SRC_DIR, ...)
@@ -222,7 +222,7 @@ MAP_WIDGETS = {
         ("mapCenterLocationName", "Dresden"),
         ("markerFitZoom", 12),
     ),
-    "GOOGLE_MAP_API_KEY": "***KEY***"
+    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY")
 }
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -

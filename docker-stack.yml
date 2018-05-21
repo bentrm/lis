@@ -69,28 +69,30 @@ services:
       - static:/html/static
       - media:/html/media
     environment:
-      VIRTUAL_HOST: ***HOST***
-      VIRTUAL_PATH: /
-      LETSENCRYPT_HOST: ***HOST***
-      LETSENCRYPT_EMAIL: ***EMAIL***
-      SECRET_KEY: ***SECRET***
-      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
-      EMAIL_HOST: ***HOST***
-      EMAIL_HOST_USER: ***EMAIL***
-      EMAIL_HOST_PASSWORD: ***PASSWORD***
-      EMAIL_USE_TLS: 1
-      EMAIL_USE_SSL: 0
-      DEFAULT_FROM_EMAIL: ***EMAIL***
+      CMS_VERSION: 0.1.0
       DB_ENGINE: django.contrib.gis.db.backends.postgis
-      DB_NAME: django
-      DB_USER: django
-      DB_PASSWORD: ***PASSWORD***
       DB_HOST: db
+      DB_NAME: django
+      DB_PASSWORD: ***PASSWORD***
       DB_PORT: 5432
-      STATIC_ROOT: /html/static
-      STATIC_URL: /static/
+      DB_USER: django
+      DEFAULT_FROM_EMAIL: ***EMAIL***
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      EMAIL_HOST_PASSWORD: ***PASSWORD***
+      EMAIL_HOST_USER: ***EMAIL***
+      EMAIL_HOST: ***HOST***
+      EMAIL_USE_SSL: 0
+      EMAIL_USE_TLS: 1
+      GOOGLE_MAP_API_KEY: ***KEY***
+      LETSENCRYPT_EMAIL: ***EMAIL***
+      LETSENCRYPT_HOST: ***HOST***
       MEDIA_ROOT: /html/media
       MEDIA_URL: /media/
+      SECRET_KEY: ***SECRET***
+      STATIC_ROOT: /html/static
+      STATIC_URL: /static/
+      VIRTUAL_HOST: ***HOST***
+      VIRTUAL_PATH: /
     depends_on:
       - db
       - elasticsearch
