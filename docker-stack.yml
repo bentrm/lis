@@ -50,7 +50,7 @@ services:
       - discovery.type=single-node
 
   django:
-    image: registry.gitlab.com/bentrm/lis:0.1.0
+    image: registry.gitlab.com/bentrm/lis:0.1.1
     tty: true
     deploy:
       restart_policy:
@@ -69,7 +69,7 @@ services:
       - static:/html/static
       - media:/html/media
     environment:
-      CMS_VERSION: 0.1.0
+      CMS_VERSION: 0.1.1
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_HOST: db
       DB_NAME: django

@@ -78,6 +78,7 @@ class TranslatedField(object):
             return getattr(instance, self.de_field) or default_value
         elif lang == "cs":
             return getattr(instance, self.cs_field) or default_value
+        return default_value
 
 
 class Media(models.Model):
@@ -174,7 +175,7 @@ class Media(models.Model):
     ]
 
     def __str__(self):
-        return self.i18n_title
+        return str(self.i18n_title)
 
     class Meta:
         abstract = True
@@ -308,7 +309,6 @@ class I18nPage(Page):
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
-        print(self.draft_title_cs)
         return self.i18n_draft_title or self.i18n_title
 
     def full_clean(self, *args, **kwargs):
@@ -359,7 +359,7 @@ class I18nPage(Page):
         return revision
 
     def __str__(self):
-        return self.i18n_title
+        return str(self.i18n_title)
 
 
 class CategoryPage(I18nPage):
@@ -379,7 +379,7 @@ class CategoryPage(I18nPage):
 
     def get_context(self, request):
         """Add child pages into the pages context."""
-        context = super().get_context(request)
+        context = super(CategoryPage, self).get_context(request)
         child_pages = self.get_children().specific().live()
 
         context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
@@ -1351,7 +1351,7 @@ class LocationPage(I18nPage):
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_("Address"),
         help_text=_("The postal address of the location if any."))
-    i18n_address = TranslatedField("address", "address_de", "address_cs")
+    i18n_address = TranslatedField("address", "address_de", "address_cs", default_field="address")
 
     directions = RichTextField(
         blank=True,
@@ -1414,8 +1414,12 @@ class LocationPage(I18nPage):
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)
     ])
 
-    def __str__(self):
-        return self.i18n_title
+    def get_context(self, request):
+        """Add child pages into the pages context."""
+        context = super(LocationPage, self).get_context(request)
+        child_pages = self.get_children().specific().live()
+        context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
+        return context
 
     class Meta:
         verbose_name = _("Location")
@@ -1453,7 +1457,6 @@ class MemorialSitePage(I18nPage):
     """A memorial reference between a geographic location and an author."""
 
     icon_class = "fas fa-sign"
-
     parent_page_types = ["LocationPage"]
 
     title_image = models.ForeignKey(

@@ -1,4 +1,26 @@
 {% extends "cms/base.html" %}
-{% load i18n %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% block content_main %}
+<div class="row">
+  {% if page.i18n_address %}
+  <div class="col-12">
+    <address>{{page.i18n_address|richtext}}</address>
+  </div>
+  {% endif %}
+
+  {% if page.i18n_directions %}
+  <div class="col-8">
+    {{page.i18n_directions|richtext}}
+  </div>
+  {% endif %}
+
+  <div class="col-4">
+    {% image page.title_image fill-400x200 as tmp_image %}
+    <figure class="figure">
+      <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+      <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+    </figure>
+  </div>
+</div>
+{% endblock %}

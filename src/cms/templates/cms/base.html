@@ -12,7 +12,7 @@
 
   <title>
     {% block title %}
-      {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+      {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}{% endif %}
     {% endblock %}
   </title>
 
