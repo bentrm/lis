@@ -38,19 +38,34 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.5'
-          memory: 512M
+          cpus: '1'
+          memory: 1024M
     networks:
       - lis
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m -server"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m -server"
       - cluster.name=lis-cluster
       - discovery.type=single-node
 
+  cache:
+    image: memcached:alpine
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: '.25'
+          memory: 256M
+    networks:
+      - lis
+
   django:
-    image: registry.gitlab.com/bentrm/lis:0.1.1
+    image: registry.gitlab.com/bentrm/lis:0.1.2
     tty: true
     deploy:
       restart_policy:
@@ -69,7 +84,7 @@ services:
       - static:/html/static
       - media:/html/media
     environment:
-      CMS_VERSION: 0.1.1
+      CMS_VERSION: 0.1.2
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_HOST: db
       DB_NAME: django

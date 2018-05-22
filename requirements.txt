@@ -4,4 +4,5 @@ Django==2.0.2
 elasticsearch>=5.0.0,<6.0.0
 gunicorn==19.7.1
 psycopg2==2.7.4
+python-memcached==1.59
 wagtail>=2.0.0,<2.1.0

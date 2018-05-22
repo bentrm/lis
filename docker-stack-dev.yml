@@ -48,6 +48,21 @@ services:
       - cluster.name=lis-cluster
       - discovery.type=single-node
 
+  cache:
+    image: memcached:alpine
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 0s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: '.25'
+          memory: 256M
+    ports:
+      - 11211:11211
+
   django:
     image: registry.gitlab.com/bentrm/lis:latest
     tty: true
