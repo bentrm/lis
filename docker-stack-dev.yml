@@ -74,7 +74,7 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.5'
+          cpus: '1'
           memory: 512M
     ports:
       - 8000:8000
@@ -88,7 +88,6 @@ services:
         source: ./src
         target: /src
     environment:
-      CMS_VERSION: latest
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_HOST: db
       DB_NAME: django
