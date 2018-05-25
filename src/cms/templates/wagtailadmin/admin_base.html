@@ -23,7 +23,7 @@
                 IMAGES: '{% url "wagtailadmin_api_v1:images:listing" %}',
                 {# // Use this to add an extra query string on all API requests. #}
                 {# // Example value: '&order=-id' #}
-                EXTRA_CHILDREN_PARAMETERS: '',
+                EXTRA_CHILDREN_PARAMETERS: '&order=title',
             };
 
             wagtailConfig.STRINGS = {
