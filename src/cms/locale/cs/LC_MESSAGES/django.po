@@ -4,7 +4,6 @@
 # Eva Mikešová <emikesova@gmail.com>, 2018.
 # Marie Holá <marie.hola@tul.cz>, 2018.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0\n"
