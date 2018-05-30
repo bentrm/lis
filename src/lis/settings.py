@@ -67,8 +67,8 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "home",
     "cms",
-    "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

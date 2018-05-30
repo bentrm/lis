@@ -1,8 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.conf import settings
-from django.urls import include, re_path, path
-from django.contrib import admin
+from django.urls import include, path
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -10,16 +9,19 @@ from wagtail.core import urls as wagtail_urls
 
 from cms import views as cms_views
 
-from search import views as search_views
-
 urlpatterns = [
-    path("django-admin/", admin.site.urls),
-    re_path(r'^signup/$', cms_views.SignupView.as_view(), name="signup"),
+    # django
     path("i18n/", include("django.conf.urls.i18n")),
-    re_path(r"^search/$", search_views.search, name="search"),
-    re_path(r"^cms/", include(wagtailadmin_urls)),
-    re_path(r"^documents/", include(wagtaildocs_urls)),
-    re_path(r"^", include(wagtail_urls)),
+
+    # wagtail
+    path("cms/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+
+    # cms
+    path("signup/", cms_views.SignupView.as_view(), name="signup"),
+    path("demo/", include(wagtail_urls)),
+
+    path("", include("home.urls")),
 ]
 
 

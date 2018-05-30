@@ -1,124 +1,61 @@
-{% load static %}
+{% extends "base.html" %}
+
 {% load i18n %}
-{% load wagtailcore_tags %}
+{% load staticfiles %}
 {% load wagtailuserbar %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="description" content="" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% load wagtailcore_tags %}
 
-  <title>
-    {% block title %}
-      {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}{% endif %}
-    {% endblock %}
-  </title>
-
-  {% block head %}
-    {% block css %}
-      <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-      <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    {% endblock %}
-  {% endblock %}
-</head>
-<body>
-{% wagtailuserbar %}
-
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_language_info_list for LANGUAGES as languages %}
-
-{% block body %}
-  <div class="container-fluid">
-    {% block header %}
-    <div class="row">
-      <div class="col">
-        <nav class="navbar navbar-light bg-light my-4">
-          <a class="navbar-brand" href="/">
-            <span class="d-inline-block fa-4x">{% include "cms/includes/logo.html" %}</span>
-            <span class="display-1">LIS</span>
-          </a>
-          <div class="float-right">
-            <div>
-              <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
-                <input name="next" type="hidden" value="{{ redirect_to }}" />
-                {% for language in languages %}
-                    <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
-                        {{ language.code }}
-                    </button>
-                {% endfor %}
-              </form>
-            </div>
-
-            {% if request.is_preview %}
-              <span class="badge badge-warning">{% trans "Preview" %}</span>
-            {% endif %}
-            <a href="/cms" class="badge badge-light">{% trans "Admin" %}</a>
-          </div>
-        </nav>
-      </div>
-    </div>
-    {% endblock %}
-  </div>
-
-  <div class="container">
-    {% block content %}
-
-      {% block content_heading %}
-      {% if page.get_ancestors|length > 1 %}
-      <div class="row">
-        <div class="col-12">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              {% for page in page.get_ancestors.specific %}
-              {% if not page.is_root %}
-              <li class="breadcrumb-item"><a href="{% pageurl page %}">{{ page }}</a></li>
-              {% endif %}
-              {% endfor %}
-              <li class="breadcrumb-item active" aria-current="page">{{ page }}</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-      {% endif %}
-
-      <div class="row">
-        <div class="col-12">
-          <h1 class="display-1">{{ page }}</h1>
-        </div>
-      </div>
-      {% endblock %}
-
-      {% block content_main %}
-      <div class="col-12">
-        <div class="list-group list-group-flush">
-          {% for child_page in child_pages %}
-          <a href="{{ child_page.url }}" class="list-group-item list-group-item-action">
-            <i class="{{child_page.icon_class}}"></i> {{ child_page }}
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-      {% endblock %}
-
-      {% block content_footer %}{% endblock %}
-    {% endblock %}
-  </div>
-
-  <div class="container-fluid">
-    {% block footer %}{% endblock %}
-  </div>
+{% block title %}
+Demo: {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}{% endif %}
 {% endblock %}
 
-{% block js %}
-<script src="{% static 'vendor/jquery/js/jquery-3.3.1.slim.min.js' %}"></script>
-<script src="{% static 'vendor/popper/js/popper.min.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
-<script src="{% static 'js/footnotes.js' %}"></script>
-<script defer src="{% static "vendor/fontawesome/js/fontawesome-all.js" %}"></script>
+{% block css %}
+{{block.super}}
+<link rel="stylesheet" href="{% static 'css/cms/base.css' %}">
 {% endblock %}
-</body>
-</html>
+
+{% block body_extra %}{% wagtailuserbar %}{% endblock %}
+
+{% block header_extra %}
+{% if request.is_preview %}
+  <span class="badge badge-warning">{% trans "Preview" %}</span>
+{% endif %}
+<a href="/cms" class="badge badge-light">{% trans "Admin" %}</a>
+{% endblock %}
+
+{% block content_heading %}
+{% if page.get_ancestors|length > 1 %}
+<div class="row">
+  <div class="col-12">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        {% for page in page.get_ancestors.specific %}
+        {% if not page.is_root %}
+        <li class="breadcrumb-item"><a href="{% pageurl page %}">{{ page }}</a></li>
+        {% endif %}
+        {% endfor %}
+        <li class="breadcrumb-item active" aria-current="page">{{ page }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endif %}
+
+<div class="row">
+  <div class="col-12">
+    <h1 class="display-1">{{ page }}</h1>
+  </div>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="col-12">
+  <div class="list-group list-group-flush">
+    {% for child_page in child_pages %}
+    <a href="{{ child_page.url }}" class="list-group-item list-group-item-action">
+      <i class="{{child_page.icon_class}}"></i> {{ child_page }}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
