@@ -4,8 +4,6 @@
 
 <section class="row">
 
-  {% if value.images %}
-
   <div class="col-8">
     <div class="row">
       <div class="col-12">
@@ -16,50 +14,32 @@
       </div>
 
       {% if value.footnotes %}
-      <div class="col-12">
+      <footer class="col-12 footnotes">
         <ol>
         {% for footnote in value.footnotes %}
           {% include_block footnote %}
         {% endfor %}
         </ol>
-      </div>
+      </footer>
       {% endif %}
     </div>
+
   </div>
 
   <div class="col-4">
     <div class="row">
       {% for image in value.images %}
-        <div class="col-12">
+        <div class="col-12 mb-4">
           {% image image fill-350x350 as tmp_image %}
-          <figure class="figure">
-            <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+          <figure class="figure w-100">
+            <img src="{{ tmp_image.url }}" class="figure-img img-fluid w-100 rounded" alt="{{ tmp_image.alt }}">
+            {% if tmp_image.image.i18n_caption %}
             <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+            {% endif %}
           </figure>
         </div>
       {% endfor %}
     </div>
   </div>
-
-  {% else %}
-
-  <div class="col-12">
-    {% if value.heading %}
-    <h4>{{ value.heading }}</h4>
-    {% endif %}
-    {% include_block value.content %}
-  </div>
-
-  {% if value.footnotes %}
-  <div class="col-12">
-    <ol>
-    {% for footnote in value.footnotes %}
-      {% include_block footnote %}
-    {% endfor %}
-    </ol>
-  </div>
-  {% endif %}
-
-  {% endif %}
 
 </section>

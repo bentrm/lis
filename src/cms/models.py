@@ -3,6 +3,8 @@
 import logging
 import datetime
 
+from collections import namedtuple
+
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -35,7 +37,11 @@ EDITOR_FEATURES = [
     "ul",
     "hr",
     "blockquote",
-    "link"]
+    "link",
+]
+
+
+TextType = namedtuple("TextType", ["field", "heading"])
 
 
 def validate_date(year=None, month=None, day=None):
@@ -914,7 +920,7 @@ class LevelPage(I18nPage):
 
     parent_page_types = ["AuthorPage"]
 
-    TEXT_TYPES = ()
+    text_types = ()
 
     @classmethod
     def can_create_at(cls, parent):
@@ -928,11 +934,10 @@ class LevelPage(I18nPage):
     def get_texts(self):
         """Return the text type fields of the page as an iterable."""
         texts = []
-        for text_type in self.TEXT_TYPES:
-            attr = "i18n_" + text_type
-            prop = getattr(self, attr, None)
+        for text_type in self.text_types:
+            prop = getattr(self, text_type.field, None)
             if prop:
-                texts.append((_(text_type.capitalize()), prop))
+                texts.append((text_type.heading, prop))
         return texts
 
     class Meta:
@@ -942,7 +947,10 @@ class LevelPage(I18nPage):
 class Level1Page(LevelPage):
     """The 'Discover' page of the LIS domain."""
 
-    TEXT_TYPES = ("biography", "works")
+    text_types = (
+        TextType("i18n_biography", _("Biography")),
+        TextType("i18n_works", _("Literary works")),
+    )
 
     biography_verbose_name = _("Biography")
     biography_help_text = _("An introductory biography of the author aimed at laymen.")
@@ -1024,7 +1032,23 @@ class Level1Page(LevelPage):
 class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
 
-    TEXT_TYPES = ("biography", "works", "reception", "connections", "full_texts")
+    connections_verbose_name = _("Connections")
+    connections_help_text = _(
+        "A short description of important connections (i.e. people) that have been mentioned in the text."
+    )
+    full_texts_verbose_name = _("Full texts")
+    full_texts_help_text = _(
+        "Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in "
+        "the text about the author."
+    )
+
+    text_types = (
+        TextType("i18n_biography", _("Biography")),
+        TextType("i18n_workds", _("Literary works")),
+        TextType("i18n_reception", _("Reception")),
+        TextType("i18n_connections", connections_verbose_name),
+        TextType("i18n_full_texts", full_texts_verbose_name),
+    )
 
     biography_verbose_name = _("Biography")
     biography_help_text = _("An introductory biography of the author aimed at laymen.")
@@ -1079,10 +1103,6 @@ class Level2Page(LevelPage):
         help_text=_("A more in-depth description for interested users on how the author has been received."))
     i18n_reception = TranslatedField("reception", "reception_de", "reception_cs")
 
-    connections_verbose_name = _("Connections")
-    connections_help_text = _(
-        "A short description of important connections (i.e. people) that have been mentioned in the text."
-    )
     connections = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
@@ -1100,11 +1120,6 @@ class Level2Page(LevelPage):
         help_text=connections_help_text)
     i18n_connections = TranslatedField("connections", "connections_de", "connections_cs")
 
-    full_texts_verbose_name = _("Full texts")
-    full_texts_help_text = _(
-        "Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in "
-        "the text about the author."
-    )
     full_texts = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
@@ -1169,12 +1184,25 @@ class Level2Page(LevelPage):
 class Level3Page(LevelPage):
     """The 'Research' page of the LIS domain."""
 
-    TEXT_TYPES = ("primary_literature", "testimony", "secondary_literature")
-
     primary_literature_verbose_name = _("Primary literature")
     primary_literature_help_text = _(
         "A more in-depth presentation of primary literature of the author for an academic user."
     )
+    testimony_verbose_name = _("Testimony")
+    testimony_help_text = _(
+        "Extant documents about the author by other people, e.g. correspondence with the author, lecture notes."
+    )
+    secondary_literature_verbose_name = _("Secondary literature")
+    secondary_literature_help_text = _(
+        "Further secondary literature about the author and his works aimed at academic users."
+    )
+
+    text_types = (
+        TextType("i18n_primary_literature", primary_literature_verbose_name),
+        TextType("i18n_testimony", testimony_verbose_name),
+        TextType("i18n_secondary_literature", secondary_literature_verbose_name),
+    )
+
     primary_literature = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
@@ -1195,10 +1223,6 @@ class Level3Page(LevelPage):
     )
     i18n_primary_literature = TranslatedField("primary_literature", "primary_literature_de", "primary_literature_cs")
 
-    testimony_verbose_name = _("Testimony")
-    testimony_help_text = _(
-        "Extant documents about the author by other people, e.g. correspondence with the author, lecture notes."
-    )
     testimony = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
@@ -1219,10 +1243,6 @@ class Level3Page(LevelPage):
     )
     i18n_testimony = TranslatedField("testimony", "testimony_de", "testimony_cs")
 
-    secondary_literature_verbose_name = _("Secondary literature")
-    secondary_literature_help_text = _(
-        "Further secondary literature about the author and his works aimed at academic users."
-    )
     secondary_literature = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
@@ -1241,7 +1261,8 @@ class Level3Page(LevelPage):
     i18n_secondary_literature = TranslatedField(
         "secondary_literature",
         "secondary_literature_de",
-        "secondary_literature_cs")
+        "secondary_literature_cs"
+    )
 
     english_panels = [
         StreamFieldPanel("primary_literature"),
