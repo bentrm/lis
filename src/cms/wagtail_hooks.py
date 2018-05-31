@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.html import format_html
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
@@ -19,7 +20,7 @@ def as_page_object(self):
     obj.depth = self.page.depth
     obj.numchild = self.page.numchild
 
-    # Populate url_path based on the revision's current slug and the parent page as determined
+    # Populate url_path based on the revision"s current slug and the parent page as determined
     # by path
     obj.set_url_path(self.page.get_parent())
 
@@ -51,99 +52,118 @@ def as_page_object(self):
 PageRevision.as_page_object = as_page_object
 
 
-@hooks.register("insert_global_admin_css")
-def admin_css():
-    return format_html(
-        "<script defer src='{}'></script>",
-        static("vendor/fontawesome/js/fontawesome-all.js")
-    )
+@hooks.register("insert_global_admin_js")
+def global_admin_js():
+    return format_html("<script defer src='{}'></script>", static("vendor/fontawesome/js/fontawesome-all.js"))
 
 
-@hooks.register('insert_editor_css')
+@hooks.register("insert_editor_css")
 def editor_css():
-    return format_html(
-        '<link rel="stylesheet" href="{}">',
-        static('css/admin.css')
-    )
+    return format_html("<link rel='stylesheet' href='{}'>", static("css/cms/admin.css"))
 
 
-@hooks.register('register_rich_text_features')
+@hooks.register("register_rich_text_features")
 def register_strikethrough_feature(features):
     """
     Registering the `strikethrough` feature, which uses the `STRIKETHROUGH` Draft.js inline style type,
     and is stored as HTML with an `<s>` tag.
     """
-    feature_name = 'strikethrough'
-    type_ = 'STRIKETHROUGH'
-    tag = 's'
+    feature_name = "strikethrough"
+    type_ = "STRIKETHROUGH"
+    tag = "s"
 
     control = {
-        'type': type_,
-        'label': 'S',
-        'icon': 'fas fa-strikethrough',
-        'description': 'Strikethrough',
+        "type": type_,
+        "icon": " fas fa-strikethrough",
+        "description": "Strikethrough",
     }
 
     features.register_editor_plugin(
-        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+        "draftail", feature_name, draftail_features.InlineStyleFeature(control)
     )
 
     db_conversion = {
-        'from_database_format': {tag: InlineStyleElementHandler(type_)},
-        'to_database_format': {'style_map': {type_: tag}},
+        "from_database_format": {tag: InlineStyleElementHandler(type_)},
+        "to_database_format": {"style_map": {type_: tag}},
     }
 
-    features.register_converter_rule('contentstate', feature_name, db_conversion)
+    features.register_converter_rule("contentstate", feature_name, db_conversion)
 
 
-@hooks.register('register_rich_text_features')
-def register_superscript_feature(features):
-    feature_name = 'sup'
-    type_ = 'SUPERSCRIPT'
-    tag = 'sup'
+@hooks.register("register_rich_text_features")
+def register_footnote_feature(features):
+    feature_name = "footnote"
+    type_ = "FOOTNOTE"
+    tag = "span"
 
     control = {
-        'type': type_,
-        'label': 'sup',
-        'icon': 'fas fa-superscript',
-        'description': 'Superscript',
+        "type": type_,
+        "icon": " fas fa-sticky-note",
+        "description": _("Reference a footnote saved with the paragraph."),
+        "class": "footnote",
+        "style": {
+            "fontFamily": "monospace",
+            "fontWeight": "bold",
+            "border": "1px solid #333",
+        }
     }
 
     features.register_editor_plugin(
-        'draftail', feature_name, draftail_features.InlineStyleFeature(control)
+        "draftail", feature_name, draftail_features.InlineStyleFeature(control)
     )
 
     db_conversion = {
-        'from_database_format': {tag: InlineStyleElementHandler(type_)},
-        'to_database_format': {'style_map': {type_: tag}},
+        "from_database_format": {
+            tag: InlineStyleElementHandler(type_),
+        },
+        "to_database_format": {
+            "style_map": {
+                type_: {
+                    "element": tag,
+                    "props": {
+                        "class": "footnote",
+                    },
+                }
+            },
+        },
     }
 
-    features.register_converter_rule('contentstate', feature_name, db_conversion)
+    features.register_converter_rule("contentstate", feature_name, db_conversion)
 
 
-@hooks.register('register_rich_text_features')
+@hooks.register("register_rich_text_features")
 def register_blockquote_feature(features):
     """
     Registering the `blockquote` feature, which uses the `blockquote` Draft.js block type,
     and is stored as HTML with a `<blockquote>` tag.
     """
-    feature_name = 'blockquote'
-    type_ = 'blockquote'
-    tag = 'blockquote'
+    feature_name = "blockquote"
+    type_ = "BLOCKQUOTE"
+    tag = "blockquote"
 
     control = {
-        'type': type_,
-        'label': '❝',
-        'description': 'Blockquote',
-        # Optionally, we can tell Draftail what element to use when displaying those blocks in the editor.
-        'element': 'blockquote',
+        "type": type_,
+        "icon": " fas fa-quote-right",
+        "description": "Blockquote",
+        "element": "blockquote",
     }
 
     features.register_editor_plugin(
-        'draftail', feature_name, draftail_features.BlockFeature(control)
+        "draftail", feature_name, draftail_features.BlockFeature(control)
     )
 
-    features.register_converter_rule('contentstate', feature_name, {
-        'from_database_format': {tag: BlockElementHandler(type_)},
-        'to_database_format': {'block_map': {type_: tag}},
+    features.register_converter_rule("contentstate", feature_name, {
+        "from_database_format": {
+            tag: BlockElementHandler(type_)
+        },
+        "to_database_format": {
+            "block_map": {
+                type_: {
+                    "element": tag,
+                    "props": {
+                        "class": "blockquote text-right",
+                    },
+                },
+            },
+        },
     })

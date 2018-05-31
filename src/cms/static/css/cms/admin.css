@@ -3,6 +3,12 @@
   color: #333;
 }
 
+.Draftail-Editor blockquote {
+  border-left: 1px solid black;
+  padding-left: 1em;
+  font-style: italic;
+}
+
 li.sequence-member .paragraph-struct-block.struct-block ul.fields {
   width: 100%;
 }

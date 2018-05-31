@@ -5,7 +5,7 @@ from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 RICH_TEXT_FEATURES_FOOTNOTE = ["bold", "italic", "strikethrough", "link"]
-RICH_TEXT_FEATURES_CONTENT = ["bold", "italic", "strikethrough", "sup", "ol", "ul", "hr", "link", "blockquote"]
+RICH_TEXT_FEATURES_CONTENT = ["bold", "italic", "strikethrough", "footnote", "ol", "ul", "hr", "link", "blockquote"]
 
 
 class FootnoteStructBlock(blocks.StructBlock):
