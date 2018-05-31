@@ -1,11 +1,5 @@
 {% load static %}
 {% load i18n %}
-{% load wagtailcore_tags %}
-
-
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_language_info_list for LANGUAGES as languages %}
 
 <!DOCTYPE html>
 <html>
@@ -25,8 +19,8 @@
     {% endblock %}
   {% endblock %}
 </head>
-<body>
 
+<body class="{% block body_classes %}{% endblock %}">
 {% block body %}
   {% block body_extra %}{% endblock %}
 
@@ -34,29 +28,32 @@
     {% block header %}
     <div class="row">
       <div class="col">
-        <nav class="navbar navbar-light bg-light my-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
 
           {% block header_branding %}
           <a class="navbar-brand" href="{% url 'home:index' %}">
-            <span class="d-inline-block fa-4x">{% include "includes/logo.html" %}</span>
-            <span class="display-1">LIS</span>
+            {% include "includes/logo.html" %} LIS
           </a>
           {% endblock %}
 
-          <div class="float-right">
-            {% block header_languages %}
-            <div>
-              <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
-                <input name="next" type="hidden" value="{{ redirect_to }}" />
-                {% for language in languages %}
-                    <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
-                        {{ language.code }}
-                    </button>
-                {% endfor %}
-              </form>
+          {% block header_menu %}
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              {% block header_menu_items %}
+              <a class="nav-item nav-link mx-2" href="{% url 'signup' %}">Signup <i class="fas fa-key"></i></a>
+              <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">Ticketsystem <i class="fas fa-external-link-square-alt"></i></a>
+              <a class="nav-item nav-link mx-2" href="/demo/">Preview <i class="fas fa-lock"></i></a>
+              <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">CMS <i class="fas fa-lock"></i></a>
+              <a class="nav-item nav-link mx-2" href="{% url 'home:impressum' %}">{% trans "Datenschutz" %} <i class="fas fa-paragraph"></i></a>
+              {% endblock %}
             </div>
-            {% endblock %}
+          </div>
+          {% endblock %}
 
+          <div class="float-right text-right">
             {% block header_extra %}{% endblock %}
           </div>
         </nav>
@@ -86,8 +83,7 @@
 <script src="{% static 'vendor/popper/js/popper.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
-<script src="{% static 'js/footnotes.js' %}"></script>
-<script defer src="{% static "vendor/fontawesome/js/fontawesome-all.js" %}"></script>
+<script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
 {% endblock %}
 </body>
 </html>

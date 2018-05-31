@@ -17,10 +17,20 @@ Demo: {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}
 {% block body_extra %}{% wagtailuserbar %}{% endblock %}
 
 {% block header_extra %}
+<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+  <input name="next" type="hidden" value="{{ redirect_to }}" />
+  {% get_current_language as LANGUAGE_CODE %}
+  {% get_available_languages as LANGUAGES %}
+  {% get_language_info_list for LANGUAGES as languages %}
+  {% for language in languages %}
+      <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
+          {{ language.code }}
+      </button>
+  {% endfor %}
+</form>
 {% if request.is_preview %}
-  <span class="badge badge-warning">{% trans "Preview" %}</span>
+<span class="badge badge-warning">{% trans "Preview" %}</span>
 {% endif %}
-<a href="/cms" class="badge badge-light">{% trans "Admin" %}</a>
 {% endblock %}
 
 {% block content_heading %}

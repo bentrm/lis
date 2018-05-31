@@ -6,7 +6,7 @@
         <div class="inner">
           <a href="{% url 'wagtailadmin_home' %}" class="logo" title="LIS CMS {{ CMS_VERSION }}">
               <div class="fa-4x">
-                {% include "cms/includes/logo.html" %}
+                {% include "includes/logo-alt.html" with version=CMS_VERSION %}
               </div>
             </a>
 

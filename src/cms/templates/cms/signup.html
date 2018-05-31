@@ -1,10 +1,24 @@
 {% extends "cms/base.html" %}
 
-{% block content %}
-  <h1>Sign up</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-primary" type="submit">Sign up</button>
-  </form>
+{% load i18n %}
+
+{% block title %}{% trans "Signup" %}{% endblock %}
+
+{% block content_main %}
+  <div class="row">
+    <div class="col-12">
+
+      <div class="alert alert-warning" role="alert">
+        {% trans "Die Registrierung ist derzeit nur für Projektmitarbeiter möglich und erfordert ein gesondert zu erfragendes Kennwort." %}
+      </div>
+
+      <h1>Signup</h1>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Sign up</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}

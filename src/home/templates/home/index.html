@@ -1,0 +1,165 @@
+{% extends "home/base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content_heading %}
+<div class="row">
+  <div class="col-12">
+    <h2>
+      <span class="display-4">Böhmisch-sächsische Literaturlandschaft</span><br>
+      <span class="display-4 text-muted">Česko-saská literární krajina</span>
+    </h2>
+  </div>
+</div>
+{%endblock %}
+
+{% block header_languages %}{% endblock %}
+
+{% block content_main %}
+<div class="row">
+
+  <div class="col-8">
+
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-4">Ziele des Projekts <span class="text-muted">Cíle projektu</span></h2>
+
+        <p>Das Projekt macht netzbasiert den kulturell-literarischen Reichtum der Grenzregion erstmals bewusst und erschließt ihn für 3 Felder:</p>
+
+        <ul>
+          <li>interessierte Besucher</li>
+          <li>schulische Arbeit</li>
+          <li>universitäre Ausbildung.</li>
+        </ul>
+
+        <p>Die Sicherung, Kommentierung und Verbreitung wichtiger Kulturschätze trägt zur Verhinderung grassierenden Vergessens bei:
+        Die gemeinsame kulturelle Identität, die Identifizierung mit der Region und deren Bekanntheit werden gestärkt.
+        Die Nutzung digitaler Medien soll ein jüngeres Publikum erschließen.</p>
+
+        <figure class="figure d-block text-center">
+          <img src="{% static 'screenshots/client-300x270.png' %}" class="figure-img img-fluid" alt="Prototyp des Nutzerclients / Prototyp uživatele klienta">
+          <figcaption class="figure-caption">Prototyp des Nutzerclients / Prototyp uživatele klienta</figcaption>
+        </figure>
+
+        <div class="text-muted">
+          <p>Projekt poprvé v internetové podobě zviditelní kulturní a literární bohatství příhraničního regionu a zpřístupní ho třem cílovým oblastem:</p>
+
+          <ul>
+            <li>turismu,</li>
+            <li>základnímu a střednímu školství,</li>
+            <li>univerzitnímu vzdělávání.</li>
+          </ul>
+
+          <p>Díky zachycení, učenému popisu a popularizaci významných kulturních památek se může omezovat šířící se zapomnění:
+          Dojde k posílení společné kulturní identity, identifikace s regionem a zvýší se jeho popularita.
+          Využití digitálních médií osloví mladší publikum.</p>
+
+          <figure class="figure d-block text-center">
+            <img src="{% static 'screenshots/client2-300x188.jpg' %}" class="figure-img img-fluid" alt="Prototyp des Redaktionsclients / Prototyp redakčního klienta">
+            <figcaption class="figure-caption">Prototyp des Redaktionsclients / Prototyp redakčního klienta</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="col-12">
+        <h2 class="mb-4">
+          Beitrag der HTW (Labor GI)<br>
+          <span class="text-muted">Příspěvek HTW (Laboratoř GI)</span>
+        </h2>
+
+        <p>Das Labor Geoinformatik der Fakultät Geoinformation ist mit der Entwicklung des webbasierten Literaturinformationssystems (LIS) betraut.</p>
+        <p class="text-muted">Vývoj webového literární informačního systému (LIS).</p>
+
+        <h3>Oberflächenentwürfe</h3>
+        <p>
+          Im Rahmen einer durch die Projektmitarbeiter betreuten, studentischen Abschlussarbeit wurden umfangreiche Oberflächenentwürfe
+          der interaktiven Karte für Desktop, Tablet und Smartphone erstellt. Sie dienen bei der Implementierung der Endanwenderoberfläche
+          als Diskussions- und Planungsgrundlage.
+        </p>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <figure class="figure text-center">
+              <img src="{% static 'screenshots/Karte_Suche_Filter_Gestartet_D.jpg' %}" class="figure-img img-fluid" alt="Oberflächenentwurf für Desktop Computer">
+              <figcaption class="figure-caption">Oberflächenentwurf für Desktop Computer</figcaption>
+            </figure>
+          </div>
+          <div class="col-sm-6">
+            <figure class="figure text-center">
+              <img src="{% static 'screenshots/Autorenverzeichnis_Initial_SP.jpg' %}" class="figure-img" style="height: 195px;" alt="Oberflächenentwurf für Smartphones">
+              <figcaption class="figure-caption">Oberflächenentwurf für Smartphones</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <h3>Content Management System (CMS)</h3>
+
+        <p>
+          Für Fachanwender und Editoren wird bereits eine mehrsprachige Administrationsoberfläche angeboten über die LIS-Inhalte eingespeist werden können. Über eine
+          Benutzerverwaltung und Moderationswerkzeuge werden die Medien- und Textinhalte für die anschließende Veröffentlichung vorbereitet.
+        </p>
+
+        <p>
+          Derzeit wurden {{authors_count}} Autoren im System hinterlegt. Ihnen zugeordnet sind {{locations_count}} Orte und {{memorial_sites_count}} Erinnerungsstellen.
+        </p>
+
+        <p>
+          Auf Grundlage der erhobenen Daten wird im zweiten Teil der Entwickungszeit schließlich die interaktive Karte entstehen.
+        </p>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <figure class="figure text-center">
+              <img src="{% static 'screenshots/CMS_Autoren_0.2.1.png' %}" class="figure-img" style="height: 195px;" alt="Content Management System - Autorenauswahl">
+              <figcaption class="figure-caption">Content Management System - Autorenauswahl</figcaption>
+            </figure>
+          </div>
+          <div class="col-sm-6">
+            <figure class="figure text-center">
+              <img src="{% static 'screenshots/CMS_Editor_0.2.1.png' %}" class="figure-img" style="height: 195px;" alt="Content Management System - Editor">
+              <figcaption class="figure-caption">Content Management System - Editor</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4 border-left">
+    <div class="row">
+      <div class="col-12 mb-4">
+        <h3>Gefördert durch <span class="text-muted">Sponzorováno</span></h3>
+
+        <a href="http://www.sn-cz2020.eu/" class="d-block mx-auto w-75 py-2">
+          <img src="{% static 'logos/logo_eu.svg' %}" alt="Logo EU Fonds" class="img-fluid">
+          <img src="{% static 'logos/logo_sn_cz.svg' %}" alt="Logo SN CZ" class="img-fluid">
+        </a>
+      </div>
+      <div class="col-12 mb-4">
+        <h3>Projektpartner <span class="text-muted">Partneři projektu</span></h3>
+
+        <a href="https://tu-dresden.de/" class="d-block mx-auto w-75 py-2">
+          <img src="{% static 'logos/logo_tu_dresden.svg' %}" alt="Logo TU Dresden" class="img-fluid">
+        </a>
+
+        <a href="https://www.tul.cz/" class="d-block mx-auto w-75 py-2">
+          <img src="{% static 'logos/logo_tu_liberec.svg' %}" alt="Logo TU Liberec" class="img-fluid">
+        </a>
+
+        <a href="https://www.htw-dresden.de/" class="d-block mx-auto w-75 py-2">
+          <img src="{% static 'logos/logo_htw_dresden.svg' %}" alt="Logo HTW Dresden" class="img-fluid">
+        </a>
+      </div>
+      <div class="col-12 mb-4">
+        <h3>
+          Plakat <span class="text-muted">Plakát</span>
+        </h3>
+
+        <a href="https://geoinformatik.htw-dresden.de/wordpress/wp-content/uploads/2017/08/Poster_V3_A0_Web.jpg" class="d-block mx-auto w-75 py-2">
+          <img src="{% static 'screenshots/Poster_V3_A0_Web-212x300.jpg' %}" alt="HTW Poster zum Projekt" class="img-fluid">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
