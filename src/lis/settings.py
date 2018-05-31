@@ -216,10 +216,11 @@ MEDIA_ROOT = env("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 MEDIA_URL = env("MEDIA_URL", "/media/")
 
 # Wagtail settings
+WAGTAIL_ENABLE_UPDATE_CHECK = False
 WAGTAIL_SITE_NAME = "lis"
 WAGTAILIMAGES_IMAGE_MODEL = "cms.ImageMedia"
 WAGTAILDOCS_DOCUMENT_MODEL = "cms.DocumentMedia"
-WAGTAIL_USAGE_COUNT_ENABLED = True
+WAGTAIL_USAGE_COUNT_ENABLED = False
 LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
     ("en", "English"),
     ("de", "Deutsch"),
