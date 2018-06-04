@@ -1,5 +1,5 @@
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 class SignupForm(UserCreationForm):
     """A signup form that checks for a keyword before allowing users to register as an editor."""
 
-    keyword = forms.CharField(max_length=30, label=_("Keyword"), help_text=_(""))
+    keyword = forms.CharField(max_length=30, label=_("Keyword"), help_text=_("Keyword"))
     first_name = forms.CharField(max_length=30, label=_("First name"))
     last_name = forms.CharField(max_length=30, label=_("Last name"))
     email = forms.EmailField(max_length=254, label=_("Email"))

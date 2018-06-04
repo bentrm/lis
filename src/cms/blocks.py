@@ -1,6 +1,6 @@
 """Custom block types that the user content can be represented in."""
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 

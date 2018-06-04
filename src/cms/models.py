@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import text, translation, dates, formats
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _, override
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
@@ -918,8 +918,10 @@ class AuthorLanguage(Orderable):
 class LevelPage(I18nPage):
     """A simple mixin that adds methods to list the models text types as an iterable."""
 
-    parent_page_types = ["AuthorPage"]
+    PREFIX = ""
+    PAGE_TITLE = "Level page"
 
+    parent_page_types = ["AuthorPage"]
     text_types = ()
 
     @classmethod
@@ -940,12 +942,37 @@ class LevelPage(I18nPage):
                 texts.append((text_type.heading, prop))
         return texts
 
+    def full_clean(self, *args, **kwargs):
+        """Set default title."""
+        self.title = self.PAGE_TITLE
+        with override("de"):
+            self.title_de = _(self.PAGE_TITLE)
+        with override("cs"):
+            self.title_cs = _(self.PAGE_TITLE)
+
+        print(f"full clean: {self.title}, {self.title_de}, {self.title_cs}")
+        super(LevelPage, self).full_clean(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.PREFIX} {self.i18n_title}"
+
     class Meta:
         abstract = True
 
 
+PREFIX_I = "I."
+PREFIX_II = "II."
+PREFIX_III = "III."
+PAGE_TITLE_I = "Discovery"
+PAGE_TITLE_II = "Delving deeper"
+PAGE_TITLE_III = "Research literature"
+
+
 class Level1Page(LevelPage):
     """The 'Discover' page of the LIS domain."""
+
+    PREFIX = PREFIX_I
+    PAGE_TITLE = PAGE_TITLE_I
 
     text_types = (
         TextType("i18n_biography", _("Biography")),
@@ -1014,23 +1041,16 @@ class Level1Page(LevelPage):
         """Return title to be displayed in the admins UI."""
         return f"I. {self.i18n_draft_title or self.i18n_title}"
 
-    def full_clean(self, *args, **kwargs):
-        """Set default title."""
-        self.title = "Discovery"
-        self.title_de = "Entdecken"
-        self.title_cs = "Discovery*"
-        super(Level1Page, self).full_clean(*args, **kwargs)
-
-    def __str__(self):
-        return f"I. {self.i18n_title}"
-
     class Meta:
         db_table = "level_1"
-        verbose_name = _("I. Discovery")
+        verbose_name = f"{PREFIX_I} {gettext(PAGE_TITLE_I)}"
 
 
 class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
+
+    PREFIX = PREFIX_II
+    PAGE_TITLE = PAGE_TITLE_II
 
     connections_verbose_name = _("Connections")
     connections_help_text = _(
@@ -1166,23 +1186,19 @@ class Level2Page(LevelPage):
         """Return title to be displayed in the admins UI."""
         return f"II. {self.i18n_draft_title or self.i18n_title}"
 
-    def full_clean(self, *args, **kwargs):
-        """Set default title."""
-        self.title = "Delving deeper"
-        self.title_de = "Vertiefen"
-        self.title_cs = "Deepen*"
-        super(Level2Page, self).full_clean(*args, **kwargs)
-
     def __str__(self):
         return f"II. {self.i18n_title}"
 
     class Meta:
         db_table = "level_2"
-        verbose_name = _("II. Delving deeper")
+        verbose_name = f"{PREFIX_II} {gettext(PAGE_TITLE_II)}"
 
 
 class Level3Page(LevelPage):
     """The 'Research' page of the LIS domain."""
+
+    PREFIX = PREFIX_III
+    PAGE_TITLE = PAGE_TITLE_III
 
     primary_literature_verbose_name = _("Primary literature")
     primary_literature_help_text = _(
@@ -1286,19 +1302,12 @@ class Level3Page(LevelPage):
         """Return title to be displayed in the admins UI."""
         return f"III. {self.i18n_draft_title or self.i18n_title}"
 
-    def full_clean(self, *args, **kwargs):
-        """Set default title."""
-        self.title = "Research literature"
-        self.title_de = "Forschen"
-        self.title_cs = "Research literature*"
-        super(Level3Page, self).full_clean(*args, **kwargs)
-
     def __str__(self):
         return f"III. {self.i18n_title}"
 
     class Meta:
         db_table = "level_3"
-        verbose_name = _("III. Research literature")
+        verbose_name = f"{PREFIX_III} {gettext(PAGE_TITLE_III)}"
 
 
 class LocationTypesPage(CategoryPage):

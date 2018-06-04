@@ -1,4 +1,4 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.html import format_html
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
@@ -75,7 +75,7 @@ def register_strikethrough_feature(features):
     control = {
         "type": type_,
         "icon": " fas fa-strikethrough",
-        "description": "Strikethrough",
+        "description": gettext("Strikethrough"),
     }
 
     features.register_editor_plugin(
@@ -99,7 +99,7 @@ def register_footnote_feature(features):
     control = {
         "type": type_,
         "icon": " fas fa-sticky-note",
-        "description": _("Reference a footnote saved with the paragraph."),
+        "description": gettext("Footnote"),
         "class": "footnote",
         "style": {
             "fontFamily": "monospace",
@@ -144,7 +144,7 @@ def register_blockquote_feature(features):
     control = {
         "type": type_,
         "icon": " fas fa-quote-right",
-        "description": "Blockquote",
+        "description": gettext("Blockquote"),
         "element": "blockquote",
     }
 
