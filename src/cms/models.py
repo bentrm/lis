@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import text, translation, dates, formats
-from django.utils.translation import gettext, gettext_lazy as _, override
+from django.utils.translation import gettext, gettext_lazy as _, gettext_noop, override
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
@@ -731,14 +731,26 @@ class AuthorPage(I18nPage):
     def get_context(self, request, *args, **kwargs):
         """Add more context information on view requests."""
         context = super(AuthorPage, self).get_context(request, *args, **kwargs)
+        page = self.get_latest_revision_as_page() if request.is_preview else self
+
+        # add all names of author to context
+        context["author_name"], *context["author_alt_names"] = page.names.order_by("sort_order")
 
         # add level pages
         child_pages = self.get_children().specific()
         if request.is_preview:
             child_pages = [page.get_latest_revision_as_page() for page in child_pages]
         else:
-            child_pages.live()
+            child_pages = child_pages.live()
         context["child_pages"] = child_pages
+
+        # add memorial sites
+        memorial_sites = MemorialSitePage.objects.filter(authors__author=self)
+        if request.is_preview:
+            memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
+        else:
+            memorial_sites = memorial_sites.live()
+        context["memorial_sites"] = memorial_sites
 
         return context
 
@@ -902,7 +914,7 @@ class AuthorLanguage(Orderable):
     language = models.ForeignKey(
         "LanguagePage",
         null=True,
-        blank=True,
+        blank=False,
         on_delete=models.SET_NULL,
         related_name="authors",
         verbose_name=_("Language"),
@@ -913,6 +925,11 @@ class AuthorLanguage(Orderable):
 
         class Meta:
             db_table = "author_language"
+
+
+PAGE_TITLE_I = gettext_noop("I. Discovery")
+PAGE_TITLE_II = gettext_noop("II. Delving deeper")
+PAGE_TITLE_III = gettext_noop("III. Research literature")
 
 
 class LevelPage(I18nPage):
@@ -944,34 +961,25 @@ class LevelPage(I18nPage):
 
     def full_clean(self, *args, **kwargs):
         """Set default title."""
-        self.title = self.PAGE_TITLE
+        with override("en"):
+            self.title = gettext(self.PAGE_TITLE)
         with override("de"):
-            self.title_de = _(self.PAGE_TITLE)
+            self.title_de = gettext(self.PAGE_TITLE)
         with override("cs"):
-            self.title_cs = _(self.PAGE_TITLE)
-
-        print(f"full clean: {self.title}, {self.title_de}, {self.title_cs}")
+            self.title_cs = gettext(self.PAGE_TITLE)
+        print(f"{self.title} {self.title_de} {self.title_cs}")
         super(LevelPage, self).full_clean(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.PREFIX} {self.i18n_title}"
+        return str(self.i18n_title)
 
     class Meta:
         abstract = True
 
 
-PREFIX_I = "I."
-PREFIX_II = "II."
-PREFIX_III = "III."
-PAGE_TITLE_I = "Discovery"
-PAGE_TITLE_II = "Delving deeper"
-PAGE_TITLE_III = "Research literature"
-
-
 class Level1Page(LevelPage):
     """The 'Discover' page of the LIS domain."""
 
-    PREFIX = PREFIX_I
     PAGE_TITLE = PAGE_TITLE_I
 
     text_types = (
@@ -1037,27 +1045,22 @@ class Level1Page(LevelPage):
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)
     ])
 
-    def get_admin_display_title(self):
-        """Return title to be displayed in the admins UI."""
-        return f"I. {self.i18n_draft_title or self.i18n_title}"
-
     class Meta:
         db_table = "level_1"
-        verbose_name = f"{PREFIX_I} {gettext(PAGE_TITLE_I)}"
+        verbose_name = _(PAGE_TITLE_I)
 
 
 class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
 
-    PREFIX = PREFIX_II
     PAGE_TITLE = PAGE_TITLE_II
 
-    connections_verbose_name = _("Connections")
-    connections_help_text = _(
+    connections_verbose_name = gettext_noop("Connections")
+    connections_help_text = gettext_noop(
         "A short description of important connections (i.e. people) that have been mentioned in the text."
     )
-    full_texts_verbose_name = _("Full texts")
-    full_texts_help_text = _(
+    full_texts_verbose_name = gettext_noop("Full texts")
+    full_texts_help_text = gettext_noop(
         "Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in "
         "the text about the author."
     )
@@ -1066,8 +1069,8 @@ class Level2Page(LevelPage):
         TextType("i18n_biography", _("Biography")),
         TextType("i18n_workds", _("Literary works")),
         TextType("i18n_reception", _("Reception")),
-        TextType("i18n_connections", connections_verbose_name),
-        TextType("i18n_full_texts", full_texts_verbose_name),
+        TextType("i18n_connections", _(connections_verbose_name)),
+        TextType("i18n_full_texts", _(full_texts_verbose_name)),
     )
 
     biography_verbose_name = _("Biography")
@@ -1126,35 +1129,35 @@ class Level2Page(LevelPage):
     connections = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=connections_verbose_name,
-        help_text=connections_help_text)
+        verbose_name=_(connections_verbose_name),
+        help_text=_(connections_help_text))
     connections_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=connections_verbose_name,
-        help_text=connections_help_text)
+        verbose_name=_(connections_verbose_name),
+        help_text=_(connections_help_text))
     connections_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=connections_verbose_name,
-        help_text=connections_help_text)
+        verbose_name=_(connections_verbose_name),
+        help_text=_(connections_help_text))
     i18n_connections = TranslatedField("connections", "connections_de", "connections_cs")
 
     full_texts = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=full_texts_verbose_name,
-        help_text=full_texts_help_text)
+        verbose_name=_(full_texts_verbose_name),
+        help_text=_(full_texts_help_text))
     full_texts_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=full_texts_verbose_name,
-        help_text=full_texts_help_text)
+        verbose_name=_(full_texts_verbose_name),
+        help_text=_(full_texts_help_text))
     full_texts_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
-        verbose_name=full_texts_verbose_name,
-        help_text=full_texts_help_text)
+        verbose_name=_(full_texts_verbose_name),
+        help_text=_(full_texts_help_text))
     i18n_full_texts = TranslatedField("full_texts", "full_texts_de", "full_texts_cs")
 
     english_panels = [
@@ -1182,22 +1185,14 @@ class Level2Page(LevelPage):
         ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
-    def get_admin_display_title(self):
-        """Return title to be displayed in the admins UI."""
-        return f"II. {self.i18n_draft_title or self.i18n_title}"
-
-    def __str__(self):
-        return f"II. {self.i18n_title}"
-
     class Meta:
         db_table = "level_2"
-        verbose_name = f"{PREFIX_II} {gettext(PAGE_TITLE_II)}"
+        verbose_name = _(PAGE_TITLE_II)
 
 
 class Level3Page(LevelPage):
     """The 'Research' page of the LIS domain."""
 
-    PREFIX = PREFIX_III
     PAGE_TITLE = PAGE_TITLE_III
 
     primary_literature_verbose_name = _("Primary literature")
@@ -1298,16 +1293,9 @@ class Level3Page(LevelPage):
         ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
-    def get_admin_display_title(self):
-        """Return title to be displayed in the admins UI."""
-        return f"III. {self.i18n_draft_title or self.i18n_title}"
-
-    def __str__(self):
-        return f"III. {self.i18n_title}"
-
     class Meta:
         db_table = "level_3"
-        verbose_name = f"{PREFIX_III} {gettext(PAGE_TITLE_III)}"
+        verbose_name = _(PAGE_TITLE_III)
 
 
 class LocationTypesPage(CategoryPage):
@@ -1515,7 +1503,7 @@ class MemorialSitePage(I18nPage):
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=introduction_verbose_name,
         help_text=introduction_help_text)
-    i18n_description = TranslatedField("introduction", "introduction_de", "introduction_cs")
+    i18n_introduction = TranslatedField("introduction", "introduction_de", "introduction_cs")
 
     description = StreamField(
         [("paragraph", ParagraphStructBlock())],

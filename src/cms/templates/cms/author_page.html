@@ -1,22 +1,69 @@
 {% extends "cms/base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
+{% block css %}{{block.super}}
+<link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+{% endblock %}
+
+{% block js %}{{block.super}}
+<script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+<script src="{% static 'js/cms/static-map.js' %}"></script>
+{% endblock %}
+
+{% block content_heading_title %}
+<div class="row my-4">
+  <div class="col-12">
+    <h1 class="display-1">{{ author_name }}{%if author_name.i18n_birth_name %} ({% trans 'born' %} {{author_name.i18n_birth_name}}){% endif %}</h1>
+    {% if author_alt_names %}
+    <p>{% trans 'Also known as' %}: {{ author_alt_names|join:" || " }}
+    </p>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
 {% block content_main %}
-<div class="row">
+<div class="row my-4">
   {% include "cms/includes/author.html" with author=page %}
 </div>
 
-<div class="row">
-  {% if request.is_preview %}
-    {% for child_page in child_pages %}
-      {% include "cms/includes/level.html" with page=child_page.get_latest_revision_as_page %}
+{% if memorial_sites %}
+<div class="row my-4">
+  <div class="col-12">
+    <h2>{% trans 'Memorial sites' %}</h2>
+  </div>
+  {% for memorial_site in memorial_sites %}
+  {% with location=memorial_site.get_parent.specific %}
+  <div class="col-4">
+    <div class="card">
+      <div id="map-{{forloop.counter}}" class="card-img-top"></div>
+      <div class="card-body p-2">
+        <h5 class="card-title">{{ memorial_site }}</h5>
+        <p>{{ memorial_site.i18n_introduction|richtext }}</p>
+        <p><i class="fas fa-map-marker"></i> {{ location }}</p>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const mapId = "map-{{forloop.counter}}"
+        const geojson = '{{ location.coordinates.geojson|safe }}'
+        const coordinates = JSON.parse(geojson).coordinates;
+        createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");
+      })();
+      </script>
+    {% endwith %}
     {% endfor %}
-  {% else %}
-    {% for child_page in page.get_children.live.public.specific %}
-      {% include "cms/includes/level.html" with page=child_page %}
-    {% endfor %}
-  {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<div class="row my-4">
+  {% for child_page in child_pages %}
+    {% include "cms/includes/level.html" with page=child_page %}
+  {% endfor %}
 </div>
 {% endblock %}

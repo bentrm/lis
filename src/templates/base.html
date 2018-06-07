@@ -17,6 +17,15 @@
     {% block css %}
       <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     {% endblock %}
+
+    {% block js %}
+    <script src="{% static 'vendor/jquery/js/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'vendor/popper/js/popper.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
+    <script src="{% static 'js/cms/footnotes.js' %}"></script>
+    <script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
+    {% endblock %}
   {% endblock %}
 </head>
 
@@ -43,11 +52,21 @@
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
               {% block header_menu_items %}
-              <a class="nav-item nav-link mx-2" href="{% url 'signup' %}">Signup <i class="fas fa-key"></i></a>
-              <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">Ticketsystem <i class="fas fa-external-link-square-alt"></i></a>
-              <a class="nav-item nav-link mx-2" href="/demo/">Preview <i class="fas fa-lock"></i></a>
-              <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">CMS <i class="fas fa-lock"></i></a>
-              <a class="nav-item nav-link mx-2" href="{% url 'home:impressum' %}">{% trans "Datenschutz" %} <i class="fas fa-paragraph"></i></a>
+              <a class="nav-item nav-link mx-2" href="{% url 'signup' %}">
+                {% trans 'Signup' %} <i class="fas fa-key"></i>
+              </a>
+              <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">
+                {% trans 'Project management' %} <i class="fas fa-external-link-square-alt"></i>
+              </a>
+              <a class="nav-item nav-link mx-2" href="/demo/">
+                {% trans 'Demo' %} <i class="fas fa-lock"></i>
+              </a>
+              <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">
+                {% trans 'CMS' %} <i class="fas fa-lock"></i>
+              </a>
+              <a class="nav-item nav-link mx-2" href="{% url 'home:impressum' %}">
+                {% trans 'Data protection' %} <i class="fas fa-paragraph"></i>
+              </a>
               {% endblock %}
             </div>
           </div>
@@ -76,15 +95,6 @@
   <div class="container-fluid">
     {% block footer %}{% endblock %}
   </div>
-{% endblock %}
-
-{% block js %}
-<script src="{% static 'vendor/jquery/js/jquery-3.3.1.slim.min.js' %}"></script>
-<script src="{% static 'vendor/popper/js/popper.min.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
-<script src="{% static 'js/cms/footnotes.js' %}"></script>
-<script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
 {% endblock %}
 </body>
 </html>

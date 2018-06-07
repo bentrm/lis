@@ -1,4 +1,6 @@
-from django.utils.translation import gettext, gettext_lazy as _
+"""Custom hooks to add functionality to the Wagtail framework."""
+
+from django.utils.translation import gettext
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.html import format_html
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
@@ -10,6 +12,7 @@ from cms.models import I18nPage, AuthorPage
 
 
 def as_page_object(self):
+    """Return the PageRevision as a specific Page class."""
     obj = self.page.specific_class.from_json(self.content_json)
     specific_page = self.page.specific
 
@@ -28,12 +31,12 @@ def as_page_object(self):
     # specific revision of it
     obj.draft_title = self.page.draft_title
 
-    # copy over properties that are derievied from out custom i18n class
+    # copy over properties that are derievied from our custom i18n class
     if isinstance(obj, I18nPage):
         obj.draft_title_de = specific_page.draft_title_de
-        obj.draft_title_cs = specific_page.draft_title_cs
+        obj.draft_title_cs = specific_page.draft_title_cs        
     elif isinstance(obj, AuthorPage):
-        author_name = specific_page.names.first()
+        author_name = specific_page.names.order_by("sort_order").first()
         obj.draft_title = author_name.full_name()
         obj.draft_title_de = author_name.full_name_de()
         obj.draft_title_cs = author_name.full_name_cs()
@@ -54,20 +57,19 @@ PageRevision.as_page_object = as_page_object
 
 @hooks.register("insert_global_admin_js")
 def global_admin_js():
+    """Add custom JavaScript logic to the admin."""
     return format_html("<script defer src='{}'></script>", static("vendor/fontawesome/js/fontawesome-all.js"))
 
 
 @hooks.register("insert_editor_css")
 def editor_css():
+    """Add custom CSS styles to the admins editor."""
     return format_html("<link rel='stylesheet' href='{}'>", static("css/cms/admin.css"))
 
 
 @hooks.register("register_rich_text_features")
 def register_strikethrough_feature(features):
-    """
-    Registering the `strikethrough` feature, which uses the `STRIKETHROUGH` Draft.js inline style type,
-    and is stored as HTML with an `<s>` tag.
-    """
+    """Register the `strikethrough` editor feature."""
     feature_name = "strikethrough"
     type_ = "STRIKETHROUGH"
     tag = "s"
@@ -92,6 +94,7 @@ def register_strikethrough_feature(features):
 
 @hooks.register("register_rich_text_features")
 def register_footnote_feature(features):
+    """Register the `footnote` editor feature."""
     feature_name = "footnote"
     type_ = "FOOTNOTE"
     tag = "span"
