@@ -9,6 +9,12 @@
   font-style: italic;
 }
 
+.block_field>h2 {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 2;
+}
+
 li.sequence-member .paragraph-struct-block.struct-block ul.fields {
   width: 100%;
 }
