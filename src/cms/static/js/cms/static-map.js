@@ -24,6 +24,10 @@
         source: vectorSource
       });
     const map = new ol.Map({
+        controls: [
+          new ol.control.Attribution()
+        ],
+        interactions: [],
         layers: [
           new ol.layer.Tile({
             source: new ol.source.OSM()
@@ -36,7 +40,6 @@
           zoom: 14
         })
       });
-    console.log(mapId, position, map);
   }
 
   window.createStaticMap = createStaticMap;

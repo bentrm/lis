@@ -4,7 +4,7 @@
 
 <section class="row">
 
-  <div class="col-8">
+  <div class="{% if value.images %}col-sm-8{% else %}col-12{% endif %}">
     <div class="row">
       <div class="col-12">
         {% if value.heading %}
@@ -15,6 +15,7 @@
 
       {% if value.footnotes %}
       <footer class="col-12 footnotes">
+        <h5>{% trans 'Additional notes and sources' %}</h5>
         <ol>
         {% for footnote in value.footnotes %}
           {% include_block footnote %}
@@ -26,20 +27,38 @@
 
   </div>
 
-  <div class="col-4">
-    <div class="row">
-      {% for image in value.images %}
-        <div class="col-12 mb-4">
-          {% image image fill-350x350 as tmp_image %}
-          <figure class="figure w-100">
-            <img src="{{ tmp_image.url }}" class="figure-img img-fluid w-100 rounded" alt="{{ tmp_image.alt }}">
-            {% if tmp_image.image.i18n_caption %}
-            <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
-            {% endif %}
-          </figure>
+  {% if value.images %}
+  <div class="col-sm-4">
+    <div id="{{ prefix }}-carousel-indicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        {% for image in value.images %}
+        <li data-target="#{{ prefix }}-carousel-indicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner">
+        {% for image in value.images %}
+        {% image image fill-400x400 as tmp_image %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <img src="{{ tmp_image.url }}" class="d-block w-100" alt="{{ tmp_image.alt }}">
+          {% if tmp_image.image.i18n_caption %}
+          <div class="carousel-caption">
+            <p>{{ tmp_image.image.i18n_caption }}</p>
+          </div>
+          {% endif %}
         </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
+      <a class="carousel-control-prev" href="#{{ prefix }}-carousel-indicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">{% trans 'Previous' %}</span>
+      </a>
+      <a class="carousel-control-next" href="#{{ prefix }}-carousel-indicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">{% trans 'Next' %}</span>
+      </a>
     </div>
   </div>
+  {% endif %}
+
 
 </section>

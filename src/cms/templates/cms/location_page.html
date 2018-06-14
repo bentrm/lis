@@ -1,26 +1,74 @@
 {% extends "cms/base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% block content_main %}
-<div class="row">
-  {% if page.i18n_address %}
+{% load cms_tags %}
+
+{% block css %}{{block.super}}
+<link rel="stylesheet" href="{% static 'vendor/ol/css/ol.css' %}" type="text/css">
+{% endblock %}
+
+{% block js %}{{block.super}}
+<script src="{% static 'vendor/ol/js/ol.js' %}"></script>
+<script src="{% static 'js/cms/static-map.js' %}"></script>
+{% endblock %}
+
+{% block content_heading_title %}
+<div class="row my-4">
   <div class="col-12">
-    <address>{{page.i18n_address|richtext}}</address>
+    <h1><i class="fas fa-globe"></i> {{ page }}</h1>
   </div>
-  {% endif %}
+</div>
+{% endblock %}
 
-  {% if page.i18n_directions %}
-  <div class="col-8">
-    {{page.i18n_directions|richtext}}
+{% block content_main %}
+<div class="row my-4">
+  <div class="col-sm-8">
+    <div id="map"></div>
+    <script>
+      (function() {
+        const mapId = "map"
+        const geojson = '{{ page.coordinates.geojson|safe }}'
+        if (geojson) {
+          const coordinates = JSON.parse(geojson).coordinates;
+          createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");
+        }
+      })();
+    </script>
   </div>
-  {% endif %}
 
-  <div class="col-4">
+  <div class="col-sm-4">
     {% image page.title_image fill-400x200 as tmp_image %}
     <figure class="figure">
       <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
       <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
     </figure>
+    {% if page.i18n_address %}
+    <address class="rounded bg-light p-2">{{page.i18n_address|richtext}}</address>
+    {% endif %}
+
+    {% if page.i18n_directions %}
+    <div>{{page.i18n_directions|richtext}}</div>
+    {% endif %}
   </div>
+</div>
+
+<div class="row my-4">
+  {% for memorial_site in memorial_sites %}
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="col-4">
+        {% image memorial_site.title_image fill-300x300 as tmp_image %}
+        <img src="{{ tmp_image.url }}" class="img-fluid" alt="{{ tmp_image.alt }}">
+      </div>
+      <div class="col-8">
+        <h4><i class="fas fa-sign"></i> <a href="{% cmsurl memorial_site %}">{{memorial_site}}</a></h4>
+        {{memorial_site.i18n_introduction|richtext}}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endblock %}

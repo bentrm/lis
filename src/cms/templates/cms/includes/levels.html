@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+
+<ul class="nav nav-pills justify-content-center" id="levels" role="tablist">
+  {% for level in levels %}
+  <li class="nav-item">
+      <a class="nav-link" id="{{forloop.counter}}-tab" href="#{{author.slug}}-{{forloop.counter}}" role="tab" aria-controls="{{level}}">{{level}}</a>
+  </li>
+  {% endfor %}
+</ul>
+<div class="tab-content" id="levels-content">
+  {% for level in levels %}
+  <div class="tab-pane fade show" id="{{author.slug}}-{{forloop.counter}}">
+    <div class="row">
+      <div class="col-12">
+        <article class="mt-2">
+          {% if memorial_site %}
+            {% if forloop.counter == 1 and memorial_site.i18n_description %}
+              <h3><i class="fas fa-paragraph"></i> {% trans 'Memorial site' %}</h3>
+              {% include_block memorial_site.i18n_description with prefix=0 %}
+            {% endif %}
+            {% if forloop.counter == 2 and memorial_site.i18n_detailed_description %}
+              <h3><i class="fas fa-paragraph"></i> {% trans 'Memorial site' %}</h3>
+              {% include_block memorial_site.i18n_detailed_description with prefix=0 %}
+            {% endif %}
+          {% endif %}
+          {% for text in level.get_texts %}
+            <h3><i class="fas fa-paragraph"></i> {{ text.0 }}</h3>
+            {% include_block text.1 with prefix=forloop.counter %}
+          {% endfor %}
+        </article>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<script>
+$(function () {
+  const hash = window.location.hash;
+  $("#levels li:first-child a").tab('show');
+  if (hash) {
+    const el = $(`#levels li a[href='${hash}']`);
+    if (el) {
+      el.tab('show');
+    }
+
+  }
+  $('#levels a').on('click', function (e) {
+    $(this).tab('show');
+  });
+});
+</script>

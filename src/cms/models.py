@@ -246,7 +246,7 @@ class I18nPage(Page):
         (ORIGINAL_LANGUAGE_GERMAN, _("German")),
         (ORIGINAL_LANGUAGE_CZECH, _("Czech")))
 
-    RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough"]
+    RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
 
     is_creatable = False
     icon_class = "fas fa-file"
@@ -538,6 +538,19 @@ class AuthorsPage(CategoryPage):
     icon_class = "fas fa-users"
     template = "cms/categories/authors_page.html"
 
+    def get_context(self, request, *args, **kwargs):
+        """Add more context information on view requests."""
+        context = super(AuthorsPage, self).get_context(request, *args, **kwargs)
+
+        authors = AuthorPage.objects.order_by("title")
+        if request.is_preview:
+            authors = [x.get_latest_revision_as_page() for x in authors]
+        else:
+            authors = authors.live()
+        context["authors"] = authors
+
+        return context
+
     class Meta:
         verbose_name = _("Authors")
         db_table = "authors"
@@ -737,12 +750,12 @@ class AuthorPage(I18nPage):
         context["author_name"], *context["author_alt_names"] = page.names.order_by("sort_order")
 
         # add level pages
-        child_pages = self.get_children().specific()
+        levels = self.get_children().specific()
         if request.is_preview:
-            child_pages = [page.get_latest_revision_as_page() for page in child_pages]
+            levels = [page.get_latest_revision_as_page() for page in levels]
         else:
-            child_pages = child_pages.live()
-        context["child_pages"] = child_pages
+            levels = levels.live()
+        context["levels"] = sorted(levels, key=lambda x: x.level_order)
 
         # add memorial sites
         memorial_sites = MemorialSitePage.objects.filter(authors__author=self)
@@ -940,6 +953,7 @@ class LevelPage(I18nPage):
 
     parent_page_types = ["AuthorPage"]
     text_types = ()
+    level_order = 0
 
     @classmethod
     def can_create_at(cls, parent):
@@ -967,7 +981,6 @@ class LevelPage(I18nPage):
             self.title_de = gettext(self.PAGE_TITLE)
         with override("cs"):
             self.title_cs = gettext(self.PAGE_TITLE)
-        print(f"{self.title} {self.title_de} {self.title_cs}")
         super(LevelPage, self).full_clean(*args, **kwargs)
 
     def __str__(self):
@@ -983,9 +996,11 @@ class Level1Page(LevelPage):
     PAGE_TITLE = PAGE_TITLE_I
 
     text_types = (
+        TextType("i18n_description", _("Memorial site")),
         TextType("i18n_biography", _("Biography")),
         TextType("i18n_works", _("Literary works")),
     )
+    level_order = 1
 
     biography_verbose_name = _("Biography")
     biography_help_text = _("An introductory biography of the author aimed at laymen.")
@@ -1066,12 +1081,14 @@ class Level2Page(LevelPage):
     )
 
     text_types = (
+        TextType("i18n_detailed_description", _("Memorial site")),
         TextType("i18n_biography", _("Biography")),
-        TextType("i18n_workds", _("Literary works")),
+        TextType("i18n_works", _("Literary works")),
         TextType("i18n_reception", _("Reception")),
         TextType("i18n_connections", _(connections_verbose_name)),
         TextType("i18n_full_texts", _(full_texts_verbose_name)),
     )
+    level_order = 2
 
     biography_verbose_name = _("Biography")
     biography_help_text = _("An introductory biography of the author aimed at laymen.")
@@ -1213,6 +1230,7 @@ class Level3Page(LevelPage):
         TextType("i18n_testimony", testimony_verbose_name),
         TextType("i18n_secondary_literature", secondary_literature_verbose_name),
     )
+    level_order = 3
 
     primary_literature = StreamField(
         [("paragraph", ParagraphStructBlock())],
@@ -1325,7 +1343,19 @@ class LocationsPage(CategoryPage):
 
     parent_page_types = ["HomePage"]
     icon_class = "fas fa-globe"
-    template = CategoryPage.template
+    template = "cms/categories/locations_page.html"
+
+    def get_context(self, request):
+        """Add all child geometries to context.."""
+        context = super(LocationsPage, self).get_context(request)
+
+        locations = LocationPage.objects.all()
+        if request.is_preview:
+            locations = [x.get_latest_revision_as_page() for x in locations]
+        else:
+            locations = locations.live()
+        context["locations"] = locations
+        return context
 
     class Meta:
         verbose_name = _("Locations")
@@ -1435,8 +1465,12 @@ class LocationPage(I18nPage):
     def get_context(self, request):
         """Add child pages into the pages context."""
         context = super(LocationPage, self).get_context(request)
-        child_pages = self.get_children().specific().live()
-        context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
+        memorial_sites = self.get_children().specific()
+        if not request.is_preview:
+            memorial_sites = memorial_sites.live()
+        else:
+            memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
+        context["memorial_sites"] = sorted(memorial_sites, key=lambda x: str(x.i18n_title))
         return context
 
     class Meta:
@@ -1569,6 +1603,30 @@ class MemorialSitePage(I18nPage):
         ObjectList(german_panels, heading=I18nPage.HEADING_GERMAN),
         ObjectList(czech_panels, heading=I18nPage.HEADING_CZECH),
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
+
+    def get_context(self, request):
+        """Add all child geometries to context.."""
+        context = super(MemorialSitePage, self).get_context(request)
+
+        location = self.get_parent()
+        if request.is_preview:
+            location = location.get_latest_revision_as_page()
+        context["location"] = location
+
+        authors = [x.author for x in self.authors.all()]
+        if request.is_preview:
+            authors[:] = [x.get_latest_revision_as_page() for x in authors]
+
+        context["authors"] = {}
+        for author in authors:
+            levels = author.get_children().specific()
+            if request.is_preview:
+                levels = [x.get_latest_revision_as_page() for x in levels]
+            else:
+                levels = levels.live()
+            context["authors"][author] = sorted(levels, key=lambda x: x.level_order)
+
+        return context
 
     class Meta:
         verbose_name = _("Memorial site")

@@ -1,67 +1,77 @@
 {% extends "cms/base.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load i18n %}
+{% load staticfiles %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
 
-{% block content %}
-  <div class="row mt-4">
+{% load cms_tags %}
 
-    <div class="col-4">
-      {% image page.title_image fill-350x350 as tmp_image %}
+{% block css %}{{block.super}}
+<link rel="stylesheet" href="{% static 'vendor/ol/css/ol.css' %}" type="text/css">
+{% endblock %}
+
+{% block js %}{{block.super}}
+<script src="{% static 'vendor/ol/js/ol.js' %}"></script>
+<script src="{% static 'js/cms/static-map.js' %}"></script>
+{% endblock %}
+
+{% block content_heading_title %}
+<div class="row my-4">
+  <div class="col-12">
+    <h1><i class="fas fa-sign"></i> {{ page }}</h1>
+  </div>
+</div>
+{% endblock %}
+
+{% block content_main %}
+  <div class="row my-4">
+    <div class="col-sm-8">
+      <div class="card">
+        <div id="map" class="card-img-top"></div>
+      </div>
+      <script>
+        (function() {
+          const mapId = "map"
+          const geojson = '{{ location.coordinates.geojson|safe }}'
+          if (geojson) {
+            const coordinates = JSON.parse(geojson).coordinates;
+            createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");
+          }
+        })();
+        </script>
+    </div>
+
+    <div class="col-sm-4">
+      {% image page.title_image fill-400x400 as tmp_image %}
       <figure class="figure">
         <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
         <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
       </figure>
-    </div>
-
-    <div class="col-12">
-      {{page.description|safe}}
-    </div>
-
-    {% for author in page.authors.all %}
-      <div class="col-12">
-        <h2>{{author.author}}</h3>
-      </div>
-      {% for child in author.author.get_children.specific %}
-      <div class="col-12">
-        <h2>{{child}}</h2>
-        <article class="mt-2">
-          {% for text in child.get_texts %}
-            <h3>{{text.0}}</h3>
-            {{ text.1|safe}}
-          {% endfor %}
-        </article>
-      </div>
-      {% endfor %}
-    {% endfor %}
-
-  </div>
-
-  <div class="row">
-    <div class="col-12">
-
-      <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-        {% for child in page.get_children %}
-          <li class="nav-item">
-            <a class="nav-link" id="nav-{{ child.slug }}-link" data-toggle="tab" href="#nav-{{ child.slug }}" role="tab" aria-controls="nav-{{ child.slug }}" aria-selected="false">
-              {{ child }}
-            </a>
-          </li>
+      <h2>{% trans 'Authors' %}</h3>
+      <ul class="nav flex-column">
+        {% for author, levels in authors.items %}
+        <li class="nav-item">
+          <a href="#{{author.slug}}" class="nav-link"><i class="fas fa-feather"></i> {{author}}</a></li>
         {% endfor %}
       </ul>
-
-      <div class="tab-content" id="nav-tab-content">
-
-        {% for child in page.get_children.specific %}
-          <div class="tab-pane fade" id="nav-{{ child.slug }}" role="tabpanel" aria-labelledby="nav-{{ child.slug }}">
-
-            <article class="mt-2">
-              {% include_block child.i18n_body %}
-            </article>
-
-          </div>
-        {% endfor %}
-      </div>
-
     </div>
+</div>
+
+<div class="row my-4">
+  <div class="col-12">
+    <h3>{% trans 'Introduction' %}</h3>
+    {{page.i18n_introduction|richtext}}
   </div>
+</div>
+
+{% for author, levels in authors.items %}
+<div class="row my-4">
+  <div class="col-12">
+    <h2 id="{{author.slug}}"><i class="fas fa-feather"></i> <a href="{% cmsurl author %}">{{author}}</a></h2>
+    {% include 'cms/includes/levels.html' with levels=levels memorial_site=page %}
+  </div>
+</div>
+{% endfor %}
+</div>
 {% endblock %}

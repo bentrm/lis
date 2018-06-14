@@ -1,9 +1,10 @@
+{% load wagtailcore_tags %}
+
 <div class="col-12">
-  <h2>{{page}}</h2>
   <article class="mt-2">
-    {% for text in page.get_texts %}
-      <h3>{{text.0}}</h3>
-      {{ text.1|safe}}
+    {% for text in level.get_texts %}
+      <h3><i class="fas fa-paragraph"></i> {{ text.0 }}</h3>
+      {% include_block text.1 with prefix=forloop.counter %}
     {% endfor %}
   </article>
 </div>
