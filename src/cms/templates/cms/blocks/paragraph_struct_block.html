@@ -4,7 +4,7 @@
 
 <section class="row">
 
-  <div class="{% if value.images %}col-sm-8{% else %}col-12{% endif %}">
+  <div class="{% if value.images %}col-sm-9{% else %}col-12{% endif %}">
     <div class="row">
       <div class="col-12">
         {% if value.heading %}
@@ -28,7 +28,7 @@
   </div>
 
   {% if value.images %}
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <div id="{{ prefix }}-carousel-indicators" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         {% for image in value.images %}

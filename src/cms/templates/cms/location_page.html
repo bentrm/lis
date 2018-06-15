@@ -59,11 +59,13 @@
   {% for memorial_site in memorial_sites %}
   <div class="col-sm-6">
     <div class="row">
+      {% if memorial_site.title_image %}
       <div class="col-4">
         {% image memorial_site.title_image fill-300x300 as tmp_image %}
         <img src="{{ tmp_image.url }}" class="img-fluid" alt="{{ tmp_image.alt }}">
       </div>
-      <div class="col-8">
+      {% endif %}
+      <div class="{% if memorial_site.title_image %}col-8{% else %}col-12{% endif %}">
         <h4><i class="fas fa-sign"></i> <a href="{% cmsurl memorial_site %}">{{memorial_site}}</a></h4>
         {{memorial_site.i18n_introduction|richtext}}
       </div>

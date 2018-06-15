@@ -19,7 +19,15 @@
 {% block content_heading_title %}
 <div class="row my-4">
   <div class="col-12">
-    <h1><i class="fas fa-sign"></i> {{ page }}</h1>
+    <h1>{{ page }}</h1>
+    <p>
+      {% trans 'A memorial site for' %}
+      {% for author, levels in authors.items %}
+        <a href="#{{author.slug}}">{{author}}</a>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {{page.i18n_introduction|richtext}}
+    </ul>
   </div>
 </div>
 {% endblock %}
@@ -48,27 +56,13 @@
         <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
         <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
       </figure>
-      <h2>{% trans 'Authors' %}</h3>
-      <ul class="nav flex-column">
-        {% for author, levels in authors.items %}
-        <li class="nav-item">
-          <a href="#{{author.slug}}" class="nav-link"><i class="fas fa-feather"></i> {{author}}</a></li>
-        {% endfor %}
-      </ul>
     </div>
 </div>
 
-<div class="row my-4">
-  <div class="col-12">
-    <h3>{% trans 'Introduction' %}</h3>
-    {{page.i18n_introduction|richtext}}
-  </div>
-</div>
-
 {% for author, levels in authors.items %}
-<div class="row my-4">
+<div class="row my-4 py-4 border rounded">
   <div class="col-12">
-    <h2 id="{{author.slug}}"><i class="fas fa-feather"></i> <a href="{% cmsurl author %}">{{author}}</a></h2>
+    <h2 id="{{author.slug}}">{{author}}</h2>
     {% include 'cms/includes/levels.html' with levels=levels memorial_site=page %}
   </div>
 </div>

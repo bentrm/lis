@@ -17,7 +17,7 @@ $(function() {
             node.dataset.delay = "500";
             node.dataset.placement = "top";
             node.dataset.html = "true";
-            node.innerHTML = "<i class='far fa-bookmark footnote'></i>";
+            node.innerHTML = "<i class='fas fa-bookmark footnote'></i>";
             quote.replaceWith(node);
             $(node).popover({
               content: footnote.firstChild.innerHTML,
@@ -31,5 +31,12 @@ $(function() {
         footnote.remove();
       }
     });
+  });
+
+  document.querySelectorAll(".block-paragraph .footnotes").forEach(footnotes => {
+    console.log(footnotes);
+    if (footnotes.querySelector("ol").length === 0) {
+      footnotes.remove();
+    }
   });
 });
