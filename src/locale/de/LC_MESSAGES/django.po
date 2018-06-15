@@ -1,0 +1,39 @@
+# LIS - German translation
+# Copyright (C) 2018 LIS
+# This file is distributed under the same license as the LIS package.
+# Benjamin Thurm <thurm@htw-dresden.de>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-06-15 08:36+0000\n"
+"PO-Revision-Date: 2018-06-15 10:38+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: LIS-Team <***EMAIL***>\n"
+"Language: de\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.0.8\n"
+
+#: templates/base.html:56
+msgid "Signup"
+msgstr "Registrieren"
+
+#: templates/base.html:59
+msgid "Project management"
+msgstr "Projektmanagement"
+
+#: templates/base.html:62
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/base.html:65
+msgid "CMS"
+msgstr "CMS"
+
+#: templates/base.html:68
+msgid "Data protection"
+msgstr "Datenschutz"
