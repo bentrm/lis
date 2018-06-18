@@ -1,6 +1,6 @@
 "use strict";
 $(function() {
-  const paragraphs = document.querySelectorAll(".block-paragraph");
+  const paragraphs = document.querySelectorAll("section.block");
   paragraphs.forEach(p => {
     const texts = p.querySelectorAll(".rich-text");
     const footnotes = p.querySelectorAll(".footnotes [data-tag]")

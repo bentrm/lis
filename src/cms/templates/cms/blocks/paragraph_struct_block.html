@@ -2,34 +2,14 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<section class="row">
+<section class="row block">
+  <div class="col-12">
+    {% if value.heading %}
+    <h4>{{ value.heading }}</h4>
+    {% endif %}
 
-  <div class="{% if value.images %}col-sm-9{% else %}col-12{% endif %}">
-    <div class="row">
-      <div class="col-12">
-        {% if value.heading %}
-        <h4>{{ value.heading }}</h4>
-        {% endif %}
-        {% include_block value.content %}
-      </div>
-
-      {% if value.footnotes %}
-      <footer class="col-12 footnotes">
-        <h5>{% trans 'Additional notes and sources' %}</h5>
-        <ol>
-        {% for footnote in value.footnotes %}
-          {% include_block footnote %}
-        {% endfor %}
-        </ol>
-      </footer>
-      {% endif %}
-    </div>
-
-  </div>
-
-  {% if value.images %}
-  <div class="col-sm-3">
-    <div id="{{ prefix }}-carousel-indicators" class="carousel slide" data-ride="carousel">
+    {% if value.images %}
+    <div id="{{ prefix }}-carousel-indicators" class="carousel slide w-25 float-right ml-3 mb-3" data-ride="carousel">
       <ol class="carousel-indicators">
         {% for image in value.images %}
         <li data-target="#{{ prefix }}-carousel-indicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
@@ -38,7 +18,7 @@
       <div class="carousel-inner">
         {% for image in value.images %}
         {% image image fill-400x400 as rendition %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-toggle="modal" data-target="#img-{{image.pk}}">
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-toggle="modal" data-target="#{{ prefix }}-img-{{ forloop.counter }}">
           <img src="{{ rendition.url }}" class="d-block w-100" alt="{{ image.i18n_title }}">
         </div>
         {% endfor %}
@@ -52,16 +32,30 @@
         <span class="sr-only">{% trans 'Next' %}</span>
       </a>
     </div>
+    {% endif %}
+
+    {% include_block value.content %}
   </div>
 
-  <!-- Modal -->
+  {% if value.footnotes %}
+  <footer class="col-12 footnotes">
+    <h5>{% trans 'Additional notes and sources' %}</h5>
+    <ol>
+    {% for footnote in value.footnotes %}
+      {% include_block footnote %}
+    {% endfor %}
+    </ol>
+  </footer>
+  {% endif %}
+
+  {% if value.images %}
   {% for image in value.images %}
   {% image image max-1000x1000 as rendition %}
-  <div class="modal carousel-modal fade" id="img-{{image.pk}}" tabindex="-1" role="dialog" aria-labelledby="img-{{image.pk}}-label" aria-hidden="true">
+  <div class="modal carousel-modal fade" id="{{ prefix }}-img-{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="{{ prefix }}-img-{{ forloop.counter }}-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="img-{{image.pk}}-label">{{image.i18n_title}}</h5>
+          <h5 class="modal-title" id="{{ prefix }}-img-{{ forloop.counter }}-label">{{image.i18n_title}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -78,12 +72,11 @@
     </div>
   </div>
   <script>
-  $("#img-{{ image.pk }}").on('show.bs.modal', function (e) {
+  $("#{{ prefix }}-img-{{ forloop.counter }}").on('show.bs.modal', function (e) {
     const rendition = $(".carousel-modal-rendition", e.target)[0];
     rendition.src = rendition.dataset.src;
   });
   </script>
   {% endfor %}
-
   {% endif %}
 </section>

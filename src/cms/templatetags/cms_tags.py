@@ -13,3 +13,9 @@ def cms_url(context, page):
     if context["request"].is_preview:
         return reverse("wagtailadmin_pages:view_draft", args=(page.id,))
     return pageurl(context, page)
+
+
+@register.filter
+def addstr(arg1, arg2):
+    """concatenate arg1 & arg2"""
+    return str(arg1) + str(arg2)
