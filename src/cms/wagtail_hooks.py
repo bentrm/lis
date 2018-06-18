@@ -34,7 +34,7 @@ def as_page_object(self):
     # copy over properties that are derievied from our custom i18n class
     if isinstance(obj, I18nPage):
         obj.draft_title_de = specific_page.draft_title_de
-        obj.draft_title_cs = specific_page.draft_title_cs        
+        obj.draft_title_cs = specific_page.draft_title_cs
     elif isinstance(obj, AuthorPage):
         author_name = specific_page.names.order_by("sort_order").first()
         obj.draft_title = author_name.full_name()
@@ -105,9 +105,12 @@ def register_footnote_feature(features):
         "description": gettext("Footnote"),
         "class": "footnote",
         "style": {
+            "backgroundColor": "#e6e6e6",
+            "border": "1px solid #333",
             "fontFamily": "monospace",
             "fontWeight": "bold",
-            "border": "1px solid #333",
+            "marginLeft": ".1rem",
+            "padding": ".1rem",
         }
     }
 

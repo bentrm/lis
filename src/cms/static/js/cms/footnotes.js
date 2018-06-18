@@ -3,7 +3,7 @@ $(function() {
   const paragraphs = document.querySelectorAll(".block-paragraph");
   paragraphs.forEach(p => {
     const texts = p.querySelectorAll(".rich-text");
-    const footnotes = document.querySelectorAll(".footnotes [data-tag]")
+    const footnotes = p.querySelectorAll(".footnotes [data-tag]")
     footnotes.forEach(footnote => {
       const tag = footnote.dataset.tag;
       let quoteUsed = false;
@@ -22,21 +22,11 @@ $(function() {
             $(node).popover({
               content: footnote.firstChild.innerHTML,
               delay: {show: 500, hide: 1000}
-            })
+            });
             quoteUsed = true;
           }
         });
       });
-      if (quoteUsed) {
-        footnote.remove();
-      }
     });
-  });
-
-  document.querySelectorAll(".block-paragraph .footnotes").forEach(footnotes => {
-    console.log(footnotes);
-    if (footnotes.querySelector("ol").length === 0) {
-      footnotes.remove();
-    }
   });
 });

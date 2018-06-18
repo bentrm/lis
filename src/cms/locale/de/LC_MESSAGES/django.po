@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-15 08:36+0000\n"
-"PO-Revision-Date: 2018-06-15 10:40+0200\n"
+"PO-Revision-Date: 2018-06-18 09:15+0200\n"
 "Last-Translator: Benjamin Thurm <bentrm@posteo.de>\n"
 "Language-Team: LIS-Team <***EMAIL***>\n"
 "Language: de\n"
@@ -707,7 +707,7 @@ msgstr ""
 
 #: cms/templates/cms/author_page.html:21
 msgid "born"
-msgstr "geb. am"
+msgstr "geboren"
 
 #: cms/templates/cms/author_page.html:23
 msgid "Also known as"

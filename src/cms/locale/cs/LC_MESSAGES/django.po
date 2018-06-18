@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-15 08:59+0000\n"
-"PO-Revision-Date: 2018-06-15 11:02+0200\n"
+"PO-Revision-Date: 2018-06-18 08:43+0200\n"
 "Last-Translator: Marie Holá <marie.hola@tul.cz>\n"
 "Language-Team: LIS-Team <***EMAIL***>\n"
 "Language: cs\n"
@@ -668,7 +668,7 @@ msgstr "Autor, kterého tento památník připomíná."
 
 #: cms/templates/cms/author_page.html:21
 msgid "born"
-msgstr ""
+msgstr "narozený"
 
 #: cms/templates/cms/author_page.html:23
 msgid "Also known as"
@@ -680,11 +680,11 @@ msgstr "Náhled"
 
 #: cms/templates/cms/base.html:54
 msgid "Go to current live version."
-msgstr ""
+msgstr "Přejít na aktuální živou verzi."
 
 #: cms/templates/cms/blocks/paragraph_struct_block.html:18
 msgid "Additional notes and sources"
-msgstr ""
+msgstr "Další poznámky a zdroje"
 
 #: cms/templates/cms/blocks/paragraph_struct_block.html:53
 msgid "Previous"
@@ -711,6 +711,8 @@ msgid ""
 "Registration is only available for project members at this time. The keyword "
 "is available on request only."
 msgstr ""
+"Registrace je k dispozici pouze členům projektu. Klíčové slovo je k "
+"dispozici pouze na vyžádání."
 
 #: cms/templates/wagtailadmin/admin_base.html:30
 msgid "Edit"
