@@ -37,14 +37,9 @@
       </ol>
       <div class="carousel-inner">
         {% for image in value.images %}
-        {% image image fill-400x400 as tmp_image %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <img src="{{ tmp_image.url }}" class="d-block w-100" alt="{{ tmp_image.alt }}">
-          {% if tmp_image.image.i18n_caption %}
-          <div class="carousel-caption">
-            <p>{{ tmp_image.image.i18n_caption }}</p>
-          </div>
-          {% endif %}
+        {% image image fill-400x400 as rendition %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-toggle="modal" data-target="#img-{{image.pk}}">
+          <img src="{{ rendition.url }}" class="d-block w-100" alt="{{ image.i18n_title }}">
         </div>
         {% endfor %}
       </div>
@@ -58,7 +53,37 @@
       </a>
     </div>
   </div>
+
+  <!-- Modal -->
+  {% for image in value.images %}
+  {% image image max-1000x1000 as rendition %}
+  <div class="modal carousel-modal fade" id="img-{{image.pk}}" tabindex="-1" role="dialog" aria-labelledby="img-{{image.pk}}-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="img-{{image.pk}}-label">{{image.i18n_title}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img data-src="{{ rendition.url }}" class="d-block w-100 carousel-modal-rendition" alt="{{ image.i18n_alt }}">
+        </div>
+        {% if image.i18n_caption %}
+        <div class="modal-footer">
+          {{ image.i18n_caption|richtext}}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+  $("#img-{{ image.pk }}").on('show.bs.modal', function (e) {
+    const rendition = $(".carousel-modal-rendition", e.target)[0];
+    rendition.src = rendition.dataset.src;
+  });
+  </script>
+  {% endfor %}
+
   {% endif %}
-
-
 </section>
