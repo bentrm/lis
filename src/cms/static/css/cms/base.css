@@ -45,3 +45,7 @@ a {
 .footnotes p {
   margin-bottom: .5rem;
 }
+
+.popover p {
+  margin-bottom: 0;
+}
