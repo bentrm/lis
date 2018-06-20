@@ -7,33 +7,19 @@
     {% if value.heading %}
     <h4>{{ value.heading }}</h4>
     {% endif %}
+  </div>
 
-    {% if value.images %}
-    <div id="{{ prefix }}-carousel-indicators" class="carousel slide w-25 float-right ml-3 mb-3" data-ride="carousel">
-      <ol class="carousel-indicators">
-        {% for image in value.images %}
-        <li data-target="#{{ prefix }}-carousel-indicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
-        {% endfor %}
-      </ol>
-      <div class="carousel-inner">
-        {% for image in value.images %}
-        {% image image fill-400x400 as rendition %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-toggle="modal" data-target="#{{ prefix }}-img-{{ forloop.counter }}">
-          <img src="{{ rendition.url }}" class="d-block w-100" alt="{{ image.i18n_title }}">
-        </div>
-        {% endfor %}
-      </div>
-      <a class="carousel-control-prev" href="#{{ prefix }}-carousel-indicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">{% trans 'Previous' %}</span>
-      </a>
-      <a class="carousel-control-next" href="#{{ prefix }}-carousel-indicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">{% trans 'Next' %}</span>
-      </a>
+  {% if value.images %}
+    {% for image in value.images %}
+    {% image image max-400x400 as rendition %}
+    <div class="col-sm-4 col-md-3 col-lg-2 my-2">
+      <img src="{{ rendition.url }}" class="w-100" alt="{{ image.i18n_title }}" data-toggle="modal" data-target="#{{ prefix }}-img-{{ forloop.counter }}">
     </div>
-    {% endif %}
+    {% endfor %}
+  {% endif %}
 
+
+  <div class="col-12">
     {% include_block value.content %}
   </div>
 

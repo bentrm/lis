@@ -40,7 +40,7 @@
   </div>
 
   <div class="col-sm-4">
-    {% image page.title_image fill-400x200 as tmp_image %}
+    {% image page.title_image max-400x400 as tmp_image %}
     <figure class="figure">
       <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
       <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
@@ -61,7 +61,7 @@
     <div class="row">
       {% if memorial_site.title_image %}
       <div class="col-4">
-        {% image memorial_site.title_image fill-300x300 as tmp_image %}
+        {% image memorial_site.title_image fill-400x400 as tmp_image %}
         <img src="{{ tmp_image.url }}" class="img-fluid" alt="{{ tmp_image.alt }}">
       </div>
       {% endif %}

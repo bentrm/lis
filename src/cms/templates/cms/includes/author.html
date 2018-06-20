@@ -33,7 +33,7 @@
 </div>
 
 <div class="col-sm-4">
-  {% image author.title_image fill-200x200 as tmp_image %}
+  {% image author.title_image max-400x400 as tmp_image %}
   <figure class="figure">
     <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
     <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>

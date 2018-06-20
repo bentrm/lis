@@ -51,9 +51,9 @@
     </div>
 
     <div class="col-sm-4">
-      {% image page.title_image fill-400x400 as tmp_image %}
-      <figure class="figure">
-        <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+      {% image page.title_image max-400x400 as tmp_image %}
+      <figure class="figure w-100">
+        <img src="{{ tmp_image.url }}" class="figure-img img-fluid" alt="{{ tmp_image.alt }}">
         <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
       </figure>
     </div>
