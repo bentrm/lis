@@ -14,20 +14,20 @@
     <li>{% trans 'Date of death' %}: {{date_of_death}}</li>
     {% endif %}
 
-    {% if author.author_languages.all %}
+    {% if languages %}
     <li>{% trans 'Languages' %}:
-      {% for author_language in author.author_languages.all %}
-      <span class="badge badge-pill badge-secondary mr-1">{{author_language}}</span>
+      {% for language in languages %}
+      <span class="badge badge-pill badge-secondary mr-1">{{ language }}</span>
       {% endfor %}
     </li>
     {% endif %}
 
-    {% if author.author_literary_categories.all %}
-    <li>{% trans 'Categories' %}: {% for cat in author.author_literary_categories.all %}<span class="badge badge-pill badge-secondary mr-1">{{cat}}</span>{% endfor %}</li>
+    {% if literary_categories %}
+    <li>{% trans 'Categories' %}: {% for litarary_category in literary_categories %}<span class="badge badge-pill badge-secondary mr-1">{{ litarary_category }}</span>{% endfor %}</li>
     {% endif %}
 
-    {% if author.author_literary_periods.all %}
-    <li>{% trans 'Literary periods' %}: {% for per in author.author_literary_periods.all %}<span class="badge badge-pill badge-secondary mr-1">{{per}}</span>{% endfor %}</li>
+    {% if literary_periods %}
+    <li>{% trans 'Literary periods' %}: {% for literary_period in literary_periods %}<span class="badge badge-pill badge-secondary mr-1">{{ literary_period }}</span>{% endfor %}</li>
     {% endif %}
   </ul>
 </div>
