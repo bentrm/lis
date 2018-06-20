@@ -18,11 +18,15 @@
 {% block content_heading_title %}
 <div class="row my-4">
   <div class="col-12">
-    <h1>{{ author_name }}{%if author_name.i18n_birth_name %} ({% trans 'born' %} {{author_name.i18n_birth_name}}){% endif %}</h1>
-    {% if author_alt_names %}
-    <p>{% trans 'Also known as' %}: {{ author_alt_names|join:" || " }}
-    </p>
-    {% endif %}
+    <h1>
+      {{ author.full_name_title }}
+      {% if author_alt_names %}
+      <br>
+      <small class="text-secondary">
+        {% if author.sex == 'F' %}{% trans 'Also known as' context 'female' %}{% else %}{% trans 'Also known as' context 'male' %}{% endif %} {{ author_alt_names|humanize_list }}.
+      </small>
+      {% endif %}
+    </h1>
 
   </div>
 </div>

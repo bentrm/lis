@@ -1,4 +1,5 @@
 from django import template
+from django.utils.translation import gettext
 from django.urls import reverse
 
 from wagtail.core.templatetags.wagtailcore_tags import pageurl
@@ -19,3 +20,15 @@ def cms_url(context, page):
 def addstr(arg1, arg2):
     """concatenate arg1 & arg2"""
     return str(arg1) + str(arg2)
+
+
+@register.filter
+def humanize_list(arg):
+    print(arg)
+    output = ""
+    if len(arg) == 1:
+        return str(arg[0])
+    elif len(arg) > 1:
+        output += ", ".join((str(x) for x in arg[:-1]))
+        output += f" {gettext('and')} {arg[-1]}"
+    return output

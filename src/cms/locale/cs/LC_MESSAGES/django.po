@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-15 08:59+0000\n"
+"POT-Creation-Date: 2018-06-20 09:30+0000\n"
 "PO-Revision-Date: 2018-06-18 08:43+0200\n"
 "Last-Translator: Marie Holá <marie.hola@tul.cz>\n"
 "Language-Team: LIS-Team <***EMAIL***>\n"
@@ -56,7 +56,7 @@ msgid ""
 "Images that will be displayed alongside the text content of the paragraph."
 msgstr "Obrázky, které se zobrazí v textu."
 
-#: cms/blocks.py:44 cms/templates/cms/includes/levels.html:19
+#: cms/blocks.py:44 cms/templates/cms/includes/levels.html:23
 msgid "Content"
 msgstr "Obsah"
 
@@ -88,11 +88,11 @@ msgstr "Odstavec"
 msgid "Keyword"
 msgstr "Klíčové slovo"
 
-#: cms/forms.py:12 cms/models.py:800 cms/models.py:804 cms/models.py:809
+#: cms/forms.py:12 cms/models.py:808 cms/models.py:812 cms/models.py:817
 msgid "First name"
 msgstr "Jméno/ Křestní jméno"
 
-#: cms/forms.py:13 cms/models.py:815 cms/models.py:819 cms/models.py:824
+#: cms/forms.py:13 cms/models.py:823 cms/models.py:827 cms/models.py:832
 msgid "Last name"
 msgstr "Příjmení"
 
@@ -234,7 +234,7 @@ msgstr "Původní jazyk tohoto textu."
 msgid "Homepage"
 msgstr "Domovská stránka"
 
-#: cms/models.py:417 cms/models.py:429 cms/models.py:913
+#: cms/models.py:417 cms/models.py:429 cms/models.py:932
 msgid "Literary genre"
 msgstr "Literární žánr"
 
@@ -246,7 +246,7 @@ msgstr "Literární žánry"
 msgid "Types of contact"
 msgstr "Typy kontaktů"
 
-#: cms/models.py:452 cms/models.py:1492
+#: cms/models.py:452 cms/models.py:1511
 msgid "Contact type"
 msgstr "Typ kontaktu"
 
@@ -268,11 +268,11 @@ msgstr "Obecný popis literárního období a jeho znaky."
 msgid "Languages"
 msgstr "Jazyky"
 
-#: cms/models.py:529 cms/models.py:933
+#: cms/models.py:529 cms/models.py:952
 msgid "Language"
 msgstr "Jazyk"
 
-#: cms/models.py:555 cms/models.py:772 cms/models.py:1583
+#: cms/models.py:555 cms/models.py:780 cms/models.py:1602
 msgid "Authors"
 msgstr "Autorky a autoři"
 
@@ -288,7 +288,7 @@ msgstr "Muž"
 msgid "Female"
 msgstr "Žena"
 
-#: cms/models.py:581 cms/models.py:1377 cms/models.py:1520
+#: cms/models.py:581 cms/models.py:1396 cms/models.py:1539
 msgid "Title image"
 msgstr "Titulní obrázek"
 
@@ -376,136 +376,147 @@ msgstr "Literární období, v nichž autor tvořil."
 msgid "The literary genres the author is associated with."
 msgstr "Literární žánry, s nimiž je autor spojován."
 
-#: cms/models.py:771 cms/models.py:885 cms/models.py:1651
+#: cms/models.py:779 cms/models.py:904 cms/models.py:1670
 msgid "Author"
 msgstr "Autor"
 
-#: cms/models.py:783 cms/models.py:788 cms/models.py:793
+#: cms/models.py:791 cms/models.py:796 cms/models.py:801
 msgid "Title"
 msgstr "Název"
 
-#: cms/models.py:784
+#: cms/models.py:792
 msgid "Academic title of the author if any."
 msgstr "Autorův akademický titul."
 
-#: cms/models.py:789
+#: cms/models.py:797
 msgid "Academic title of the author in German."
 msgstr "Autorův akademický titul v němčině."
 
-#: cms/models.py:794
+#: cms/models.py:802
 msgid "Academic title of the author in Czech."
 msgstr "Autorův akademický titul v češtině."
 
-#: cms/models.py:805
+#: cms/models.py:813
 msgid "The first name in German if different from international spelling."
 msgstr "Křestní jméno v němčině pokud se liší od mezinárodního pravopisu."
 
-#: cms/models.py:810 cms/models.py:825
+#: cms/models.py:818 cms/models.py:833
 msgid "The first name in Czech if different from international spelling."
 msgstr "Křestní jméno v češtině pokud se liší od mezinárodního pravopisu."
 
-#: cms/models.py:820
+#: cms/models.py:828
 msgid "The last name in German if different from international spelling."
 msgstr "Příjmení v němčině pokud se liší od mezinárodního pravopisu."
 
-#: cms/models.py:831 cms/models.py:836 cms/models.py:841
+#: cms/models.py:839 cms/models.py:844 cms/models.py:849
 msgid "Birth name"
 msgstr "Rodné jméno"
 
-#: cms/models.py:832
+#: cms/models.py:840
 msgid "Birth name of the author if different from last name."
 msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od příjmení."
 
-#: cms/models.py:837 cms/models.py:842
+#: cms/models.py:845 cms/models.py:850
 msgid "Birth name of the author if different from international spelling."
 msgstr ""
 "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
 
-#: cms/models.py:847
+#: cms/models.py:855
 msgid "Is pseudonym"
 msgstr "Pseudonym"
 
-#: cms/models.py:848
+#: cms/models.py:856
 msgid "This name has been used as a pseudonym by the author."
 msgstr "Toto jméno autor používal jako pseudonym."
 
-#: cms/models.py:854
+#: cms/models.py:862
+#, python-format
+msgctxt "female"
+msgid "born %(birth_name)s"
+msgstr ""
+
+#: cms/models.py:864
+#, python-format
+msgctxt "male"
+msgid "born %(birth_name)s"
+msgstr ""
+
+#: cms/models.py:873
 msgid "Name entries must at least contain a first name or a last name."
 msgstr "Záznamy o jméně musí obsahovat alespoň křestní jméno nebo příjmení."
 
-#: cms/models.py:886
+#: cms/models.py:905
 msgid "Author that this mapping is referencing."
 msgstr "Autor, k němuž se vztahuje toto mapování."
 
-#: cms/models.py:893
+#: cms/models.py:912
 msgid "Literary period"
 msgstr "Literární období"
 
-#: cms/models.py:894
+#: cms/models.py:913
 msgid "Literary period that the author is associated with."
 msgstr "Literární období, s nímž je autor spojen."
 
-#: cms/models.py:914
+#: cms/models.py:933
 msgid "Literary genre that the author is associated with."
 msgstr "Literární žánry, s nímž je autor spojen."
 
-#: cms/models.py:934
+#: cms/models.py:953
 msgid "Language that the author has been active in."
 msgstr "Jazyk, kterým autor psal."
 
-#: cms/models.py:943
+#: cms/models.py:962
 msgid "I. Discovery"
 msgstr "I. Objevuj"
 
-#: cms/models.py:944
+#: cms/models.py:963
 msgid "II. Delving deeper"
 msgstr "II. Poznávej"
 
-#: cms/models.py:945
+#: cms/models.py:964
 msgid "III. Research literature"
 msgstr "III. Zkoumej"
 
-#: cms/models.py:999 cms/models.py:1084 cms/models.py:1632 cms/models.py:1643
-#: cms/templates/cms/includes/levels.html:24
-#: cms/templates/cms/includes/levels.html:29
-#: cms/templates/cms/includes/levels.html:43
-#: cms/templates/cms/includes/levels.html:47
+#: cms/models.py:1018 cms/models.py:1103 cms/models.py:1651 cms/models.py:1662
+#: cms/templates/cms/includes/levels.html:28
+#: cms/templates/cms/includes/levels.html:45
+#: cms/templates/cms/includes/levels.html:49
 msgid "Memorial site"
 msgstr "Pamětní místo/ památník"
 
-#: cms/models.py:1000 cms/models.py:1005 cms/models.py:1085 cms/models.py:1093
+#: cms/models.py:1019 cms/models.py:1024 cms/models.py:1104 cms/models.py:1112
 msgid "Biography"
 msgstr "Životopis"
 
-#: cms/models.py:1001 cms/models.py:1025 cms/models.py:1086 cms/models.py:1115
-#: cms/models.py:1120 cms/models.py:1125
+#: cms/models.py:1020 cms/models.py:1044 cms/models.py:1105 cms/models.py:1134
+#: cms/models.py:1139 cms/models.py:1144
 msgid "Literary works"
 msgstr "Literární díla"
 
-#: cms/models.py:1006 cms/models.py:1094
+#: cms/models.py:1025 cms/models.py:1113
 msgid "An introductory biography of the author aimed at laymen."
 msgstr "Autorův stručný životopis určený laikům."
 
-#: cms/models.py:1026 cms/models.py:1116 cms/models.py:1121 cms/models.py:1126
+#: cms/models.py:1045 cms/models.py:1135 cms/models.py:1140 cms/models.py:1145
 msgid "An introduction to the works of the author aimed at laymen."
 msgstr "Úvod do autorova díla určený laikům."
 
-#: cms/models.py:1073
+#: cms/models.py:1092
 msgid "Connections"
 msgstr "Vztahy"
 
-#: cms/models.py:1075
+#: cms/models.py:1094
 msgid ""
 "A short description of important connections (i.e. people) that have been "
 "mentioned in the text."
 msgstr ""
 "Stručný popis významných vztahů (tj. lidé), které byly uvedený v textu."
 
-#: cms/models.py:1077
+#: cms/models.py:1096
 msgid "Full texts"
 msgstr "Texty"
 
-#: cms/models.py:1079
+#: cms/models.py:1098
 msgid ""
 "Short full texts (i.e. poems, short stories) by the author that have been "
 "mentioned or partially quoted in the text about the author."
@@ -513,164 +524,170 @@ msgstr ""
 "Autorovy krátké texty (básně, povídky), které byly zmíněny nebo částečně "
 "citovány v textu o autorovi."
 
-#: cms/models.py:1087 cms/models.py:1132 cms/models.py:1137 cms/models.py:1142
+#: cms/models.py:1106 cms/models.py:1151 cms/models.py:1156 cms/models.py:1161
 msgid "Reception"
 msgstr "Vnímání"
 
-#: cms/models.py:1133 cms/models.py:1138 cms/models.py:1143
+#: cms/models.py:1152 cms/models.py:1157 cms/models.py:1162
 msgid ""
 "A more in-depth description for interested users on how the author has been "
 "received."
 msgstr ""
 "Podrobnější informace o tom, jak bylo autorovo dílo vnímáno a přijímáno."
 
-#: cms/models.py:1215
+#: cms/models.py:1234
 msgid "Primary literature"
 msgstr "Primární texty"
 
-#: cms/models.py:1217
+#: cms/models.py:1236
 msgid ""
 "A more in-depth presentation of primary literature of the author for an "
 "academic user."
 msgstr "Podrobnější představení autorových textů určené odborné veřejnosti."
 
-#: cms/models.py:1219
+#: cms/models.py:1238
 msgid "Testimony"
 msgstr "Svědectví"
 
-#: cms/models.py:1221
+#: cms/models.py:1240
 msgid ""
 "Extant documents about the author by other people, e.g. correspondence with "
 "the author, lecture notes."
 msgstr ""
 "Dokumenty o autorovi sepsané jinými osobami, tj. korespondence, přednášky."
 
-#: cms/models.py:1223
+#: cms/models.py:1242
 msgid "Secondary literature"
 msgstr "Sekundární literatura"
 
-#: cms/models.py:1225
+#: cms/models.py:1244
 msgid ""
 "Further secondary literature about the author and his works aimed at "
 "academic users."
 msgstr "Další sekundární literatura o autorovi a jeho díle určená odborníkům."
 
-#: cms/models.py:1326 cms/models.py:1337
+#: cms/models.py:1345 cms/models.py:1356
 msgid "Types of locations"
 msgstr "Typy míst"
 
-#: cms/models.py:1336 cms/models.py:1385
+#: cms/models.py:1355 cms/models.py:1404
 msgid "Type of location"
 msgstr "Typ místa"
 
-#: cms/models.py:1361 cms/models.py:1478
+#: cms/models.py:1380 cms/models.py:1497
 msgid "Locations"
 msgstr "Místa"
 
-#: cms/models.py:1378
+#: cms/models.py:1397
 msgid ""
 "A meaningful image that will be used to present the location to the user."
 msgstr "Obrázek, který uživateli představí dané místo."
 
-#: cms/models.py:1390 cms/models.py:1395 cms/models.py:1400
+#: cms/models.py:1409 cms/models.py:1414 cms/models.py:1419
 msgid "Address"
 msgstr "Adresa"
 
-#: cms/models.py:1391 cms/models.py:1396 cms/models.py:1401
+#: cms/models.py:1410 cms/models.py:1415 cms/models.py:1420
 msgid "The postal address of the location if any."
 msgstr "Poštovní adresa místa."
 
-#: cms/models.py:1407 cms/models.py:1412 cms/models.py:1417
+#: cms/models.py:1426 cms/models.py:1431 cms/models.py:1436
 msgid "How to get there"
 msgstr "Jak se tam dostat/ Popis cesty"
 
-#: cms/models.py:1408 cms/models.py:1413 cms/models.py:1418
+#: cms/models.py:1427 cms/models.py:1432 cms/models.py:1437
 msgid "A short description of directions to find the location."
 msgstr "Krátký popis cesty k místu."
 
-#: cms/models.py:1422
+#: cms/models.py:1441
 msgid "Location coordinates"
 msgstr "Souřadnice"
 
-#: cms/models.py:1423
+#: cms/models.py:1442
 msgid "The actual geographic location."
 msgstr "Skutečná zeměpisná poloha."
 
-#: cms/models.py:1436
+#: cms/models.py:1455
 msgid "Contact information"
 msgstr "Kontaktní informace"
 
-#: cms/models.py:1438 cms/models.py:1585
+#: cms/models.py:1457 cms/models.py:1604
 msgid "The authors that this memorial site is dedicated to."
 msgstr "Autoři, kterým je věnováno toto pamětní místo."
 
-#: cms/models.py:1477
+#: cms/models.py:1496
 msgid "Location"
 msgstr "Místo"
 
-#: cms/models.py:1496
+#: cms/models.py:1515
 msgid "Name"
 msgstr "Jméno"
 
-#: cms/models.py:1500
+#: cms/models.py:1519
 msgid "German name"
 msgstr "Německé jméno"
 
-#: cms/models.py:1504
+#: cms/models.py:1523
 msgid "Czech name"
 msgstr "České jméno"
 
-#: cms/models.py:1521
+#: cms/models.py:1540
 msgid ""
 "A meaningful image that will be used to present the memorial site to the "
 "user."
 msgstr "Obrázek, který uživateli představí pamětní místo."
 
-#: cms/models.py:1523
+#: cms/models.py:1542
 msgid "Introduction"
 msgstr "Úvod"
 
-#: cms/models.py:1524
+#: cms/models.py:1543
 msgid "A short introduction text."
 msgstr "Krátký úvod text."
 
-#: cms/models.py:1545 cms/models.py:1550 cms/models.py:1555
+#: cms/models.py:1564 cms/models.py:1569 cms/models.py:1574
 msgid "I. Memorial site"
 msgstr "I. pamětní stránka"
 
-#: cms/models.py:1546 cms/models.py:1551 cms/models.py:1556
+#: cms/models.py:1565 cms/models.py:1570 cms/models.py:1575
 msgid ""
 "A description of the memorial site and its significance to the referenced "
 "authors."
 msgstr "Popis pamětního místa a jeho význam pro dané autory."
 
-#: cms/models.py:1562 cms/models.py:1567 cms/models.py:1572
+#: cms/models.py:1581 cms/models.py:1586 cms/models.py:1591
 msgid "II. Memorial site"
 msgstr "II. památková stránka"
 
-#: cms/models.py:1563 cms/models.py:1568 cms/models.py:1573
+#: cms/models.py:1582 cms/models.py:1587 cms/models.py:1592
 msgid ""
 "A detailed description of the memorial site and its significance to the "
 "referenced authors."
 msgstr "Podrobný popis pamětního místa a jeho význam pro dané autory."
 
-#: cms/models.py:1633 cms/templates/cms/author_page.html:39
+#: cms/models.py:1652 cms/templates/cms/author_page.html:43
 msgid "Memorial sites"
 msgstr "Pamětní místa/ památníky"
 
-#: cms/models.py:1644
+#: cms/models.py:1663
 msgid "The memorial site this mapping references to."
 msgstr "Pamětní místo, k němuž se vztahuje toto mapování."
 
-#: cms/models.py:1652
+#: cms/models.py:1671
 msgid "The author that is remebered by this memorial site."
 msgstr "Autor, kterého tento památník připomíná."
 
-#: cms/templates/cms/author_page.html:21
-msgid "born"
-msgstr "narozený"
+#: cms/templates/cms/author_page.html:26
+#, fuzzy
+#| msgid "Also known as"
+msgctxt "female"
+msgid "Also known as"
+msgstr "Také známý jako"
 
-#: cms/templates/cms/author_page.html:23
+#: cms/templates/cms/author_page.html:26
+#, fuzzy
+#| msgid "Also known as"
+msgctxt "male"
 msgid "Also known as"
 msgstr "Také známý jako"
 
@@ -682,17 +699,17 @@ msgstr "Náhled"
 msgid "Go to current live version."
 msgstr "Přejít na aktuální živou verzi."
 
-#: cms/templates/cms/blocks/paragraph_struct_block.html:18
-msgid "Additional notes and sources"
-msgstr "Další poznámky a zdroje"
-
-#: cms/templates/cms/blocks/paragraph_struct_block.html:53
+#: cms/templates/cms/blocks/paragraph_struct_block.html:28
 msgid "Previous"
 msgstr "Předchozí"
 
-#: cms/templates/cms/blocks/paragraph_struct_block.html:57
+#: cms/templates/cms/blocks/paragraph_struct_block.html:32
 msgid "Next"
 msgstr "Další"
+
+#: cms/templates/cms/blocks/paragraph_struct_block.html:42
+msgid "Additional notes and sources"
+msgstr "Další poznámky a zdroje"
 
 #: cms/templates/cms/includes/author.html:26
 msgid "Categories"
@@ -861,9 +878,12 @@ msgstr ""
 msgid "Strikethrough"
 msgstr "Přeškrtnuté"
 
-#: cms/wagtail_hooks.py:150
+#: cms/wagtail_hooks.py:153
 msgid "Blockquote"
 msgstr "Citace"
+
+#~ msgid "born"
+#~ msgstr "narozený"
 
 #~ msgid "Discovery"
 #~ msgstr "Objevuj"

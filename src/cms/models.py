@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import text, translation, dates, formats
-from django.utils.translation import gettext, gettext_lazy as _, gettext_noop, override
+from django.utils.translation import gettext, pgettext, gettext_lazy as _, gettext_noop, override
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey
 
@@ -714,6 +714,13 @@ class AuthorPage(I18nPage):
         ObjectList(I18nPage.meta_panels, heading=I18nPage.HEADING_META)])
 
     @property
+    def full_name_title(self):
+        page = self.get_latest_revision_as_page()
+        for name in page.names.all():
+            print(name)
+        return self.names.first().full_name_title(self.sex)
+
+    @property
     def formatted_date_of_birth(self):
         """Format date of birth in human readable string."""
         return format_date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
@@ -744,15 +751,16 @@ class AuthorPage(I18nPage):
     def get_context(self, request, *args, **kwargs):
         """Add more context information on view requests."""
         context = super(AuthorPage, self).get_context(request, *args, **kwargs)
-        page = self.get_latest_revision_as_page() if request.is_preview else self
+        author = self.get_latest_revision_as_page() if request.is_preview else self
+        context["author"] = author
 
         # add all names of author to context
-        context["author_name"], *context["author_alt_names"] = page.names.order_by("sort_order")
+        context["author_name"], *context["author_alt_names"] = author.names.order_by("sort_order")
 
         # add level pages
         levels = self.get_children().specific()
         if request.is_preview:
-            levels = [page.get_latest_revision_as_page() for page in levels]
+            levels = [x.get_latest_revision_as_page() for x in levels]
         else:
             levels = levels.live()
         context["levels"] = sorted(levels, key=lambda x: x.level_order)
@@ -846,6 +854,17 @@ class AuthorPageName(Orderable):
         default=False,
         verbose_name=_("Is pseudonym"),
         help_text=_("This name has been used as a pseudonym by the author."))
+
+    def full_name_title(self, gender=AuthorPage.SEX_MALE):
+        name = str(self)
+        if self.i18n_birth_name:
+            if gender == AuthorPage.SEX_FEMALE:
+                addendum = pgettext("female", "born %(birth_name)s") % {"birth_name": self.i18n_birth_name}
+            else:
+                addendum = pgettext("male", "born %(birth_name)s") % {"birth_name": self.i18n_birth_name}
+            print(addendum)
+            name += f" ({addendum})"
+        return name
 
     def clean(self):
         """Check wether any valid name has been set."""
