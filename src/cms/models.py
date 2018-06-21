@@ -715,9 +715,7 @@ class AuthorPage(I18nPage):
 
     @property
     def full_name_title(self):
-        page = self.get_latest_revision_as_page()
-        for name in page.names.all():
-            print(name)
+        """Return the full name of the author including her birth name to be used in titles."""
         return self.names.first().full_name_title(self.sex)
 
     @property
@@ -731,6 +729,7 @@ class AuthorPage(I18nPage):
         return format_date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
     def get_languages(self, is_preview=False):
+        """Return a list of language pages that are linked with this author."""
         languages = []
         if is_preview:
             for through_entity in self.languages.all():
@@ -742,6 +741,7 @@ class AuthorPage(I18nPage):
         return languages
 
     def get_literary_categories(self, is_preview=False):
+        """Return a list of genres that are linked with this author."""
         literary_categories = []
         if is_preview:
             for through_entity in self.literary_categories.all():
@@ -753,6 +753,7 @@ class AuthorPage(I18nPage):
         return literary_categories
 
     def get_literary_periods(self, is_preview=False):
+        """Return a list of literary periods that are linked with this author."""
         literary_periods = []
         if is_preview:
             for through_entity in self.literary_periods.all():
@@ -892,6 +893,7 @@ class AuthorPageName(Orderable):
         help_text=_("This name has been used as a pseudonym by the author."))
 
     def full_name_title(self, gender=AuthorPage.SEX_MALE):
+        """Return the full name of this name object formatted to include the birth name."""
         name = str(self)
         if self.i18n_birth_name:
             if gender == AuthorPage.SEX_FEMALE:
