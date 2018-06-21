@@ -200,6 +200,11 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = "de-de"
+LANGUAGES = [
+    ("en", "English"),
+    ("de", "Deutsch"),
+    ("cs", "český"),
+]
 
 TIME_ZONE = "Europe/Berlin"
 
@@ -230,11 +235,7 @@ WAGTAIL_SITE_NAME = "lis"
 WAGTAILIMAGES_IMAGE_MODEL = "cms.ImageMedia"
 WAGTAILDOCS_DOCUMENT_MODEL = "cms.DocumentMedia"
 WAGTAIL_USAGE_COUNT_ENABLED = False
-LANGUAGES = WAGTAILADMIN_PERMITTED_LANGUAGES = [
-    ("en", "English"),
-    ("de", "Deutsch"),
-    ("cs", "český"),
-]
+WAGTAILADMIN_PERMITTED_LANGUAGES = LANGUAGES
 WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "wagtail.search.backends.elasticsearch6",

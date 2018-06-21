@@ -2,8 +2,8 @@
 
 import logging
 import datetime
-
 from collections import namedtuple
+from typing import List, NewType, Tuple
 
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
@@ -27,7 +27,10 @@ from .blocks import ParagraphStructBlock
 
 logger = logging.getLogger('wagtail.core')
 
-BLANK_TEXT = "_blank"
+
+Gender = NewType("Gender", str)
+GenderOption = Tuple[Gender, str]
+TextType = namedtuple("TextType", ["field", "heading"])
 EDITOR_FEATURES = [
     "bold",
     "italic",
@@ -41,10 +44,7 @@ EDITOR_FEATURES = [
 ]
 
 
-TextType = namedtuple("TextType", ["field", "heading"])
-
-
-def validate_date(year=None, month=None, day=None):
+def validate_date(year: int=None, month: int=None, day: int=None):
     """Validate a given date for semantic integrity."""
     if year and month and day:
         datetime.datetime(year, month, day)
@@ -55,7 +55,7 @@ def validate_date(year=None, month=None, day=None):
             raise ValueError(_("Day is out of range for the indicated month."))
 
 
-def format_date(year=None, month=None, day=None):
+def format_date(year: int=None, month: int=None, day: int=None):
     """Format date input in localized human readable string."""
     if year and month and day:
         return formats.date_format(datetime.datetime(year, month, day), format="DATE_FORMAT", use_l10n=True)
@@ -69,7 +69,7 @@ def format_date(year=None, month=None, day=None):
 class TranslatedField(object):
     """Helper class to add multilingual accessor properties to user content."""
 
-    def __init__(self, en_field, de_field, cs_field, default_field=None):
+    def __init__(self, en_field: str, de_field: str, cs_field: str, default_field: str=None):
         self.en_field = en_field
         self.de_field = de_field
         self.cs_field = cs_field
@@ -211,11 +211,6 @@ class ImageMediaRendition(AbstractRendition):
         verbose_name=_("Image rendition"),
         help_text=_("The image this rendition is based on."))
 
-    @property
-    def alt(self):
-        """Return the alternative title in the current selected user language."""
-        return self.image.i18n_alt_title
-
     class Meta:
         db_table = "image_rendition"
         unique_together = (
@@ -248,8 +243,8 @@ class I18nPage(Page):
 
     RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
 
-    is_creatable = False
     icon_class = "fas fa-file"
+    is_creatable = False    
 
     title_de = models.CharField(
         max_length=255,
@@ -399,8 +394,8 @@ class CategoryPage(I18nPage):
 class HomePage(CategoryPage):
     """The root page of the LIS cms site."""
 
-    parent_page_types = ["wagtailcore.Page"]
     icon_class = "fas fas-home"
+    parent_page_types = ["wagtailcore.Page"]    
 
     class Meta:
         verbose_name = _("Homepage")
@@ -422,7 +417,6 @@ class LiteraryCategoryPage(I18nPage):
     """A page that describes a literary category."""
 
     icon_class = "fas fa-tag"
-
     parent_page_types = ["LiteraryCategoriesPage"]
 
     class Meta:
@@ -534,8 +528,8 @@ class LanguagePage(I18nPage):
 class AuthorsPage(CategoryPage):
     """A category page to place author pages in."""
 
-    parent_page_types = ["HomePage"]
     icon_class = "fas fa-users"
+    parent_page_types = ["HomePage"]    
     template = "cms/categories/authors_page.html"
 
     def get_context(self, request, *args, **kwargs):
@@ -560,16 +554,15 @@ class AuthorPage(I18nPage):
     """A page that describes an author."""
 
     icon_class = "fas fa-user"
+    parent_page_types = ["AuthorsPage"]    
 
-    parent_page_types = ["AuthorsPage"]
-
-    SEX_UNKNOWN = "U"
-    SEX_MALE = "M"
-    SEX_FEMALE = "F"
-    SEX_CHOICES = (
-        (SEX_UNKNOWN, _("Unknown")),
-        (SEX_MALE, _("Male")),
-        (SEX_FEMALE, _("Female")),
+    GENDER_UNKNOWN: Gender = "U"
+    GENDER_MALE: Gender = "M"
+    GENDER_FEMALE: Gender = "F"
+    GENDER_CHOICES: List[GenderOption] = (
+        (GENDER_UNKNOWN, _("Unknown")),
+        (GENDER_MALE, _("Male")),
+        (GENDER_FEMALE, _("Female")),
     )
 
     title_image = models.ForeignKey(
@@ -582,8 +575,8 @@ class AuthorPage(I18nPage):
         help_text=_("A meaningful image that will be used to present the author to the user."))
     sex = models.CharField(
         max_length=1,
-        choices=SEX_CHOICES,
-        default=SEX_UNKNOWN,
+        choices=GENDER_CHOICES,
+        default=GENDER_UNKNOWN,
         verbose_name=_("Sex"))
     date_of_birth_year = models.PositiveSmallIntegerField(
         null=True, blank=True,
@@ -728,7 +721,7 @@ class AuthorPage(I18nPage):
         """Format date of death in human readable string."""
         return format_date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
-    def get_languages(self, is_preview=False):
+    def get_languages(self, is_preview: bool=False):
         """Return a list of language pages that are linked with this author."""
         languages = []
         if is_preview:
@@ -740,7 +733,7 @@ class AuthorPage(I18nPage):
                     languages.append(through_entity.language)
         return languages
 
-    def get_literary_categories(self, is_preview=False):
+    def get_literary_categories(self, is_preview: bool=False):
         """Return a list of genres that are linked with this author."""
         literary_categories = []
         if is_preview:
@@ -752,7 +745,7 @@ class AuthorPage(I18nPage):
                     literary_categories.append(through_entity.literary_category)
         return literary_categories
 
-    def get_literary_periods(self, is_preview=False):
+    def get_literary_periods(self, is_preview: bool=False):
         """Return a list of literary periods that are linked with this author."""
         literary_periods = []
         if is_preview:
@@ -892,11 +885,11 @@ class AuthorPageName(Orderable):
         verbose_name=_("Is pseudonym"),
         help_text=_("This name has been used as a pseudonym by the author."))
 
-    def full_name_title(self, gender=AuthorPage.SEX_MALE):
+    def full_name_title(self, gender=AuthorPage.GENDER_MALE):
         """Return the full name of this name object formatted to include the birth name."""
         name = str(self)
         if self.i18n_birth_name:
-            if gender == AuthorPage.SEX_FEMALE:
+            if gender == AuthorPage.GENDER_FEMALE:
                 addendum = pgettext("female", "born %(birth_name)s") % {"birth_name": self.i18n_birth_name}
             else:
                 addendum = pgettext("male", "born %(birth_name)s") % {"birth_name": self.i18n_birth_name}
@@ -993,8 +986,8 @@ class AuthorLanguage(Orderable):
     def __str__(self):
         return str(self.language)
 
-        class Meta:
-            db_table = "author_language"
+    class Meta:
+        db_table = "author_language"
 
 
 PAGE_TITLE_I = gettext_noop("I. Discovery")
@@ -1398,8 +1391,8 @@ class LocationTypePage(I18nPage):
 class LocationsPage(CategoryPage):
     """A category page to place locations in."""
 
-    parent_page_types = ["HomePage"]
     icon_class = "fas fa-globe"
+    parent_page_types = ["HomePage"]    
     template = "cms/categories/locations_page.html"
 
     def get_context(self, request):
@@ -1422,8 +1415,8 @@ class LocationsPage(CategoryPage):
 class LocationPage(I18nPage):
     """A geographic place on earth."""
 
-    parent_page_types = ["LocationsPage"]
     icon_class = "fas fa-map-marker"
+    parent_page_types = ["LocationsPage"]    
 
     title_image = models.ForeignKey(
         ImageMedia,
