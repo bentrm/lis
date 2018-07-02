@@ -1,5 +1,0 @@
-{
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
-    "editor.renderWhitespace": "boundary",
-    "files.autoSave": "onFocusChange"
-}
