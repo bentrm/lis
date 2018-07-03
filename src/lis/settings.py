@@ -69,6 +69,7 @@ if not DEBUG:
 INSTALLED_APPS = [
     "home",
     "cms",
+    "wagtail.contrib.modeladmin",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

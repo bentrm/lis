@@ -1,0 +1,115 @@
+"""Defines all tag domain models of the lis system."""
+
+
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from wagtail.admin.edit_handlers import FieldPanel, ObjectList, TabbedInterface
+from wagtail.core.fields import RichTextField
+
+from .helpers import TranslatedField
+from .messages import TXT
+
+DB_TABLE_PREFIX = "cms_tag_"
+RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
+
+class Tag(models.Model):
+    """
+    Abstract base class for all tag implementations.
+
+    Subclasses may add domain specific fields that will be used for querying.
+
+    """
+
+    title = models.CharField(
+        verbose_name=_(TXT["tag.title"]),
+        help_text=_(TXT["tag.title.help"]),
+        max_length=1000,
+        null=False,
+        blank=False,
+    )
+    title_de = models.CharField(
+        verbose_name=_(TXT["tag.title_de"]),
+        help_text=_(TXT["tag.title_de.help"]),
+        max_length=1000,
+        blank=True,
+    )
+    title_cs = models.CharField(
+        verbose_name=_(TXT["tag.title_cs"]),
+        help_text=_(TXT["tag.title_cs.help"]),
+        max_length=1000,
+        blank=True,
+    )
+    i18n_title = TranslatedField.named("title", True)
+
+    description = RichTextField(
+        blank=True,
+        features=RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["tag.description"]),
+        help_text=_(TXT["tag.description.help"])
+    )
+    description_de = RichTextField(
+        blank=True,
+        features=RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["tag.description"]),
+        help_text=_(TXT["tag.description.help"])
+    )
+    description_cs = RichTextField(
+        blank=True,
+        features=RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["tag.description"]),
+        help_text=_(TXT["tag.description.help"])
+    )
+    i18n_description = TranslatedField.named("description")
+
+    def __str__(self):
+        return str(self.i18n_title)
+
+    class Meta:
+        abstract = True
+
+
+class Genre(Tag):
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "genre"
+        verbose_name = _(TXT["genre"])
+        verbose_name_plural = _(TXT["genre.plural"])
+
+
+class Language(Tag):
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "language"
+        verbose_name = _(TXT["language"])
+        verbose_name_plural = _(TXT["language.plural"])
+
+
+class ContactType(Tag):
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "contact_type"
+        verbose_name = _(TXT["contact_type"])
+        verbose_name_plural = _(TXT["contact_type.plural"])
+
+
+class LiteraryPeriod(Tag):
+    sort_order = models.IntegerField(
+        verbose_name=_(TXT["literary_period.sort_order"]),
+        help_text=_(TXT["literary_period.sort_order.help"]),
+    )
+
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "literary_period"
+        ordering = ["sort_order"]
+        verbose_name = _(TXT["literary_period"])
+        verbose_name_plural = _(TXT["literary_period.plural"])
+
+
+class AgeGroup(Tag):
+    sort_order = models.IntegerField(
+        verbose_name=_(TXT["age_group.sort_order"]),
+        help_text=_(TXT["age_group.sort_order.help"]),
+    )
+
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "age_group"
+        ordering = ["sort_order"]
+        verbose_name = _(TXT["age_group"])
+        verbose_name_plural = _(TXT["age_group.plural"])

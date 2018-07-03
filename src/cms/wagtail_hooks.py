@@ -1,14 +1,17 @@
 """Custom hooks to add functionality to the Wagtail framework."""
 
-from django.utils.translation import gettext
+import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.html import format_html
-import wagtail.admin.rich_text.editors.draftail.features as draftail_features
-from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler, BlockElementHandler
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
+from wagtail.admin.rich_text.converters.html_to_contentstate import BlockElementHandler, InlineStyleElementHandler
+from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
-from cms.models import I18nPage, AuthorPage
+from . import tags
+from .models import AuthorPage, I18nPage
 
 
 def as_page_object(self):
@@ -173,3 +176,51 @@ def register_blockquote_feature(features):
             },
         },
     })
+
+
+class TagModelAdmin(ModelAdmin):
+    list_display = ("title", "title_de", "title_cs")
+    search_fields = ("title", "title_de", "title_cs")
+
+
+class GenreModelAdmin(TagModelAdmin):
+    model = tags.Genre
+    menu_icon = "pilcrow"
+
+
+class LanguageModelAdmin(TagModelAdmin):
+    model = tags.Language
+    menu_icon = "openquote"
+
+
+class ContactTypeModelAdmin(TagModelAdmin):
+    model = tags.ContactType
+    menu_icon = "mail"
+
+
+class LiteraryPeriodModelAdmin(TagModelAdmin):
+    list_display = TagModelAdmin.list_display + ("sort_order",)
+    model = tags.LiteraryPeriod
+    menu_icon = "date"
+
+
+class AgeGroupModelAdmin(TagModelAdmin):
+    list_display = TagModelAdmin.list_display + ("sort_order",)
+    model = tags.AgeGroup
+    menu_icon = "group"
+
+
+class TagGroup(ModelAdminGroup):
+    menu_label = _("Tags")
+    menu_icon = "tag"
+    menu_order = 200
+    items = (
+        GenreModelAdmin,
+        LanguageModelAdmin,
+        ContactTypeModelAdmin,
+        LiteraryPeriodModelAdmin,
+        AgeGroupModelAdmin,
+    )
+
+
+modeladmin_register(TagGroup)
