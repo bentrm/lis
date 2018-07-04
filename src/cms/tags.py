@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.edit_handlers import FieldPanel, ObjectList, TabbedInterface
 from wagtail.core.fields import RichTextField
+from wagtail.admin.edit_handlers import MultiFieldPanel, FieldPanel
 
 from .helpers import TranslatedField
 from .messages import TXT
@@ -61,11 +62,50 @@ class Tag(models.Model):
     )
     i18n_description = TranslatedField.named("description")
 
+    panels = [
+        MultiFieldPanel(
+            heading=_(TXT["heading.en"]),
+            children=[
+                FieldPanel("title"),
+                FieldPanel("description"),
+            ],
+        ),
+        MultiFieldPanel(
+            heading=_(TXT["heading.de"]),
+            children=[
+                FieldPanel("title_de"),
+                FieldPanel("description_de"),
+            ],
+        ),
+        MultiFieldPanel(
+            heading=_(TXT["heading.cs"]),
+            children=[
+                FieldPanel("title_cs"),
+                FieldPanel("description_cs"),
+            ],
+        ),
+    ]
+
     def __str__(self):
         return str(self.i18n_title)
 
     class Meta:
         abstract = True
+
+
+class SortableTag(Tag):
+    sort_order = models.IntegerField(
+        verbose_name=_(TXT["tag.sort_order"]),
+        help_text=_(TXT["tag.sort_order.help"]),
+    )
+
+    panels = Tag.panels + [
+        FieldPanel("sort_order"),
+    ]
+
+    class Meta:
+        abstract = True
+        ordering = ["sort_order"]
 
 
 class Genre(Tag):
@@ -89,27 +129,15 @@ class ContactType(Tag):
         verbose_name_plural = _(TXT["contact_type.plural"])
 
 
-class LiteraryPeriod(Tag):
-    sort_order = models.IntegerField(
-        verbose_name=_(TXT["literary_period.sort_order"]),
-        help_text=_(TXT["literary_period.sort_order.help"]),
-    )
-
+class LiteraryPeriod(SortableTag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "literary_period"
-        ordering = ["sort_order"]
         verbose_name = _(TXT["literary_period"])
         verbose_name_plural = _(TXT["literary_period.plural"])
 
 
-class AgeGroup(Tag):
-    sort_order = models.IntegerField(
-        verbose_name=_(TXT["age_group.sort_order"]),
-        help_text=_(TXT["age_group.sort_order.help"]),
-    )
-
+class AgeGroup(SortableTag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "age_group"
-        ordering = ["sort_order"]
         verbose_name = _(TXT["age_group"])
         verbose_name_plural = _(TXT["age_group.plural"])

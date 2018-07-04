@@ -11,8 +11,6 @@ OVERRIDE = {
 
 TXT = {
     "age_group.plural": _("Age groups"),
-    "age_group.sort_order.help": _("Defines the relative order of the group in the UI."),
-    "age_group.sort_order": _("Sort order"),
     "age_group": _("Age group"),
     "author_genre.author.help": _("Author that this mapping is referencing."),
     "author_genre.author": _("Author"),
@@ -122,8 +120,6 @@ TXT = {
     "literary_period.description.help": _("A general description of the literary period and its significance."),
     "literary_period.description": _("Description"),
     "literary_period.plural": _("Literary periods"),
-    "literary_period.sort_order.help": _("Defines the relative order of the period in the UI."),
-    "literary_period.sort_order": _("Sort order"),
     "literary_period": _("Literary period"),
     "location_contact.contact_type": _("Contact type"),
     "location_contact.name.cs": _("Czech name"),
@@ -196,6 +192,8 @@ TXT = {
     "tag.description.help": _("A short description of the tag."),
     "tag.description": _("Description"),
     "tag.plural": _("Tags"),
+    "tag.sort_order.help": _("Defines the relative order of the tag in the UI."),
+    "tag.sort_order": _("Sort order"),
     "tag.title_cs.help": _("The czech title of the tag as show to the user."),
     "tag.title_cs": _("Czech title"),
     "tag.title_de.help": _("The german title of the tag as shown to the user."),
