@@ -443,6 +443,25 @@ class AuthorPage(I18nPage):
         verbose_name=_(TXT["author.date_of_birth_day"]),
         help_text=_(TXT["author.date_of_birth_day.help"])
     )
+    place_of_birth = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_birth"]),
+        help_text=_(TXT["author.place_of_birth.help"])
+    )
+    place_of_birth_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_birth"]),
+        help_text=_(TXT["author.place_of_birth_de.help"])
+    )
+    place_of_birth_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_birth"]),
+        help_text=_(TXT["author.place_of_birth_cs.help"])
+    )
+    i18n_place_of_birth = TranslatedField.named("place_of_birth", True)
 
     date_of_death_year = models.PositiveSmallIntegerField(
         null=True, blank=True,
@@ -463,6 +482,25 @@ class AuthorPage(I18nPage):
         verbose_name=_(TXT["author.date_of_death_day"]),
         help_text=_(TXT["author.date_of_death_day.help"])
     )
+    place_of_death = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_death"]),
+        help_text=_(TXT["author.place_of_death.help"])
+    )
+    place_of_death_de = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_death"]),
+        help_text=_(TXT["author.place_of_death_de.help"])
+    )
+    place_of_death_cs = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_(TXT["author.place_of_death"]),
+        help_text=_(TXT["author.place_of_death_cs.help"])
+    )
+    i18n_place_of_death = TranslatedField.named("place_of_death", True)
 
     language_tags = ParentalManyToManyField(
         tags.LanguageTag,
@@ -547,7 +585,17 @@ class AuthorPage(I18nPage):
                 FieldPanel("date_of_birth_month"),
                 FieldPanel("date_of_birth_year")
             ],
+            classname="collapsible collapsed",
             heading=_(TXT["author.date_of_birth"])
+        ),
+        MultiFieldPanel(
+            children=[
+                FieldPanel("place_of_birth"),
+                FieldPanel("place_of_birth_de"),
+                FieldPanel("place_of_birth_cs")
+            ],
+            classname="collapsible collapsed",
+            heading=_(TXT["author.place_of_birth"])
         ),
         MultiFieldPanel(
             children=[
@@ -555,7 +603,17 @@ class AuthorPage(I18nPage):
                 FieldPanel("date_of_death_month"),
                 FieldPanel("date_of_death_year")
             ],
+            classname="collapsible collapsed",
             heading=_(TXT["author.date_of_death"])
+        ),
+        MultiFieldPanel(
+            children=[
+                FieldPanel("place_of_death"),
+                FieldPanel("place_of_death_de"),
+                FieldPanel("place_of_death_cs")
+            ],
+            classname="collapsible collapsed",
+            heading=_(TXT["author.place_of_death"])
         ),
         InlinePanel(
             "languages",
