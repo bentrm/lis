@@ -65,7 +65,7 @@ services:
       - lis
 
   django:
-    image: registry.gitlab.com/bentrm/lis:1.0.1
+    image: registry.gitlab.com/bentrm/lis:1.0.2
     tty: true
     deploy:
       restart_policy:
@@ -84,7 +84,7 @@ services:
       - static:/html/static
       - media:/html/media
     environment:
-      CMS_VERSION: 1.0.1
+      CMS_VERSION: 1.0.2
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_HOST: db
       DB_NAME: django
