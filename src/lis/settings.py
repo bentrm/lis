@@ -69,6 +69,8 @@ if not DEBUG:
 INSTALLED_APPS = [
     "home",
     "cms",
+    "dal",
+    "dal_select2",
     "wagtail.contrib.modeladmin",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",

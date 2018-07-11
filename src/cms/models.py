@@ -13,16 +13,18 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_noop, override, pgettext
 from mapwidgets import GooglePointFieldWidget
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList, PageChooserPanel,
                                          StreamFieldPanel, TabbedInterface)
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
+from dal import autocomplete
 
 from .blocks import ParagraphStructBlock
 from .helpers import TranslatedField, format_date, validate_date
+from . import tags
 from .media import ImageMedia
 from .messages import TXT
 
@@ -462,6 +464,31 @@ class AuthorPage(I18nPage):
         help_text=_(TXT["author.date_of_death_day.help"])
     )
 
+    language_tags = ParentalManyToManyField(
+        tags.LanguageTag,
+        db_table=DB_TABLE_PREFIX + "author_tag_language",
+        related_name="authors",
+        blank=True,
+        verbose_name=_(TXT["author.language.plural"]),
+        help_text=_(TXT["author.language.help"])
+    )
+    genre_tags = ParentalManyToManyField(
+        tags.GenreTag,
+        db_table=DB_TABLE_PREFIX + "author_tag_genre",
+        related_name="authors",
+        blank=True,
+        verbose_name=_(TXT["author.genre.plural"]),
+        help_text=_(TXT["author.genre.help"])
+    )
+    literary_period_tags = ParentalManyToManyField(
+        tags.LiteraryPeriodTag,
+        db_table=DB_TABLE_PREFIX + "author_tag_literary_period",
+        related_name="authors",
+        blank=True,
+        verbose_name=_(TXT["author.literary_period.plural"]),
+        help_text=_(TXT["author.literary_period.help"])
+    )
+
     parent_page_types = ["AuthorsPage"]
     search_fields = Page.search_fields + [
         index.RelatedFields("names", [
@@ -538,19 +565,38 @@ class AuthorPage(I18nPage):
             panels=[PageChooserPanel("language", "cms.LanguagePage")]
         ),
         InlinePanel(
+            "literary_categories",
+            label=_(TXT["author.literary_category.plural"]),
+            min_num=0,
+            help_text=_(TXT["author.literary_category.help"]),
+            panels=[PageChooserPanel("literary_category", "cms.LiteraryCategoryPage")]
+        ),
+        InlinePanel(
             "literary_periods",
             label=_(TXT["author.literary_period.plural"]),
             min_num=0,
             help_text=_(TXT["author.literary_period.help"]),
             panels=[PageChooserPanel("literary_period", "cms.LiteraryPeriodPage")]
         ),
-        InlinePanel(
-            "literary_categories",
-            label=_(TXT["author.genre.plural"]),
-            min_num=0,
-            help_text=_(TXT["author.genre.help"]),
-            panels=[PageChooserPanel("literary_category", "cms.LiteraryCategoryPage")]
-        )
+        MultiFieldPanel(
+            heading=_(TXT["tag.plural"]),
+            children=[
+                FieldPanel(
+                    field_name="language_tags",
+                    widget=autocomplete.ModelSelect2Multiple(
+                        url="autocomplete-language"
+                    )
+                ),
+                FieldPanel(
+                    field_name="genre_tags",
+                    widget=autocomplete.ModelSelect2Multiple(url="autocomplete-genre"),
+                ),
+                FieldPanel(
+                    field_name="literary_period_tags",
+                    widget=autocomplete.ModelSelect2Multiple(url="autocomplete-literary-period"),
+                ),
+            ],
+        ),
     ]
 
     edit_handler = TabbedInterface([

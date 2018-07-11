@@ -25,20 +25,19 @@ class Tag(models.Model):
         verbose_name=_(TXT["tag.title"]),
         help_text=_(TXT["tag.title.help"]),
         max_length=1000,
-        null=False,
-        blank=False,
+        unique=True
     )
     title_de = models.CharField(
         verbose_name=_(TXT["tag.title_de"]),
         help_text=_(TXT["tag.title_de.help"]),
         max_length=1000,
-        blank=True,
+        unique=True
     )
     title_cs = models.CharField(
         verbose_name=_(TXT["tag.title_cs"]),
         help_text=_(TXT["tag.title_cs.help"]),
         max_length=1000,
-        blank=True,
+        unique=True
     )
     i18n_title = TranslatedField.named("title", True)
 
@@ -91,6 +90,9 @@ class Tag(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ["title"]
+        verbose_name = _(TXT["tag"])
+        verbose_name_plural = _(TXT["tag.plural"])
 
 
 class SortableTag(Tag):
@@ -108,35 +110,35 @@ class SortableTag(Tag):
         ordering = ["sort_order"]
 
 
-class Genre(Tag):
+class GenreTag(Tag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "genre"
         verbose_name = _(TXT["genre"])
         verbose_name_plural = _(TXT["genre.plural"])
 
 
-class Language(Tag):
+class LanguageTag(Tag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "language"
         verbose_name = _(TXT["language"])
         verbose_name_plural = _(TXT["language.plural"])
 
 
-class ContactType(Tag):
+class ContactTypeTag(Tag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "contact_type"
         verbose_name = _(TXT["contact_type"])
         verbose_name_plural = _(TXT["contact_type.plural"])
 
 
-class LiteraryPeriod(SortableTag):
+class LiteraryPeriodTag(SortableTag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "literary_period"
         verbose_name = _(TXT["literary_period"])
         verbose_name_plural = _(TXT["literary_period.plural"])
 
 
-class AgeGroup(SortableTag):
+class AgeGroupTag(SortableTag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "age_group"
         verbose_name = _(TXT["age_group"])

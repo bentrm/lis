@@ -1,11 +1,14 @@
 """Additional views for the CMS."""
 
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render
+from dal import autocomplete
+from django.contrib.auth import authenticate, login
+from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.views import View
 
 from .forms import SignupForm
+from . import tags
 
 
 class SignupView(View):
@@ -31,3 +34,54 @@ class SignupView(View):
             return HttpResponseRedirect("/cms")
 
         return render(request, self.template_name, {'form': form})
+
+
+class LanguageAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return tags.LanguageTag.objects.none()
+
+        qs = tags.LanguageTag.objects.order_by("title")
+        if self.q:
+            filter = (
+                Q(title__contains=self.q)
+                | Q(title_de__contains=self.q)
+                | Q(title_cs__contains=self.q)
+            )
+            qs = qs.filter(filter)
+
+        return qs
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return tags.GenreTag.objects.none()
+
+        qs = tags.GenreTag.objects.order_by("title")
+        if self.q:
+            filter = (
+                Q(title__contains=self.q)
+                | Q(title_de__contains=self.q)
+                | Q(title_cs__contains=self.q)
+            )
+            qs = qs.filter(filter)
+
+        return qs
+
+
+class LiteraryPeriodAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return tags.LiteraryPeriodTag.objects.none()
+
+        qs = tags.LiteraryPeriodTag.objects.order_by("sort_order")
+        if self.q:
+            filter = (
+                Q(title__contains=self.q)
+                | Q(title_de__contains=self.q)
+                | Q(title_cs__contains=self.q)
+            )
+            qs = qs.filter(filter)
+
+        return qs

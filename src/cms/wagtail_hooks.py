@@ -184,29 +184,29 @@ class TagModelAdmin(ModelAdmin):
 
 
 class GenreModelAdmin(TagModelAdmin):
-    model = tags.Genre
+    model = tags.GenreTag
     menu_icon = "pilcrow"
 
 
 class LanguageModelAdmin(TagModelAdmin):
-    model = tags.Language
+    model = tags.LanguageTag
     menu_icon = "openquote"
 
 
 class ContactTypeModelAdmin(TagModelAdmin):
-    model = tags.ContactType
+    model = tags.ContactTypeTag
     menu_icon = "mail"
 
 
 class LiteraryPeriodModelAdmin(TagModelAdmin):
     list_display = TagModelAdmin.list_display + ("sort_order",)
-    model = tags.LiteraryPeriod
+    model = tags.LiteraryPeriodTag
     menu_icon = "date"
 
 
 class AgeGroupModelAdmin(TagModelAdmin):
     list_display = TagModelAdmin.list_display + ("sort_order",)
-    model = tags.AgeGroup
+    model = tags.AgeGroupTag
     menu_icon = "group"
 
 
