@@ -82,8 +82,12 @@ services:
       - db
       - elasticsearch
     volumes:
-      - static:/html/static
-      - media:/html/media
+      - type: bind
+        source: ./files/static
+        target: /html/static
+      - type: bind
+        source: ./files/media
+        target: /html/media
       - type: bind
         source: ./src
         target: /src

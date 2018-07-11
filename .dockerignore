@@ -1,6 +1,7 @@
 .git
-.idea
 .vscode
+backups
+files
 venv
 .DS_Store
 .dockerignore
