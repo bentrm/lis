@@ -20,8 +20,8 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: django
-      POSTGRES_PASSWORD: ***PASSWORD***
+      POSTGRES_USER: ${LIS_DB_USER}
+      POSTGRES_PASSWORD: ${LIS_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
 
   elasticsearch:
@@ -64,7 +64,7 @@ services:
       - 11211:11211
 
   django:
-    image: registry.gitlab.com/bentrm/lis:latest
+    image: registry.gitlab.com/bentrm/lis:${LIS_VERSION}
     tty: true
     deploy:
       restart_policy:
@@ -94,15 +94,15 @@ services:
     environment:
       DB_ENGINE: django.contrib.gis.db.backends.postgis
       DB_HOST: db
-      DB_NAME: django
-      DB_PASSWORD: ***PASSWORD***
-      DB_PORT: 5432
-      DB_USER: django
+      DB_NAME: ${LIS_DB_NAME}
+      DB_PASSWORD: ${LIS_DB_PASSWORD}
+      DB_PORT: ${LIS_DB_PORT}
+      DB_USER: ${LIS_DB_USER}
       DEBUG: 1
-      GOOGLE_MAP_API_KEY: ***KEY***
+      GOOGLE_MAP_API_KEY: ${LIS_GOOGLE_MAP_API_KEY}
       MEDIA_ROOT: /html/media
       MEDIA_URL: /media/
-      SECRET_KEY: ***SECRET***
+      SECRET_KEY: ${LIS_SECRET_KEY}
       STATIC_ROOT: /html/static
       STATIC_URL: /static/
     command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
@@ -110,5 +110,3 @@ services:
 volumes:
   pgdata:
   esdata:
-  static:
-  media:
