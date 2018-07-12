@@ -30,12 +30,9 @@ SRC_DIR = os.path.dirname(PROJECT_DIR)
 BASE_DIR = os.path.dirname(SRC_DIR)
 
 
-ADMINS = [
-    ("***Name***", "***Email***"),
-]
-MANAGERS = [
-    ("***Name***", "***Email***"),
-]
+ADMINS = [x.split("=") for x in env("LIS_ADMINS", "").split(";")]
+MANAGERS = [x.split("=") for x in env("LIS_MANAGERS", "").split(";")]
+
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "postmaster@localhost")
 SERVER_EMAIL = env("DEFAULT_FROM_EMAIL", "postmaster@localhost")
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
@@ -53,7 +50,7 @@ ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 DEBUG = env("DEBUG", False) in ("True", "true", "t", "1", True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", "***SECRET***")
+SECRET_KEY = env("SECRET_KEY", "THISMUSTBESECRET")
 
 if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
