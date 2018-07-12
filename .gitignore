@@ -1,6 +1,5 @@
 .idea/
 .vscode/
-venv/
-
 *.env
 *.log
+venv/
