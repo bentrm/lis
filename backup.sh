@@ -31,3 +31,6 @@ touch $DUMP_FILE
 docker exec -it -u postgres \
     $(docker ps --filter name=$DOCKER_DB_SERVICE --format "{{.ID}}") \
     pg_dump --clean --if-exists -d $POSTGRES_DB > "$DUMP_FILE"
+
+# Unset to activate local docker host
+eval $(docker-machine env -u)
