@@ -7,27 +7,27 @@
 
   <ul class="list-unstyled">
     {% if date_of_birth %}
-    <li>{% trans 'Date of birth' %}: {{date_of_birth}}</li>
+    <li>{% trans 'Date of birth' %}: {{date_of_birth}}{% if author.i18n_place_of_birth %} {% trans 'in' %} {{ author.i18n_place_of_birth }}{% endif %}</li>
     {% endif %}
 
     {% if date_of_death %}
-    <li>{% trans 'Date of death' %}: {{date_of_death}}</li>
+    <li>{% trans 'Date of death' %}: {{date_of_death}}{% if author.i18n_place_of_death %} {% trans 'in' %} {{ author.i18n_place_of_death }}{% endif %}</li>
     {% endif %}
 
-    {% if languages %}
+    {% if author.language_tags.all %}
     <li>{% trans 'Languages' %}:
-      {% for language in languages %}
+      {% for language in author.language_tags.all %}
       <span class="badge badge-pill badge-secondary mr-1">{{ language }}</span>
       {% endfor %}
     </li>
     {% endif %}
 
-    {% if literary_categories %}
-    <li>{% trans 'Categories' %}: {% for litarary_category in literary_categories %}<span class="badge badge-pill badge-secondary mr-1">{{ litarary_category }}</span>{% endfor %}</li>
+    {% if author.genre_tags.all %}
+    <li>{% trans 'Categories' %}: {% for litarary_category in author.genre_tags.all %}<span class="badge badge-pill badge-secondary mr-1">{{ litarary_category }}</span>{% endfor %}</li>
     {% endif %}
 
-    {% if literary_periods %}
-    <li>{% trans 'Literary periods' %}: {% for literary_period in literary_periods %}<span class="badge badge-pill badge-secondary mr-1">{{ literary_period }}</span>{% endfor %}</li>
+    {% if author.literary_period_tags.all %}
+    <li>{% trans 'Literary periods' %}: {% for literary_period in author.literary_period_tags.all %}<span class="badge badge-pill badge-secondary mr-1">{{ literary_period }}</span>{% endfor %}</li>
     {% endif %}
   </ul>
 </div>
