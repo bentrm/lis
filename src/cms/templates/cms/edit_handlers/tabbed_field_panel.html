@@ -1,0 +1,16 @@
+<fieldset>
+  <legend>{{ self.heading }}</legend>
+  <div id="{{self.id_for_label}}" class="tabbed-fields">
+    <ul>
+        {% for child in self.children %}
+          <li><a href="#{{ forloop.counter }}">{{ child.heading }}{% if child.required %}*{% endif %}</a></li>
+        {% endfor %}
+      </ul>
+
+    {% for child in self.children %}
+      <div id="{{ forloop.counter }}">
+        {{ child.render_as_field }}
+      </div>
+    {% endfor %}
+  </div>
+</fieldset>

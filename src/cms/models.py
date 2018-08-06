@@ -27,6 +27,7 @@ from .helpers import TranslatedField, format_date, validate_date
 from . import tags
 from .media import ImageMedia
 from .messages import TXT
+from .edit_handlers import FieldPanelTabs, FieldPanelTab
 
 LOGGER = logging.getLogger("wagtail.core")
 DB_TABLE_PREFIX = "cms_"
@@ -545,33 +546,37 @@ class AuthorPage(I18nPage):
             "names",
             panels=[
                 FieldPanel("is_pseudonym"),
-                MultiFieldPanel(
+                FieldPanelTabs(
                     children=[
-                        FieldPanel("title"),
-                        FieldPanel("first_name"),
-                        FieldPanel("last_name"),
-                        FieldPanel("birth_name"),
-                    ],
-                    heading=_(TXT["heading.en"]),
-                    classname="collapsible"
-                ),
-                MultiFieldPanel(
-                    children=[
-                        FieldPanel("title_de"),
-                        FieldPanel("first_name_de"),
-                        FieldPanel("last_name_de"),
-                        FieldPanel("birth_name_de"),
-                    ],
-                    heading=_(TXT["heading.de"])
-                ),
-                MultiFieldPanel(
-                    children=[
-                        FieldPanel("title_cs"),
-                        FieldPanel("first_name_cs"),
-                        FieldPanel("last_name_cs"),
-                        FieldPanel("birth_name_cs"),
-                    ],
-                    heading=_(TXT["heading.cs"])
+                        MultiFieldPanel(
+                            children=[
+                                FieldPanel("title"),
+                                FieldPanel("first_name"),
+                                FieldPanel("last_name"),
+                                FieldPanel("birth_name"),
+                            ],
+                            heading=_(TXT["heading.en"]),
+                            classname="collapsible"
+                        ),
+                        MultiFieldPanel(
+                            children=[
+                                FieldPanel("title_de"),
+                                FieldPanel("first_name_de"),
+                                FieldPanel("last_name_de"),
+                                FieldPanel("birth_name_de"),
+                            ],
+                            heading=_(TXT["heading.de"])
+                        ),
+                        MultiFieldPanel(
+                            children=[
+                                FieldPanel("title_cs"),
+                                FieldPanel("first_name_cs"),
+                                FieldPanel("last_name_cs"),
+                                FieldPanel("birth_name_cs"),
+                            ],
+                            heading=_(TXT["heading.cs"])
+                        ),
+                    ]
                 ),
             ],
             label=_(TXT["author.name.plural"]),
@@ -588,11 +593,11 @@ class AuthorPage(I18nPage):
             classname="collapsible collapsed",
             heading=_(TXT["author.date_of_birth"])
         ),
-        MultiFieldPanel(
+        FieldPanelTabs(
             children=[
-                FieldPanel("place_of_birth"),
-                FieldPanel("place_of_birth_de"),
-                FieldPanel("place_of_birth_cs")
+                FieldPanelTab("place_of_birth", heading=_(TXT["language.en"])),
+                FieldPanelTab("place_of_birth_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("place_of_birth_cs", heading=_(TXT["language.cs"])),
             ],
             classname="collapsible collapsed",
             heading=_(TXT["author.place_of_birth"])
@@ -606,35 +611,14 @@ class AuthorPage(I18nPage):
             classname="collapsible collapsed",
             heading=_(TXT["author.date_of_death"])
         ),
-        MultiFieldPanel(
+        FieldPanelTabs(
             children=[
-                FieldPanel("place_of_death"),
-                FieldPanel("place_of_death_de"),
-                FieldPanel("place_of_death_cs")
+                FieldPanelTab("place_of_death", heading=_(TXT["language.en"])),
+                FieldPanelTab("place_of_death_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("place_of_death_cs", heading=_(TXT["language.cs"])),
             ],
             classname="collapsible collapsed",
             heading=_(TXT["author.place_of_death"])
-        ),
-        InlinePanel(
-            "languages",
-            label=_(TXT["author.language.plural"]),
-            min_num=0,
-            help_text=_(TXT["author.language.help"]),
-            panels=[PageChooserPanel("language", "cms.LanguagePage")]
-        ),
-        InlinePanel(
-            "literary_categories",
-            label=_(TXT["author.literary_category.plural"]),
-            min_num=0,
-            help_text=_(TXT["author.literary_category.help"]),
-            panels=[PageChooserPanel("literary_category", "cms.LiteraryCategoryPage")]
-        ),
-        InlinePanel(
-            "literary_periods",
-            label=_(TXT["author.literary_period.plural"]),
-            min_num=0,
-            help_text=_(TXT["author.literary_period.help"]),
-            panels=[PageChooserPanel("literary_period", "cms.LiteraryPeriodPage")]
         ),
         MultiFieldPanel(
             heading=_(TXT["tag.plural"]),
