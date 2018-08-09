@@ -32,6 +32,7 @@ docker run --rm -d --name $DB_RESTORE_CONTAINER_NAME \
     -e POSTGRES_USER=$POSTGRES_USER \
     -e PGDATA=/var/lib/postgresql/data/pgdata \
     $POSTGRES_IMAGE
+sleep 3  # Wait for database
 docker exec -it $DB_RESTORE_CONTAINER_NAME \
     psql -U $POSTGRES_USER -d postgres \
     -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$POSTGRES_DB' AND pid <> pg_backend_pid();"
