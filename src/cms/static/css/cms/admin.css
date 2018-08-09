@@ -1,3 +1,31 @@
+.label, label {
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.ui-tabs {
+    padding: 0;
+}
+
+.ui-widget-header .ui-state-default {
+    border: 0;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    margin-bottom: inherit;
+    padding-bottom: inherit;
+    border-bottom: 1px solid #49c0c1;
+}
+
+.ui-widget-header {
+    border: #aaa;
+    background: #e4e4e4;
+}
+
 .Draftail-Editor .Draftail-Toolbar {
   background-color: #e6e6e6;
   color: #333;
@@ -40,4 +68,8 @@ li.sequence-member .footnote-struct-block.struct-block > ul.fields {
 /* show hidden fieldset legends */
 .object .multiple fieldset {
   width: 100%;
+}
+
+.autocomplete .model_choice_field .input select~span:after {
+    content: "";
 }

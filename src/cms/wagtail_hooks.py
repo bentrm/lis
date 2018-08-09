@@ -193,6 +193,11 @@ class LanguageModelAdmin(TagModelAdmin):
     menu_icon = "openquote"
 
 
+class LocationTypeModelAdmin(TagModelAdmin):
+    model = tags.LocationTypeTag
+    menu_icon = "site"
+
+
 class ContactTypeModelAdmin(TagModelAdmin):
     model = tags.ContactTypeTag
     menu_icon = "mail"
@@ -218,6 +223,7 @@ class TagGroup(ModelAdminGroup):
         GenreModelAdmin,
         LanguageModelAdmin,
         ContactTypeModelAdmin,
+        LocationTypeModelAdmin,
         LiteraryPeriodModelAdmin,
         AgeGroupModelAdmin,
     )

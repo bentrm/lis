@@ -576,7 +576,8 @@ class AuthorPage(I18nPage):
                             ],
                             heading=_(TXT["heading.cs"])
                         ),
-                    ]
+                    ],
+                    heading=_(TXT["author.name"])
                 ),
             ],
             label=_(TXT["author.name.plural"]),
@@ -590,7 +591,6 @@ class AuthorPage(I18nPage):
                 FieldPanel("date_of_birth_month"),
                 FieldPanel("date_of_birth_year")
             ],
-            classname="collapsible collapsed",
             heading=_(TXT["author.date_of_birth"])
         ),
         FieldPanelTabs(
@@ -599,7 +599,6 @@ class AuthorPage(I18nPage):
                 FieldPanelTab("place_of_birth_de", heading=_(TXT["language.de"])),
                 FieldPanelTab("place_of_birth_cs", heading=_(TXT["language.cs"])),
             ],
-            classname="collapsible collapsed",
             heading=_(TXT["author.place_of_birth"])
         ),
         MultiFieldPanel(
@@ -608,7 +607,6 @@ class AuthorPage(I18nPage):
                 FieldPanel("date_of_death_month"),
                 FieldPanel("date_of_death_year")
             ],
-            classname="collapsible collapsed",
             heading=_(TXT["author.date_of_death"])
         ),
         FieldPanelTabs(
@@ -617,7 +615,6 @@ class AuthorPage(I18nPage):
                 FieldPanelTab("place_of_death_de", heading=_(TXT["language.de"])),
                 FieldPanelTab("place_of_death_cs", heading=_(TXT["language.cs"])),
             ],
-            classname="collapsible collapsed",
             heading=_(TXT["author.place_of_death"])
         ),
         MultiFieldPanel(
@@ -1416,6 +1413,14 @@ class LocationPage(I18nPage):
         related_name="locations",
         verbose_name=_(TXT["location_type"])
     )
+    location_type_tags = ParentalManyToManyField(
+        tags.LocationTypeTag,
+        db_table=DB_TABLE_PREFIX + "location_tag_location_type",
+        related_name="locations",
+        blank=False,
+        verbose_name=_(TXT["location.location_type_tags.plural"]),
+        help_text=_(TXT["location.location_type_tags.help"])
+    )
 
     address = RichTextField(
         blank=True,
@@ -1470,20 +1475,36 @@ class LocationPage(I18nPage):
 
     general_panels = [
         ImageChooserPanel("title_image"),
-        PageChooserPanel("location_type", "cms.LocationTypePage"),
-        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
+        FieldPanel(
+            "location_type_tags",
+            widget=autocomplete.ModelSelect2Multiple(
+                url="autocomplete-location-type",
+                attrs={"data-maximum-selection-length": 1}
+            )
+        ),
         InlinePanel(
             "contacts",
             label=_(TXT["location.contacts"]),
             min_num=0,
             help_text=_(TXT["location.contacts.help"]),
             panels=[
-                PageChooserPanel("contact_type", "cms.ContactTypePage"),
-                FieldPanel("name"),
-                FieldPanel("name_de"),
-                FieldPanel("name_cs")
+                FieldPanel(
+                    "contact_type_tag",
+                    classname="autocomplete",
+                    widget=autocomplete.ModelSelect2(
+                        url="autocomplete-contact-type")
+                ),
+                FieldPanelTabs(
+                    children=[
+                        FieldPanelTab("name", heading=_(TXT["heading.en"])),
+                        FieldPanelTab("name_de", heading=_(TXT["heading.de"])),
+                        FieldPanelTab("name_cs", heading=_(TXT["heading.cs"])),
+                    ],
+                    heading=_(TXT["location_contact.name"])
+                )
             ]
         ),
+        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
     english_panels = I18nPage.english_panels + [
         FieldPanel("address"),
@@ -1533,6 +1554,14 @@ class LocationPageContact(Orderable):
         on_delete=models.SET_NULL,
         related_name="contacts",
         verbose_name=_(TXT["location_contact.contact_type"])
+    )
+    contact_type_tag = models.ForeignKey(
+        tags.ContactTypeTag,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="contacts",
+        verbose_name=_(TXT["location_contact.contact_type_tag"])
     )
 
     name = models.CharField(

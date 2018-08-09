@@ -131,6 +131,13 @@ class ContactTypeTag(Tag):
         verbose_name_plural = _(TXT["contact_type.plural"])
 
 
+class LocationTypeTag(Tag):
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "location_type"
+        verbose_name = _(TXT["location_type"])
+        verbose_name_plural = _(TXT["location_type.plural"])
+
+
 class LiteraryPeriodTag(SortableTag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "literary_period"

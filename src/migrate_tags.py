@@ -1,7 +1,14 @@
 """One-off script that migrates legacy AuthorPage tags."""
 
-from cms.models import AuthorPage
-from cms.tags import LanguageTag, GenreTag, LiteraryPeriodTag
+"""
+from cms.models import LocationTypePage
+for l in LocationTypePage.objects.all():
+...     rev = l.get_latest_revision()
+...     rev.publish()
+"""
+
+from cms.models import AuthorPage, LocationPage
+from cms.tags import LanguageTag, GenreTag, LiteraryPeriodTag, LocationTypeTag
 
 for author in AuthorPage.objects.order_by("title"):
     page = author.get_latest_revision_as_page()
@@ -35,3 +42,14 @@ for author in AuthorPage.objects.order_by("title"):
                 print(f"No literary period tag for {old_literary_period}")
     if has_changes:
         page.save_revision()
+
+
+for location in LocationPage.objects.order_by("title"):
+    page = location.get_latest_revision_as_page()
+    if page.location_type:
+        try:
+            new_location_type = LocationTypeTag.objects.get(title=page.location_type.title)
+            page.location_type_tags.add(new_location_type)
+            page.save_revision()
+        except LocationTypeTag.DoesNotExist:
+            print(f"No location type tag for {page.location_type.title}.")

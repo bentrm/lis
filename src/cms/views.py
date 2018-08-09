@@ -53,12 +53,48 @@ class LanguageAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+class LocationTypeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return tags.LocationTypeTag.objects.none()
+
+        qs = tags.LocationTypeTag.objects.order_by("title")
+        if self.q:
+            filter = (
+                Q(title__contains=self.q)
+                | Q(title_de__contains=self.q)
+                | Q(title_cs__contains=self.q)
+            )
+            qs = qs.filter(filter)
+
+        return qs
+
+
 class GenreAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return tags.GenreTag.objects.none()
 
         qs = tags.GenreTag.objects.order_by("title")
+        if self.q:
+            filter = (
+                Q(title__contains=self.q)
+                | Q(title_de__contains=self.q)
+                | Q(title_cs__contains=self.q)
+            )
+            qs = qs.filter(filter)
+
+        return qs
+
+
+class ContactTypeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return tags.ContactTypeTag.objects.none()
+
+        print(self.q)
+
+        qs = tags.ContactTypeTag.objects.order_by("title")
         if self.q:
             filter = (
                 Q(title__contains=self.q)
