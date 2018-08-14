@@ -20,10 +20,6 @@ html {
   }
 }
 
-body {
-  margin-bottom: 4em;
-}
-
 a {
   color: #6c757d
 }
@@ -48,4 +44,10 @@ a {
 
 .popover p {
   margin-bottom: 0;
+}
+
+.logo {
+  margin: 1em;
+  max-width: 200px;
+  max-height: 80px;
 }

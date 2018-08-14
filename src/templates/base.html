@@ -1,8 +1,9 @@
 {% load static %}
 {% load i18n %}
+{% load wagtailcore_tags %}
 
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -29,71 +30,119 @@
   {% endblock %}
 </head>
 
-<body class="{% block body_classes %}{% endblock %}">
+<body class="h-100 {% block body_classes %}{% endblock %}">
 {% block body %}
+
   {% block body_extra %}{% endblock %}
 
-  <div class="container">
-    {% block header %}
-    <div class="row">
-      <div class="col">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <div class="d-flex flex-column h-100">
 
-          {% block header_branding %}
-          <a class="navbar-brand" href="{% url 'home:index' %}">
-            {% include "includes/logo.html" %} LIS
+    <div class="container">
+      {% block header %}
+      <div class="row">
+        <div class="col-12 my-2 d-flex justify-content-between">
+          <a href="http://www.sn-cz2020.eu/">
+            <img src="{% static 'logos/logo_eu.svg' %}" alt="Logo EU Fonds" class="img img-fluid">
           </a>
-          {% endblock %}
+          <a href="http://www.sn-cz2020.eu/">
+            <img src="{% static 'logos/logo_sn_cz.svg' %}" alt="Logo SN CZ" class="img" height="80">
+          </a>
+        </div>
+      </div>
 
-          {% block header_menu %}
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-              {% block header_menu_items %}
-              <a class="nav-item nav-link mx-2" href="{% url 'signup' %}">
-                {% trans 'Signup' %} <i class="fas fa-key"></i>
-              </a>
-              <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">
-                {% trans 'Project management' %} <i class="fas fa-external-link-square-alt"></i>
-              </a>
-              <a class="nav-item nav-link mx-2" href="/demo/">
-                {% trans 'Demo' %} <i class="fas fa-lock"></i>
-              </a>
-              <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">
-                {% trans 'CMS' %} <i class="fas fa-lock"></i>
-              </a>
-              <a class="nav-item nav-link mx-2" href="{% url 'home:impressum' %}">
-                {% trans 'Data protection' %} <i class="fas fa-paragraph"></i>
+      <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+              {% block header_branding %}
+              <a class="navbar-brand" href="{% slugurl 'welcome' %}">
+                {% include "includes/logo.html" %} LIS
               </a>
               {% endblock %}
+
+              {% block header_menu %}
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                  {% block header_menu_items %}
+                  <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">
+                    {% trans 'Project management' %}
+                  </a>
+                  <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">
+                    {% trans 'CMS' %}
+                  </a>
+                  <a class="nav-item nav-link mx-2" href="{% slugurl 'imprint' %}">
+                    {% trans 'Data protection' %}
+                  </a>
+                  {% endblock %}
+                </div>
+                <div class="mx-2">
+                  {% block header_extra %}
+                  <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                    <input name="next" type="hidden" value="{{ redirect_to }}" />
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    <div class="btn-group">
+                    {% for language in languages %}
+                      <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
+                          {{ language.code }}
+                      </button>
+                    {% endfor %}
+                    </div>
+                  </form>
+                  {% endblock %}
+                </div>
+              </div>
+              {% endblock %}
+            </nav>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+
+    <div class="container flex-grow-1">
+      {% block content %}
+
+        {% block content_heading %}{% endblock %}
+
+        {% block content_main %}{% endblock %}
+
+        {% block content_footer %}{% endblock %}
+      {% endblock %}
+    </div>
+
+    <footer class="container-fluid bg-light text-muted mt-4 pt-4 pb-2">
+      <div class="container">
+        {% block footer %}
+          <div class="row">
+            <div class="col-12">
+              <h6>{% trans 'Current status' %}</h6>
+            </div>
+            <div class="col-12 mb-4 lead d-flex flex-wrap justify-content-around">
+                <span>{{AUTHOR_COUNT_PREVIEW}} {% trans 'Authors' %}</span>
+                <span>{{MEMORIAL_SITE_COUNT_PREVIEW}} {% trans 'Memorial sites' %}</span>
+            </div>
+            <div class="col-12">
+              <h6>{% trans 'Project partner' %}</h6>
+            </div>
+            <div class="col-12 mb-4 d-flex flex-wrap justify-content-around align-items-center">
+              <a href="https://tu-dresden.de/">
+                <img src="{% static 'logos/logo_tu_dresden.svg' %}" alt="Logo TU Dresden" class="logo">
+              </a>
+              <a href="https://www.tul.cz/">
+                <img src="{% static 'logos/logo_tu_liberec.svg' %}" alt="Logo TU Liberec" class="logo">
+              </a>
+              <a href="https://geoinformatik.htw-dresden.de">
+                <img src="{% static 'logos/logo_htw_dresden.svg' %}" alt="Logo HTW Dresden" class="logo">
+              </a>
             </div>
           </div>
-          {% endblock %}
-
-          <div class="float-right text-right">
-            {% block header_extra %}{% endblock %}
-          </div>
-        </nav>
+        {% endblock %}
       </div>
-    </div>
-    {% endblock %}
-  </div>
+    </footer>
 
-  <div class="container">
-    {% block content %}
-
-      {% block content_heading %}{% endblock %}
-
-      {% block content_main %}{% endblock %}
-
-      {% block content_footer %}{% endblock %}
-    {% endblock %}
-  </div>
-
-  <div class="container-fluid">
-    {% block footer %}{% endblock %}
   </div>
 {% endblock %}
 </body>

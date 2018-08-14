@@ -22,5 +22,5 @@ urlpatterns = [
         views.ContactTypeAutocomplete.as_view(),
         name='autocomplete-contact-type'
     ),
-    path("demo/", include(wagtail_urls)),
+    path("", include(wagtail_urls)),
 ]

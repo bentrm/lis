@@ -5,7 +5,6 @@ urlpatterns = [
     # django
     path("i18n/", include("django.conf.urls.i18n")),
     path("", include("cms.urls")),
-    path("", include("home.urls")),
 ]
 
 

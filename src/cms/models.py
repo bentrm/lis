@@ -4,10 +4,12 @@ import logging
 from collections import namedtuple
 from typing import List, NewType, Tuple
 
+from dal import autocomplete
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.shortcuts import redirect
 from django.utils import dates, text
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -16,18 +18,19 @@ from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList, PageChooserPanel,
                                          StreamFieldPanel, TabbedInterface)
+from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
+from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
-from dal import autocomplete
 
-from .blocks import ParagraphStructBlock
-from .helpers import TranslatedField, format_date, validate_date
 from . import tags
+from .blocks import ParagraphStructBlock
+from .edit_handlers import FieldPanelTab, FieldPanelTabs
+from .helpers import TranslatedField, format_date, validate_date
 from .media import ImageMedia
 from .messages import TXT
-from .edit_handlers import FieldPanelTabs, FieldPanelTab
 
 LOGGER = logging.getLogger("wagtail.core")
 DB_TABLE_PREFIX = "cms_"
@@ -117,6 +120,16 @@ class I18nPage(Page):
         help_text=_(TXT["page.original_language.help"])
     )
 
+    alias_for_page = models.ForeignKey(
+        "wagtailcore.Page",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="aliases",
+        verbose_name=_(TXT["home.alias_for_page"]),
+        help_text=_(TXT["home.alias_for_page.help"])
+    )
+
     is_creatable = False
     search_fields = Page.search_fields + [
         index.SearchField('title_de', partial_match=True, boost=2),
@@ -131,17 +144,27 @@ class I18nPage(Page):
     czech_panels = [
         FieldPanel("title_cs", classname="full title"),
     ]
+    promote_panels = Page.promote_panels + [
+        PageChooserPanel("alias_for_page")
+    ]
     meta_panels = [
         FieldPanel("owner"),
         FieldPanel("editor"),
         FieldPanel("original_language"),
     ]
+
     edit_handler = TabbedInterface([
         ObjectList(english_panels, heading=_(TXT["heading.en"])),
         ObjectList(german_panels, heading=_(TXT["heading.de"])),
         ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+        ObjectList(promote_panels, heading=_("heading.promote")),
         ObjectList(meta_panels, heading=_(TXT["heading.meta"])),
     ])
+
+    def serve(self, request):
+        if self.alias_for_page:
+            return redirect(self.alias_for_page.url, permanent=False)
+        return super(I18nPage, self).serve(request)
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
@@ -225,16 +248,14 @@ class CategoryPage(I18nPage):
         """Add child pages into the pages context."""
         context = super(CategoryPage, self).get_context(request, *args, **kwargs)
         child_pages = self.get_children().specific().live()
-
         context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
-
         return context
 
     class Meta:
         abstract = True
 
 
-class HomePage(CategoryPage):
+class HomePage(I18nPage):
     """The root page of the LIS cms site."""
 
     icon_class = "fas fas-home"
@@ -246,10 +267,85 @@ class HomePage(CategoryPage):
         verbose_name_plural = _(TXT["home.plural"])
 
 
+class BlogPage(I18nPage):
+    """A page of static content."""
+
+    BLOG_EDITOR_FEATURES = [
+        "h3", "h4", "h5", "h6",
+        "bold",
+        "italic",
+        "strikethrough",
+        "sup",
+        "ol",
+        "ul",
+        "hr",
+        "blockquote",
+        "link",
+    ]
+
+    parent_page_types = ["HomePage", "BlogPage"]
+
+    body = StreamField(
+        block_types=[
+            ('heading', CharBlock(classname="full title")),
+            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
+            ('image', ImageChooserBlock()),
+        ]
+    )
+    body_de = StreamField(
+        block_types=[
+            ('heading', CharBlock(classname="full title")),
+            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
+            ('image', ImageChooserBlock()),
+        ],
+        blank=True,
+        default=[]
+    )
+    body_cs = StreamField(
+        block_types=[
+            ('heading', CharBlock(classname="full title")),
+            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
+            ('image', ImageChooserBlock()),
+        ],
+        blank=True,
+        default=[]
+    )
+    i18n_body = TranslatedField.named("body", True)
+
+    english_panels = I18nPage.english_panels + [
+        StreamFieldPanel("body"),
+    ]
+    german_panels = I18nPage.german_panels + [
+        StreamFieldPanel("body_de"),
+    ]
+    czech_panels = I18nPage.czech_panels + [
+        StreamFieldPanel("body_cs"),
+    ]
+
+    edit_handler = TabbedInterface([
+        ObjectList(english_panels, heading=_(TXT["heading.en"])),
+        ObjectList(german_panels, heading=_(TXT["heading.de"])),
+        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+        ObjectList(Page.promote_panels, heading=_(TXT["heading.promote"])),
+        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+    ])
+
+    def get_context(self, request, *args, **kwargs):
+        context = super(BlogPage, self).get_context(request, *args, **kwargs)
+        context["authors_count"] = AuthorPage.objects.count()
+        context["memorial_sites_count"] = LocationPage.objects.count()
+        return context
+
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "_content_pages"
+        verbose_name = _(TXT["blog"])
+        verbose_name_plural = _(TXT["blog.plural"])
+
+
 class LiteraryCategoriesPage(CategoryPage):
     """A category page to place literary genres in."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = []
     template = CategoryPage.template
 
     class Meta:
@@ -261,7 +357,7 @@ class LiteraryCategoryPage(I18nPage):
     """A page that describes a literary category."""
 
     icon_class = "fas fa-tag"
-    parent_page_types = ["LiteraryCategoriesPage"]
+    parent_page_types = []
 
     class Meta:
         db_table = "literary_category"  # TODO: Add prefix
@@ -272,7 +368,7 @@ class LiteraryCategoryPage(I18nPage):
 class ContactTypesPage(CategoryPage):
     """A category page to place types of contact in."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = []
     template = CategoryPage.template
 
     class Meta:
@@ -284,7 +380,7 @@ class ContactTypePage(I18nPage):
     """A page that describes a type of contact."""
 
     icon_class = "fas fa-tag"
-    parent_page_types = ["ContactTypesPage"]
+    parent_page_types = []
 
     class Meta:
         db_table = "contact_type"  # TODO: Add prefix
@@ -295,7 +391,7 @@ class ContactTypePage(I18nPage):
 class LiteraryPeriodsPage(CategoryPage):
     """A category page to place literary periods in."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = []
     template = CategoryPage.template
 
     class Meta:
@@ -307,7 +403,7 @@ class LiteraryPeriodPage(I18nPage):
     """A page that describes a literary period."""
 
     icon_class = "fas fa-tag"
-    parent_page_types = ["LiteraryPeriodsPage"]
+    parent_page_types = []
 
     description = RichTextField(
         blank=True,
@@ -354,7 +450,7 @@ class LiteraryPeriodPage(I18nPage):
 class LanguagesPage(CategoryPage):
     """A category page to place languages pages in spoken by the authors."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = []
     template = CategoryPage.template
 
     class Meta:
@@ -366,7 +462,7 @@ class LanguagePage(I18nPage):
     """A page that describes a contact type."""
 
     icon_class = "fas fa-tag"
-    parent_page_types = ["LanguagesPage"]
+    parent_page_types = []
 
     class Meta:
         db_table = "language"  # TODO: Add prefix
@@ -374,10 +470,20 @@ class LanguagePage(I18nPage):
         verbose_name_plural = _(TXT["language.plural"])
 
 
+class ContentIndexPage(CategoryPage):
+    """An index page for literary data."""
+
+    parent_page_types = ["HomePage"]
+    template = "cms/categories/category_page.html"
+
+    class Meta:
+        db_table = "content_index"
+        verbose_name = _(TXT["content"])
+
 class AuthorsPage(CategoryPage):
     """A category page to place author pages in."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = ["ContentIndexPage"]
     template = "cms/categories/authors_page.html"
 
     def get_context(self, request, *args, **kwargs):
@@ -730,9 +836,10 @@ class AuthorPage(I18nPage):
 
         # add all names of author to context
         context["author_name"], *context["author_alt_names"] = author.names.order_by("sort_order")
-        context["languages"] = self.get_languages(request.is_preview)
-        context["literary_categories"] = self.get_literary_categories(request.is_preview)
-        context["literary_periods"] = self.get_literary_periods(request.is_preview)
+        # TODO: Remove this.
+        # context["languages"] = self.get_languages(request.is_preview)
+        # context["literary_categories"] = self.get_literary_categories(request.is_preview)
+        # context["literary_periods"] = self.get_literary_periods(request.is_preview)
 
         # add level pages
         levels = self.get_children().specific()
@@ -1347,7 +1454,7 @@ class Level3Page(LevelPage):
 class LocationTypesPage(CategoryPage):
     """A category page to place types of location in."""
 
-    parent_page_types = ["HomePage"]
+    parent_page_types = []
     template = CategoryPage.template
 
     class Meta:
@@ -1358,7 +1465,7 @@ class LocationTypesPage(CategoryPage):
 class LocationTypePage(I18nPage):
     """A descriptive type of a location."""
 
-    parent_page_types = ["LocationTypesPage"]
+    parent_page_types = []
 
     class Meta:
         db_table = "location_type"  # TODO: Add prefix
@@ -1370,7 +1477,7 @@ class LocationsPage(CategoryPage):
     """A category page to place locations in."""
 
     icon_class = "fas fa-globe"
-    parent_page_types = ["HomePage"]
+    parent_page_types = ["ContentIndexPage"]
     template = "cms/categories/locations_page.html"
 
     def get_context(self, request, *args, **kwargs):

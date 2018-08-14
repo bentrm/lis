@@ -10,6 +10,12 @@ OVERRIDE = {
 }
 
 TXT = {
+    "blog": _("Blog page"),
+    "blog.plural": _("Blog pages"),
+    "heading.promote": _("Promote"),
+    "heading.settings": _("Settings"),
+    "content": _("Inhalt"),
+    "content.plural": _("Inhalte"),
     "age_group.plural": _("Age groups"),
     "age_group": _("Age group"),
     "author_genre.author.help": _("Author that this mapping is referencing."),
@@ -99,6 +105,8 @@ TXT = {
     "heading.meta": _("Meta information"),
     "home.plural": _("Homepages"),
     "home": _("Homepage"),
+    "home.alias_for_page": _("Redirect target"),
+    "home.alias_for_page.help": _("A temproary redirect target for this page. If set all incoming requests for this page will be redirected to this target page."),
     "language.cs": _("Czech"),
     "language.de": _("German"),
     "language.en": _("English"),

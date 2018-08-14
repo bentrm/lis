@@ -1,6 +1,7 @@
 
 from django.utils.translation import gettext_lazy as _
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 
@@ -16,7 +17,8 @@ class SignupForm(UserCreationForm):
     def clean_keyword(self):
         """Check keyword."""
         keyword = self.cleaned_data["keyword"]
-        if keyword != "imaneditor":
+
+        if keyword != settings.LIS_SIGNUP_KEYWORD:
             raise forms.ValidationError(_("Invalid keyword."))
         return keyword
 

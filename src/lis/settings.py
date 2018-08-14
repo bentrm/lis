@@ -15,10 +15,26 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+from django.core.exceptions import ImproperlyConfigured
 
-def env(NAME, default=""):
-    """Return env variable or default."""
-    return os.environ.get(NAME, default)
+
+def env(NAME, default=None, required=False, parse_to_bool=False):
+    """Return env variable or default value."""
+    value = os.environ.get(NAME, default)
+
+    if value is None and required:
+        raise ImproperlyConfigured(f"Setting {NAME} is required but unset.")
+
+    if parse_to_bool:
+        if value in ("True", "true", "t", "1", True):
+            return True
+        elif value in ("False", "false", "f", "0", False):
+            return False
+        else:
+            raise ImproperlyConfigured(f"Setting {NAME} is required to be a boolean.")
+
+    return value
+
 
 
 CMS_VERSION = env("CMS_VERSION", default="latest")
@@ -40,17 +56,17 @@ EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = int(env("EMAIL_PORT", 587))
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS", True) in ("True", "true", "t", "1", True)
-EMAIL_USE_SSL = env("EMAIL_USE_SSL", True) in ("True", "true", "t", "1", True)
+EMAIL_USE_TLS = env("EMAIL_USE_TLS", True, parse_to_bool=True)
+EMAIL_USE_SSL = env("EMAIL_USE_SSL", True, parse_to_bool=True)
 
 EMAIL_SUBJECT_PREFIX = "[LIS] "
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
-DEBUG = env("DEBUG", False) in ("True", "true", "t", "1", True)
+DEBUG = env("DEBUG", False, parse_to_bool=True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", "THISMUSTBESECRET")
+SECRET_KEY = env("SECRET_KEY", required=True)
 
 if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -64,7 +80,6 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
-    "home",
     "cms",
     "dal",
     "dal_select2",
@@ -137,10 +152,10 @@ WSGI_APPLICATION = "lis.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": env("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
+        "NAME": env("DB_NAME", required=True),
+        "USER": env("DB_USER", required=True),
+        "PASSWORD": env("DB_PASSWORD", required=True),
+        "HOST": env("DB_HOST", required=True),
         "PORT": env("DB_PORT", "5432"),
         "CONN_MAX_AGE": 360,
     },
@@ -181,15 +196,10 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.path.join("debug.log"),
-        },
     },
     "loggers": {
         "django": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "propagate": True,
         },
     },
@@ -244,9 +254,9 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 # Geotools
-GDAL_LIBRARY_PATH = env("GDAL_LIBRARY_PATH")
-GEOS_LIBRARY_PATH = env("GEOS_LIBRARY_PATH")
-SPATIALITE_LIBRARY_PATH = env("SPATIALITE_LIBRARY_PATH")
+GDAL_LIBRARY_PATH = env("GDAL_LIBRARY_PATH", required=True)
+GEOS_LIBRARY_PATH = env("GEOS_LIBRARY_PATH", required=True)
+SPATIALITE_LIBRARY_PATH = env("SPATIALITE_LIBRARY_PATH", required=True)
 
 # Map widgets
 MAP_WIDGETS = {
@@ -255,9 +265,12 @@ MAP_WIDGETS = {
         ("mapCenterLocationName", "Dresden"),
         ("markerFitZoom", 12),
     ),
-    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY")
+    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY", required=True)
 }
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don"t include "/admin" or a trailing slash
 BASE_URL = "https://lis-map.eu"
+
+# Application Settings
+LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)

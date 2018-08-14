@@ -100,6 +100,7 @@ services:
       DB_USER: ${LIS_DB_USER}
       DEBUG: 1
       GOOGLE_MAP_API_KEY: ${LIS_GOOGLE_MAP_API_KEY}
+      LIS_SIGNUP_KEYWORD: ${LIS_SIGNUP_KEYWORD}
       MEDIA_ROOT: /html/media
       MEDIA_URL: /media/
       SECRET_KEY: ${LIS_SECRET_KEY}

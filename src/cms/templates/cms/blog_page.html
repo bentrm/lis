@@ -1,0 +1,31 @@
+{% extends "cms/base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <h1>{{self.i18n_title}}</h1>
+
+    <article>
+      {% for block in page.i18n_body %}
+        {% if block.block_type == 'heading' %}
+          <h2>{{ block.value }}</h2>
+        {% elif block.block_type == 'image' %}
+            {% image block.value max-400x400 as tmp_image %}
+            <figure class="figure d-block text-center">
+              <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
+              <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
+            </figure>
+        {% else %}
+          {% include_block block %}
+        {% endif %}
+      {% endfor %}
+
+    </article>
+  </div>
+</div>
+{% endblock %}
