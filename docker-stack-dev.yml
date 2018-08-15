@@ -106,7 +106,6 @@ services:
       SECRET_KEY: ${LIS_SECRET_KEY}
       STATIC_ROOT: /html/static
       STATIC_URL: /static/
-    command: sh -c "while ! nc -w 1 -z db 5432; do sleep 1; done; /venv/bin/python ./manage.py runserver 0.0.0.0:8000;"
 
 volumes:
   esdata:
