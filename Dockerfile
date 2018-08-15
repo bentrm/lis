@@ -37,4 +37,4 @@ ADD src /src
 # uWSGI will listen on this port
 EXPOSE 8000
 
-CMD ["/venv/bin/gunicorn", "lis.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["/venv/bin/gunicorn", "lis.wsgi:application", "-b", "0.0.0.0:8000", "-w", "3", "--access-logfile", "-", "--error-logfile", "-"]
