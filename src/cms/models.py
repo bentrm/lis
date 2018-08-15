@@ -157,7 +157,7 @@ class I18nPage(Page):
         ObjectList(english_panels, heading=_(TXT["heading.en"])),
         ObjectList(german_panels, heading=_(TXT["heading.de"])),
         ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(promote_panels, heading=_("heading.promote")),
+        ObjectList(promote_panels, heading=_(TXT["heading.promote"])),
         ObjectList(meta_panels, heading=_(TXT["heading.meta"])),
     ])
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 09:30+0000\n"
+"POT-Creation-Date: 2018-08-15 12:08+0000\n"
 "PO-Revision-Date: 2018-06-15 11:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,22 +18,38 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Poedit 2.0.8\n"
 
-#: templates/base.html:56
-msgid "Signup"
-msgstr "Přihlásit se"
-
-#: templates/base.html:59
+#: templates/base.html:70
 msgid "Project management"
 msgstr "Řízení projektů"
 
-#: templates/base.html:62
-msgid "Demo"
-msgstr "Demo"
-
-#: templates/base.html:65
+#: templates/base.html:73
 msgid "CMS"
 msgstr "CMS"
 
-#: templates/base.html:68
+#: templates/base.html:76
 msgid "Data protection"
 msgstr "Ochrana osobních údajů"
+
+#: templates/base.html:121
+msgid "Current status"
+msgstr ""
+
+#: templates/base.html:124
+msgid "Authors"
+msgstr ""
+
+#: templates/base.html:125
+msgid "Memorial sites"
+msgstr ""
+
+#: templates/base.html:128
+#, fuzzy
+#| msgid "Project management"
+msgid "Project partner"
+msgstr "Řízení projektů"
+
+#~ msgid "Signup"
+#~ msgstr "Přihlásit se"
+
+#~ msgid "Demo"
+#~ msgstr "Demo"
