@@ -342,134 +342,6 @@ class BlogPage(I18nPage):
         verbose_name_plural = _(TXT["blog.plural"])
 
 
-class LiteraryCategoriesPage(CategoryPage):
-    """A category page to place literary genres in."""
-
-    parent_page_types = []
-    template = CategoryPage.template
-
-    class Meta:
-        db_table = "literary_categories"  # TODO: Add prefix
-        verbose_name = _(TXT["genre.plural"])
-
-
-class LiteraryCategoryPage(I18nPage):
-    """A page that describes a literary category."""
-
-    icon_class = "fas fa-tag"
-    parent_page_types = []
-
-    class Meta:
-        db_table = "literary_category"  # TODO: Add prefix
-        verbose_name = _(TXT["genre"])
-        verbose_name_plural = _(TXT["genre.plural"])
-
-
-class ContactTypesPage(CategoryPage):
-    """A category page to place types of contact in."""
-
-    parent_page_types = []
-    template = CategoryPage.template
-
-    class Meta:
-        db_table = "contact_types"  # TODO: Add prefix
-        verbose_name = _(TXT["contact_type.plural"])
-
-
-class ContactTypePage(I18nPage):
-    """A page that describes a type of contact."""
-
-    icon_class = "fas fa-tag"
-    parent_page_types = []
-
-    class Meta:
-        db_table = "contact_type"  # TODO: Add prefix
-        verbose_name = _(TXT["contact_type"])
-        verbose_name_plural = _(TXT["contact_type.plural"])
-
-
-class LiteraryPeriodsPage(CategoryPage):
-    """A category page to place literary periods in."""
-
-    parent_page_types = []
-    template = CategoryPage.template
-
-    class Meta:
-        db_table = "literary_periods"  # TODO: Add prefix
-        verbose_name = _(TXT["literary_period.plural"])
-
-
-class LiteraryPeriodPage(I18nPage):
-    """A page that describes a literary period."""
-
-    icon_class = "fas fa-tag"
-    parent_page_types = []
-
-    description = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["literary_period.description"]),
-        help_text=_(TXT["literary_period.description.help"])
-    )
-    description_de = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["literary_period.description"]),
-        help_text=_(TXT["literary_period.description.help"])
-    )
-    description_cs = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["literary_period.description"]),
-        help_text=_(TXT["literary_period.description.help"])
-    )
-    i18n_description = TranslatedField.named("description")
-
-    english_panels = I18nPage.english_panels + [
-        FieldPanel("description"),
-    ]
-    german_panels = I18nPage.german_panels + [
-        FieldPanel("description_de"),
-    ]
-    czech_panels = I18nPage.czech_panels + [
-        FieldPanel("description_cs"),
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
-    ])
-
-    class Meta:
-        # TODO: Add db_table
-        verbose_name = _(TXT["literary_period"])
-
-
-class LanguagesPage(CategoryPage):
-    """A category page to place languages pages in spoken by the authors."""
-
-    parent_page_types = []
-    template = CategoryPage.template
-
-    class Meta:
-        db_table = "languages"  # TODO: Add prefix
-        verbose_name = _(TXT["language.plural"])
-
-
-class LanguagePage(I18nPage):
-    """A page that describes a contact type."""
-
-    icon_class = "fas fa-tag"
-    parent_page_types = []
-
-    class Meta:
-        db_table = "language"  # TODO: Add prefix
-        verbose_name = _(TXT["language"])
-        verbose_name_plural = _(TXT["language.plural"])
-
-
 class ContentIndexPage(CategoryPage):
     """An index page for literary data."""
 
@@ -772,44 +644,6 @@ class AuthorPage(I18nPage):
             self.date_of_death_day
         )
 
-    def get_languages(self, is_preview: bool = False):
-        """Return a list of language pages that are linked with this author."""
-        languages = []
-        if is_preview:
-            for through_entity in self.languages.all():
-                languages.append(through_entity.language.get_latest_revision_as_page())
-        else:
-            for through_entity in self.languages.all():
-                if through_entity.language.live:
-                    languages.append(through_entity.language)
-        return languages
-
-    def get_literary_categories(self, is_preview: bool = False):
-        """Return a list of genres that are linked with this author."""
-        literary_categories = []
-        if is_preview:
-            for through_entity in self.literary_categories.all():
-                literary_categories.append(
-                    through_entity.literary_category.get_latest_revision_as_page())
-        else:
-            for through_entity in self.literary_categories.all():
-                if through_entity.literary_category.live:
-                    literary_categories.append(through_entity.literary_category)
-        return literary_categories
-
-    def get_literary_periods(self, is_preview: bool = False):
-        """Return a list of literary periods that are linked with this author."""
-        literary_periods = []
-        if is_preview:
-            for through_entity in self.literary_periods.all():
-                literary_periods.append(
-                    through_entity.literary_period.get_latest_revision_as_page())
-        else:
-            for through_entity in self.literary_periods.all():
-                if through_entity.literary_period.live:
-                    literary_periods.append(through_entity.literary_period)
-        return literary_periods
-
     def full_clean(self, *args, **kwargs):
         """Add autogenerated values for non-editable required fields."""
         name = self.names.first()
@@ -836,10 +670,6 @@ class AuthorPage(I18nPage):
 
         # add all names of author to context
         context["author_name"], *context["author_alt_names"] = author.names.order_by("sort_order")
-        # TODO: Remove this.
-        # context["languages"] = self.get_languages(request.is_preview)
-        # context["literary_categories"] = self.get_literary_categories(request.is_preview)
-        # context["literary_periods"] = self.get_literary_periods(request.is_preview)
 
         # add level pages
         levels = self.get_children().specific()
@@ -869,6 +699,12 @@ class AuthorPageName(Orderable):
     """A join relation that holds the name of an author."""
 
     author = ParentalKey("AuthorPage", related_name="names")
+
+    is_pseudonym = models.BooleanField(
+        default=False,
+        verbose_name=_(TXT["author.name.is_pseudonym"]),
+        help_text=_(TXT["author.name.is_pseudonym.help"])
+    )
 
     title = models.CharField(
         max_length=255,
@@ -947,12 +783,6 @@ class AuthorPageName(Orderable):
     )
     i18n_birth_name = TranslatedField.named("birth_name", True)
 
-    is_pseudonym = models.BooleanField(
-        default=False,
-        verbose_name=_(TXT["author.name.is_pseudonym"]),
-        help_text=_(TXT["author.name.is_pseudonym.help"])
-    )
-
     def full_name_title(self, gender=AuthorPage.GENDER_MALE):
         """Return the full name of this name object formatted to include the birth name."""
         name = str(self)
@@ -994,90 +824,6 @@ class AuthorPageName(Orderable):
         """Return the full name of the author in the current session language."""
         components = (self.i18n_title, self.i18n_first_name, self.i18n_last_name)
         return " ".join(x.strip() for x in components if x)
-
-
-class AuthorLiteraryPeriod(Orderable):
-    """A through model between the relation author and literary period."""
-
-    author = ParentalKey(
-        AuthorPage,
-        related_name="literary_periods",
-        verbose_name=_(TXT["author_period.author"]),
-        help_text=_(TXT["author_period.author.help"])
-    )
-    literary_period = models.ForeignKey(
-        LiteraryPeriodPage,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="authors",
-        verbose_name=_(TXT["author_period.period"]),
-        help_text=_(TXT["author_period.period.help"])
-    )
-
-    def __str__(self):
-        return str(self.literary_period)
-
-    class Meta:
-        db_table = "author_literary_period"  # TODO: Add prefix
-        verbose_name = _(TXT["author_period"])
-        verbose_name_plural = _(TXT["author_period.plural"])
-
-
-class AuthorLiteraryCategory(Orderable):
-    """A through model between the relation author and genre."""
-
-    author = ParentalKey(
-        AuthorPage,
-        related_name="literary_categories",
-        verbose_name=_(TXT["author_genre.author"]),
-        help_text=_(TXT["author_genre.author.help"])
-    )
-    literary_category = models.ForeignKey(
-        LiteraryCategoryPage,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="authors",
-        verbose_name=_(TXT["author_genre.genre"]),
-        help_text=_(TXT["author_genre.genre.help"])
-    )
-
-    def __str__(self):
-        return str(self.literary_category)
-
-    class Meta:
-        db_table = "author_literary_category"  # TODO: Add prefix
-        verbose_name = _(TXT["author_genre"])
-        verbose_name_plural = _(TXT["author_genre.plural"])
-
-
-class AuthorLanguage(Orderable):
-    """A through model between the relation author and language."""
-
-    author = ParentalKey(
-        AuthorPage,
-        related_name="languages",
-        verbose_name=_(TXT["author_language.author"]),
-        help_text=_(TXT["author_language.author.help"])
-    )
-    language = models.ForeignKey(
-        "LanguagePage",
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="authors",
-        verbose_name=_(TXT["author_language.language"]),
-        help_text=_(TXT["author_language.language.help"])
-    )
-
-    def __str__(self):
-        return str(self.language)
-
-    class Meta:
-        db_table = "author_language"  # TODO: Add prefix
-        verbose_name = _(TXT["author_language"])
-        verbose_name_plural = _(TXT["author_language.plural"])
 
 
 class LevelPage(I18nPage):
@@ -1451,28 +1197,6 @@ class Level3Page(LevelPage):
         verbose_name = _(TXT["level3"])
 
 
-class LocationTypesPage(CategoryPage):
-    """A category page to place types of location in."""
-
-    parent_page_types = []
-    template = CategoryPage.template
-
-    class Meta:
-        db_table = "location_types"  # TODO: Add prefix
-        verbose_name = _(TXT["location_type.plural"])
-
-
-class LocationTypePage(I18nPage):
-    """A descriptive type of a location."""
-
-    parent_page_types = []
-
-    class Meta:
-        db_table = "location_type"  # TODO: Add prefix
-        verbose_name = _(TXT["location_type"])
-        verbose_name_plural = _(TXT["location_type.plural"])
-
-
 class LocationsPage(CategoryPage):
     """A category page to place locations in."""
 
@@ -1511,14 +1235,6 @@ class LocationPage(I18nPage):
         related_name='+',
         verbose_name=_(TXT["location.title_image"]),
         help_text=_(TXT["location.title_image.help"])
-    )
-    location_type = models.ForeignKey(
-        "LocationTypePage",
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="locations",
-        verbose_name=_(TXT["location_type"])
     )
     location_type_tags = ParentalManyToManyField(
         tags.LocationTypeTag,
@@ -1589,28 +1305,6 @@ class LocationPage(I18nPage):
                 attrs={"data-maximum-selection-length": 1}
             )
         ),
-        InlinePanel(
-            "contacts",
-            label=_(TXT["location.contacts"]),
-            min_num=0,
-            help_text=_(TXT["location.contacts.help"]),
-            panels=[
-                FieldPanel(
-                    "contact_type_tag",
-                    classname="autocomplete",
-                    widget=autocomplete.ModelSelect2(
-                        url="autocomplete-contact-type")
-                ),
-                FieldPanelTabs(
-                    children=[
-                        FieldPanelTab("name", heading=_(TXT["heading.en"])),
-                        FieldPanelTab("name_de", heading=_(TXT["heading.de"])),
-                        FieldPanelTab("name_cs", heading=_(TXT["heading.cs"])),
-                    ],
-                    heading=_(TXT["location_contact.name"])
-                )
-            ]
-        ),
         FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
     english_panels = I18nPage.english_panels + [
@@ -1648,49 +1342,6 @@ class LocationPage(I18nPage):
         db_table = "location"  # TODO: Add prefix
         verbose_name = _(TXT["location"])
         verbose_name_plural = _(TXT["location.plural"])
-
-
-class LocationPageContact(Orderable):
-    """A join relation holding contact information about a location."""
-
-    location = ParentalKey("LocationPage", related_name="contacts")
-    contact_type = models.ForeignKey(
-        ContactTypePage,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="contacts",
-        verbose_name=_(TXT["location_contact.contact_type"])
-    )
-    contact_type_tag = models.ForeignKey(
-        tags.ContactTypeTag,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="contacts",
-        verbose_name=_(TXT["location_contact.contact_type_tag"])
-    )
-
-    name = models.CharField(
-        max_length=255,
-        verbose_name=_(TXT["location_contact.name"])
-    )
-    name_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_(TXT["location_contact.name.de"])
-    )
-    name_cs = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_(TXT["location_contact.name.cs"])
-    )
-    i18n_name = TranslatedField.named("name", True)
-
-    class Meta:
-        # TODO: add db_table
-        verbose_name = _(TXT["location_contact"])
-        verbose_name_plural = _(TXT["location_contact.plural"])
 
 
 class MemorialSitePage(I18nPage):
