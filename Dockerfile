@@ -3,10 +3,12 @@ FROM bentrm/geopython:latest
 COPY requirements.txt /requirements.txt
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-# Install build deps, then run `pip install`, then remove unneeded build deps all in a single step.
-# Correct the path to your production requirements file, if needed.
-RUN set -ex add --no-cache inotify-tools
+RUN addgroup -S gunicorn && adduser -S -G gunicorn gunicorn
+
 RUN set -ex \
+    && apk add --no-cache \
+        inotify-tools \
+        su-exec \
     && apk add --no-cache --virtual .build-deps \
         gcc \
         make \
@@ -35,7 +37,10 @@ RUN mkdir /src/
 WORKDIR /src/
 ADD src /src
 
-# uWSGI will listen on this port
-EXPOSE 8000
+COPY docker/clearsessions /etc/periodic/15min
 
-CMD ["/venv/bin/gunicorn", "-c", "python:config.gunicorn", "lis.wsgi:application"]
+COPY docker/docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+EXPOSE 8000
+CMD ["gunicorn"]
