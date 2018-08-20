@@ -11,7 +11,7 @@ from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
 from . import tags
-from .models import AuthorPage, I18nPage
+from .models import Author, I18nPage
 
 
 def as_page_object(self):
@@ -38,7 +38,7 @@ def as_page_object(self):
     if isinstance(obj, I18nPage):
         obj.draft_title_de = specific_page.draft_title_de
         obj.draft_title_cs = specific_page.draft_title_cs
-    elif isinstance(obj, AuthorPage):
+    elif isinstance(obj, Author):
         author_name = specific_page.names.order_by("sort_order").first()
         obj.draft_title = author_name.full_name()
         obj.draft_title_de = author_name.full_name_de()
@@ -198,11 +198,6 @@ class LocationTypeModelAdmin(TagModelAdmin):
     menu_icon = "site"
 
 
-class ContactTypeModelAdmin(TagModelAdmin):
-    model = tags.ContactTypeTag
-    menu_icon = "mail"
-
-
 class LiteraryPeriodModelAdmin(TagModelAdmin):
     list_display = TagModelAdmin.list_display + ("sort_order",)
     model = tags.LiteraryPeriodTag
@@ -222,7 +217,6 @@ class TagGroup(ModelAdminGroup):
     items = (
         GenreModelAdmin,
         LanguageModelAdmin,
-        ContactTypeModelAdmin,
         LocationTypeModelAdmin,
         LiteraryPeriodModelAdmin,
         AgeGroupModelAdmin,

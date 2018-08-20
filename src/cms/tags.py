@@ -124,13 +124,6 @@ class LanguageTag(Tag):
         verbose_name_plural = _(TXT["language.plural"])
 
 
-class ContactTypeTag(Tag):
-    class Meta:
-        db_table = DB_TABLE_PREFIX + "contact_type"
-        verbose_name = _(TXT["contact_type"])
-        verbose_name_plural = _(TXT["contact_type.plural"])
-
-
 class LocationTypeTag(Tag):
     class Meta:
         db_table = DB_TABLE_PREFIX + "location_type"

@@ -1,4 +1,4 @@
-"""One-off script that migrates legacy AuthorPage tags."""
+"""One-off script that migrates legacy Author tags."""
 
 """
 from cms.models import LocationTypePage
@@ -7,10 +7,10 @@ for l in LocationTypePage.objects.all():
 ...     rev.publish()
 """
 
-from cms.models import AuthorPage, LocationPage
+from cms.models import Author, Location
 from cms.tags import LanguageTag, GenreTag, LiteraryPeriodTag, LocationTypeTag
 
-for author in AuthorPage.objects.order_by("title"):
+for author in Author.objects.order_by("title"):
     page = author.get_latest_revision_as_page()
     has_changes = False
     for author_literary_category in page.literary_categories.all():
@@ -44,7 +44,7 @@ for author in AuthorPage.objects.order_by("title"):
         page.save_revision()
 
 
-for location in LocationPage.objects.order_by("title"):
+for location in Location.objects.order_by("title"):
     page = location.get_latest_revision_as_page()
     if page.location_type:
         try:
