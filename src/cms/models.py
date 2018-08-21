@@ -567,33 +567,33 @@ class Author(I18nPage):
             children=[
                 FieldPanel("date_of_birth_day"),
                 FieldPanel("date_of_birth_month"),
-                FieldPanel("date_of_birth_year")
+                FieldPanel("date_of_birth_year"),
+                FieldPanelTabs(
+                    children=[
+                        FieldPanelTab("place_of_birth", heading=_(TXT["language.en"])),
+                        FieldPanelTab("place_of_birth_de", heading=_(TXT["language.de"])),
+                        FieldPanelTab("place_of_birth_cs", heading=_(TXT["language.cs"])),
+                    ],
+                    heading=_(TXT["author.place_of_birth"]),
+                ),
             ],
             heading=_(TXT["author.date_of_birth"])
-        ),
-        FieldPanelTabs(
-            children=[
-                FieldPanelTab("place_of_birth", heading=_(TXT["language.en"])),
-                FieldPanelTab("place_of_birth_de", heading=_(TXT["language.de"])),
-                FieldPanelTab("place_of_birth_cs", heading=_(TXT["language.cs"])),
-            ],
-            heading=_(TXT["author.place_of_birth"])
         ),
         MultiFieldPanel(
             children=[
                 FieldPanel("date_of_death_day"),
                 FieldPanel("date_of_death_month"),
-                FieldPanel("date_of_death_year")
+                FieldPanel("date_of_death_year"),
+                FieldPanelTabs(
+                    children=[
+                        FieldPanelTab("place_of_death", heading=_(TXT["language.en"])),
+                        FieldPanelTab("place_of_death_de", heading=_(TXT["language.de"])),
+                        FieldPanelTab("place_of_death_cs", heading=_(TXT["language.cs"])),
+                    ],
+                    heading=_(TXT["author.place_of_death"]),
+                ),
             ],
             heading=_(TXT["author.date_of_death"])
-        ),
-        FieldPanelTabs(
-            children=[
-                FieldPanelTab("place_of_death", heading=_(TXT["language.en"])),
-                FieldPanelTab("place_of_death_de", heading=_(TXT["language.de"])),
-                FieldPanelTab("place_of_death_cs", heading=_(TXT["language.cs"])),
-            ],
-            heading=_(TXT["author.place_of_death"])
         ),
         MultiFieldPanel(
             heading=_(TXT["tag.plural"]),
@@ -1332,6 +1332,7 @@ class Location(I18nPage):
                 FieldPanelTab("address_cs", heading=_(TXT["language.cs"])),
             ],
             heading=_(TXT["location.address"]),
+            show_label=False,
         ),
         FieldPanelTabs(
             children=[
@@ -1340,6 +1341,7 @@ class Location(I18nPage):
                 FieldPanelTab("contact_info_cs", heading=_(TXT["language.cs"])),
             ],
             heading=_(TXT["location.contact_info"]),
+            show_label=False,
         ),
         FieldPanelTabs(
             children=[
@@ -1348,6 +1350,7 @@ class Location(I18nPage):
                 FieldPanelTab("directions_cs", heading=_(TXT["language.cs"])),
             ],
             heading=_(TXT["location.directions"]),
+            show_label=False,
         ),
         FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
