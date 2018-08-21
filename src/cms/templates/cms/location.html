@@ -18,7 +18,7 @@
 {% block content_heading_title %}
 <div class="row my-4">
   <div class="col-12">
-    <h1><i class="fas fa-globe"></i> {{ page }}</h1>
+    <h1>{{ page }}</h1>
   </div>
 </div>
 {% endblock %}
@@ -45,12 +45,19 @@
       <img src="{{ tmp_image.url }}" class="figure-img img-fluid rounded" alt="{{ tmp_image.alt }}">
       <figcaption class="figure-caption">{{ tmp_image.image.i18n_caption }}</figcaption>
     </figure>
-    {% if page.i18n_address %}
-    <address class="rounded bg-light p-2">{{page.i18n_address|richtext}}</address>
+    {% if page.i18n_address|dehtmlize %}
+      <strong>{% trans 'Address' %}</strong>
+      {{page.i18n_address|richtext}}
     {% endif %}
 
-    {% if page.i18n_directions %}
-    <div>{{page.i18n_directions|richtext}}</div>
+    {% if page.i18n_contact_info|dehtmlize %}
+      <strong>{% trans 'Contact info' %}</strong>
+      {{page.i18n_contact_info|richtext}}
+    {% endif %}
+
+    {% if page.i18n_directions|dehtmlize %}
+      <strong>{% trans 'Directions' %}</strong>
+      {{page.i18n_directions|richtext}}
     {% endif %}
   </div>
 </div>

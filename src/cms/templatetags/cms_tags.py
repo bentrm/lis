@@ -1,6 +1,7 @@
 from django import template
 from django.utils.translation import gettext
 from django.urls import reverse
+from html.parser import HTMLParser
 
 from wagtail.core.templatetags.wagtailcore_tags import pageurl
 
@@ -32,3 +33,25 @@ def humanize_list(arg):
         output += ", ".join((str(x) for x in arg[:-1]))
         output += f" {gettext('and')} {arg[-1]}"
     return output
+
+
+class TextExtractor(HTMLParser):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.text = ""
+
+    def handle_data(self, data):
+        self.text += data
+
+    @classmethod
+    def extract_text(cls, data):
+        self = cls()
+        self.feed(data)
+        self.close()
+        return self.text
+
+
+@register.filter
+def dehtmlize(value):
+    return TextExtractor.extract_text(value)
