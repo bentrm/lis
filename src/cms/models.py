@@ -1225,7 +1225,7 @@ class Location(I18nPage):
     """A geographic place on earth."""
 
     icon_class = "fas fa-map-marker"
-    parent_page_types = ["LocationIndex"]
+    parent_page_types = []
 
     title_image = models.ForeignKey(
         ImageMedia,
@@ -1380,7 +1380,7 @@ class MemorialSite(I18nPage):
     """A memorial reference between a geographic location and an author."""
 
     icon_class = "fas fa-sign"
-    parent_page_types = ["Location"]
+    parent_page_types = []
 
     title_image = models.ForeignKey(
         ImageMedia,
@@ -1536,5 +1536,262 @@ class MemorialSiteAuthor(Orderable):
 
     class Meta:
         db_table = "memorial_site_author"  # TODO: Add prefix
+        verbose_name = _(TXT["memorial_site_author"])
+        verbose_name_plural = _(TXT["memorial_site_author.plural"])
+
+
+class TempLocation(I18nPage):
+    """A geographic place on earth."""
+
+    icon_class = "fas fa-map-marker"
+    parent_page_types = ["LocationIndex"]
+
+    title_image = models.ForeignKey(
+        ImageMedia,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name=_(TXT["memorial_site.title_image"]),
+        help_text=_(TXT["memorial_site.title_image.help"])
+    )
+    memorial_type_tags = ParentalManyToManyField(
+        tags.LocationTypeTag,
+        db_table=DB_TABLE_PREFIX + "memorial_site_tag_memorial_type",
+        related_name="memorial_site",
+        blank=False,
+        verbose_name=_(TXT["memorial_site.memorial_type_tags.plural"]),
+        help_text=_(TXT["memorial_site.memorial_type_tags.help"])
+    )
+
+    address = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.address"]),
+        help_text=_(TXT["memorial_site.address.help"])
+    )
+    address_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.address"]),
+        help_text=_(TXT["memorial_site.address.help"])
+    )
+    address_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.address"]),
+        help_text=_(TXT["memorial_site.address.help"])
+    )
+    i18n_address = TranslatedField.named("address", True)
+
+    contact_info = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.contact_info"]),
+        help_text=_(TXT["memorial_site.contact_info.help"])
+    )
+    contact_info_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.contact_info"]),
+        help_text=_(TXT["memorial_site.contact_info.help"])
+    )
+    contact_info_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.contact_info"]),
+        help_text=_(TXT["memorial_site.contact_info.help"])
+    )
+    i18n_contact_info = TranslatedField.named("contact_info", True)
+
+    directions = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.directions"]),
+        help_text=_(TXT["memorial_site.directions.help"])
+    )
+    directions_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.directions"]),
+        help_text=_(TXT["memorial_site.directions.help"])
+    )
+    directions_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.directions"]),
+        help_text=_(TXT["memorial_site.directions.help"])
+    )
+    i18n_directions = TranslatedField.named("directions")
+
+    coordinates = PointField(
+        verbose_name=_(TXT["memorial_site.coordinates"]),
+        help_text=_(TXT["memorial_site.coordinates.help"])
+    )
+
+    introduction = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    introduction_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    introduction_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    i18n_introduction = TranslatedField.named("introduction")
+
+    description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    i18n_description = TranslatedField.named("description")
+
+    detailed_description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    detailed_description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    detailed_description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    i18n_detailed_description = TranslatedField.named("detailed_description")
+
+    search_fields = I18nPage.search_fields + [
+        index.SearchField("directions"),
+        index.SearchField("directions_de"),
+        index.SearchField("directions_cs"),
+    ]
+
+    general_panels = [
+        ImageChooserPanel("title_image"),
+        FieldPanel(
+            "memorial_type_tags",
+            widget=autocomplete.ModelSelect2Multiple(
+                url="autocomplete-location-type",
+                attrs={"data-maximum-selection-length": 1}
+            )
+        ),
+        InlinePanel(
+            "authors",
+            label=_(TXT["memorial_site.authors"]),
+            min_num=1,
+            help_text=_(TXT["memorial_site.authors"]),
+            panels=[PageChooserPanel("author", "cms.Author")]
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("address", heading=_(TXT["language.en"])),
+                FieldPanelTab("address_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("address_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["memorial_site.address"]),
+            show_label=False,
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("contact_info", heading=_(TXT["language.en"])),
+                FieldPanelTab("contact_info_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("contact_info_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["memorial_site.contact_info"]),
+            show_label=False,
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("directions", heading=_(TXT["language.en"])),
+                FieldPanelTab("directions_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("directions_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["memorial_site.directions"]),
+            show_label=False,
+        ),
+        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
+    ]
+    english_panels = I18nPage.english_panels + [
+        FieldPanel("introduction"),
+        StreamFieldPanel("description"),
+        StreamFieldPanel("detailed_description")
+    ]
+    german_panels = I18nPage.german_panels + [
+        FieldPanel("introduction_de"),
+        StreamFieldPanel("description_de"),
+        StreamFieldPanel("detailed_description_de")
+    ]
+    czech_panels = I18nPage.czech_panels + [
+        FieldPanel("introduction_cs"),
+        StreamFieldPanel("description_cs"),
+        StreamFieldPanel("detailed_description_cs")
+    ]
+    meta_panels = I18nPage.meta_panels + [
+        FieldPanel("slug"),
+    ]
+    edit_handler = TabbedInterface([
+        ObjectList(general_panels, heading=_(TXT["heading.general"])),
+        ObjectList(english_panels, heading=_(TXT["heading.en"])),
+        ObjectList(german_panels, heading=_(TXT["heading.de"])),
+        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+        ObjectList(meta_panels, heading=_(TXT["heading.meta"]))
+    ])
+
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "location"
+        verbose_name = _(TXT["location"])
+        verbose_name_plural = _(TXT["memorial_site.plural"])
+
+
+class LocationAuthor(Orderable):
+    """Join page type to add multiple authors to one memorial site."""
+
+    memorial_site = ParentalKey(
+        "TempLocation",
+        related_name="authors",
+        verbose_name=_(TXT["memorial_site_author.memorial_site"]),
+        help_text=_(TXT["memorial_site_author.memorial_site.help"])
+    )
+    author = models.ForeignKey(
+        Author,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="locations",
+        verbose_name=_(TXT["memorial_site_author.author"]),
+        help_text=_(TXT["memorial_site_author.author.help"])
+    )
+
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "memorial_site_author"
         verbose_name = _(TXT["memorial_site_author"])
         verbose_name_plural = _(TXT["memorial_site_author.plural"])
