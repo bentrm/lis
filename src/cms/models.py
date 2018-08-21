@@ -1265,6 +1265,26 @@ class Location(I18nPage):
     )
     i18n_address = TranslatedField.named("address", True)
 
+    contact_info = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    contact_info_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    contact_info_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    i18n_contact_info = TranslatedField.named("contact_info", True)
+
     directions = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
@@ -1305,25 +1325,34 @@ class Location(I18nPage):
                 attrs={"data-maximum-selection-length": 1}
             )
         ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("address", heading=_(TXT["language.en"])),
+                FieldPanelTab("address_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("address_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.address"]),
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("contact_info", heading=_(TXT["language.en"])),
+                FieldPanelTab("contact_info_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("contact_info_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.contact_info"]),
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("directions", heading=_(TXT["language.en"])),
+                FieldPanelTab("directions_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("directions_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.directions"]),
+        ),
         FieldPanel("coordinates", widget=GooglePointFieldWidget()),
-    ]
-    english_panels = I18nPage.english_panels + [
-        FieldPanel("address"),
-        FieldPanel("directions"),
-    ]
-    german_panels = I18nPage.german_panels + [
-        FieldPanel("address_de"),
-        FieldPanel("directions_de"),
-    ]
-    czech_panels = I18nPage.czech_panels + [
-        FieldPanel("address_cs"),
-        FieldPanel("directions_cs"),
     ]
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
         ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
     ])
 
