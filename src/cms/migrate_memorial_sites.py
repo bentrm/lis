@@ -4,12 +4,11 @@ TempLocation.objects.delete()
 
 for site in MemorialSite.objects.all():
     root = LocationIndex.objects.first()
-    parent = site.get_parent().specific
-    parent_revision = parent.get_latest_revision()
-    parent_revision.publish()
 
-    revision = site.save_revision()
-    revision.publish()
+    site = site.get_latest_revision_as_page()
+
+    parent = site.get_parent().specific
+    parent = parent.get_latest_revision_as_page()
 
     obj = TempLocation(
         title=site.title,
@@ -24,7 +23,7 @@ for site in MemorialSite.objects.all():
         seo_title=site.seo_title,
         editor=site.editor,
         original_language=site.original_language,
-        title_image=site.title_image,
+        title_image=site.title_image or parent.title_image,
         address=parent.address,
         address_de=parent.address_de,
         address_cs=parent.address_cs,

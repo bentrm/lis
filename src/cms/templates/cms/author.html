@@ -36,14 +36,12 @@
 <div class="row my-4">
   {% include "cms/includes/author.html" %}
 </div>
-
-{% if memorial_sites %}
+{% if memorial_sites or request.is_preview %}
 <div class="row my-4">
   <div class="col-12">
     <h2>{% trans 'Memorial sites' %}</h2>
   </div>
   {% for memorial_site in memorial_sites %}
-  {% with location=memorial_site.get_parent.specific %}
   <div class="col-12 my-2">
     <div class="row">
       <div class="col-sm-6">
@@ -52,19 +50,21 @@
       <div class="col-sm-6">
         <h5><a href="{% cmsurl memorial_site %}">{{ memorial_site }}</a></h5>
         <p>{{ memorial_site.i18n_introduction|richtext }}</p>
-        <p class="text-secondary"><i class="fas fa-map-marker"></i> <a href="{% cmsurl location %}">{{ location }}</a></p>
       </div>
     </div>
   </div>
   <script>
     (function() {
       const mapId = "map-{{forloop.counter}}"
-      const geojson = '{{ location.coordinates.geojson|safe }}'
+      const geojson = '{{ memorial_site.coordinates.geojson|safe }}'
       const coordinates = JSON.parse(geojson).coordinates;
       createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");
     })();
   </script>
-  {% endwith %}
+  {% empty %}
+  <div class="col-12">
+    <p class="alert alert-danger">{% trans 'Preview' %}: {% trans 'Only published memorial sites can be listed here.' %}</p>
+  </div>
   {% endfor %}
 </div>
 {% endif %}

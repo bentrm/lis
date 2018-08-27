@@ -236,7 +236,6 @@ class CategoryPage(I18nPage):
     """
 
     # class properties
-    icon_class = "fas fa-tags"
     template = "cms/categories/category_page.html"
 
     @classmethod
@@ -253,18 +252,6 @@ class CategoryPage(I18nPage):
 
     class Meta:
         abstract = True
-
-
-class HomePage(I18nPage):
-    """The root page of the LIS cms site."""
-
-    icon_class = "fas fas-home"
-    parent_page_types = ["wagtailcore.Page"]
-
-    class Meta:
-        db_table = "homepage"  # TODO: Add prefix
-        verbose_name = _(TXT["home"])
-        verbose_name_plural = _(TXT["home.plural"])
 
 
 class BlogPage(I18nPage):
@@ -284,13 +271,16 @@ class BlogPage(I18nPage):
     ]
 
     parent_page_types = ["HomePage", "BlogPage"]
+    template = "cms/blog_page.html"
 
     body = StreamField(
         block_types=[
             ('heading', CharBlock(classname="full title")),
             ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
             ('image', ImageChooserBlock()),
-        ]
+        ],
+        blank=True,
+        default=[],
     )
     body_de = StreamField(
         block_types=[
@@ -299,7 +289,7 @@ class BlogPage(I18nPage):
             ('image', ImageChooserBlock()),
         ],
         blank=True,
-        default=[]
+        default=[],
     )
     body_cs = StreamField(
         block_types=[
@@ -308,7 +298,7 @@ class BlogPage(I18nPage):
             ('image', ImageChooserBlock()),
         ],
         blank=True,
-        default=[]
+        default=[],
     )
     i18n_body = TranslatedField.named("body", True)
 
@@ -326,20 +316,26 @@ class BlogPage(I18nPage):
         ObjectList(english_panels, heading=_(TXT["heading.en"])),
         ObjectList(german_panels, heading=_(TXT["heading.de"])),
         ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(Page.promote_panels, heading=_(TXT["heading.promote"])),
+        ObjectList(I18nPage.promote_panels, heading=_(TXT["heading.promote"])),
         ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
     ])
-
-    def get_context(self, request, *args, **kwargs):
-        context = super(BlogPage, self).get_context(request, *args, **kwargs)
-        context["authors_count"] = Author.objects.count()
-        context["memorial_sites_count"] = Location.objects.count()
-        return context
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "_content_pages"
         verbose_name = _(TXT["blog"])
         verbose_name_plural = _(TXT["blog.plural"])
+
+
+class HomePage(BlogPage):
+    """The root page of the LIS cms site."""
+
+    parent_page_types = ["wagtailcore.Page"]
+    template = "cms/blog_page.html"
+
+    class Meta:
+        db_table = "homepage"  # TODO: Add prefix
+        verbose_name = _(TXT["home"])
+        verbose_name_plural = _(TXT["home.plural"])
 
 
 class ContentIndexPage(CategoryPage):
@@ -355,7 +351,7 @@ class ContentIndexPage(CategoryPage):
 class AuthorIndex(CategoryPage):
     """A category page to place author pages in."""
 
-    parent_page_types = ["ContentIndexPage"]
+    parent_page_types = ["HomePage"]
     template = "cms/categories/author_index.html"
 
     def get_context(self, request, *args, **kwargs):
@@ -680,7 +676,7 @@ class Author(I18nPage):
         context["levels"] = sorted(levels, key=lambda x: x.level_order)
 
         # add memorial sites
-        memorial_sites = MemorialSite.objects.filter(authors__author=self)
+        memorial_sites = TempLocation.objects.filter(authors__author=self)
         if request.is_preview:
             memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
         else:
@@ -1200,15 +1196,14 @@ class Level3Page(LevelPage):
 class LocationIndex(CategoryPage):
     """A category page to place locations in."""
 
-    icon_class = "fas fa-globe"
-    parent_page_types = ["ContentIndexPage"]
+    parent_page_types = ["HomePage"]
     template = "cms/categories/location_index.html"
 
     def get_context(self, request, *args, **kwargs):
         """Add all child geometries to context.."""
         context = super(LocationIndex, self).get_context(request, *args, **kwargs)
 
-        locations = Location.objects.all()
+        locations = TempLocation.objects.all()
         if request.is_preview:
             locations = [x.get_latest_revision_as_page() for x in locations]
         else:
@@ -1224,7 +1219,6 @@ class LocationIndex(CategoryPage):
 class Location(I18nPage):
     """A geographic place on earth."""
 
-    icon_class = "fas fa-map-marker"
     parent_page_types = []
 
     title_image = models.ForeignKey(
@@ -1379,7 +1373,6 @@ class Location(I18nPage):
 class MemorialSite(I18nPage):
     """A memorial reference between a geographic location and an author."""
 
-    icon_class = "fas fa-sign"
     parent_page_types = []
 
     title_image = models.ForeignKey(
@@ -1543,7 +1536,7 @@ class MemorialSiteAuthor(Orderable):
 class TempLocation(I18nPage):
     """A geographic place on earth."""
 
-    icon_class = "fas fa-map-marker"
+    template = "cms/memorial_site.html"
     parent_page_types = ["LocationIndex"]
 
     title_image = models.ForeignKey(

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-21 06:46+0000\n"
+"POT-Creation-Date: 2018-08-27 17:36+0000\n"
 "PO-Revision-Date: 2018-06-15 10:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: LIS-Team <postmaster@mg.lis-map.eu>\n"
@@ -18,33 +18,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.8\n"
 
-#: templates/base.html:70
-msgid "Project management"
-msgstr "Projektmanagement"
+#: templates/base.html:125
+msgid "Preview"
+msgstr "Vorschau"
 
-#: templates/base.html:73
-msgid "CMS"
-msgstr "CMS"
+#: templates/base.html:125
+msgid "Go to current live version."
+msgstr "Zur aktuell veröffentlichten Version wechseln."
 
-#: templates/base.html:76
-msgid "Data protection"
-msgstr "Datenschutz"
-
-#: templates/base.html:121
+#: templates/base.html:149
 msgid "Current status"
 msgstr "Aktueller Status"
 
-#: templates/base.html:124
+#: templates/base.html:152
 msgid "Authors"
 msgstr "Autorinnen & Autoren"
 
-#: templates/base.html:125
+#: templates/base.html:153
 msgid "Memorial sites"
 msgstr "Erinnerungsstellen"
 
-#: templates/base.html:128
+#: templates/base.html:156
 msgid "Project partner"
 msgstr "Projektpartner"
+
+#~ msgid "Project management"
+#~ msgstr "Projektmanagement"
+
+#~ msgid "CMS"
+#~ msgstr "CMS"
+
+#~ msgid "Data protection"
+#~ msgstr "Datenschutz"
 
 #~ msgid "Signup"
 #~ msgstr "Registrieren"

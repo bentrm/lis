@@ -17,39 +17,6 @@ Demo: {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}
 
 {% block body_extra %}{% wagtailuserbar %}{% endblock %}
 
-{% block content_heading %}
-  {% if page.get_ancestors|length > 1 %}
-  <div class="row">
-    <div class="col-12">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          {% for page in page.get_ancestors.specific %}
-          {% if not page.is_root %}
-          <li class="breadcrumb-item"><a href="{% cmsurl page %}">{{ page }}</a></li>
-          {% endif %}
-          {% endfor %}
-          <li class="breadcrumb-item active" aria-current="page">{{ page }}</li>
-        </ol>
-      </nav>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if request.is_preview %}
-  <div class="sticky-top alert alert-danger text-center">
-    {% trans 'Preview' %}{% if page.live %}. {% trans 'Go to current live version.' %} <a class="alert-link" href="{% pageurl page %}"><i class="fas fa-external-link-alt"></i></a>{% endif %}
-  </div>
-  {% endif %}
-
-  {% block content_heading_title %}
-  <div class="row">
-    <div class="col-12">
-      <h1>{{ page }}</h1>
-    </div>
-  </div>
-  {% endblock %}
-{% endblock %}
-
 {% block content_main %}
 <div class="col-12">
   <div class="list-group list-group-flush">
