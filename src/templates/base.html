@@ -1,6 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load wagtailcore_tags %}
+{% load cms_tags %}
 
 <!DOCTYPE html>
 <html class="h-100">
@@ -54,7 +55,7 @@
         <div class="col-12">
           <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
               {% block header_branding %}
-              <a class="navbar-brand" href="{% slugurl 'welcome' %}">
+              <a class="navbar-brand" href="/">
                 {% include "includes/logo.html" %} LIS
               </a>
               {% endblock %}
@@ -66,15 +67,11 @@
               <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                   {% block header_menu_items %}
-                  <a class="nav-item nav-link mx-2" href="https://redmine.lis-map.eu/">
-                    {% trans 'Project management' %}
+                  {% for item in ROOT_MENU %}
+                  <a class="nav-item nav-link mx-2" href="{% cmsurl item %}">
+                    {{ item.i18n_title }}
                   </a>
-                  <a class="nav-item nav-link mx-2" href="{% url 'wagtailadmin_home' %}">
-                    {% trans 'CMS' %}
-                  </a>
-                  <a class="nav-item nav-link mx-2" href="{% slugurl 'imprint' %}">
-                    {% trans 'Data protection' %}
-                  </a>
+                  {% endfor %}
                   {% endblock %}
                 </div>
                 <div class="mx-2">
@@ -121,8 +118,8 @@
               <h6>{% trans 'Current status' %}</h6>
             </div>
             <div class="col-12 mb-4 lead d-flex flex-wrap justify-content-around">
-                <span>{{AUTHOR_COUNT_PREVIEW}} {% trans 'Authors' %}</span>
-                <span>{{MEMORIAL_SITE_COUNT_PREVIEW}} {% trans 'Memorial sites' %}</span>
+                <span>{{AUTHOR_COUNT}} {% trans 'Authors' %}</span>
+                <span>{{MEMORIAL_SITE_COUNT}} {% trans 'Memorial sites' %}</span>
             </div>
             <div class="col-12">
               <h6>{% trans 'Project partner' %}</h6>
