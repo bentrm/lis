@@ -47,4 +47,4 @@ docker exec -it $DB_RESTORE_CONTAINER_NAME \
 docker stop $DB_RESTORE_CONTAINER_NAME
 
 # Restore media files
-tar -xvf $MEDIA_ARCHIVE -C $MEDIA_ROOT --strip 1
+tar -xvf $MEDIA_ARCHIVE -C $MEDIA_ROOT

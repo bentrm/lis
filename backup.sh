@@ -23,7 +23,7 @@ MEDIA_ROOT='files/media'
 eval $(docker-machine env $DOCKER_MACHINE_NAME)
 
 # Backup files
-docker run --rm --volume "$DOCKER_MEDIA_VOLUME:/backup" busybox sh -c 'tar -cvOzf - /backup' > "$MEDIA_ARCHIVE"
+docker run --rm --volume "$DOCKER_MEDIA_VOLUME:/backup" busybox sh -c 'tar c -vOz -f - -C /backup --exclude ./images ./' > "$MEDIA_ARCHIVE"
 
 # Backup and restore database locally
 echo "Dumping database to $DUMP_FILE"
