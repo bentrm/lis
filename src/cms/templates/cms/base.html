@@ -10,11 +10,6 @@
 Demo: {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.i18n_title }}{% endif %}
 {% endblock %}
 
-{% block css %}
-{{block.super}}
-<link rel="stylesheet" href="{% static 'css/cms/base.css' %}">
-{% endblock %}
-
 {% block body_extra %}{% wagtailuserbar %}{% endblock %}
 
 {% block content_main %}

@@ -1,29 +1,66 @@
-"use strict";
 $(function() {
-  const paragraphs = document.querySelectorAll("section.block");
-  paragraphs.forEach(p => {
-    const texts = p.querySelectorAll(".rich-text");
-    const footnotes = p.querySelectorAll(".footnotes [data-tag]")
-    footnotes.forEach(footnote => {
-      const tag = footnote.dataset.tag;
-      let quoteUsed = false;
-      texts.forEach(text => {
-        text.querySelectorAll("span.footnote").forEach(quote => {
-          if (quote.textContent === tag) {
-            const node = document.createElement("span");
-            node.classList.add("bookmark", "mx-1");
-            node.dataset.toggle = "popover";
-            node.dataset.trigger = "hover";
-            node.dataset.delay = "500";
-            node.dataset.placement = "top";
-            node.dataset.html = "true";
-            node.innerHTML = "<i class='fas fa-bookmark footnote'></i>";
-            quote.replaceWith(node);
-            $(node).popover({
-              content: footnote.firstChild.innerHTML,
+  'use strict';
+
+  const $paragraphs = $('section.block');
+  const footnoteData = {
+    toggle: 'popover',
+    trigger: 'hover',
+    delay: 500,
+    placement: 'top',
+    html: true,
+  };
+
+  $paragraphs.each(function() {
+    const $paragraph = $(this);
+    const $texts = $('.rich-text', $paragraph);
+    const $footnotes = $('.footnotes [data-tag]', $paragraph);
+
+    $footnotes.each(function() {
+      const $footnote = $(this);
+      const tag = $footnote.data('tag');
+
+      $texts.each(function() {
+        const $text = $(this);
+
+        $('span.footnote', $text).each(function() {
+          const $quote = $(this);
+          const template = `
+            <span class="bookmark fa-layers fa-fw mr-1">
+              <i class="fas fa-bookmark footnote"></i>
+              <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-5 up-2">${$footnote.index() + 1}</span>
+            </span>
+          `;
+          const $node = $(template);
+          const $footnoteContent = $('.rich-text', $footnote);
+
+          if ($quote.text() === tag.toString()) {
+            $node.data(footnoteData);
+            $node.popover({
+              content: $footnoteContent.html(),
               delay: {show: 500, hide: 1000}
             });
-            quoteUsed = true;
+            $node.click(function() {
+              const $backlink = $('<span class="bookmark-backlink"><i class="fas fa-arrow-up mr-1"></i></span>');
+              const prevBackgroundColor = $footnote.css('backgroundColor');
+
+              $backlink.click(function() {
+                $('html, body').animate({
+                  scrollTop: $node.offset().top - 100
+                }, 1000);
+                $backlink.remove();
+                $footnote.animate({
+                  backgroundColor: prevBackgroundColor,
+                });
+              });
+              $('p:first', $footnoteContent).prepend($backlink);
+              $('html, body').animate({
+                scrollTop: $footnote.offset().top - 100
+              }, 1000);
+              $footnote.animate({
+                backgroundColor: '#eee',
+              }, 2000);
+            });
+            $quote.replaceWith($node);
           }
         });
       });

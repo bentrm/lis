@@ -29,7 +29,7 @@ a {
   background-color: #f8f9fa;
 }
 
-.bookmark {
+.bookmark, .bookmark-backlink {
   color: #AA3F39;
 }
 
