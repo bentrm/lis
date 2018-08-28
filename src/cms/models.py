@@ -338,16 +338,6 @@ class HomePage(BlogPage):
         verbose_name_plural = _(TXT["home.plural"])
 
 
-class ContentIndexPage(CategoryPage):
-    """An index page for literary data."""
-
-    parent_page_types = ["HomePage"]
-    template = "cms/categories/category_page.html"
-
-    class Meta:
-        db_table = "content_index"
-        verbose_name = _(TXT["content"])
-
 class AuthorIndex(CategoryPage):
     """A category page to place author pages in."""
 
@@ -1373,7 +1363,7 @@ class Location(I18nPage):
 class MemorialSite(I18nPage):
     """A memorial reference between a geographic location and an author."""
 
-    parent_page_types = []
+    parent_page_types = ["Location"]
 
     title_image = models.ForeignKey(
         ImageMedia,
