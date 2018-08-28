@@ -18,6 +18,7 @@
   {% block head %}
     {% block css %}
       <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% endblock %}
 
     {% block js %}
@@ -41,7 +42,7 @@
     <div class="container">
       {% block header %}
       <div class="row">
-        <div class="col-12 my-2 d-flex justify-content-between">
+        <div class="col-12 my-4 d-flex justify-content-between">
           <a href="http://www.sn-cz2020.eu/">
             <img src="{% static 'logos/logo_eu.svg' %}" alt="Logo EU Fonds" class="img img-fluid">
           </a>
@@ -69,26 +70,30 @@
                   {% block header_menu_items %}
                   {% for item in ROOT_MENU %}
                   <a class="nav-item nav-link mx-2" href="{% cmsurl item %}">
-                    {{ item.i18n_title }}
+                    {{ item.i18n_title }} {% if item.is_restricted %}<sup><i class="fas fa-lock"></i></sup>{% endif %}
                   </a>
                   {% endfor %}
                   {% endblock %}
                 </div>
-                <div class="mx-2">
+                <div class="mx-2 d-flex align-items-center justify-content-between">
                   {% block header_extra %}
-                  <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                  <form action="{% url 'set_language' %}" method="post">
+                    {% csrf_token %}
                     <input name="next" type="hidden" value="{{ redirect_to }}" />
                     {% get_current_language as LANGUAGE_CODE %}
                     {% get_available_languages as LANGUAGES %}
                     {% get_language_info_list for LANGUAGES as languages %}
                     <div class="btn-group">
-                    {% for language in languages %}
+                      {% for language in languages %}
                       <button type="submit" name="language" value="{{ language.code }}" class="btn btn-sm btn-secondary" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>
-                          {{ language.code }}
+                        {{ language.code }}
                       </button>
-                    {% endfor %}
+                      {% endfor %}
                     </div>
                   </form>
+                  {% if user.is_authenticated %}
+                  <a href="{% url 'logout' %}?next=/" title="{% trans 'Sign out' %}" class="mx-2"><i class="fas fa-sign-out-alt"></i></a>
+                  {% endif %}
                   {% endblock %}
                 </div>
               </div>

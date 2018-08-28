@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 from django.utils import dates, text
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -20,10 +21,12 @@ from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPane
                                          StreamFieldPanel, TabbedInterface)
 from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page
+from wagtail.core.models import Orderable, Page, BaseViewRestriction
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
+from django.core.validators import URLValidator, validate_unicode_slug
+from django.core.exceptions import ValidationError
 
 from . import tags
 from .blocks import ParagraphStructBlock
@@ -36,7 +39,6 @@ LOGGER = logging.getLogger("wagtail.core")
 DB_TABLE_PREFIX = "cms_"
 GENDER = NewType("Gender", str)
 GENDER_OPTION = Tuple[GENDER, str]
-
 EDITOR_FEATURES = [
     "bold",
     "italic",
@@ -120,14 +122,12 @@ class I18nPage(Page):
         help_text=_(TXT["page.original_language.help"])
     )
 
-    alias_for_page = models.ForeignKey(
-        "wagtailcore.Page",
+    temporary_redirect = models.CharField(
+        max_length=250,
         blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="aliases",
-        verbose_name=_(TXT["home.alias_for_page"]),
-        help_text=_(TXT["home.alias_for_page.help"])
+        default="",
+        verbose_name=_(TXT["page.temporary_redirect"]),
+        help_text=_(TXT["page.temporary_redirect.help"])
     )
 
     is_creatable = False
@@ -145,7 +145,7 @@ class I18nPage(Page):
         FieldPanel("title_cs", classname="full title"),
     ]
     promote_panels = Page.promote_panels + [
-        PageChooserPanel("alias_for_page")
+        FieldPanel("temporary_redirect")
     ]
     meta_panels = [
         FieldPanel("owner"),
@@ -161,9 +161,14 @@ class I18nPage(Page):
         ObjectList(meta_panels, heading=_(TXT["heading.meta"])),
     ])
 
+    @cached_property
+    def is_restricted(self):
+        return self.get_view_restrictions().exclude(restriction_type=BaseViewRestriction.NONE).exists()
+
     def serve(self, request):
-        if self.alias_for_page:
-            return redirect(self.alias_for_page.url, permanent=False)
+        if self.temporary_redirect:
+
+            return redirect(self.temporary_redirect, permanent=False)
         return super(I18nPage, self).serve(request)
 
     def get_admin_display_title(self):

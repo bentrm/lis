@@ -1,19 +1,13 @@
 from django.conf import settings
-from .models import HomePage, Author, Location
+from .models import HomePage, Author, TempLocation
 
 
 def app_status(request):
     """Return the current application versions."""
 
-    context = {
+    return {
         "CMS_VERSION": settings.CMS_VERSION,
+        "ROOT_MENU": HomePage.objects.first().get_children().live().in_menu().specific(),
+        "AUTHOR_COUNT": Author.objects.count(),
+        "MEMORIAL_SITE_COUNT": TempLocation.objects.count(),
     }
-
-    if hasattr(request, "is_preview"):
-        context.update({
-            "ROOT_MENU": HomePage.objects.first().get_children().live().in_menu().specific(),
-            "AUTHOR_COUNT": Author.objects.count(),
-            "MEMORIAL_SITE_COUNT": Location.objects.count(),
-        })
-
-    return context
