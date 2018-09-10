@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "mapwidgets",
+    "rest_framework",
     "django.contrib.gis",
     "django.contrib.admin",
     "django.contrib.auth",
