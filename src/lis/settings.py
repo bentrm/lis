@@ -60,6 +60,7 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "api",
     "cms",
     "dal",
     "dal_select2",
@@ -254,6 +255,20 @@ MAP_WIDGETS = {
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include "/admin" or a trailing slash
 BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)

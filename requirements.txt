@@ -1,9 +1,12 @@
+coreapi==2.3.3
 django-autocomplete-light==3.2.10
 django-map-widgets==0.1.9
 Django>=2.0.0,<2.1.0
+djangorestframework-camel-case==0.2.0
 djangorestframework==3.8.2
 elasticsearch>=6.0.0,<7.0.0
 gunicorn==19.9.0
 psycopg2==2.7.5
+Pygments==2.2.0
 python-memcached==1.59
 wagtail>=2.2.0,<2.3.0

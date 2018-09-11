@@ -7,14 +7,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
-from .forms import SignupForm
-from . import tags
-
+from . import models, tags, forms
 
 class SignupView(View):
     """A simple view class that allows Editors to register for the CMS."""
 
-    form_class = SignupForm
+    form_class = forms.SignupForm
     template_name = "cms/signup.html"
 
     def get(self, request, *args, **kwargs):

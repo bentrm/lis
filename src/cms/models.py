@@ -1,6 +1,7 @@
 """Custom page models that describe the LIS data schema."""
 
 import logging
+import datetime
 from collections import namedtuple
 from typing import List, NewType, Tuple
 
@@ -496,6 +497,16 @@ class Author(I18nPage):
         verbose_name=_(TXT["author.literary_period.plural"]),
         help_text=_(TXT["author.literary_period.help"])
     )
+
+    @property
+    def born(self):
+        if self.date_of_birth_year and self.date_of_birth_month and self.date_of_birth_day:
+            return datetime.date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
+
+    @property
+    def died(self):
+        if self.date_of_death_year and self.date_of_death_month and self.date_of_death_day:
+            return datetime.date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
     parent_page_types = ["AuthorIndex"]
     search_fields = Page.search_fields + [
