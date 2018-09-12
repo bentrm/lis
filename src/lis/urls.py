@@ -3,15 +3,14 @@ from django.urls import include, path
 
 from rest_framework.documentation import include_docs_urls
 
-doc_url_patterns = [
-    path("api/v1/", include("api.urls")),
+api_url_patterns = [
+    path("api/", include("api.urls")),
 ]
 
-urlpatterns = [
+urlpatterns = api_url_patterns + [
     path("i18n/", include("django.conf.urls.i18n")),
     path('accounts/', include('django.contrib.auth.urls')),
-    path("docs/", include_docs_urls(title='API', public=False, patterns=doc_url_patterns)),
-    path("api/", include("api.urls")),
+    path("docs/", include_docs_urls(title='API', public=False, patterns=api_url_patterns)),
     path("", include("cms.urls")),
 ]
 

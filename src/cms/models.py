@@ -508,6 +508,12 @@ class Author(I18nPage):
         if self.date_of_death_year and self.date_of_death_month and self.date_of_death_day:
             return datetime.date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
+    @property
+    def age(self):
+        if self.born and self.died:
+            return self.died.year - self.born.year - ((self.died.month, self.died.day) < ((self.born.month, self.born.day)))
+
+
     parent_page_types = ["AuthorIndex"]
     search_fields = Page.search_fields + [
         index.RelatedFields("names", [
@@ -517,8 +523,10 @@ class Author(I18nPage):
             index.FilterField("birth_name"),
             index.FilterField("is_pseudonym"),
         ]),
-        index.FilterField("date_of_birth_year"),
-        index.FilterField("date_of_death_year"),
+        index.FilterField("sex"),
+        index.FilterField("born"),
+        index.FilterField("died"),
+        index.FilterField("age"),
     ]
     general_panels = [
         ImageChooserPanel("title_image"),

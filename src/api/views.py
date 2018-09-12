@@ -4,7 +4,7 @@ from rest_framework import pagination
 from rest_framework import versioning
 
 from cms import models, tags
-from . import serializers
+from . import serializers, filters
 
 
 class DefaultVersioning(versioning.URLPathVersioning):
@@ -27,6 +27,8 @@ class GenericAPIView(generics.GenericAPIView):
 class AuthorList(mixins.ListModelMixin, GenericAPIView):
     queryset = models.Author.objects.all()
     serializer_class = serializers.AuthorSerializer
+    filter_class = filters.AuthorFilter
+    ordering_fields = ("id", "born", "died", "created")
 
     def get(self, *args, **kwargs):
         return self.list(*args, **kwargs)
@@ -43,6 +45,8 @@ class AuthorDetail(mixins.RetrieveModelMixin, GenericAPIView):
 class MemorialList(mixins.ListModelMixin, GenericAPIView):
     queryset = models.TempLocation.objects.all()
     serializer_class = serializers.MemorialSerializer
+    filter_class = filters.MemorialFilter
+    ordering_fields = ("id",)
 
     def get(self, *args, **kwargs):
         return self.list(*args, **kwargs)

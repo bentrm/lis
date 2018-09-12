@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "taggit",
     "mapwidgets",
     "rest_framework",
+    "django_filters",
     "django.contrib.gis",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -257,17 +258,18 @@ MAP_WIDGETS = {
 BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-
-    'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "api.filters.WagtailSearchFilterBackend",
+    ),
 }
 
 # Application Settings

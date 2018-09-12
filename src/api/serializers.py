@@ -19,6 +19,7 @@ class AuthorNameSerializer(serializers.ModelSerializer):
 
 class AuthorSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source="i18n_title")
+    gender = serializers.ReadOnlyField(source="sex")
     thumbnail = serializers.SerializerMethodField()
     created = serializers.ReadOnlyField(source="last_published_at")
 
@@ -28,7 +29,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Author
-        fields = ("id", "name", "thumbnail", "born", "created")
+        fields = ("id", "name", "gender", "thumbnail", "born", "created")
 
 
 class AuthorDetailSerializer(AuthorSerializer):
@@ -86,7 +87,14 @@ class MemorialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.TempLocation
-        fields = ("id", "title", "tags", "authors", "coordinates", "created")
+        fields = (
+            "id",
+            "title",
+            "tags",
+            "authors",
+            "coordinates",
+            "created"
+        )
 
 class MemorialDetailSerializer(MemorialSerializer):
     address = serializers.ReadOnlyField(source="i18n_address")
