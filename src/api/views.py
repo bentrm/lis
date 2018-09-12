@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework import pagination
 from rest_framework import versioning
 
-from cms import models, tags
+from cms.models import pages as models, tags
 from . import serializers, filters
 
 

@@ -1,9 +1,9 @@
 
-from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
+from django.utils.translation import gettext_lazy as _
 
 
 class SignupForm(UserCreationForm):

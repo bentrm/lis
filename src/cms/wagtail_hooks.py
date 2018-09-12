@@ -10,8 +10,8 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, mode
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
-from . import tags
-from .models import Author, I18nPage
+from .models import tags
+from .models.pages import Author, I18nPage
 
 
 def as_page_object(self):

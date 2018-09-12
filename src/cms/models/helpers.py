@@ -3,7 +3,8 @@
 import datetime
 
 from django.utils.formats import date_format
-from django.utils.translation import get_language, gettext as _
+from django.utils.translation import get_language
+from django.utils.translation import gettext as _
 
 
 class TranslatedField(object):

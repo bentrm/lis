@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cms import models, tags
+from cms.models import pages as models, tags
 
 THUMBNAIL_FILTER_SPEC = "fill-300x300|jpegquality-60"
 MEDIUM_FILTER_SPEC = "max-1000x1000|jpegquality-60"

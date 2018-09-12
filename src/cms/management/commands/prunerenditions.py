@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from cms.media import ImageMediaRendition
+from cms.models.media import ImageMediaRendition
 
 class Command(BaseCommand):
     """Used to prune image renditions."""

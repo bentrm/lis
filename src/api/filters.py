@@ -2,8 +2,8 @@ import django_filters
 from django.utils.translation import gettext_lazy as _
 from rest_framework.settings import api_settings
 from rest_framework.filters import BaseFilterBackend
-from cms.tags import LocationTypeTag
-from cms.models import Author, TempLocation as Memorial
+from cms.models.tags import LocationTypeTag
+from cms.models.pages import Author, TempLocation as Memorial
 
 class WagtailSearchFilterBackend(BaseFilterBackend):
     search_param = api_settings.SEARCH_PARAM

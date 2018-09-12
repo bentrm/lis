@@ -8,9 +8,8 @@ from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
 
+from ..messages import TXT
 from .helpers import TranslatedField
-from .messages import TXT
-
 
 RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
 

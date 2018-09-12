@@ -1,7 +1,9 @@
 import uuid
+
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-from wagtail.admin.edit_handlers import MultiFieldPanel, FieldPanel, widget_with_script
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, widget_with_script
+
 
 class FieldPanelTabs(MultiFieldPanel):
     """A panel that groups fields and multifields in a number of tabs."""

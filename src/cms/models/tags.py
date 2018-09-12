@@ -3,12 +3,12 @@
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.edit_handlers import FieldPanel, ObjectList, TabbedInterface
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, ObjectList, TabbedInterface
 from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import MultiFieldPanel, FieldPanel
+
+from cms.messages import TXT
 
 from .helpers import TranslatedField
-from .messages import TXT
 
 DB_TABLE_PREFIX = "cms_tag_"
 RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]

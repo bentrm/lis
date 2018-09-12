@@ -14,8 +14,8 @@ from __future__ import absolute_import, unicode_literals
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from config.helpers import env
 
+from config.helpers import env
 
 CMS_VERSION = env("CMS_VERSION", default="latest")
 

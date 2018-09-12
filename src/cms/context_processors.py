@@ -1,5 +1,6 @@
 from django.conf import settings
-from .models import HomePage, Author, TempLocation
+
+from .models import Author, HomePage, TempLocation
 
 
 def app_status(request):

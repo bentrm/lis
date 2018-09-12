@@ -1,4 +1,4 @@
-from cms.models import LocationIndex, MemorialSite, TempLocation, LocationAuthor
+from cms.models.pages import LocationIndex, MemorialSite, TempLocation, LocationAuthor
 
 TempLocation.objects.delete()
 

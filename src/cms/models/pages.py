@@ -1,18 +1,18 @@
 """Custom page models that describe the LIS data schema."""
 
-import logging
 import datetime
+import logging
 from collections import namedtuple
 from typing import List, NewType, Tuple
 
 from dal import autocomplete
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, URLValidator, validate_unicode_slug
 from django.db import models
 from django.shortcuts import redirect
-from django.utils.functional import cached_property
 from django.utils import dates, text
+from django.utils.functional import cached_property
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_noop, override, pgettext
@@ -22,19 +22,18 @@ from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPane
                                          StreamFieldPanel, TabbedInterface)
 from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page, BaseViewRestriction
+from wagtail.core.models import BaseViewRestriction, Orderable, Page
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
-from django.core.validators import URLValidator, validate_unicode_slug
-from django.core.exceptions import ValidationError
+
+from cms.blocks import ParagraphStructBlock
+from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
+from cms.messages import TXT
 
 from . import tags
-from .blocks import ParagraphStructBlock
-from .edit_handlers import FieldPanelTab, FieldPanelTabs
 from .helpers import TranslatedField, format_date, validate_date
 from .media import ImageMedia
-from .messages import TXT
 
 LOGGER = logging.getLogger("wagtail.core")
 DB_TABLE_PREFIX = "cms_"
