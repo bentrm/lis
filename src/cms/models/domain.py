@@ -49,7 +49,7 @@ class AuthorIndex(CategoryPage):
         return context
 
     class Meta:
-        db_table = "authors"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "authors"
         verbose_name = _(TXT["author.plural"])
 
 
@@ -72,7 +72,7 @@ class LocationIndex(CategoryPage):
         return context
 
     class Meta:
-        db_table = "locations"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "locations"
         verbose_name = _(TXT["location.plural"])
 
 
@@ -225,7 +225,7 @@ class Location(I18nPage):
         return context
 
     class Meta:
-        db_table = "location"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "archive_location"
         verbose_name = _(TXT["location"])
         verbose_name_plural = _(TXT["location.plural"])
 
@@ -363,7 +363,7 @@ class MemorialSite(I18nPage):
         return context
 
     class Meta:
-        db_table = "memorial_site"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "archive_memorial_site"
         verbose_name = _(TXT["memorial_site"])
         verbose_name_plural = _(TXT["memorial_site.plural"])
 
@@ -388,7 +388,7 @@ class MemorialSiteAuthor(Orderable):
     )
 
     class Meta:
-        db_table = "memorial_site_author"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "archive_memorial_site_author"
         verbose_name = _(TXT["memorial_site_author"])
         verbose_name_plural = _(TXT["memorial_site_author.plural"])
 
@@ -729,7 +729,7 @@ class Author(I18nPage):
         return context
 
     class Meta:
-        # TODO: add db_table
+        db_table = DB_TABLE_PREFIX + "author"
         verbose_name = _(TXT["author"])
         verbose_name_plural = _(TXT["author.plural"])
 
@@ -864,6 +864,11 @@ class AuthorName(Orderable):
         components = (self.i18n_title, self.i18n_first_name, self.i18n_last_name)
         return " ".join(x.strip() for x in components if x)
 
+    class Meta:
+        db_table = DB_TABLE_PREFIX + "author_name"
+        verbose_name = _(TXT["author_name"])
+        verbose_name_plural = _(TXT["author_name.plural"])
+
 
 class LevelPage(I18nPage):
     """A simple mixin that adds methods to list the models text types as an iterable."""
@@ -985,7 +990,7 @@ class Level1Page(LevelPage):
     ])
 
     class Meta:
-        db_table = "level_1"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "level_1"
         verbose_name = _(TXT["level1"])
 
 
@@ -1133,7 +1138,7 @@ class Level2Page(LevelPage):
     ])
 
     class Meta:
-        db_table = "level_2"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "level_2"
         verbose_name = _(TXT["level2"])
 
 
@@ -1232,7 +1237,7 @@ class Level3Page(LevelPage):
     ])
 
     class Meta:
-        db_table = "level_3"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "level_3"
         verbose_name = _(TXT["level3"])
 
 
@@ -1463,9 +1468,9 @@ class TempLocation(I18nPage):
     ])
 
     class Meta:
-        db_table = DB_TABLE_PREFIX + "location"
-        verbose_name = _(TXT["location"])
-        verbose_name_plural = _(TXT["memorial_site.plural"])
+        db_table = DB_TABLE_PREFIX + "memorial"
+        verbose_name = _(TXT["memorial"])
+        verbose_name_plural = _(TXT["memorial.plural"])
 
 
 class LocationAuthor(Orderable):

@@ -324,6 +324,6 @@ class HomePage(BlogPage):
     template = "cms/blog_page.html"
 
     class Meta:
-        db_table = "homepage"  # TODO: Add prefix
+        db_table = DB_TABLE_PREFIX + "homepage"
         verbose_name = _(TXT["home"])
         verbose_name_plural = _(TXT["home.plural"])

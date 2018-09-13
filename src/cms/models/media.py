@@ -2,23 +2,20 @@
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from wagtail.core.fields import RichTextField
 from wagtail.core.models import CollectionMember
 from wagtail.documents.models import AbstractDocument
 from wagtail.images.models import AbstractImage, AbstractRendition
 from wagtail.search import index
 
 from ..messages import TXT
+from .base import DB_TABLE_PREFIX
 from .helpers import TranslatedField
 
 RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
 
 
 class Media(models.Model):
-    """
-    Implements the basic Media interface used by media items as images and documents.
-
-    """
+    """Implements the basic Media interface used by media items as images and documents."""
 
     title_de = models.CharField(
         max_length=255,
@@ -90,7 +87,7 @@ class ImageMedia(Media, AbstractImage):
     )
 
     class Meta:
-        db_table = "image"
+        db_table = DB_TABLE_PREFIX + "image"
 
 
 class ImageMediaRendition(AbstractRendition):
@@ -104,9 +101,8 @@ class ImageMediaRendition(AbstractRendition):
         help_text=_(TXT["rendition.image.help"]))
 
     class Meta:
-        db_table = "image_rendition"
-        unique_together = (
-            ("image", "filter_spec", "focal_point_key"))
+        db_table = DB_TABLE_PREFIX + "image_rendition"
+        unique_together = (("image", "filter_spec", "focal_point_key"))
 
 
 class DocumentMedia(Media, AbstractDocument):
@@ -143,4 +139,4 @@ class DocumentMedia(Media, AbstractDocument):
     )
 
     class Meta:
-        db_table = "document"
+        db_table = DB_TABLE_PREFIX + "document"
