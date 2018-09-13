@@ -10,8 +10,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, mode
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
-from .models import tags
-from .models.pages import Author, I18nPage
+from .models import Author, I18nPage, tags
 
 
 def as_page_object(self):
@@ -142,10 +141,7 @@ def register_footnote_feature(features):
 
 @hooks.register("register_rich_text_features")
 def register_blockquote_feature(features):
-    """
-    Registering the `blockquote` feature, which uses the `blockquote` Draft.js block type,
-    and is stored as HTML with a `<blockquote>` tag.
-    """
+    """Register the `blockquote` feature using the `blockquote` Draft.js block type."""
     feature_name = "blockquote"
     type_ = "BLOCKQUOTE"
     tag = "blockquote"
@@ -179,38 +175,52 @@ def register_blockquote_feature(features):
 
 
 class TagModelAdmin(ModelAdmin):
+    """Generic tag admin class."""
+
     list_display = ("title", "title_de", "title_cs")
     search_fields = ("title", "title_de", "title_cs")
 
 
 class GenreModelAdmin(TagModelAdmin):
+    """Genre tag model admin."""
+
     model = tags.GenreTag
     menu_icon = "pilcrow"
 
 
 class LanguageModelAdmin(TagModelAdmin):
+    """Language tag model admin."""
+
     model = tags.LanguageTag
     menu_icon = "openquote"
 
 
 class LocationTypeModelAdmin(TagModelAdmin):
+    """Location type tag model admin."""
+
     model = tags.LocationTypeTag
     menu_icon = "site"
 
 
 class LiteraryPeriodModelAdmin(TagModelAdmin):
+    """Literary period tag model admin."""
+
     list_display = TagModelAdmin.list_display + ("sort_order",)
     model = tags.LiteraryPeriodTag
     menu_icon = "date"
 
 
 class AgeGroupModelAdmin(TagModelAdmin):
+    """Age group tag model admin."""
+
     list_display = TagModelAdmin.list_display + ("sort_order",)
     model = tags.AgeGroupTag
     menu_icon = "group"
 
 
 class TagGroup(ModelAdminGroup):
+    """Tag group that groups all domain tag models."""
+
     menu_label = _("Tags")
     menu_icon = "tag"
     menu_order = 200

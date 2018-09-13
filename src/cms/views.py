@@ -8,7 +8,6 @@ from django.shortcuts import render
 from django.views import View
 
 from . import forms
-from .models import pages as models
 from .models import tags
 
 
@@ -37,88 +36,44 @@ class SignupView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class LanguageAutocomplete(autocomplete.Select2QuerySetView):
+class TagAutocompleteView(autocomplete.Select2QuerySetView):
+    """Generic autocomplete view to search title fields."""
+
+    model = tags.Tag
+
     def get_queryset(self):
+        """Return queryset filtered by user authentication status and search term."""
         if not self.request.user.is_authenticated:
-            return tags.LanguageTag.objects.none()
+            return self.model.objects.none()
 
-        qs = tags.LanguageTag.objects.order_by("title")
+        qs = self.model.objects.order_by("title")
         if self.q:
-            filter = (
-                Q(title__contains=self.q)
-                | Q(title_de__contains=self.q)
-                | Q(title_cs__contains=self.q)
-            )
-            qs = qs.filter(filter)
-
+            q_en = Q(title__contains=self.q)
+            q_de = Q(title_de__contains=self.q)
+            q_cs = Q(title_cs__contains=self.q)
+            qs = qs.filter(q_en | q_de | q_cs)
         return qs
 
 
-class LocationTypeAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return tags.LocationTypeTag.objects.none()
+class LanguageAutocomplete(TagAutocompleteView):
+    """Language tag autocomplete view."""
 
-        qs = tags.LocationTypeTag.objects.order_by("title")
-        if self.q:
-            filter = (
-                Q(title__contains=self.q)
-                | Q(title_de__contains=self.q)
-                | Q(title_cs__contains=self.q)
-            )
-            qs = qs.filter(filter)
-
-        return qs
+    model = tags.LanguageTag
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return tags.GenreTag.objects.none()
+class LocationTypeAutocomplete(TagAutocompleteView):
+    """Location type tag autocomplete view."""
 
-        qs = tags.GenreTag.objects.order_by("title")
-        if self.q:
-            filter = (
-                Q(title__contains=self.q)
-                | Q(title_de__contains=self.q)
-                | Q(title_cs__contains=self.q)
-            )
-            qs = qs.filter(filter)
-
-        return qs
+    model = tags.LocationTypeTag
 
 
-class ContactTypeAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return tags.ContactTypeTag.objects.none()
+class GenreAutocomplete(TagAutocompleteView):
+    """Genre tag autocomplete view."""
 
-        print(self.q)
-
-        qs = tags.ContactTypeTag.objects.order_by("title")
-        if self.q:
-            filter = (
-                Q(title__contains=self.q)
-                | Q(title_de__contains=self.q)
-                | Q(title_cs__contains=self.q)
-            )
-            qs = qs.filter(filter)
-
-        return qs
+    model = tags.GenreTag
 
 
-class LiteraryPeriodAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return tags.LiteraryPeriodTag.objects.none()
+class LiteraryPeriodAutocomplete(TagAutocompleteView):
+    """Literary period tag autocomplete view."""
 
-        qs = tags.LiteraryPeriodTag.objects.order_by("sort_order")
-        if self.q:
-            filter = (
-                Q(title__contains=self.q)
-                | Q(title_de__contains=self.q)
-                | Q(title_cs__contains=self.q)
-            )
-            qs = qs.filter(filter)
-
-        return qs
+    model = tags.LiteraryPeriodTag

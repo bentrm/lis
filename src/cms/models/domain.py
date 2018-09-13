@@ -1,29 +1,23 @@
-"""Custom page models that describe the LIS data schema."""
+"""Implements the domain specific models of the information system."""
 
 import datetime
-import logging
-from collections import namedtuple
-from typing import List, NewType, Tuple
+from typing import List
 
 from dal import autocomplete
 from django.contrib.gis.db.models import PointField
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator, URLValidator, validate_unicode_slug
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.shortcuts import redirect
 from django.utils import dates, text
-from django.utils.functional import cached_property
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_noop, override, pgettext
+from django.utils.translation import override, pgettext
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList, PageChooserPanel,
                                          StreamFieldPanel, TabbedInterface)
-from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import BaseViewRestriction, Orderable, Page
-from wagtail.images.blocks import ImageChooserBlock
+from wagtail.core.models import Orderable, Page
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 
@@ -32,315 +26,8 @@ from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
 from cms.messages import TXT
 
 from . import tags
+from .base import DB_TABLE_PREFIX, GENDER, GENDER_OPTION, I18nPage, CategoryPage, TextType
 from .helpers import TranslatedField, format_date, validate_date
-from .media import ImageMedia
-
-LOGGER = logging.getLogger("wagtail.core")
-DB_TABLE_PREFIX = "cms_"
-GENDER = NewType("Gender", str)
-GENDER_OPTION = Tuple[GENDER, str]
-EDITOR_FEATURES = [
-    "bold",
-    "italic",
-    "strikethrough",
-    "sup",
-    "ol",
-    "ul",
-    "hr",
-    "blockquote",
-    "link",
-]
-
-TextType = namedtuple("TextType", [
-    "field",
-    "heading"
-])
-
-
-# TODO: Rename to CmsPage
-class I18nPage(Page):
-    """
-    An abstract base page class that supports translated content.
-
-    The class should be used for all page types of the CMS.
-
-    Overrides Page.save and Page.save_revision methods to make sure
-    multilingual content is handled the same as the default fields.
-
-    """
-
-    ORIGINAL_LANGUAGE_ENGLISH = "en"
-    ORIGINAL_LANGUAGE_GERMAN = "de"
-    ORIGINAL_LANGUAGE_CZECH = "cs"
-    ORIGINAL_LANGUAGE = (
-        (ORIGINAL_LANGUAGE_ENGLISH, _(TXT["language.en"])),
-        (ORIGINAL_LANGUAGE_GERMAN, _(TXT["language.de"])),
-        (ORIGINAL_LANGUAGE_CZECH, _(TXT["language.cs"])),
-    )
-    RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
-
-    title_de = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_(TXT["page.title_de"]),
-        help_text=_(TXT["page.title_de.help"])
-    )
-    title_cs = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_(TXT["page.title_cs"]),
-        help_text=_(TXT["page.title_cs.help"])
-    )
-    i18n_title = TranslatedField.named("title", True)
-
-    draft_title_de = models.CharField(
-        max_length=255,
-        blank=True,
-        editable=False,
-        verbose_name=_(TXT["page.draft_title_de"]),
-        help_text=_(TXT["page.draft_title_de.help"])
-    )
-    draft_title_cs = models.CharField(
-        max_length=255,
-        blank=True,
-        editable=False,
-        verbose_name=_(TXT["page.draft_title_cs"]),
-        help_text=_(TXT["page.draft_title_cs.help"])
-    )
-    i18n_draft_title = TranslatedField.named("draft_title", True)
-
-    editor = models.CharField(
-        max_length=2048,
-        verbose_name=_(TXT["page.editor"]),
-        help_text=_(TXT["page.editor.help"])
-    )
-    original_language = models.CharField(
-        max_length=3,
-        choices=ORIGINAL_LANGUAGE,
-        default=ORIGINAL_LANGUAGE_GERMAN,
-        verbose_name=_(TXT["page.original_language"]),
-        help_text=_(TXT["page.original_language.help"])
-    )
-
-    temporary_redirect = models.CharField(
-        max_length=250,
-        blank=True,
-        default="",
-        verbose_name=_(TXT["page.temporary_redirect"]),
-        help_text=_(TXT["page.temporary_redirect.help"])
-    )
-
-    is_creatable = False
-    search_fields = Page.search_fields + [
-        index.SearchField('title_de', partial_match=True, boost=2),
-        index.SearchField('title_cs', partial_match=True, boost=2)
-    ]
-    english_panels = [
-        FieldPanel("title", classname="full title"),
-    ]
-    german_panels = [
-        FieldPanel("title_de", classname="full title"),
-    ]
-    czech_panels = [
-        FieldPanel("title_cs", classname="full title"),
-    ]
-    promote_panels = Page.promote_panels + [
-        FieldPanel("temporary_redirect")
-    ]
-    meta_panels = [
-        FieldPanel("owner"),
-        FieldPanel("editor"),
-        FieldPanel("original_language"),
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(promote_panels, heading=_(TXT["heading.promote"])),
-        ObjectList(meta_panels, heading=_(TXT["heading.meta"])),
-    ])
-
-    @cached_property
-    def is_restricted(self):
-        return self.get_view_restrictions().exclude(restriction_type=BaseViewRestriction.NONE).exists()
-
-    def serve(self, request):
-        if self.temporary_redirect:
-
-            return redirect(self.temporary_redirect, permanent=False)
-        return super(I18nPage, self).serve(request)
-
-    def get_admin_display_title(self):
-        """Return title to be displayed in the admins UI."""
-        return self.i18n_draft_title or self.i18n_title
-
-    def full_clean(self, *args, **kwargs):
-        """Set the translated draft titles according the translated title fields."""
-        if not self.draft_title_de:
-            self.draft_title_de = self.title_de
-        if not self.draft_title_cs:
-            self.draft_title_cs = self.title_cs
-        super(I18nPage, self).full_clean(*args, **kwargs)
-
-    def save_revision(
-            self,
-            user=None,
-            submitted_for_moderation=False,
-            approved_go_live_at=None,
-            changed=True):
-        """Add applications and translation specific fields to the revision of the page."""
-        self.full_clean()
-
-        # Create revision
-        revision = self.revisions.create(
-            content_json=self.to_json(),
-            user=user,
-            submitted_for_moderation=submitted_for_moderation,
-            approved_go_live_at=approved_go_live_at,
-        )
-
-        update_fields = []
-
-        self.latest_revision_created_at = revision.created_at
-        update_fields.append('latest_revision_created_at')
-
-        self.draft_title = self.title
-        self.draft_title_de = self.title_de
-        self.draft_title_cs = self.title_cs
-        update_fields.append("draft_title")
-        update_fields.append("draft_title_de")
-        update_fields.append("draft_title_cs")
-
-        if changed:
-            self.has_unpublished_changes = True
-            update_fields.append('has_unpublished_changes')
-
-        if update_fields:
-            self.save(update_fields=update_fields)
-
-        # Log
-        LOGGER.info(f"Page edited: \"{self.title}\" id={self.id} revision_id={revision.id}")
-
-        if submitted_for_moderation:
-            LOGGER.info(f""""
-            Page submitted for moderation: \"{self.title}\" id={self.id} revision_id={revision.id}
-            """)
-
-        return revision
-
-    def __str__(self):
-        return str(self.i18n_title)
-
-
-class CategoryPage(I18nPage):
-    """
-    A simple category page with a multilingual title fieldself.
-
-    CategoryPages are simple pages that can only be created once at the root level of the CMS.
-    """
-
-    # class properties
-    template = "cms/categories/category_page.html"
-
-    @classmethod
-    def can_create_at(cls, parent):
-        """Make sure the page can only be created once in the page hierarchy."""
-        return super(CategoryPage, cls).can_create_at(parent) and not cls.objects.exists()
-
-    def get_context(self, request, *args, **kwargs):
-        """Add child pages into the pages context."""
-        context = super(CategoryPage, self).get_context(request, *args, **kwargs)
-        child_pages = self.get_children().specific().live()
-        context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
-        return context
-
-    class Meta:
-        abstract = True
-
-
-class BlogPage(I18nPage):
-    """A page of static content."""
-
-    BLOG_EDITOR_FEATURES = [
-        "h3", "h4", "h5", "h6",
-        "bold",
-        "italic",
-        "strikethrough",
-        "sup",
-        "ol",
-        "ul",
-        "hr",
-        "blockquote",
-        "link",
-    ]
-
-    parent_page_types = ["HomePage", "BlogPage"]
-    template = "cms/blog_page.html"
-
-    body = StreamField(
-        block_types=[
-            ('heading', CharBlock(classname="full title")),
-            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ('image', ImageChooserBlock()),
-        ],
-        blank=True,
-        default=[],
-    )
-    body_de = StreamField(
-        block_types=[
-            ('heading', CharBlock(classname="full title")),
-            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ('image', ImageChooserBlock()),
-        ],
-        blank=True,
-        default=[],
-    )
-    body_cs = StreamField(
-        block_types=[
-            ('heading', CharBlock(classname="full title")),
-            ('paragraph', RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ('image', ImageChooserBlock()),
-        ],
-        blank=True,
-        default=[],
-    )
-    i18n_body = TranslatedField.named("body", True)
-
-    english_panels = I18nPage.english_panels + [
-        StreamFieldPanel("body"),
-    ]
-    german_panels = I18nPage.german_panels + [
-        StreamFieldPanel("body_de"),
-    ]
-    czech_panels = I18nPage.czech_panels + [
-        StreamFieldPanel("body_cs"),
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.promote_panels, heading=_(TXT["heading.promote"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
-    ])
-
-    class Meta:
-        db_table = DB_TABLE_PREFIX + "_content_pages"
-        verbose_name = _(TXT["blog"])
-        verbose_name_plural = _(TXT["blog.plural"])
-
-
-class HomePage(BlogPage):
-    """The root page of the LIS cms site."""
-
-    parent_page_types = ["wagtailcore.Page"]
-    template = "cms/blog_page.html"
-
-    class Meta:
-        db_table = "homepage"  # TODO: Add prefix
-        verbose_name = _(TXT["home"])
-        verbose_name_plural = _(TXT["home.plural"])
 
 
 class AuthorIndex(CategoryPage):
@@ -367,6 +54,346 @@ class AuthorIndex(CategoryPage):
         verbose_name = _(TXT["author.plural"])
 
 
+class LocationIndex(CategoryPage):
+    """A category page to place locations in."""
+
+    parent_page_types = ["HomePage"]
+    template = "cms/categories/location_index.html"
+
+    def get_context(self, request, *args, **kwargs):
+        """Add all child geometries to context.."""
+        context = super(LocationIndex, self).get_context(request, *args, **kwargs)
+
+        locations = TempLocation.objects.all()
+        if request.is_preview:
+            locations = [x.get_latest_revision_as_page() for x in locations]
+        else:
+            locations = locations.live()
+        context["locations"] = locations
+        return context
+
+    class Meta:
+        db_table = "locations"  # TODO: Add prefix
+        verbose_name = _(TXT["location.plural"])
+
+
+class Location(I18nPage):
+    """A geographic place on earth."""
+
+    parent_page_types = []
+
+    title_image = models.ForeignKey(
+        "ImageMedia",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name=_(TXT["location.title_image"]),
+        help_text=_(TXT["location.title_image.help"])
+    )
+    location_type_tags = ParentalManyToManyField(
+        tags.LocationTypeTag,
+        db_table=DB_TABLE_PREFIX + "location_tag_location_type",
+        related_name="locations",
+        blank=False,
+        verbose_name=_(TXT["location.location_type_tags.plural"]),
+        help_text=_(TXT["location.location_type_tags.help"])
+    )
+
+    address = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.address"]),
+        help_text=_(TXT["location.address.help"])
+    )
+    address_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.address"]),
+        help_text=_(TXT["location.address.help"])
+    )
+    address_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.address"]),
+        help_text=_(TXT["location.address.help"])
+    )
+    i18n_address = TranslatedField.named("address", True)
+
+    contact_info = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    contact_info_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    contact_info_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.contact_info"]),
+        help_text=_(TXT["location.contact_info.help"])
+    )
+    i18n_contact_info = TranslatedField.named("contact_info", True)
+
+    directions = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.directions"]),
+        help_text=_(TXT["location.directions.help"])
+    )
+    directions_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.directions"]),
+        help_text=_(TXT["location.directions.help"])
+    )
+    directions_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["location.directions"]),
+        help_text=_(TXT["location.directions.help"])
+    )
+    i18n_directions = TranslatedField.named("directions")
+
+    coordinates = PointField(
+        verbose_name=_(TXT["location.coordinates"]),
+        help_text=_(TXT["location.coordinates.help"])
+    )
+
+    search_fields = I18nPage.search_fields + [
+        index.SearchField("directions"),
+        index.SearchField("directions_de"),
+        index.SearchField("directions_cs"),
+    ]
+
+    general_panels = [
+        ImageChooserPanel("title_image"),
+        FieldPanel(
+            "location_type_tags",
+            widget=autocomplete.ModelSelect2Multiple(
+                url="autocomplete-location-type",
+                attrs={"data-maximum-selection-length": 1}
+            )
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("address", heading=_(TXT["language.en"])),
+                FieldPanelTab("address_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("address_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.address"]),
+            show_label=False,
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("contact_info", heading=_(TXT["language.en"])),
+                FieldPanelTab("contact_info_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("contact_info_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.contact_info"]),
+            show_label=False,
+        ),
+        FieldPanelTabs(
+            children=[
+                FieldPanelTab("directions", heading=_(TXT["language.en"])),
+                FieldPanelTab("directions_de", heading=_(TXT["language.de"])),
+                FieldPanelTab("directions_cs", heading=_(TXT["language.cs"])),
+            ],
+            heading=_(TXT["location.directions"]),
+            show_label=False,
+        ),
+        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
+    ]
+    edit_handler = TabbedInterface([
+        ObjectList(general_panels, heading=_(TXT["heading.general"])),
+        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
+    ])
+
+    def get_context(self, request, *args, **kwargs):
+        """Add child pages into the pages context."""
+        context = super(Location, self).get_context(request, *args, **kwargs)
+        memorial_sites = self.get_children().specific()
+        if not request.is_preview:
+            memorial_sites = memorial_sites.live()
+        else:
+            memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
+        context["memorial_sites"] = sorted(memorial_sites, key=lambda x: str(x.i18n_title))
+        return context
+
+    class Meta:
+        db_table = "location"  # TODO: Add prefix
+        verbose_name = _(TXT["location"])
+        verbose_name_plural = _(TXT["location.plural"])
+
+
+class MemorialSite(I18nPage):
+    """A memorial reference between a geographic location and an author."""
+
+    parent_page_types = ["Location"]
+
+    title_image = models.ForeignKey(
+        "ImageMedia",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name=_(TXT["memorial_site.title_image"]),
+        help_text=_(TXT["memorial_site.title_image.help"])
+    )
+
+    introduction = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    introduction_de = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    introduction_cs = RichTextField(
+        blank=True,
+        features=I18nPage.RICH_TEXT_FEATURES,
+        verbose_name=_(TXT["memorial_site.introduction"]),
+        help_text=_(TXT["memorial_site.introduction.help"])
+    )
+    i18n_introduction = TranslatedField.named("introduction")
+
+    description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.description"]),
+        help_text=_(TXT["memorial_site.description.help"])
+    )
+    i18n_description = TranslatedField.named("description")
+
+    detailed_description = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    detailed_description_de = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    detailed_description_cs = StreamField(
+        [("paragraph", ParagraphStructBlock())],
+        blank=True,
+        verbose_name=_(TXT["memorial_site.detailed_description"]),
+        help_text=_(TXT["memorial_site.detailed_description.help"])
+    )
+    i18n_detailed_description = TranslatedField.named("detailed_description")
+
+    general_panels = [
+        ImageChooserPanel("title_image"),
+        InlinePanel(
+            "authors",
+            label=_(TXT["memorial_site.authors"]),
+            min_num=1,
+            help_text=_(TXT["memorial_site.authors"]),
+            panels=[PageChooserPanel("author", "cms.Author")]
+        ),
+    ]
+    english_panels = I18nPage.english_panels + [
+        FieldPanel("introduction"),
+        StreamFieldPanel("description"),
+        StreamFieldPanel("detailed_description")
+    ]
+    german_panels = I18nPage.german_panels + [
+        FieldPanel("introduction_de"),
+        StreamFieldPanel("description_de"),
+        StreamFieldPanel("detailed_description_de")
+    ]
+    czech_panels = I18nPage.czech_panels + [
+        FieldPanel("introduction_cs"),
+        StreamFieldPanel("description_cs"),
+        StreamFieldPanel("detailed_description_cs")
+    ]
+    edit_handler = TabbedInterface([
+        ObjectList(general_panels, heading=_(TXT["heading.general"])),
+        ObjectList(english_panels, heading=_(TXT["heading.en"])),
+        ObjectList(german_panels, heading=_(TXT["heading.de"])),
+        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+    ])
+
+    def get_context(self, request, *args, **kwargs):
+        """Add all child geometries to context.."""
+        context = super(MemorialSite, self).get_context(request, *args, **kwargs)
+
+        location = self.get_parent()
+        if request.is_preview:
+            location = location.get_latest_revision_as_page()
+        context["location"] = location
+
+        authors = [x.author for x in self.authors.all()]
+        if request.is_preview:
+            authors[:] = [x.get_latest_revision_as_page() for x in authors]
+
+        context["authors"] = {}
+        for author in authors:
+            levels = author.get_children().specific()
+            if request.is_preview:
+                levels = [x.get_latest_revision_as_page() for x in levels]
+            else:
+                levels = levels.live()
+            context["authors"][author] = sorted(levels, key=lambda x: x.level_order)
+
+        return context
+
+    class Meta:
+        db_table = "memorial_site"  # TODO: Add prefix
+        verbose_name = _(TXT["memorial_site"])
+        verbose_name_plural = _(TXT["memorial_site.plural"])
+
+
+class MemorialSiteAuthor(Orderable):
+    """Join page type to add multiple authors to one memorial site."""
+
+    memorial_site = ParentalKey(
+        "MemorialSite",
+        related_name="authors",
+        verbose_name=_(TXT["memorial_site"]),
+        help_text=_(TXT["memorial_site_author.memorial_site.help"])
+    )
+    author = models.ForeignKey(
+        "Author",
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="memorial_sites",
+        verbose_name=_(TXT["memorial_site_author.author"]),
+        help_text=_(TXT["memorial_site_author.author.help"])
+    )
+
+    class Meta:
+        db_table = "memorial_site_author"  # TODO: Add prefix
+        verbose_name = _(TXT["memorial_site_author"])
+        verbose_name_plural = _(TXT["memorial_site_author.plural"])
+
+
 class Author(I18nPage):
     """A page that describes an author."""
 
@@ -380,7 +407,7 @@ class Author(I18nPage):
     )
 
     title_image = models.ForeignKey(
-        ImageMedia,
+        "ImageMedia",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -499,19 +526,23 @@ class Author(I18nPage):
 
     @property
     def born(self):
+        """Return the year of birth as a datetime object."""
         if self.date_of_birth_year and self.date_of_birth_month and self.date_of_birth_day:
             return datetime.date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
 
     @property
     def died(self):
+        """Return the year of death as a datetime object."""
         if self.date_of_death_year and self.date_of_death_month and self.date_of_death_day:
             return datetime.date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
 
     @property
     def age(self):
+        """Return the age of the author in years."""
         if self.born and self.died:
-            return self.died.year - self.born.year - ((self.died.month, self.died.day) < ((self.born.month, self.born.day)))
-
+            diff_year = self.died.year - self.born.year
+            diff_remainder = (self.died.month, self.died.day) < (self.born.month, self.born.day)
+            return diff_year - diff_remainder
 
     parent_page_types = ["AuthorIndex"]
     search_fields = Page.search_fields + [
@@ -848,8 +879,8 @@ class LevelPage(I18nPage):
     def can_create_at(cls, parent):
         """Determine the valid location of the page in the page hierarchy."""
         return (
-            super(LevelPage, cls).can_create_at(parent)
-            and not parent.get_children().exact_type(cls)
+            super(LevelPage, cls).can_create_at(parent) and
+            not parent.get_children().exact_type(cls)
         )
 
     def serve(self, request, *args, **kwargs):
@@ -1206,346 +1237,6 @@ class Level3Page(LevelPage):
         verbose_name = _(TXT["level3"])
 
 
-class LocationIndex(CategoryPage):
-    """A category page to place locations in."""
-
-    parent_page_types = ["HomePage"]
-    template = "cms/categories/location_index.html"
-
-    def get_context(self, request, *args, **kwargs):
-        """Add all child geometries to context.."""
-        context = super(LocationIndex, self).get_context(request, *args, **kwargs)
-
-        locations = TempLocation.objects.all()
-        if request.is_preview:
-            locations = [x.get_latest_revision_as_page() for x in locations]
-        else:
-            locations = locations.live()
-        context["locations"] = locations
-        return context
-
-    class Meta:
-        db_table = "locations"  # TODO: Add prefix
-        verbose_name = _(TXT["location.plural"])
-
-
-class Location(I18nPage):
-    """A geographic place on earth."""
-
-    parent_page_types = []
-
-    title_image = models.ForeignKey(
-        ImageMedia,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name=_(TXT["location.title_image"]),
-        help_text=_(TXT["location.title_image.help"])
-    )
-    location_type_tags = ParentalManyToManyField(
-        tags.LocationTypeTag,
-        db_table=DB_TABLE_PREFIX + "location_tag_location_type",
-        related_name="locations",
-        blank=False,
-        verbose_name=_(TXT["location.location_type_tags.plural"]),
-        help_text=_(TXT["location.location_type_tags.help"])
-    )
-
-    address = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
-    )
-    address_de = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
-    )
-    address_cs = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
-    )
-    i18n_address = TranslatedField.named("address", True)
-
-    contact_info = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
-    )
-    contact_info_de = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
-    )
-    contact_info_cs = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
-    )
-    i18n_contact_info = TranslatedField.named("contact_info", True)
-
-    directions = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
-    )
-    directions_de = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
-    )
-    directions_cs = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
-    )
-    i18n_directions = TranslatedField.named("directions")
-
-    coordinates = PointField(
-        verbose_name=_(TXT["location.coordinates"]),
-        help_text=_(TXT["location.coordinates.help"])
-    )
-
-    search_fields = I18nPage.search_fields + [
-        index.SearchField("directions"),
-        index.SearchField("directions_de"),
-        index.SearchField("directions_cs"),
-    ]
-
-    general_panels = [
-        ImageChooserPanel("title_image"),
-        FieldPanel(
-            "location_type_tags",
-            widget=autocomplete.ModelSelect2Multiple(
-                url="autocomplete-location-type",
-                attrs={"data-maximum-selection-length": 1}
-            )
-        ),
-        FieldPanelTabs(
-            children=[
-                FieldPanelTab("address", heading=_(TXT["language.en"])),
-                FieldPanelTab("address_de", heading=_(TXT["language.de"])),
-                FieldPanelTab("address_cs", heading=_(TXT["language.cs"])),
-            ],
-            heading=_(TXT["location.address"]),
-            show_label=False,
-        ),
-        FieldPanelTabs(
-            children=[
-                FieldPanelTab("contact_info", heading=_(TXT["language.en"])),
-                FieldPanelTab("contact_info_de", heading=_(TXT["language.de"])),
-                FieldPanelTab("contact_info_cs", heading=_(TXT["language.cs"])),
-            ],
-            heading=_(TXT["location.contact_info"]),
-            show_label=False,
-        ),
-        FieldPanelTabs(
-            children=[
-                FieldPanelTab("directions", heading=_(TXT["language.en"])),
-                FieldPanelTab("directions_de", heading=_(TXT["language.de"])),
-                FieldPanelTab("directions_cs", heading=_(TXT["language.cs"])),
-            ],
-            heading=_(TXT["location.directions"]),
-            show_label=False,
-        ),
-        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
-    ]
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
-    ])
-
-    def get_context(self, request, *args, **kwargs):
-        """Add child pages into the pages context."""
-        context = super(Location, self).get_context(request, *args, **kwargs)
-        memorial_sites = self.get_children().specific()
-        if not request.is_preview:
-            memorial_sites = memorial_sites.live()
-        else:
-            memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
-        context["memorial_sites"] = sorted(memorial_sites, key=lambda x: str(x.i18n_title))
-        return context
-
-    class Meta:
-        db_table = "location"  # TODO: Add prefix
-        verbose_name = _(TXT["location"])
-        verbose_name_plural = _(TXT["location.plural"])
-
-
-class MemorialSite(I18nPage):
-    """A memorial reference between a geographic location and an author."""
-
-    parent_page_types = ["Location"]
-
-    title_image = models.ForeignKey(
-        ImageMedia,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name=_(TXT["memorial_site.title_image"]),
-        help_text=_(TXT["memorial_site.title_image.help"])
-    )
-
-    introduction = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
-    )
-    introduction_de = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
-    )
-    introduction_cs = RichTextField(
-        blank=True,
-        features=I18nPage.RICH_TEXT_FEATURES,
-        verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
-    )
-    i18n_introduction = TranslatedField.named("introduction")
-
-    description = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
-    )
-    description_de = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
-    )
-    description_cs = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
-    )
-    i18n_description = TranslatedField.named("description")
-
-    detailed_description = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
-    )
-    detailed_description_de = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
-    )
-    detailed_description_cs = StreamField(
-        [("paragraph", ParagraphStructBlock())],
-        blank=True,
-        verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
-    )
-    i18n_detailed_description = TranslatedField.named("detailed_description")
-
-    general_panels = [
-        ImageChooserPanel("title_image"),
-        InlinePanel(
-            "authors",
-            label=_(TXT["memorial_site.authors"]),
-            min_num=1,
-            help_text=_(TXT["memorial_site.authors"]),
-            panels=[PageChooserPanel("author", "cms.Author")]
-        ),
-    ]
-    english_panels = I18nPage.english_panels + [
-        FieldPanel("introduction"),
-        StreamFieldPanel("description"),
-        StreamFieldPanel("detailed_description")
-    ]
-    german_panels = I18nPage.german_panels + [
-        FieldPanel("introduction_de"),
-        StreamFieldPanel("description_de"),
-        StreamFieldPanel("detailed_description_de")
-    ]
-    czech_panels = I18nPage.czech_panels + [
-        FieldPanel("introduction_cs"),
-        StreamFieldPanel("description_cs"),
-        StreamFieldPanel("detailed_description_cs")
-    ]
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
-    ])
-
-    def get_context(self, request, *args, **kwargs):
-        """Add all child geometries to context.."""
-        context = super(MemorialSite, self).get_context(request, *args, **kwargs)
-
-        location = self.get_parent()
-        if request.is_preview:
-            location = location.get_latest_revision_as_page()
-        context["location"] = location
-
-        authors = [x.author for x in self.authors.all()]
-        if request.is_preview:
-            authors[:] = [x.get_latest_revision_as_page() for x in authors]
-
-        context["authors"] = {}
-        for author in authors:
-            levels = author.get_children().specific()
-            if request.is_preview:
-                levels = [x.get_latest_revision_as_page() for x in levels]
-            else:
-                levels = levels.live()
-            context["authors"][author] = sorted(levels, key=lambda x: x.level_order)
-
-        return context
-
-    class Meta:
-        db_table = "memorial_site"  # TODO: Add prefix
-        verbose_name = _(TXT["memorial_site"])
-        verbose_name_plural = _(TXT["memorial_site.plural"])
-
-
-class MemorialSiteAuthor(Orderable):
-    """Join page type to add multiple authors to one memorial site."""
-
-    memorial_site = ParentalKey(
-        "MemorialSite",
-        related_name="authors",
-        verbose_name=_(TXT["memorial_site"]),
-        help_text=_(TXT["memorial_site_author.memorial_site.help"])
-    )
-    author = models.ForeignKey(
-        Author,
-        null=True,
-        blank=False,
-        on_delete=models.SET_NULL,
-        related_name="memorial_sites",
-        verbose_name=_(TXT["memorial_site_author.author"]),
-        help_text=_(TXT["memorial_site_author.author.help"])
-    )
-
-    class Meta:
-        db_table = "memorial_site_author"  # TODO: Add prefix
-        verbose_name = _(TXT["memorial_site_author"])
-        verbose_name_plural = _(TXT["memorial_site_author.plural"])
-
-
 class TempLocation(I18nPage):
     """A geographic place on earth."""
 
@@ -1553,7 +1244,7 @@ class TempLocation(I18nPage):
     parent_page_types = ["LocationIndex"]
 
     title_image = models.ForeignKey(
-        ImageMedia,
+        "ImageMedia",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -1788,7 +1479,7 @@ class LocationAuthor(Orderable):
         help_text=_(TXT["memorial_site_author.memorial_site.help"])
     )
     author = models.ForeignKey(
-        Author,
+        "Author",
         null=True,
         blank=False,
         on_delete=models.SET_NULL,

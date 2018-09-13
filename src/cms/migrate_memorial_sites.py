@@ -1,4 +1,6 @@
-from cms.models.pages import LocationIndex, MemorialSite, TempLocation, LocationAuthor
+"""Helper script that is only used once to migrate the legacy page structure."""
+
+from cms.models import LocationIndex, MemorialSite, TempLocation, LocationAuthor
 
 TempLocation.objects.delete()
 

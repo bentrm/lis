@@ -1,9 +1,8 @@
 """Defines all tag domain models of the lis system."""
 
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel, ObjectList, TabbedInterface
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.fields import RichTextField
 
 from cms.messages import TXT
@@ -12,6 +11,7 @@ from .helpers import TranslatedField
 
 DB_TABLE_PREFIX = "cms_tag_"
 RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
+
 
 class Tag(models.Model):
     """
@@ -96,6 +96,8 @@ class Tag(models.Model):
 
 
 class SortableTag(Tag):
+    """Adds a sort order attribute to the tag model."""
+
     sort_order = models.IntegerField(
         verbose_name=_(TXT["tag.sort_order"]),
         help_text=_(TXT["tag.sort_order.help"]),
@@ -111,6 +113,8 @@ class SortableTag(Tag):
 
 
 class GenreTag(Tag):
+    """Used to tag literary genres."""
+
     class Meta:
         db_table = DB_TABLE_PREFIX + "genre"
         verbose_name = _(TXT["genre"])
@@ -118,6 +122,8 @@ class GenreTag(Tag):
 
 
 class LanguageTag(Tag):
+    """Used to tag languages spoken by an author."""
+
     class Meta:
         db_table = DB_TABLE_PREFIX + "language"
         verbose_name = _(TXT["language"])
@@ -125,6 +131,8 @@ class LanguageTag(Tag):
 
 
 class LocationTypeTag(Tag):
+    """Used to tag memorials."""
+
     class Meta:
         db_table = DB_TABLE_PREFIX + "location_type"
         verbose_name = _(TXT["location_type"])
@@ -132,6 +140,8 @@ class LocationTypeTag(Tag):
 
 
 class LiteraryPeriodTag(SortableTag):
+    """Used to tag literary periods an author has been active in."""
+
     class Meta:
         db_table = DB_TABLE_PREFIX + "literary_period"
         verbose_name = _(TXT["literary_period"])
@@ -139,6 +149,8 @@ class LiteraryPeriodTag(SortableTag):
 
 
 class AgeGroupTag(SortableTag):
+    """Used to tag age groups."""
+
     class Meta:
         db_table = DB_TABLE_PREFIX + "age_group"
         verbose_name = _(TXT["age_group"])
