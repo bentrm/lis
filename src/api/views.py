@@ -12,7 +12,6 @@ class DefaultVersioning(versioning.URLPathVersioning):
 
     default_version = "v1"
     allowed_versions = ("v1",)
-    version_param = "version"
 
 
 class DefaultResultsetPagination(pagination.PageNumberPagination):
@@ -31,7 +30,7 @@ class GenericAPIView(generics.GenericAPIView):
 
 
 class AuthorList(mixins.ListModelMixin, GenericAPIView):
-    """Returns a list of authors."""
+    """Returns a list of all authors."""
 
     queryset = Author.objects.all()
     serializer_class = serializers.AuthorSerializer
