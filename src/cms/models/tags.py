@@ -130,13 +130,13 @@ class LanguageTag(Tag):
         verbose_name_plural = _(TXT["language.plural"])
 
 
-class LocationTypeTag(Tag):
+class MemorialTag(Tag):
     """Used to tag memorials."""
 
     class Meta:
-        db_table = DB_TABLE_PREFIX + "location_type"
-        verbose_name = _(TXT["location_type"])
-        verbose_name_plural = _(TXT["location_type.plural"])
+        db_table = DB_TABLE_PREFIX + "memorial_type"
+        verbose_name = _(TXT["memorial_type"])
+        verbose_name_plural = _(TXT["memorial_type.plural"])
 
 
 class LiteraryPeriodTag(SortableTag):

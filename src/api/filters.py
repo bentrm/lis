@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.settings import api_settings
 
-from cms.models import Author, LocationTypeTag
+from cms.models import Author, MemorialTag
 from cms.models import TempLocation as Memorial
 
 
@@ -45,7 +45,7 @@ class MemorialFilter(django_filters.rest_framework.FilterSet):
 
     tags = django_filters.ModelMultipleChoiceFilter(
         field_name="memorial_type_tags",
-        queryset=LocationTypeTag.objects.all()
+        queryset=MemorialTag.objects.all()
     )
 
     class Meta:

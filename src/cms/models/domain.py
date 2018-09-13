@@ -25,7 +25,6 @@ from cms.blocks import ParagraphStructBlock
 from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
 from cms.messages import TXT
 
-from . import tags
 from .base import DB_TABLE_PREFIX, GENDER, GENDER_OPTION, I18nPage, CategoryPage, TextType
 from .helpers import TranslatedField, format_date, validate_date
 
@@ -92,7 +91,7 @@ class Location(I18nPage):
         help_text=_(TXT["location.title_image.help"])
     )
     location_type_tags = ParentalManyToManyField(
-        tags.LocationTypeTag,
+        "MemorialTag",
         db_table=DB_TABLE_PREFIX + "location_tag_location_type",
         related_name="locations",
         blank=False,
@@ -500,7 +499,7 @@ class Author(I18nPage):
     i18n_place_of_death = TranslatedField.named("place_of_death", True)
 
     language_tags = ParentalManyToManyField(
-        tags.LanguageTag,
+        "LanguageTag",
         db_table=DB_TABLE_PREFIX + "author_tag_language",
         related_name="authors",
         blank=True,
@@ -508,7 +507,7 @@ class Author(I18nPage):
         help_text=_(TXT["author.language.help"])
     )
     genre_tags = ParentalManyToManyField(
-        tags.GenreTag,
+        "GenreTag",
         db_table=DB_TABLE_PREFIX + "author_tag_genre",
         related_name="authors",
         blank=True,
@@ -516,7 +515,7 @@ class Author(I18nPage):
         help_text=_(TXT["author.genre.help"])
     )
     literary_period_tags = ParentalManyToManyField(
-        tags.LiteraryPeriodTag,
+        "LiteraryPeriodTag",
         db_table=DB_TABLE_PREFIX + "author_tag_literary_period",
         related_name="authors",
         blank=True,
@@ -1253,7 +1252,7 @@ class TempLocation(I18nPage):
         help_text=_(TXT["memorial_site.title_image.help"])
     )
     memorial_type_tags = ParentalManyToManyField(
-        tags.LocationTypeTag,
+        "MemorialTag",
         db_table=DB_TABLE_PREFIX + "memorial_site_tag_memorial_type",
         related_name="memorial_site",
         blank=False,
