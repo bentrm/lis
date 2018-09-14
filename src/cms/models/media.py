@@ -18,28 +18,24 @@ class Media(models.Model):
     """Implements the basic Media interface used by media items as images and documents."""
 
     title_de = models.CharField(
-        max_length=255,
-        null=True, blank=True,
-        verbose_name=_(TXT["media.title_de"])
+        max_length=255, null=True, blank=True, verbose_name=_(TXT["media.title_de"])
     )
     title_cs = models.CharField(
-        max_length=255,
-        null=True, blank=True,
-        verbose_name=_(TXT["media.title_cs"])
+        max_length=255, null=True, blank=True, verbose_name=_(TXT["media.title_cs"])
     )
     i18n_title = TranslatedField.named("title", True)
 
     search_fields = CollectionMember.search_fields + [
-        index.SearchField('title', partial_match=True, boost=10),
-        index.FilterField('title'),
-        index.SearchField('title_de', partial_match=True, boost=10),
-        index.FilterField('title_de'),
-        index.SearchField('title_cs', partial_match=True, boost=10),
-        index.FilterField('title_cs'),
-        index.RelatedFields('tags', [
-            index.SearchField('name', partial_match=True, boost=10),
-        ]),
-        index.FilterField('uploaded_by_user'),
+        index.SearchField("title", partial_match=True, boost=10),
+        index.FilterField("title"),
+        index.SearchField("title_de", partial_match=True, boost=10),
+        index.FilterField("title_de"),
+        index.SearchField("title_cs", partial_match=True, boost=10),
+        index.FilterField("title_cs"),
+        index.RelatedFields(
+            "tags", [index.SearchField("name", partial_match=True, boost=10)]
+        ),
+        index.FilterField("uploaded_by_user"),
     ]
 
     def __str__(self):
@@ -54,19 +50,22 @@ class ImageMedia(Media, AbstractImage):
 
     caption = models.CharField(
         max_length=1024,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_(TXT["image_media.caption"]),
-        help_text=_(TXT["image_media.caption.help"])
+        help_text=_(TXT["image_media.caption.help"]),
     )
     caption_de = models.CharField(
         max_length=1024,
-        null=True, blank=True,
-        verbose_name=_(TXT["image_media.caption_de"])
+        null=True,
+        blank=True,
+        verbose_name=_(TXT["image_media.caption_de"]),
     )
     caption_cs = models.CharField(
         max_length=1024,
-        null=True, blank=True,
-        verbose_name=_(TXT["image_media.caption_cs"])
+        null=True,
+        blank=True,
+        verbose_name=_(TXT["image_media.caption_cs"]),
     )
     i18n_caption = TranslatedField.named("caption")
 
@@ -98,11 +97,12 @@ class ImageMediaRendition(AbstractRendition):
         on_delete=models.CASCADE,
         related_name="renditions",
         verbose_name=_(TXT["rendition.image"]),
-        help_text=_(TXT["rendition.image.help"]))
+        help_text=_(TXT["rendition.image.help"]),
+    )
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "image_rendition"
-        unique_together = (("image", "filter_spec", "focal_point_key"))
+        unique_together = ("image", "filter_spec", "focal_point_key")
 
 
 class DocumentMedia(Media, AbstractDocument):
@@ -110,19 +110,22 @@ class DocumentMedia(Media, AbstractDocument):
 
     summary = models.CharField(
         max_length=2000,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_(TXT["document_media.summary"]),
-        help_text=_(TXT["document_media.summary.help"])
+        help_text=_(TXT["document_media.summary.help"]),
     )
     summary_de = models.CharField(
         max_length=2000,
-        null=True, blank=True,
-        verbose_name=_(TXT["document_media.summary_de"])
+        null=True,
+        blank=True,
+        verbose_name=_(TXT["document_media.summary_de"]),
     )
     summary_cs = models.CharField(
         max_length=2000,
-        null=True, blank=True,
-        verbose_name=_(TXT["document_media.summary_cs"])
+        null=True,
+        blank=True,
+        verbose_name=_(TXT["document_media.summary_cs"]),
     )
     i18n_summary = TranslatedField.named("summary")
 

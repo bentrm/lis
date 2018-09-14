@@ -21,7 +21,9 @@ class TranslatedField(object):
 
     """
 
-    def __init__(self, en_field: str, de_field: str, cs_field: str, default_field: str = None):
+    def __init__(
+        self, en_field: str, de_field: str, cs_field: str, default_field: str = None
+    ):
         self.en_field = en_field
         self.de_field = de_field
         self.cs_field = cs_field
@@ -35,7 +37,9 @@ class TranslatedField(object):
 
     def __get__(self, instance, owner):
         lang = get_language()
-        default_value = getattr(instance, self.default_field) if self.default_field else ""
+        default_value = (
+            getattr(instance, self.default_field) if self.default_field else ""
+        )
         if lang == "en":
             return getattr(instance, self.en_field) or default_value
         elif lang == "de":
@@ -60,14 +64,12 @@ def format_date(year: int = None, month: int = None, day: int = None):
     """Format date input in localized human readable string."""
     if year and month and day:
         return date_format(
-            datetime.datetime(year, month, day),
-            format="DATE_FORMAT",
-            use_l10n=True)
+            datetime.datetime(year, month, day), format="DATE_FORMAT", use_l10n=True
+        )
     elif year and month:
         return date_format(
-            datetime.datetime(year, month, 1),
-            format="YEAR_MONTH_FORMAT",
-            use_l10n=True)
+            datetime.datetime(year, month, 1), format="YEAR_MONTH_FORMAT", use_l10n=True
+        )
     elif year:
         return year
     return ""

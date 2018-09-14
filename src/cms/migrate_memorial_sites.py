@@ -52,6 +52,8 @@ for site in MemorialSite.objects.all():
         obj.memorial_type_tags.add(tag)
 
     for old_sub in site.authors.all():
-        obj.authors.add(LocationAuthor(author=old_sub.author, sort_order=old_sub.sort_order))
+        obj.authors.add(
+            LocationAuthor(author=old_sub.author, sort_order=old_sub.sort_order)
+        )
 
     obj.save_revision()

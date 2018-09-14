@@ -7,6 +7,7 @@ from wagtail.core.templatetags.wagtailcore_tags import pageurl
 
 register = template.Library()
 
+
 @register.simple_tag(name="cmsurl", takes_context=True)
 def cms_url(context, page):
     """Return the given pages url or the current pages draft url if in preview mode."""
@@ -38,7 +39,6 @@ def humanize_list(arg):
 
 
 class TextExtractor(HTMLParser):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""

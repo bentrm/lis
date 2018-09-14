@@ -34,17 +34,14 @@ class FieldPanelTabs(MultiFieldPanel):
         return self.id
 
     def render(self):
-        formset = render_to_string(self.template, {
-            "self": self,
-            "show_label": self.show_label,
-        })
+        formset = render_to_string(
+            self.template, {"self": self, "show_label": self.show_label}
+        )
         js = self.render_js_init()
         return widget_with_script(formset, js)
 
     def render_js_init(self):
-        return mark_safe(render_to_string(self.js_template, {
-            "self": self,
-        }))
+        return mark_safe(render_to_string(self.js_template, {"self": self}))
 
 
 class FieldPanelTab(FieldPanel):
@@ -58,8 +55,13 @@ class FieldPanelTab(FieldPanel):
         return self.bound_field.field.required
 
     def render_as_field(self):
-        return mark_safe(render_to_string(self.field_template, {
-            "field": self.bound_field,
-            "show_label": False,
-            "field_type": self.field_type(),
-        }))
+        return mark_safe(
+            render_to_string(
+                self.field_template,
+                {
+                    "field": self.bound_field,
+                    "show_label": False,
+                    "field_type": self.field_type(),
+                },
+            )
+        )

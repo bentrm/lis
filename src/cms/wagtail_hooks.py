@@ -5,12 +5,27 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.html import format_html
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.rich_text.converters.html_to_contentstate import BlockElementHandler, InlineStyleElementHandler
-from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
+from wagtail.admin.rich_text.converters.html_to_contentstate import (
+    BlockElementHandler,
+    InlineStyleElementHandler,
+)
+from wagtail.contrib.modeladmin.options import (
+    ModelAdmin,
+    ModelAdminGroup,
+    modeladmin_register,
+)
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
-from .models import AgeGroupTag, Author, GenreTag, I18nPage, LanguageTag, PeriodTag, MemorialTag
+from .models import (
+    AgeGroupTag,
+    Author,
+    GenreTag,
+    I18nPage,
+    LanguageTag,
+    PeriodTag,
+    MemorialTag,
+)
 
 
 def as_page_object(self):
@@ -60,7 +75,10 @@ PageRevision.as_page_object = as_page_object
 @hooks.register("insert_global_admin_js")
 def global_admin_js():
     """Add custom JavaScript logic to the admin."""
-    return format_html("<script defer src='{}'></script>", static("vendor/fontawesome/js/fontawesome-all.js"))
+    return format_html(
+        "<script defer src='{}'></script>",
+        static("vendor/fontawesome/js/fontawesome-all.js"),
+    )
 
 
 @hooks.register("insert_editor_css")
@@ -113,7 +131,7 @@ def register_footnote_feature(features):
             "fontWeight": "bold",
             "marginLeft": ".1rem",
             "padding": ".1rem",
-        }
+        },
     }
 
     features.register_editor_plugin(
@@ -121,18 +139,9 @@ def register_footnote_feature(features):
     )
 
     db_conversion = {
-        "from_database_format": {
-            tag: InlineStyleElementHandler(type_),
-        },
+        "from_database_format": {tag: InlineStyleElementHandler(type_)},
         "to_database_format": {
-            "style_map": {
-                type_: {
-                    "element": tag,
-                    "props": {
-                        "class": "footnote",
-                    },
-                }
-            },
+            "style_map": {type_: {"element": tag, "props": {"class": "footnote"}}}
         },
     }
 
@@ -157,21 +166,18 @@ def register_blockquote_feature(features):
         "draftail", feature_name, draftail_features.BlockFeature(control)
     )
 
-    features.register_converter_rule("contentstate", feature_name, {
-        "from_database_format": {
-            tag: BlockElementHandler(type_)
-        },
-        "to_database_format": {
-            "block_map": {
-                type_: {
-                    "element": tag,
-                    "props": {
-                        "class": "blockquote text-right",
-                    },
-                },
+    features.register_converter_rule(
+        "contentstate",
+        feature_name,
+        {
+            "from_database_format": {tag: BlockElementHandler(type_)},
+            "to_database_format": {
+                "block_map": {
+                    type_: {"element": tag, "props": {"class": "blockquote text-right"}}
+                }
             },
         },
-    })
+    )
 
 
 class TagModelAdmin(ModelAdmin):

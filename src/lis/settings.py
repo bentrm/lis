@@ -110,9 +110,7 @@ ROOT_URLCONF = "lis.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            os.path.join(SRC_DIR, "templates"),
-        ],
+        "DIRS": [os.path.join(SRC_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -121,9 +119,9 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "cms.context_processors.app_status",
-            ],
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "lis.wsgi.application"
@@ -141,7 +139,7 @@ DATABASES = {
         "HOST": env("DB_HOST", required=True),
         "PORT": env("DB_PORT", "5432"),
         "CONN_MAX_AGE": 360,
-    },
+    }
 }
 
 # Caching
@@ -158,34 +156,23 @@ if not DEBUG:
         }
     }
 else:
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        }
-    }
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 
 # Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(message)s"
-        }
+        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"}
     },
     "handlers": {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        },
+        }
     },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "propagate": True,
-        },
-    },
+    "loggers": {"django": {"handlers": ["console"], "propagate": True}},
 }
 
 
@@ -193,11 +180,7 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = "de-de"
-LANGUAGES = [
-    ("en", "English"),
-    ("de", "Deutsch"),
-    ("cs", "český"),
-]
+LANGUAGES = [("en", "English"), ("de", "Deutsch"), ("cs", "český")]
 
 TIME_ZONE = "Europe/Berlin"
 
@@ -207,15 +190,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = [
-    os.path.join(SRC_DIR, "locale")
-]
+LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-STATICFILES_DIRS = [
-    os.path.join(SRC_DIR, "static"),
-]
+STATICFILES_DIRS = [os.path.join(SRC_DIR, "static")]
 STATIC_ROOT = env("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 STATIC_URL = env("STATIC_URL", "/static/")
 
@@ -250,7 +229,7 @@ MAP_WIDGETS = {
         ("mapCenterLocationName", "Dresden"),
         ("markerFitZoom", 12),
     ),
-    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY", required=True)
+    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY", required=True),
 }
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
@@ -262,9 +241,7 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",

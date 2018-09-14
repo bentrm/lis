@@ -14,8 +14,15 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override, pgettext
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList,
-                                         PageChooserPanel, StreamFieldPanel, TabbedInterface)
+from wagtail.admin.edit_handlers import (
+    FieldPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    ObjectList,
+    PageChooserPanel,
+    StreamFieldPanel,
+    TabbedInterface,
+)
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.images.edit_handlers import ImageChooserPanel
@@ -25,7 +32,14 @@ from cms.blocks import ParagraphStructBlock
 from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
 from cms.messages import TXT
 
-from .base import DB_TABLE_PREFIX, GENDER, GENDER_OPTION, CategoryPage, I18nPage, TextType
+from .base import (
+    DB_TABLE_PREFIX,
+    GENDER,
+    GENDER_OPTION,
+    CategoryPage,
+    I18nPage,
+    TextType,
+)
 from .helpers import TranslatedField, format_date, validate_date
 
 
@@ -86,9 +100,9 @@ class Location(I18nPage):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name="+",
         verbose_name=_(TXT["location.title_image"]),
-        help_text=_(TXT["location.title_image.help"])
+        help_text=_(TXT["location.title_image.help"]),
     )
     location_type_tags = ParentalManyToManyField(
         "MemorialTag",
@@ -96,26 +110,26 @@ class Location(I18nPage):
         related_name="locations",
         blank=False,
         verbose_name=_(TXT["location.location_type_tags.plural"]),
-        help_text=_(TXT["location.location_type_tags.help"])
+        help_text=_(TXT["location.location_type_tags.help"]),
     )
 
     address = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
+        help_text=_(TXT["location.address.help"]),
     )
     address_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
+        help_text=_(TXT["location.address.help"]),
     )
     address_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.address"]),
-        help_text=_(TXT["location.address.help"])
+        help_text=_(TXT["location.address.help"]),
     )
     i18n_address = TranslatedField.named("address", True)
 
@@ -123,19 +137,19 @@ class Location(I18nPage):
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
+        help_text=_(TXT["location.contact_info.help"]),
     )
     contact_info_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
+        help_text=_(TXT["location.contact_info.help"]),
     )
     contact_info_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.contact_info"]),
-        help_text=_(TXT["location.contact_info.help"])
+        help_text=_(TXT["location.contact_info.help"]),
     )
     i18n_contact_info = TranslatedField.named("contact_info", True)
 
@@ -143,25 +157,25 @@ class Location(I18nPage):
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
+        help_text=_(TXT["location.directions.help"]),
     )
     directions_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
+        help_text=_(TXT["location.directions.help"]),
     )
     directions_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["location.directions"]),
-        help_text=_(TXT["location.directions.help"])
+        help_text=_(TXT["location.directions.help"]),
     )
     i18n_directions = TranslatedField.named("directions")
 
     coordinates = PointField(
         verbose_name=_(TXT["location.coordinates"]),
-        help_text=_(TXT["location.coordinates.help"])
+        help_text=_(TXT["location.coordinates.help"]),
     )
 
     search_fields = I18nPage.search_fields + [
@@ -176,8 +190,8 @@ class Location(I18nPage):
             "location_type_tags",
             widget=autocomplete.ModelSelect2Multiple(
                 url="autocomplete-location-type",
-                attrs={"data-maximum-selection-length": 1}
-            )
+                attrs={"data-maximum-selection-length": 1},
+            ),
         ),
         FieldPanelTabs(
             children=[
@@ -208,10 +222,12 @@ class Location(I18nPage):
         ),
         FieldPanel("coordinates", widget=GooglePointFieldWidget()),
     ]
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
-    ])
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(general_panels, heading=_(TXT["heading.general"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     def get_context(self, request, *args, **kwargs):
         """Add child pages into the pages context."""
@@ -221,7 +237,9 @@ class Location(I18nPage):
             memorial_sites = memorial_sites.live()
         else:
             memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
-        context["memorial_sites"] = sorted(memorial_sites, key=lambda x: str(x.i18n_title))
+        context["memorial_sites"] = sorted(
+            memorial_sites, key=lambda x: str(x.i18n_title)
+        )
         return context
 
     class Meta:
@@ -240,28 +258,28 @@ class MemorialSite(I18nPage):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name="+",
         verbose_name=_(TXT["memorial_site.title_image"]),
-        help_text=_(TXT["memorial_site.title_image.help"])
+        help_text=_(TXT["memorial_site.title_image.help"]),
     )
 
     introduction = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     introduction_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     introduction_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     i18n_introduction = TranslatedField.named("introduction")
 
@@ -269,19 +287,19 @@ class MemorialSite(I18nPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     i18n_description = TranslatedField.named("description")
 
@@ -289,19 +307,19 @@ class MemorialSite(I18nPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     detailed_description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     detailed_description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     i18n_detailed_description = TranslatedField.named("detailed_description")
 
@@ -312,31 +330,33 @@ class MemorialSite(I18nPage):
             label=_(TXT["memorial_site.authors"]),
             min_num=1,
             help_text=_(TXT["memorial_site.authors"]),
-            panels=[PageChooserPanel("author", "cms.Author")]
+            panels=[PageChooserPanel("author", "cms.Author")],
         ),
     ]
     english_panels = I18nPage.english_panels + [
         FieldPanel("introduction"),
         StreamFieldPanel("description"),
-        StreamFieldPanel("detailed_description")
+        StreamFieldPanel("detailed_description"),
     ]
     german_panels = I18nPage.german_panels + [
         FieldPanel("introduction_de"),
         StreamFieldPanel("description_de"),
-        StreamFieldPanel("detailed_description_de")
+        StreamFieldPanel("detailed_description_de"),
     ]
     czech_panels = I18nPage.czech_panels + [
         FieldPanel("introduction_cs"),
         StreamFieldPanel("description_cs"),
-        StreamFieldPanel("detailed_description_cs")
+        StreamFieldPanel("detailed_description_cs"),
     ]
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
-    ])
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(general_panels, heading=_(TXT["heading.general"])),
+            ObjectList(english_panels, heading=_(TXT["heading.en"])),
+            ObjectList(german_panels, heading=_(TXT["heading.de"])),
+            ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     def get_context(self, request, *args, **kwargs):
         """Add all child geometries to context.."""
@@ -375,7 +395,7 @@ class MemorialSiteAuthor(Orderable):
         "MemorialSite",
         related_name="authors",
         verbose_name=_(TXT["memorial_site"]),
-        help_text=_(TXT["memorial_site_author.memorial_site.help"])
+        help_text=_(TXT["memorial_site_author.memorial_site.help"]),
     )
     author = models.ForeignKey(
         "Author",
@@ -384,7 +404,7 @@ class MemorialSiteAuthor(Orderable):
         on_delete=models.SET_NULL,
         related_name="memorial_sites",
         verbose_name=_(TXT["memorial_site_author.author"]),
-        help_text=_(TXT["memorial_site_author.author.help"])
+        help_text=_(TXT["memorial_site_author.author.help"]),
     )
 
     class Meta:
@@ -410,91 +430,97 @@ class Author(I18nPage):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name="+",
         verbose_name=_(TXT["author.title_image"]),
-        help_text=_(TXT["author.title_image.help"])
+        help_text=_(TXT["author.title_image.help"]),
     )
     sex = models.CharField(
         max_length=1,
         choices=GENDER_CHOICES,
         default=GENDER_UNKNOWN,
-        verbose_name=_(TXT["author.gender"])
+        verbose_name=_(TXT["author.gender"]),
     )  # TODO: rename to gender
     date_of_birth_year = models.PositiveSmallIntegerField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0), MaxValueValidator(9999)],
         verbose_name=_(TXT["author.date_of_birth_year"]),
-        help_text=_(TXT["author.date_of_birth_year.help"])
+        help_text=_(TXT["author.date_of_birth_year.help"]),
     )
     date_of_birth_month = models.PositiveSmallIntegerField(
         choices=dates.MONTHS.items(),
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
         verbose_name=_(TXT["author.date_of_birth_month"]),
-        help_text=_(TXT["author.date_of_birth_month.help"])
+        help_text=_(TXT["author.date_of_birth_month.help"]),
     )
     date_of_birth_day = models.PositiveSmallIntegerField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(31)],
         verbose_name=_(TXT["author.date_of_birth_day"]),
-        help_text=_(TXT["author.date_of_birth_day.help"])
+        help_text=_(TXT["author.date_of_birth_day.help"]),
     )
     place_of_birth = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_birth"]),
-        help_text=_(TXT["author.place_of_birth.help"])
+        help_text=_(TXT["author.place_of_birth.help"]),
     )
     place_of_birth_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_birth"]),
-        help_text=_(TXT["author.place_of_birth_de.help"])
+        help_text=_(TXT["author.place_of_birth_de.help"]),
     )
     place_of_birth_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_birth"]),
-        help_text=_(TXT["author.place_of_birth_cs.help"])
+        help_text=_(TXT["author.place_of_birth_cs.help"]),
     )
     i18n_place_of_birth = TranslatedField.named("place_of_birth", True)
 
     date_of_death_year = models.PositiveSmallIntegerField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(0), MaxValueValidator(9999)],
         verbose_name=_(TXT["author.date_of_death_year"]),
-        help_text=_(TXT["author.date_of_death_year.help"])
+        help_text=_(TXT["author.date_of_death_year.help"]),
     )
     date_of_death_month = models.PositiveSmallIntegerField(
         choices=dates.MONTHS.items(),
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
         verbose_name=_(TXT["author.date_of_death_month"]),
-        help_text=_(TXT["author.date_of_death_month.help"])
+        help_text=_(TXT["author.date_of_death_month.help"]),
     )
     date_of_death_day = models.PositiveSmallIntegerField(
-        null=True, blank=True,
+        null=True,
+        blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(31)],
         verbose_name=_(TXT["author.date_of_death_day"]),
-        help_text=_(TXT["author.date_of_death_day.help"])
+        help_text=_(TXT["author.date_of_death_day.help"]),
     )
     place_of_death = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_death"]),
-        help_text=_(TXT["author.place_of_death.help"])
+        help_text=_(TXT["author.place_of_death.help"]),
     )
     place_of_death_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_death"]),
-        help_text=_(TXT["author.place_of_death_de.help"])
+        help_text=_(TXT["author.place_of_death_de.help"]),
     )
     place_of_death_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.place_of_death"]),
-        help_text=_(TXT["author.place_of_death_cs.help"])
+        help_text=_(TXT["author.place_of_death_cs.help"]),
     )
     i18n_place_of_death = TranslatedField.named("place_of_death", True)
 
@@ -504,7 +530,7 @@ class Author(I18nPage):
         related_name="authors",
         blank=True,
         verbose_name=_(TXT["author.language.plural"]),
-        help_text=_(TXT["author.language.help"])
+        help_text=_(TXT["author.language.help"]),
     )
     genre_tags = ParentalManyToManyField(
         "GenreTag",
@@ -512,7 +538,7 @@ class Author(I18nPage):
         related_name="authors",
         blank=True,
         verbose_name=_(TXT["author.genre.plural"]),
-        help_text=_(TXT["author.genre.help"])
+        help_text=_(TXT["author.genre.help"]),
     )
     literary_period_tags = ParentalManyToManyField(
         "PeriodTag",
@@ -520,38 +546,60 @@ class Author(I18nPage):
         related_name="authors",
         blank=True,
         verbose_name=_(TXT["author.literary_period.plural"]),
-        help_text=_(TXT["author.literary_period.help"])
+        help_text=_(TXT["author.literary_period.help"]),
     )
 
     @property
     def born(self):
         """Return the year of birth as a datetime object."""
-        if self.date_of_birth_year and self.date_of_birth_month and self.date_of_birth_day:
-            return datetime.date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
+        if (
+            self.date_of_birth_year
+            and self.date_of_birth_month
+            and self.date_of_birth_day
+        ):
+            return datetime.date(
+                self.date_of_birth_year,
+                self.date_of_birth_month,
+                self.date_of_birth_day,
+            )
 
     @property
     def died(self):
         """Return the year of death as a datetime object."""
-        if self.date_of_death_year and self.date_of_death_month and self.date_of_death_day:
-            return datetime.date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
+        if (
+            self.date_of_death_year
+            and self.date_of_death_month
+            and self.date_of_death_day
+        ):
+            return datetime.date(
+                self.date_of_death_year,
+                self.date_of_death_month,
+                self.date_of_death_day,
+            )
 
     @property
     def age(self):
         """Return the age of the author in years."""
         if self.born and self.died:
             diff_year = self.died.year - self.born.year
-            diff_remainder = (self.died.month, self.died.day) < (self.born.month, self.born.day)
+            diff_remainder = (self.died.month, self.died.day) < (
+                self.born.month,
+                self.born.day,
+            )
             return diff_year - diff_remainder
 
     parent_page_types = ["AuthorIndex"]
     search_fields = Page.search_fields + [
-        index.RelatedFields("names", [
-            index.SearchField("title"),
-            index.SearchField("first_name"),
-            index.SearchField("last_name"),
-            index.FilterField("birth_name"),
-            index.FilterField("is_pseudonym"),
-        ]),
+        index.RelatedFields(
+            "names",
+            [
+                index.SearchField("title"),
+                index.SearchField("first_name"),
+                index.SearchField("last_name"),
+                index.FilterField("birth_name"),
+                index.FilterField("is_pseudonym"),
+            ],
+        ),
         index.FilterField("sex"),
         index.FilterField("born"),
         index.FilterField("died"),
@@ -573,7 +621,7 @@ class Author(I18nPage):
                                 FieldPanel("birth_name"),
                             ],
                             heading=_(TXT["heading.en"]),
-                            classname="collapsible"
+                            classname="collapsible",
                         ),
                         MultiFieldPanel(
                             children=[
@@ -582,7 +630,7 @@ class Author(I18nPage):
                                 FieldPanel("last_name_de"),
                                 FieldPanel("birth_name_de"),
                             ],
-                            heading=_(TXT["heading.de"])
+                            heading=_(TXT["heading.de"]),
                         ),
                         MultiFieldPanel(
                             children=[
@@ -591,15 +639,15 @@ class Author(I18nPage):
                                 FieldPanel("last_name_cs"),
                                 FieldPanel("birth_name_cs"),
                             ],
-                            heading=_(TXT["heading.cs"])
+                            heading=_(TXT["heading.cs"]),
                         ),
                     ],
-                    heading=_(TXT["author.name"])
+                    heading=_(TXT["author.name"]),
                 ),
             ],
             label=_(TXT["author.name.plural"]),
             min_num=1,
-            help_text=_(TXT["author.name.help"])
+            help_text=_(TXT["author.name.help"]),
         ),
         FieldPanel("sex"),
         MultiFieldPanel(
@@ -610,13 +658,17 @@ class Author(I18nPage):
                 FieldPanelTabs(
                     children=[
                         FieldPanelTab("place_of_birth", heading=_(TXT["language.en"])),
-                        FieldPanelTab("place_of_birth_de", heading=_(TXT["language.de"])),
-                        FieldPanelTab("place_of_birth_cs", heading=_(TXT["language.cs"])),
+                        FieldPanelTab(
+                            "place_of_birth_de", heading=_(TXT["language.de"])
+                        ),
+                        FieldPanelTab(
+                            "place_of_birth_cs", heading=_(TXT["language.cs"])
+                        ),
                     ],
                     heading=_(TXT["author.place_of_birth"]),
                 ),
             ],
-            heading=_(TXT["author.date_of_birth"])
+            heading=_(TXT["author.date_of_birth"]),
         ),
         MultiFieldPanel(
             children=[
@@ -626,13 +678,17 @@ class Author(I18nPage):
                 FieldPanelTabs(
                     children=[
                         FieldPanelTab("place_of_death", heading=_(TXT["language.en"])),
-                        FieldPanelTab("place_of_death_de", heading=_(TXT["language.de"])),
-                        FieldPanelTab("place_of_death_cs", heading=_(TXT["language.cs"])),
+                        FieldPanelTab(
+                            "place_of_death_de", heading=_(TXT["language.de"])
+                        ),
+                        FieldPanelTab(
+                            "place_of_death_cs", heading=_(TXT["language.cs"])
+                        ),
                     ],
                     heading=_(TXT["author.place_of_death"]),
                 ),
             ],
-            heading=_(TXT["author.date_of_death"])
+            heading=_(TXT["author.date_of_death"]),
         ),
         MultiFieldPanel(
             heading=_(TXT["tag.plural"]),
@@ -641,7 +697,7 @@ class Author(I18nPage):
                     field_name="language_tags",
                     widget=autocomplete.ModelSelect2Multiple(
                         url="autocomplete-language"
-                    )
+                    ),
                 ),
                 FieldPanel(
                     field_name="genre_tags",
@@ -649,16 +705,20 @@ class Author(I18nPage):
                 ),
                 FieldPanel(
                     field_name="literary_period_tags",
-                    widget=autocomplete.ModelSelect2Multiple(url="autocomplete-literary-period"),
+                    widget=autocomplete.ModelSelect2Multiple(
+                        url="autocomplete-literary-period"
+                    ),
                 ),
             ],
         ),
     ]
 
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
-    ])
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(general_panels, heading=_(TXT["heading.general"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     @property
     def full_name_title(self):
@@ -669,18 +729,14 @@ class Author(I18nPage):
     def formatted_date_of_birth(self):
         """Format date of birth in human readable string."""
         return format_date(
-            self.date_of_birth_year,
-            self.date_of_birth_month,
-            self.date_of_birth_day
+            self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day
         )
 
     @property
     def formatted_date_of_death(self):
         """Format date of death in human readable string."""
         return format_date(
-            self.date_of_death_year,
-            self.date_of_death_month,
-            self.date_of_death_day
+            self.date_of_death_year, self.date_of_death_month, self.date_of_death_day
         )
 
     def full_clean(self, *args, **kwargs):
@@ -698,8 +754,12 @@ class Author(I18nPage):
     def clean(self):
         """Validate date components of input."""
         super(Author, self).clean()
-        validate_date(self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day)
-        validate_date(self.date_of_death_year, self.date_of_death_month, self.date_of_death_day)
+        validate_date(
+            self.date_of_birth_year, self.date_of_birth_month, self.date_of_birth_day
+        )
+        validate_date(
+            self.date_of_death_year, self.date_of_death_month, self.date_of_death_day
+        )
 
     def get_context(self, request, *args, **kwargs):
         """Add more context information on view requests."""
@@ -708,7 +768,9 @@ class Author(I18nPage):
         context["author"] = author
 
         # add all names of author to context
-        context["author_name"], *context["author_alt_names"] = author.names.order_by("sort_order")
+        context["author_name"], *context["author_alt_names"] = author.names.order_by(
+            "sort_order"
+        )
 
         # add level pages
         levels = self.get_children().specific()
@@ -742,63 +804,60 @@ class AuthorName(Orderable):
     is_pseudonym = models.BooleanField(
         default=False,
         verbose_name=_(TXT["author.name.is_pseudonym"]),
-        help_text=_(TXT["author.name.is_pseudonym.help"])
+        help_text=_(TXT["author.name.is_pseudonym.help"]),
     )
 
     title = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.title"]),
-        help_text=_(TXT["author.name.title.help"])
+        help_text=_(TXT["author.name.title.help"]),
     )
     title_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.title"]),
-        help_text=_(TXT["author.name.title_de.help"])
+        help_text=_(TXT["author.name.title_de.help"]),
     )
     title_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.title"]),
-        help_text=_(TXT["author.name.title_cs.help"])
+        help_text=_(TXT["author.name.title_cs.help"]),
     )
     i18n_title = TranslatedField.named("title", True)
 
     first_name = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_(TXT["author.name.first_name"])
+        max_length=255, blank=True, verbose_name=_(TXT["author.name.first_name"])
     )
     first_name_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.first_name"]),
-        help_text=_(TXT["author.name.first_name_de.help"])
+        help_text=_(TXT["author.name.first_name_de.help"]),
     )
     first_name_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.first_name"]),
-        help_text=_(TXT["author.name.first_name_cs.help"])
+        help_text=_(TXT["author.name.first_name_cs.help"]),
     )
     i18n_first_name = TranslatedField.named("first_name", True)
 
     last_name = models.CharField(
-        max_length=255,
-        verbose_name=_(TXT["author.name.last_name"])
+        max_length=255, verbose_name=_(TXT["author.name.last_name"])
     )
     last_name_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.last_name"]),
-        help_text=_(TXT["author.name.last_name_de.help"])
+        help_text=_(TXT["author.name.last_name_de.help"]),
     )
     last_name_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.last_name"]),
-        help_text=_(TXT["author.name.last_name_cs.help"])
+        help_text=_(TXT["author.name.last_name_cs.help"]),
     )
     i18n_last_name = TranslatedField.named("last_name", True)
 
@@ -806,19 +865,19 @@ class AuthorName(Orderable):
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.birth_name"]),
-        help_text=_(TXT["author.name.birth_name.help"])
+        help_text=_(TXT["author.name.birth_name.help"]),
     )
     birth_name_de = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.birth_name"]),
-        help_text=_(TXT["author.name.birth_name_de.help"])
+        help_text=_(TXT["author.name.birth_name_de.help"]),
     )
     birth_name_cs = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_(TXT["author.name.birth_name"]),
-        help_text=_(TXT["author.name.birth_name_cs.help"])
+        help_text=_(TXT["author.name.birth_name_cs.help"]),
     )
     i18n_birth_name = TranslatedField.named("birth_name", True)
 
@@ -843,7 +902,9 @@ class AuthorName(Orderable):
 
     def full_name(self):
         """Return the full name of the author in english language."""
-        return " ".join(x.strip() for x in [self.title, self.first_name, self.last_name] if x)
+        return " ".join(
+            x.strip() for x in [self.title, self.first_name, self.last_name] if x
+        )
 
     def full_name_de(self):
         """Return the full name of the author in german language."""
@@ -882,10 +943,9 @@ class LevelPage(I18nPage):
     @classmethod
     def can_create_at(cls, parent):
         """Determine the valid location of the page in the page hierarchy."""
-        return (
-            super(LevelPage, cls).can_create_at(parent) and
-            not parent.get_children().exact_type(cls)
-        )
+        return super(LevelPage, cls).can_create_at(
+            parent
+        ) and not parent.get_children().exact_type(cls)
 
     def serve(self, request, *args, **kwargs):
         """Defer to the parent pages serve method."""
@@ -934,19 +994,19 @@ class Level1Page(LevelPage):
         blank=True,
         default=[],
         verbose_name=_(TXT["level1.biography"]),
-        help_text=_(TXT["level1.biography.help"])
+        help_text=_(TXT["level1.biography.help"]),
     )
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level1.biography"]),
-        help_text=_(TXT["level1.biography.help"])
+        help_text=_(TXT["level1.biography.help"]),
     )
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level1.biography"]),
-        help_text=_(TXT["level1.biography.help"])
+        help_text=_(TXT["level1.biography.help"]),
     )
     i18n_biography = TranslatedField.named("biography")
 
@@ -954,40 +1014,33 @@ class Level1Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level1.works"]),
-        help_text=_(TXT["level1.works.help"])
+        help_text=_(TXT["level1.works.help"]),
     )
     works_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level1.works"]),
-        help_text=_(TXT["level1.works.help"])
+        help_text=_(TXT["level1.works.help"]),
     )
     works_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level1.works"]),
-        help_text=_(TXT["level1.works.help"])
+        help_text=_(TXT["level1.works.help"]),
     )
     i18n_works = TranslatedField.named("works")
 
-    english_panels = [
-        StreamFieldPanel("biography"),
-        StreamFieldPanel("works")
-    ]
-    german_panels = [
-        StreamFieldPanel("biography_de"),
-        StreamFieldPanel("works_de")
-    ]
-    czech_panels = [
-        StreamFieldPanel("biography_cs"),
-        StreamFieldPanel("works_cs")
-    ]
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
-    ])
+    english_panels = [StreamFieldPanel("biography"), StreamFieldPanel("works")]
+    german_panels = [StreamFieldPanel("biography_de"), StreamFieldPanel("works_de")]
+    czech_panels = [StreamFieldPanel("biography_cs"), StreamFieldPanel("works_cs")]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(english_panels, heading=_(TXT["heading.en"])),
+            ObjectList(german_panels, heading=_(TXT["heading.de"])),
+            ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "level_1"
@@ -1013,18 +1066,19 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.biography"]),
-        help_text=_(TXT["level2.biography"]))
+        help_text=_(TXT["level2.biography"]),
+    )
     biography_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.biography"]),
-        help_text=_(TXT["level2.biography.help"])
+        help_text=_(TXT["level2.biography.help"]),
     )
     biography_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.biography"]),
-        help_text=_(TXT["level2.biography.help"])
+        help_text=_(TXT["level2.biography.help"]),
     )
     i18n_biography = TranslatedField.named("biography")
 
@@ -1032,19 +1086,19 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.works"]),
-        help_text=_(TXT["level2.works.help"])
+        help_text=_(TXT["level2.works.help"]),
     )
     works_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.works"]),
-        help_text=_(TXT["level2.works.help"])
+        help_text=_(TXT["level2.works.help"]),
     )
     works_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.works"]),
-        help_text=_(TXT["level2.works.help"])
+        help_text=_(TXT["level2.works.help"]),
     )
     i18n_works = TranslatedField.named("works")
 
@@ -1052,19 +1106,19 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.reception"]),
-        help_text=_(TXT["level2.reception.help"])
+        help_text=_(TXT["level2.reception.help"]),
     )
     reception_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.reception"]),
-        help_text=_(TXT["level2.reception.help"])
+        help_text=_(TXT["level2.reception.help"]),
     )
     reception_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.reception"]),
-        help_text=_(TXT["level2.reception.help"])
+        help_text=_(TXT["level2.reception.help"]),
     )
     i18n_reception = TranslatedField.named("reception")
 
@@ -1072,19 +1126,19 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.connections"]),
-        help_text=_(TXT["level2.connections.help"])
+        help_text=_(TXT["level2.connections.help"]),
     )
     connections_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.connections"]),
-        help_text=_(TXT["level2.connections.help"])
+        help_text=_(TXT["level2.connections.help"]),
     )
     connections_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.connections"]),
-        help_text=_(TXT["level2.connections.help"])
+        help_text=_(TXT["level2.connections.help"]),
     )
     i18n_connections = TranslatedField.named("connections")
 
@@ -1092,19 +1146,19 @@ class Level2Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.full_texts"]),
-        help_text=_(TXT["level2.full_texts.help"])
+        help_text=_(TXT["level2.full_texts.help"]),
     )
     full_texts_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.full_texts"]),
-        help_text=_(TXT["level2.full_texts.help"])
+        help_text=_(TXT["level2.full_texts.help"]),
     )
     full_texts_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level2.full_texts"]),
-        help_text=_(TXT["level2.full_texts.help"])
+        help_text=_(TXT["level2.full_texts.help"]),
     )
     i18n_full_texts = TranslatedField.named("full_texts")
 
@@ -1130,12 +1184,14 @@ class Level2Page(LevelPage):
         StreamFieldPanel("full_texts_cs"),
     ]
 
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
-    ])
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(english_panels, heading=_(TXT["heading.en"])),
+            ObjectList(german_panels, heading=_(TXT["heading.de"])),
+            ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "level_2"
@@ -1158,19 +1214,19 @@ class Level3Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.primary_literature"]),
-        help_text=_(TXT["level3.primary_literature.help"])
+        help_text=_(TXT["level3.primary_literature.help"]),
     )
     primary_literature_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.primary_literature"]),
-        help_text=_(TXT["level3.primary_literature.help"])
+        help_text=_(TXT["level3.primary_literature.help"]),
     )
     primary_literature_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.primary_literature"]),
-        help_text=_(TXT["level3.primary_literature.help"])
+        help_text=_(TXT["level3.primary_literature.help"]),
     )
     i18n_primary_literature = TranslatedField.named("primary_literature")
 
@@ -1178,19 +1234,19 @@ class Level3Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.testimony"]),
-        help_text=_(TXT["level3.testimony.help"])
+        help_text=_(TXT["level3.testimony.help"]),
     )
     testimony_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.testimony"]),
-        help_text=_(TXT["level3.testimony.help"])
+        help_text=_(TXT["level3.testimony.help"]),
     )
     testimony_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.testimony"]),
-        help_text=_(TXT["level3.testimony.help"])
+        help_text=_(TXT["level3.testimony.help"]),
     )
     i18n_testimony = TranslatedField.named("testimony")
 
@@ -1198,19 +1254,19 @@ class Level3Page(LevelPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.secondary_literature"]),
-        help_text=_(TXT["level3.secondary_literature.help"])
+        help_text=_(TXT["level3.secondary_literature.help"]),
     )
     secondary_literature_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.secondary_literature"]),
-        help_text=_(TXT["level3.secondary_literature.help"])
+        help_text=_(TXT["level3.secondary_literature.help"]),
     )
     secondary_literature_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["level3.secondary_literature"]),
-        help_text=_(TXT["level3.secondary_literature.help"])
+        help_text=_(TXT["level3.secondary_literature.help"]),
     )
     i18n_secondary_literature = TranslatedField.named("secondary_literature")
 
@@ -1229,12 +1285,14 @@ class Level3Page(LevelPage):
         StreamFieldPanel("testimony_cs"),
         StreamFieldPanel("secondary_literature_cs"),
     ]
-    edit_handler = TabbedInterface([
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"]))
-    ])
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(english_panels, heading=_(TXT["heading.en"])),
+            ObjectList(german_panels, heading=_(TXT["heading.de"])),
+            ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+            ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "level_3"
@@ -1252,9 +1310,9 @@ class TempLocation(I18nPage):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name="+",
         verbose_name=_(TXT["memorial_site.title_image"]),
-        help_text=_(TXT["memorial_site.title_image.help"])
+        help_text=_(TXT["memorial_site.title_image.help"]),
     )
     memorial_type_tags = ParentalManyToManyField(
         "MemorialTag",
@@ -1262,26 +1320,26 @@ class TempLocation(I18nPage):
         related_name="memorial_site",
         blank=False,
         verbose_name=_(TXT["memorial_site.memorial_type_tags.plural"]),
-        help_text=_(TXT["memorial_site.memorial_type_tags.help"])
+        help_text=_(TXT["memorial_site.memorial_type_tags.help"]),
     )
 
     address = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.address"]),
-        help_text=_(TXT["memorial_site.address.help"])
+        help_text=_(TXT["memorial_site.address.help"]),
     )
     address_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.address"]),
-        help_text=_(TXT["memorial_site.address.help"])
+        help_text=_(TXT["memorial_site.address.help"]),
     )
     address_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.address"]),
-        help_text=_(TXT["memorial_site.address.help"])
+        help_text=_(TXT["memorial_site.address.help"]),
     )
     i18n_address = TranslatedField.named("address", True)
 
@@ -1289,19 +1347,19 @@ class TempLocation(I18nPage):
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.contact_info"]),
-        help_text=_(TXT["memorial_site.contact_info.help"])
+        help_text=_(TXT["memorial_site.contact_info.help"]),
     )
     contact_info_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.contact_info"]),
-        help_text=_(TXT["memorial_site.contact_info.help"])
+        help_text=_(TXT["memorial_site.contact_info.help"]),
     )
     contact_info_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.contact_info"]),
-        help_text=_(TXT["memorial_site.contact_info.help"])
+        help_text=_(TXT["memorial_site.contact_info.help"]),
     )
     i18n_contact_info = TranslatedField.named("contact_info", True)
 
@@ -1309,44 +1367,44 @@ class TempLocation(I18nPage):
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.directions"]),
-        help_text=_(TXT["memorial_site.directions.help"])
+        help_text=_(TXT["memorial_site.directions.help"]),
     )
     directions_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.directions"]),
-        help_text=_(TXT["memorial_site.directions.help"])
+        help_text=_(TXT["memorial_site.directions.help"]),
     )
     directions_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.directions"]),
-        help_text=_(TXT["memorial_site.directions.help"])
+        help_text=_(TXT["memorial_site.directions.help"]),
     )
     i18n_directions = TranslatedField.named("directions")
 
     coordinates = PointField(
         verbose_name=_(TXT["memorial_site.coordinates"]),
-        help_text=_(TXT["memorial_site.coordinates.help"])
+        help_text=_(TXT["memorial_site.coordinates.help"]),
     )
 
     introduction = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     introduction_de = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     introduction_cs = RichTextField(
         blank=True,
         features=I18nPage.RICH_TEXT_FEATURES,
         verbose_name=_(TXT["memorial_site.introduction"]),
-        help_text=_(TXT["memorial_site.introduction.help"])
+        help_text=_(TXT["memorial_site.introduction.help"]),
     )
     i18n_introduction = TranslatedField.named("introduction")
 
@@ -1354,19 +1412,19 @@ class TempLocation(I18nPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.description"]),
-        help_text=_(TXT["memorial_site.description.help"])
+        help_text=_(TXT["memorial_site.description.help"]),
     )
     i18n_description = TranslatedField.named("description")
 
@@ -1374,19 +1432,19 @@ class TempLocation(I18nPage):
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     detailed_description_de = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     detailed_description_cs = StreamField(
         [("paragraph", ParagraphStructBlock())],
         blank=True,
         verbose_name=_(TXT["memorial_site.detailed_description"]),
-        help_text=_(TXT["memorial_site.detailed_description.help"])
+        help_text=_(TXT["memorial_site.detailed_description.help"]),
     )
     i18n_detailed_description = TranslatedField.named("detailed_description")
 
@@ -1402,15 +1460,15 @@ class TempLocation(I18nPage):
             "memorial_type_tags",
             widget=autocomplete.ModelSelect2Multiple(
                 url="autocomplete-location-type",
-                attrs={"data-maximum-selection-length": 1}
-            )
+                attrs={"data-maximum-selection-length": 1},
+            ),
         ),
         InlinePanel(
             "authors",
             label=_(TXT["memorial_site.authors"]),
             min_num=1,
             help_text=_(TXT["memorial_site.authors"]),
-            panels=[PageChooserPanel("author", "cms.Author")]
+            panels=[PageChooserPanel("author", "cms.Author")],
         ),
         FieldPanelTabs(
             children=[
@@ -1444,28 +1502,28 @@ class TempLocation(I18nPage):
     english_panels = I18nPage.english_panels + [
         FieldPanel("introduction"),
         StreamFieldPanel("description"),
-        StreamFieldPanel("detailed_description")
+        StreamFieldPanel("detailed_description"),
     ]
     german_panels = I18nPage.german_panels + [
         FieldPanel("introduction_de"),
         StreamFieldPanel("description_de"),
-        StreamFieldPanel("detailed_description_de")
+        StreamFieldPanel("detailed_description_de"),
     ]
     czech_panels = I18nPage.czech_panels + [
         FieldPanel("introduction_cs"),
         StreamFieldPanel("description_cs"),
-        StreamFieldPanel("detailed_description_cs")
+        StreamFieldPanel("detailed_description_cs"),
     ]
-    meta_panels = I18nPage.meta_panels + [
-        FieldPanel("slug"),
-    ]
-    edit_handler = TabbedInterface([
-        ObjectList(general_panels, heading=_(TXT["heading.general"])),
-        ObjectList(english_panels, heading=_(TXT["heading.en"])),
-        ObjectList(german_panels, heading=_(TXT["heading.de"])),
-        ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
-        ObjectList(meta_panels, heading=_(TXT["heading.meta"]))
-    ])
+    meta_panels = I18nPage.meta_panels + [FieldPanel("slug")]
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(general_panels, heading=_(TXT["heading.general"])),
+            ObjectList(english_panels, heading=_(TXT["heading.en"])),
+            ObjectList(german_panels, heading=_(TXT["heading.de"])),
+            ObjectList(czech_panels, heading=_(TXT["heading.cs"])),
+            ObjectList(meta_panels, heading=_(TXT["heading.meta"])),
+        ]
+    )
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "memorial"
@@ -1480,7 +1538,7 @@ class LocationAuthor(Orderable):
         "TempLocation",
         related_name="authors",
         verbose_name=_(TXT["memorial_site_author.memorial_site"]),
-        help_text=_(TXT["memorial_site_author.memorial_site.help"])
+        help_text=_(TXT["memorial_site_author.memorial_site.help"]),
     )
     author = models.ForeignKey(
         "Author",
@@ -1489,7 +1547,7 @@ class LocationAuthor(Orderable):
         on_delete=models.SET_NULL,
         related_name="locations",
         verbose_name=_(TXT["memorial_site_author.author"]),
-        help_text=_(TXT["memorial_site_author.author.help"])
+        help_text=_(TXT["memorial_site_author.author.help"]),
     )
 
     class Meta:

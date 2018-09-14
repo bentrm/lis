@@ -20,20 +20,20 @@ class SignupView(View):
     def get(self, request, *args, **kwargs):
         """Return the form view."""
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
         """Validate and save the form authenticating the new user."""
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
+            username = form.cleaned_data.get("username")
+            raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             return HttpResponseRedirect("/cms")
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
 
 class TagAutocompleteView(autocomplete.Select2QuerySetView):

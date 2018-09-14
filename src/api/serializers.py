@@ -2,8 +2,15 @@
 
 from rest_framework import serializers
 
-from cms.models import (Author, AuthorName, GenreTag, LanguageTag, MemorialTag, PeriodTag,
-                        TempLocation)
+from cms.models import (
+    Author,
+    AuthorName,
+    GenreTag,
+    LanguageTag,
+    MemorialTag,
+    PeriodTag,
+    TempLocation,
+)
 
 THUMBNAIL_FILTER_SPEC = "fill-300x300|jpegquality-60"
 MEDIUM_FILTER_SPEC = "max-1000x1000|jpegquality-60"
@@ -73,7 +80,9 @@ class AuthorSerializer(serializers.ModelSerializer):
     thumbnail = serializers.SerializerMethodField()
     languages = LanguageTagSerializer(source="language_tags", many=True, read_only=True)
     genres = GenreTagSerializer(source="genre_tags", many=True, read_only=True)
-    periods = PeriodTagSerializer(source="literary_period_tags", many=True, read_only=True)
+    periods = PeriodTagSerializer(
+        source="literary_period_tags", many=True, read_only=True
+    )
     created = serializers.ReadOnlyField(source="last_published_at")
 
     def get_thumbnail(self, obj):
@@ -147,14 +156,7 @@ class MemorialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TempLocation
-        fields = (
-            "id",
-            "title",
-            "tags",
-            "authors",
-            "coordinates",
-            "created"
-        )
+        fields = ("id", "title", "tags", "authors", "coordinates", "created")
 
 
 class MemorialDetailSerializer(MemorialSerializer):
@@ -165,4 +167,13 @@ class MemorialDetailSerializer(MemorialSerializer):
 
     class Meta:
         model = TempLocation
-        fields = ("id", "title", "tags", "address", "desc", "authors", "coordinates", "created")
+        fields = (
+            "id",
+            "title",
+            "tags",
+            "address",
+            "desc",
+            "authors",
+            "coordinates",
+            "created",
+        )

@@ -8,7 +8,11 @@ def app_status(request):
 
     return {
         "CMS_VERSION": settings.CMS_VERSION,
-        "ROOT_MENU": HomePage.objects.first().get_children().live().in_menu().specific(),
+        "ROOT_MENU": HomePage.objects.first()
+        .get_children()
+        .live()
+        .in_menu()
+        .specific(),
         "AUTHOR_COUNT": Author.objects.count(),
         "MEMORIAL_SITE_COUNT": TempLocation.objects.count(),
     }

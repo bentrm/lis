@@ -25,19 +25,19 @@ class Tag(models.Model):
         verbose_name=_(TXT["tag.title"]),
         help_text=_(TXT["tag.title.help"]),
         max_length=1000,
-        unique=True
+        unique=True,
     )
     title_de = models.CharField(
         verbose_name=_(TXT["tag.title_de"]),
         help_text=_(TXT["tag.title_de.help"]),
         max_length=1000,
-        unique=True
+        unique=True,
     )
     title_cs = models.CharField(
         verbose_name=_(TXT["tag.title_cs"]),
         help_text=_(TXT["tag.title_cs.help"]),
         max_length=1000,
-        unique=True
+        unique=True,
     )
     i18n_title = TranslatedField.named("title", True)
 
@@ -45,43 +45,34 @@ class Tag(models.Model):
         blank=True,
         features=RICH_TEXT_FEATURES,
         verbose_name=_(TXT["tag.description"]),
-        help_text=_(TXT["tag.description.help"])
+        help_text=_(TXT["tag.description.help"]),
     )
     description_de = RichTextField(
         blank=True,
         features=RICH_TEXT_FEATURES,
         verbose_name=_(TXT["tag.description"]),
-        help_text=_(TXT["tag.description.help"])
+        help_text=_(TXT["tag.description.help"]),
     )
     description_cs = RichTextField(
         blank=True,
         features=RICH_TEXT_FEATURES,
         verbose_name=_(TXT["tag.description"]),
-        help_text=_(TXT["tag.description.help"])
+        help_text=_(TXT["tag.description.help"]),
     )
     i18n_description = TranslatedField.named("description")
 
     panels = [
         MultiFieldPanel(
             heading=_(TXT["heading.en"]),
-            children=[
-                FieldPanel("title"),
-                FieldPanel("description"),
-            ],
+            children=[FieldPanel("title"), FieldPanel("description")],
         ),
         MultiFieldPanel(
             heading=_(TXT["heading.de"]),
-            children=[
-                FieldPanel("title_de"),
-                FieldPanel("description_de"),
-            ],
+            children=[FieldPanel("title_de"), FieldPanel("description_de")],
         ),
         MultiFieldPanel(
             heading=_(TXT["heading.cs"]),
-            children=[
-                FieldPanel("title_cs"),
-                FieldPanel("description_cs"),
-            ],
+            children=[FieldPanel("title_cs"), FieldPanel("description_cs")],
         ),
     ]
 
@@ -99,13 +90,10 @@ class SortableTag(Tag):
     """Adds a sort order attribute to the tag model."""
 
     sort_order = models.IntegerField(
-        verbose_name=_(TXT["tag.sort_order"]),
-        help_text=_(TXT["tag.sort_order.help"]),
+        verbose_name=_(TXT["tag.sort_order"]), help_text=_(TXT["tag.sort_order.help"])
     )
 
-    panels = Tag.panels + [
-        FieldPanel("sort_order"),
-    ]
+    panels = Tag.panels + [FieldPanel("sort_order")]
 
     class Meta:
         abstract = True

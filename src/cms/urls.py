@@ -14,22 +14,22 @@ urlpatterns = [
     path(
         "autocomplete/language/",
         views.LanguageAutocomplete.as_view(),
-        name='autocomplete-language'
+        name="autocomplete-language",
     ),
     path(
         "autocomplete/location-type/",
         views.LocationTypeAutocomplete.as_view(),
-        name='autocomplete-location-type'
+        name="autocomplete-location-type",
     ),
     path(
         "autocomplete/genre/",
         views.GenreAutocomplete.as_view(),
-        name='autocomplete-genre'
+        name="autocomplete-genre",
     ),
     path(
         "autocomplete/literary-period/",
         views.LiteraryPeriodAutocomplete.as_view(),
-        name='autocomplete-literary-period'
+        name="autocomplete-literary-period",
     ),
     path("", include(wagtail_urls)),
 ]
