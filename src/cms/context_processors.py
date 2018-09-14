@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from .models import Author, HomePage, TempLocation
+from .models import Author, HomePage, Memorial
 
 
 def app_status(request):
@@ -14,5 +14,5 @@ def app_status(request):
         .in_menu()
         .specific(),
         "AUTHOR_COUNT": Author.objects.count(),
-        "MEMORIAL_SITE_COUNT": TempLocation.objects.count(),
+        "MEMORIAL_SITE_COUNT": Memorial.objects.count(),
     }

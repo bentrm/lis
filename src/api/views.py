@@ -2,7 +2,7 @@
 
 from rest_framework import generics, mixins, pagination, versioning
 
-from cms.models import Author, TempLocation
+from cms.models import Author, Memorial
 
 from . import filters, serializers
 
@@ -56,7 +56,7 @@ class AuthorDetail(mixins.RetrieveModelMixin, GenericAPIView):
 class MemorialList(mixins.ListModelMixin, GenericAPIView):
     """Returns a list of memorials."""
 
-    queryset = TempLocation.objects.all()
+    queryset = Memorial.objects.all()
     serializer_class = serializers.MemorialSerializer
     filter_class = filters.MemorialFilter
     ordering_fields = ("id",)
@@ -69,7 +69,7 @@ class MemorialList(mixins.ListModelMixin, GenericAPIView):
 class MemorialDetail(mixins.RetrieveModelMixin, GenericAPIView):
     """Returns details about a memorial object."""
 
-    queryset = TempLocation.objects.all()
+    queryset = Memorial.objects.all()
     serializer_class = serializers.MemorialDetailSerializer
 
     def get(self, *args, **kwargs):

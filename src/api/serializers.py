@@ -9,7 +9,7 @@ from cms.models import (
     LanguageTag,
     MemorialTag,
     PeriodTag,
-    TempLocation,
+    Memorial,
 )
 
 THUMBNAIL_FILTER_SPEC = "fill-300x300|jpegquality-60"
@@ -155,7 +155,7 @@ class MemorialSerializer(serializers.ModelSerializer):
         return list(obj.coordinates.coords)
 
     class Meta:
-        model = TempLocation
+        model = Memorial
         fields = ("id", "title", "tags", "authors", "coordinates", "created")
 
 
@@ -166,7 +166,7 @@ class MemorialDetailSerializer(MemorialSerializer):
     desc = serializers.ReadOnlyField(source="i18n_introduction")
 
     class Meta:
-        model = TempLocation
+        model = Memorial
         fields = (
             "id",
             "title",

@@ -1,8 +1,8 @@
 """Helper script that is only used once to migrate the legacy page structure."""
 
-from cms.models import LocationIndex, MemorialSite, TempLocation, LocationAuthor
+from cms.models import LocationIndex, MemorialSite, Memorial, LocationAuthor
 
-TempLocation.objects.delete()
+Memorial.objects.delete()
 
 for site in MemorialSite.objects.all():
     root = LocationIndex.objects.first()
@@ -12,7 +12,7 @@ for site in MemorialSite.objects.all():
     parent = site.get_parent().specific
     parent = parent.get_latest_revision_as_page()
 
-    obj = TempLocation(
+    obj = Memorial(
         title=site.title,
         title_de=site.title_de,
         title_cs=site.title_cs,

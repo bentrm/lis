@@ -77,7 +77,7 @@ class LocationIndex(CategoryPage):
         """Add all child geometries to context.."""
         context = super(LocationIndex, self).get_context(request, *args, **kwargs)
 
-        locations = TempLocation.objects.all()
+        locations = Memorial.objects.all()
         if request.is_preview:
             locations = [x.get_latest_revision_as_page() for x in locations]
         else:
@@ -781,7 +781,7 @@ class Author(I18nPage):
         context["levels"] = sorted(levels, key=lambda x: x.level_order)
 
         # add memorial sites
-        memorial_sites = TempLocation.objects.filter(authors__author=self)
+        memorial_sites = Memorial.objects.filter(authors__author=self)
         if request.is_preview:
             memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
         else:
@@ -1299,7 +1299,7 @@ class Level3Page(LevelPage):
         verbose_name = _(TXT["level3"])
 
 
-class TempLocation(I18nPage):
+class Memorial(I18nPage):
     """A geographic place on earth."""
 
     template = "cms/memorial_site.html"
@@ -1535,7 +1535,7 @@ class LocationAuthor(Orderable):
     """Join page type to add multiple authors to one memorial site."""
 
     memorial_site = ParentalKey(
-        "TempLocation",
+        "Memorial",
         related_name="authors",
         verbose_name=_(TXT["memorial_site_author.memorial_site"]),
         help_text=_(TXT["memorial_site_author.memorial_site.help"]),

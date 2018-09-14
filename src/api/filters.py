@@ -9,7 +9,7 @@ from rest_framework.filters import BaseFilterBackend
 from rest_framework.settings import api_settings
 
 from cms.models import Author, GenreTag, LanguageTag, MemorialTag, PeriodTag
-from cms.models import TempLocation as Memorial
+from cms.models import Memorial as Memorial
 
 
 class WagtailSearchFilterBackend(BaseFilterBackend):
