@@ -137,7 +137,7 @@ class MemorialSerializer(serializers.ModelSerializer):
     """Serializes Memorial pages to flat JSON objects output to list views."""
 
     title = serializers.ReadOnlyField(source="i18n_title")
-    tags = MemorialTagSerializer(source="memorial_site_tags", many=True, read_only=True)
+    tags = MemorialTagSerializer(source="memorial_type_tags", many=True, read_only=True)
     authors = serializers.SerializerMethodField()
     coordinates = serializers.SerializerMethodField()
     created = serializers.ReadOnlyField(source="last_published_at")
