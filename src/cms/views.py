@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.views import View
 
 from . import forms
-from .models import Tag, LanguageTag, MemorialTag, GenreTag, LiteraryPeriodTag
+from .models import GenreTag, LanguageTag, MemorialTag, PeriodTag, Tag
 
 
 class SignupView(View):
@@ -76,4 +76,4 @@ class GenreAutocomplete(TagAutocompleteView):
 class LiteraryPeriodAutocomplete(TagAutocompleteView):
     """Literary period tag autocomplete view."""
 
-    model = LiteraryPeriodTag
+    model = PeriodTag

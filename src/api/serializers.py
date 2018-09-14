@@ -2,10 +2,53 @@
 
 from rest_framework import serializers
 
-from cms.models import AuthorName, Author, TempLocation
+from cms.models import (Author, AuthorName, GenreTag, LanguageTag, MemorialTag, PeriodTag,
+                        TempLocation)
 
 THUMBNAIL_FILTER_SPEC = "fill-300x300|jpegquality-60"
 MEDIUM_FILTER_SPEC = "max-1000x1000|jpegquality-60"
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Abstract serializer class to be used as superclass to all tag serializers."""
+
+    title = serializers.CharField(source="i18n_title")
+
+    class Meta:
+        abstract = True
+        fields = ("id", "title")
+
+
+class LanguageTagSerializer(TagSerializer):
+    """Language tag serializer handling current user language."""
+
+    class Meta:
+        model = LanguageTag
+        fields = TagSerializer.Meta.fields
+
+
+class GenreTagSerializer(TagSerializer):
+    """Genre tag serializer handling current user language."""
+
+    class Meta:
+        model = GenreTag
+        fields = TagSerializer.Meta.fields
+
+
+class PeriodTagSerializer(TagSerializer):
+    """Period tag serializer handling current user language."""
+
+    class Meta:
+        model = PeriodTag
+        fields = TagSerializer.Meta.fields
+
+
+class MemorialTagSerializer(TagSerializer):
+    """Memorial tag serializer handling current user language."""
+
+    class Meta:
+        model = MemorialTag
+        fields = TagSerializer.Meta.fields
 
 
 class AuthorNameSerializer(serializers.ModelSerializer):
@@ -28,6 +71,9 @@ class AuthorSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source="i18n_title")
     gender = serializers.ReadOnlyField(source="sex")
     thumbnail = serializers.SerializerMethodField()
+    languages = LanguageTagSerializer(source="language_tags", many=True, read_only=True)
+    genres = GenreTagSerializer(source="genre_tags", many=True, read_only=True)
+    periods = PeriodTagSerializer(source="literary_period_tags", many=True, read_only=True)
     created = serializers.ReadOnlyField(source="last_published_at")
 
     def get_thumbnail(self, obj):
@@ -37,7 +83,17 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ("id", "name", "gender", "thumbnail", "born", "created")
+        fields = (
+            "id",
+            "name",
+            "gender",
+            "thumbnail",
+            "born",
+            "languages",
+            "genres",
+            "periods",
+            "created",
+        )
 
 
 class AuthorDetailSerializer(AuthorSerializer):
@@ -45,26 +101,11 @@ class AuthorDetailSerializer(AuthorSerializer):
 
     cover = serializers.SerializerMethodField()
     names = AuthorNameSerializer(many=True, read_only=True)
-    languages = serializers.SerializerMethodField()
-    genres = serializers.SerializerMethodField()
-    periods = serializers.SerializerMethodField()
 
     def get_cover(self, obj):
         """Return a static url path to the title images cover rendition."""
         if obj.title_image:
             return obj.title_image.get_rendition(MEDIUM_FILTER_SPEC).url
-
-    def get_languages(self, obj):
-        """Return a list of language tags as strings."""
-        return [language.i18n_title for language in obj.language_tags.all()]
-
-    def get_genres(self, obj):
-        """Return a list of genre tags as strings."""
-        return [genre.i18n_title for genre in obj.genre_tags.all()]
-
-    def get_periods(self, obj):
-        """Return a list of literary period tags as strings."""
-        return [period.i18n_title for period in obj.literary_period_tags.all()]
 
     class Meta:
         model = Author
@@ -87,7 +128,7 @@ class MemorialSerializer(serializers.ModelSerializer):
     """Serializes Memorial pages to flat JSON objects output to list views."""
 
     title = serializers.ReadOnlyField(source="i18n_title")
-    tags = serializers.SerializerMethodField()
+    tags = MemorialTagSerializer(source="memorial_site_tags", many=True, read_only=True)
     authors = serializers.SerializerMethodField()
     coordinates = serializers.SerializerMethodField()
     created = serializers.ReadOnlyField(source="last_published_at")

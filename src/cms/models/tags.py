@@ -139,7 +139,7 @@ class MemorialTag(Tag):
         verbose_name_plural = _(TXT["memorial_type.plural"])
 
 
-class LiteraryPeriodTag(SortableTag):
+class PeriodTag(SortableTag):
     """Used to tag literary periods an author has been active in."""
 
     class Meta:

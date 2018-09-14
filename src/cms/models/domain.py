@@ -14,8 +14,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override, pgettext
 from mapwidgets import GooglePointFieldWidget
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList, PageChooserPanel,
-                                         StreamFieldPanel, TabbedInterface)
+from wagtail.admin.edit_handlers import (FieldPanel, InlinePanel, MultiFieldPanel, ObjectList,
+                                         PageChooserPanel, StreamFieldPanel, TabbedInterface)
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Orderable, Page
 from wagtail.images.edit_handlers import ImageChooserPanel
@@ -25,7 +25,7 @@ from cms.blocks import ParagraphStructBlock
 from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
 from cms.messages import TXT
 
-from .base import DB_TABLE_PREFIX, GENDER, GENDER_OPTION, I18nPage, CategoryPage, TextType
+from .base import DB_TABLE_PREFIX, GENDER, GENDER_OPTION, CategoryPage, I18nPage, TextType
 from .helpers import TranslatedField, format_date, validate_date
 
 
@@ -515,7 +515,7 @@ class Author(I18nPage):
         help_text=_(TXT["author.genre.help"])
     )
     literary_period_tags = ParentalManyToManyField(
-        "LiteraryPeriodTag",
+        "PeriodTag",
         db_table=DB_TABLE_PREFIX + "author_tag_literary_period",
         related_name="authors",
         blank=True,

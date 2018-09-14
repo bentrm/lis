@@ -8,7 +8,7 @@ from rest_framework.compat import coreapi, coreschema
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.settings import api_settings
 
-from cms.models import Author, MemorialTag
+from cms.models import Author, GenreTag, LanguageTag, MemorialTag, PeriodTag
 from cms.models import TempLocation as Memorial
 
 
@@ -90,10 +90,28 @@ class AuthorFilter(django_filters.rest_framework.FilterSet):
             "See yob for more information."
         )
     )
+    language = django_filters.ModelMultipleChoiceFilter(
+        field_name="language_tags",
+        queryset=LanguageTag.objects.all(),
+        label=_("Languages"),
+        help_text=_("Languages the author has been active in.")
+    )
+    genre = django_filters.ModelMultipleChoiceFilter(
+        field_name="genre_tags",
+        queryset=GenreTag.objects.all(),
+        label=_("Genres"),
+        help_text=_("Genres the author has been active in.")
+    )
+    period = django_filters.ModelMultipleChoiceFilter(
+        field_name="literary_period_tags",
+        queryset=PeriodTag.objects.all(),
+        label=_("Literary periods"),
+        help_text=_("Literary periods the author has been active in.")
+    )
 
     class Meta:
         model = Author
-        fields = ("gender", "yob", "yod")
+        fields = ("gender", "yob", "yod", "language", "genre", "period")
 
 
 class MemorialFilter(django_filters.rest_framework.FilterSet):

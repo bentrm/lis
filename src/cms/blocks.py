@@ -4,8 +4,23 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
-RICH_TEXT_FEATURES_FOOTNOTE = ["bold", "italic", "strikethrough", "link"]
-RICH_TEXT_FEATURES_CONTENT = ["bold", "italic", "strikethrough", "footnote", "ol", "ul", "hr", "link", "blockquote"]
+RICH_TEXT_FEATURES_FOOTNOTE = [
+    "bold",
+    "italic",
+    "strikethrough",
+    "link",
+]
+RICH_TEXT_FEATURES_CONTENT = [
+    "bold",
+    "italic",
+    "strikethrough",
+    "footnote",
+    "ol",
+    "ul",
+    "hr",
+    "link",
+    "blockquote",
+]
 
 
 class FootnoteStructBlock(blocks.StructBlock):
@@ -14,7 +29,11 @@ class FootnoteStructBlock(blocks.StructBlock):
     tag = blocks.CharBlock(
         required=False,
         label=_("Linkable tag"),
-        help_text=_("A tag that allows to link the footnote with the paragraphs text content in the form '[tag]'."))
+        help_text=_(
+            "A tag that allows to link the footnote "
+            "with the paragraphs text content in the form '[tag]'."
+        )
+    )
     footnote = blocks.RichTextBlock(
         features=RICH_TEXT_FEATURES_FOOTNOTE,
         label=_("Footnote"),
@@ -27,7 +46,11 @@ class FootnoteStructBlock(blocks.StructBlock):
 
 
 class ParagraphStructBlock(blocks.StructBlock):
-    """A structured block of content mapping the 'HeadingWithContent' domain model entity to a Wagtail entity."""
+    """
+    A structured block of content.
+
+    Maps the 'HeadingWithContent' domain model entity to a Wagtail entity.
+    """
 
     heading = blocks.CharBlock(
         required=False,

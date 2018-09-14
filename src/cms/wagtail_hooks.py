@@ -10,7 +10,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, mode
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
-from .models import AgeGroupTag, Author, GenreTag, I18nPage, LanguageTag, LiteraryPeriodTag, MemorialTag
+from .models import AgeGroupTag, Author, GenreTag, I18nPage, LanguageTag, PeriodTag, MemorialTag
 
 
 def as_page_object(self):
@@ -206,7 +206,7 @@ class LiteraryPeriodModelAdmin(TagModelAdmin):
     """Literary period tag model admin."""
 
     list_display = TagModelAdmin.list_display + ("sort_order",)
-    model = LiteraryPeriodTag
+    model = PeriodTag
     menu_icon = "date"
 
 
