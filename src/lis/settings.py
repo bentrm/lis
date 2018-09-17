@@ -147,17 +147,13 @@ DATABASES = {
 CACHE_MIDDLEWARE_ALIAS = "default"
 CACHE_MIDDLEWARE_SECONDS = 60
 CACHE_MIDDLEWARE_KEY_PREFIX = ""
-
-if not DEBUG:
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
-            "LOCATION": "cache:11211",
-            "TIMEOUT": 60,
-        }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+        "LOCATION": "cache:11211",
+        "TIMEOUT": 60,
     }
-else:
-    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+}
 
 # Logging
 LOGGING = {
@@ -242,8 +238,9 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("api.permissions.HasAPIAccess",),
     "DEFAULT_FILTER_BACKENDS": (),
+    "DEFAULT_THROTTLE_CLASSES": ("api.throttling.ApiKeyThrottle",),
 }
 
 # Application Settings

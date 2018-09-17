@@ -6,19 +6,20 @@
 {% block title %}{% if name %}{{ name }} – {% endif %}LIS API{% endblock %}
 
 {% block style %}
-  {{ block.super }}
-  <script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
+{{ block.super }}
+<script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
 {% endblock %}
 
 {% block branding %}
-  <a class='navbar-brand' rel="nofollow" href='/docs'>
-    {% include 'includes/logo.html' %}
-    LIS API
-  </a>
+<a class='navbar-brand' rel="nofollow" href='/docs'>
+  {% include 'includes/logo.html' %}
+  LIS API
+</a>
 {% endblock %}
 
 {% block userlinks %}
-  <li><a href="{% url 'api-author-list' version=request.version %}">{% trans 'Authors' %}</a></li>
-  <li><a href="{% url 'api-memorial-list' version=request.version %}">{% trans 'Memorials' %}</a></li>
-  {{block.super}}
+<li><a href="{% url 'api-search-list' version=request.version %}">{% trans 'Search' %}</a></li>
+<li><a href="{% url 'api-author-list' version=request.version %}">{% trans 'Authors' %}</a></li>
+<li><a href="{% url 'api-memorial-list' version=request.version %}">{% trans 'Memorials' %}</a></li>
+{{block.super}}
 {% endblock %}
