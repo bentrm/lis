@@ -1,8 +1,17 @@
 """Read-only API views of the LIS domain."""
 
-from rest_framework import generics, mixins, pagination, versioning
+from django.contrib.contenttypes.models import ContentType
+from rest_framework import (
+    generics,
+    mixins,
+    pagination,
+    versioning,
+    filters as drf_filters,
+)
+from django_filters.rest_framework.backends import DjangoFilterBackend
+from rest_framework_gis.filters import InBBoxFilter, TMSTileFilter
 
-from cms.models import Author, Memorial
+from cms.models import I18nPage, Author, Memorial
 
 from . import filters, serializers
 
@@ -19,7 +28,7 @@ class DefaultResultsetPagination(pagination.PageNumberPagination):
 
     page_size = 10
     page_size_query_param = "size"
-    max_page_size = 100
+    max_page_size = 25
 
 
 class GenericAPIView(generics.GenericAPIView):
@@ -29,13 +38,48 @@ class GenericAPIView(generics.GenericAPIView):
     versioning_class = DefaultVersioning
 
 
+class SearchView(mixins.ListModelMixin, GenericAPIView):
+    """Returns a list of found objects."""
+
+    serializer_class = serializers.SearchResultSerializer
+    filter_backends = (
+        DjangoFilterBackend,
+        drf_filters.SearchFilter,
+        drf_filters.OrderingFilter,
+    )
+    filter_class = filters.SearchResultFilter
+    search_fields = ("title", "title_de", "title_cs")
+    ordering_fields = ("id", "title")
+
+    def get_queryset(self):
+        """Return a generic page queryset."""
+        return I18nPage.objects.filter(
+            content_type__in=self.get_content_types()
+        ).specific()
+
+    def get(self, *args, **kwargs):
+        """Return a list of search results."""
+        return self.list(*args, **kwargs)
+
+    def get_content_types(self):
+        return ContentType.objects.filter(
+            app_label="cms", model__in=["author", "memorial"]
+        )
+
+
 class AuthorList(mixins.ListModelMixin, GenericAPIView):
     """Returns a list of all authors."""
 
     queryset = Author.objects.all()
     serializer_class = serializers.AuthorSerializer
+    filter_backends = (
+        DjangoFilterBackend,
+        drf_filters.SearchFilter,
+        drf_filters.OrderingFilter,
+    )
     filter_class = filters.AuthorFilter
-    ordering_fields = ("id", "born", "died", "created")
+    search_fields = ("title", "title_de", "title_cs")
+    ordering_fields = ("id", "title")
 
     def get(self, *args, **kwargs):
         """Return a list of author objects."""
@@ -59,7 +103,17 @@ class MemorialList(mixins.ListModelMixin, GenericAPIView):
     queryset = Memorial.objects.all()
     serializer_class = serializers.MemorialSerializer
     filter_class = filters.MemorialFilter
-    ordering_fields = ("id",)
+    filter_backends = (
+        InBBoxFilter,
+        TMSTileFilter,
+        DjangoFilterBackend,
+        drf_filters.SearchFilter,
+        drf_filters.OrderingFilter,
+    )
+    bbox_filter_field = "coordinates"
+    bbox_filter_include_overlapping = True
+    search_fields = ("title", "title_de", "title_cs")
+    ordering_fields = ("id", "title")
 
     def get(self, *args, **kwargs):
         """Return a list of memorial objects."""

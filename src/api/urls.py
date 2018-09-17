@@ -1,7 +1,12 @@
+"""API url patterns."""
+
 from django.urls import include, path, re_path
 from . import views
 
 urlpatterns = [
+    re_path(
+        r"^(?P<version>(v1))/$", views.SearchView.as_view(), name="api-search-list"
+    ),
     re_path(
         r"^(?P<version>(v1))/author/$",
         views.AuthorList.as_view(),

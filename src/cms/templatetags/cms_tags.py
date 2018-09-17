@@ -28,7 +28,6 @@ def addstr(arg1, arg2):
 
 @register.filter
 def humanize_list(arg):
-    print(arg)
     output = ""
     if len(arg) == 1:
         return str(arg[0])

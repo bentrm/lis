@@ -1,15 +1,13 @@
 """Custom filters that can be used to drill down the domain models."""
 
 import django_filters
-from django.template import loader
+from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_text
 from django.utils.translation import gettext_lazy as _
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.filters import BaseFilterBackend
-from rest_framework.settings import api_settings
 
-from cms.models import Author, GenreTag, LanguageTag, MemorialTag, PeriodTag
-from cms.models import Memorial as Memorial
+from cms.models import Author, GenreTag, LanguageTag, Memorial, MemorialTag, PeriodTag
 
 
 class WagtailSearchFilterBackend(BaseFilterBackend):
@@ -17,7 +15,7 @@ class WagtailSearchFilterBackend(BaseFilterBackend):
 
     search_title = _("Search")
     search_description = _("A search term.")
-    search_param = api_settings.SEARCH_PARAM
+    search_param = "q"
     template = "rest_framework/filters/search.html"
 
     def get_search_terms(self, request):
@@ -29,40 +27,38 @@ class WagtailSearchFilterBackend(BaseFilterBackend):
         """Add each search term to current querysets filter annotations."""
         search_terms = self.get_search_terms(request)
         for search_term in search_terms:
-            print(search_term)
             queryset = queryset.search(search_term)
         return queryset
 
-    def to_html(self, request, queryset, view):
-        """Return HTML string to render input in docs."""
-        if not getattr(view, "search_fields", None):
-            return ""
-
-        term = self.get_search_terms(request)
-        term = term[0] if term else ""
-        context = {"param": self.search_param, "term": term}
-        template = loader.get_template(self.template)
-        return template.render(context)
-
     def get_schema_fields(self, view):
         """Return schema entry for documentation."""
-        assert (
-            coreapi is not None
-        ), "coreapi must be installed to use `get_schema_fields()`"
-        assert (
-            coreschema is not None
-        ), "coreschema must be installed to use `get_schema_fields()`"
         return [
             coreapi.Field(
                 name=self.search_param,
                 required=False,
-                location="query",
+                location="search",
                 schema=coreschema.String(
                     title=force_text(self.search_title),
                     description=force_text(self.search_description),
                 ),
             )
         ]
+
+
+class SearchResultFilter(django_filters.rest_framework.FilterSet):
+    """Custom filters to go with our generic search view."""
+
+    content_type = django_filters.ModelChoiceFilter(
+        field_name="content_type",
+        queryset=ContentType.objects.filter(
+            app_label="cms", model__in=("author", "memorial")
+        ),
+        label=_("Content type"),
+        help_text=_("One of 'author' or 'memorial'."),
+    )
+
+    class Meta:
+        fields = ("content_type",)
 
 
 class AuthorFilter(django_filters.rest_framework.FilterSet):

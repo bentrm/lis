@@ -117,10 +117,14 @@ class I18nPage(Page):
     )
 
     is_creatable = False
+
     search_fields = Page.search_fields + [
         index.SearchField("title_de", partial_match=True, boost=2),
         index.SearchField("title_cs", partial_match=True, boost=2),
+        index.FilterField("title_de"),
+        index.FilterField("title_cs"),
     ]
+
     english_panels = [FieldPanel("title", classname="full title")]
     german_panels = [FieldPanel("title_de", classname="full title")]
     czech_panels = [FieldPanel("title_cs", classname="full title")]

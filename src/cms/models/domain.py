@@ -24,7 +24,7 @@ from wagtail.admin.edit_handlers import (
     TabbedInterface,
 )
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Orderable, Page
+from wagtail.core.models import Orderable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 
@@ -41,6 +41,7 @@ from .base import (
     TextType,
 )
 from .helpers import TranslatedField, format_date, validate_date
+from .. import index as custom_index
 
 
 class AuthorIndex(CategoryPage):
@@ -589,18 +590,32 @@ class Author(I18nPage):
             return diff_year - diff_remainder
 
     parent_page_types = ["AuthorIndex"]
-    search_fields = Page.search_fields + [
+    search_fields = I18nPage.search_fields + [
         index.RelatedFields(
             "names",
             [
                 index.SearchField("title"),
                 index.SearchField("first_name"),
                 index.SearchField("last_name"),
-                index.FilterField("birth_name"),
+                index.SearchField("birth_name"),
                 index.FilterField("is_pseudonym"),
             ],
         ),
         index.FilterField("sex"),
+        index.RelatedFields(
+            field_name="language_tags",
+            fields=[
+                index.FilterField("id"),
+                index.SearchField("title"),
+                index.FilterField("title"),
+                index.SearchField("title_de"),
+                index.FilterField("title_de"),
+                index.SearchField("title_cs"),
+                index.FilterField("title_cs"),
+            ],
+        ),
+        index.FilterField("genre_tags"),
+        index.FilterField("literary_period_tags"),
         index.FilterField("born"),
         index.FilterField("died"),
         index.FilterField("age"),
@@ -1452,6 +1467,15 @@ class Memorial(I18nPage):
         index.SearchField("directions"),
         index.SearchField("directions_de"),
         index.SearchField("directions_cs"),
+        custom_index.PointField(
+            field_name="coordinates",
+            es_extra={
+                "type": "geo_shape",
+                "tree": "quadtree",
+                "precision": "100m",
+                "points_only": True,
+            },
+        ),
     ]
 
     general_panels = [

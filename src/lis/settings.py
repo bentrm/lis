@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "taggit",
     "mapwidgets",
     "rest_framework",
+    "rest_framework_gis",
     "django_filters",
     "django.contrib.gis",
     "django.contrib.admin",
@@ -212,7 +213,7 @@ WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 WAGTAIL_GRAVATAR_PROVIDER_URL = None
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.elasticsearch6",
+        "BACKEND": "cms.search.CustomElasticsearchSearchBackend",
         "URLS": ["http://elasticsearch:9200"],
     }
 }
@@ -238,15 +239,11 @@ BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
-        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
-        "api.filters.WagtailSearchFilterBackend",
-    ),
+    "DEFAULT_FILTER_BACKENDS": (),
 }
 
 # Application Settings

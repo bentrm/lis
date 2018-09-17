@@ -1,6 +1,8 @@
 """Domain serializers that map CMS pages to JSON representations."""
 
 from rest_framework import serializers
+from rest_framework_gis import serializers as geo_serializers
+from django.urls import reverse
 
 from cms.models import (
     Author,
@@ -56,6 +58,34 @@ class MemorialTagSerializer(TagSerializer):
     class Meta:
         model = MemorialTag
         fields = TagSerializer.Meta.fields
+
+
+class SearchResultSerializer(serializers.Serializer):
+    """Serializes generic search results to flat JSON objects."""
+
+    title = serializers.CharField(source="i18n_title")
+    created = serializers.ReadOnlyField(source="last_published_at")
+    thumbnail = serializers.SerializerMethodField()
+    content_type = serializers.SerializerMethodField()
+    details = serializers.SerializerMethodField()
+
+    def get_thumbnail(self, obj):
+        """Return a static url path to the title images thumbnail rendition."""
+        if obj.title_image:
+            return obj.title_image.get_rendition(THUMBNAIL_FILTER_SPEC).url
+
+    def get_content_type(self, obj):
+        """Return the model name of the linked content type."""
+        return obj.content_type.model
+
+    def get_details(self, obj):
+        """Return an API url that offers more details about the object."""
+        if isinstance(obj, Author):
+            return reverse("api-author-detail", kwargs={"version": "v1", "pk": obj.pk})
+        elif isinstance(obj, Memorial):
+            return reverse(
+                "api-memorial-detail", kwargs={"version": "v1", "pk": obj.pk}
+            )
 
 
 class AuthorNameSerializer(serializers.ModelSerializer):
@@ -139,7 +169,9 @@ class MemorialSerializer(serializers.ModelSerializer):
     title = serializers.ReadOnlyField(source="i18n_title")
     tags = MemorialTagSerializer(source="memorial_type_tags", many=True, read_only=True)
     authors = serializers.SerializerMethodField()
-    coordinates = serializers.SerializerMethodField()
+    geometry = geo_serializers.GeometryField(
+        precision=5, source="coordinates", read_only=True
+    )
     created = serializers.ReadOnlyField(source="last_published_at")
 
     def get_authors(self, obj):
@@ -156,7 +188,7 @@ class MemorialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Memorial
-        fields = ("id", "title", "tags", "authors", "coordinates", "created")
+        fields = ("id", "title", "tags", "authors", "geometry", "created")
 
 
 class MemorialDetailSerializer(MemorialSerializer):
@@ -174,6 +206,6 @@ class MemorialDetailSerializer(MemorialSerializer):
             "address",
             "desc",
             "authors",
-            "coordinates",
+            "geometry",
             "created",
         )
