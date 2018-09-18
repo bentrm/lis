@@ -16,6 +16,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from config.helpers import env
+from corsheaders.defaults import default_headers
 
 CMS_VERSION = env("CMS_VERSION", default="latest")
 
@@ -44,6 +45,7 @@ EMAIL_SUBJECT_PREFIX = "[LIS] "
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 DEBUG = env("DEBUG", False, parse_to_bool=True)
+INTERNAL_IPS = ["127.0.0.1", "10.255.0.2"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", required=True)
@@ -79,9 +81,11 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "mapwidgets",
+    "corsheaders",
     "rest_framework",
     "rest_framework_gis",
     "django_filters",
+    "debug_toolbar",
     "django.contrib.gis",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -92,6 +96,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
@@ -242,6 +248,12 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (),
     "DEFAULT_THROTTLE_CLASSES": ("api.throttling.ApiKeyThrottle",),
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = ["null"]
+CORS_ALLOWED_METHODS = ("GET", "OPTIONS", "HEAD")
+CORS_ALLOW_HEADERS = default_headers + ("api-key",)
+CORS_URLS_REGEX = r"^/api/.*$"
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)

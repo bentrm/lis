@@ -5,6 +5,7 @@ import os
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from .throttling import ApiKeyThrottle
 
 
 def generate_key():
@@ -20,7 +21,21 @@ class APIKey(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
     key = models.CharField(max_length=40, unique=True, blank=True, default=generate_key)
-    requests = models.IntegerField(default=0)
+
+    def get_status(self):
+        num_requests = self.get_num_requests()
+        output = []
+        for ttl, max_requests, count in num_requests:
+            interval_length = ""
+            if ttl >= 3600:
+                interval_length = f"{ttl / 3600:g}h"
+            elif ttl >= 60:
+                interval_length = f"{ttl / 60:g}min"
+            output.append(f"{interval_length} {count}/{max_requests}")
+        return ", ".join(output)
+
+    def get_num_requests(self):
+        return ApiKeyThrottle.get_requests_for_api_key(self.key)
 
     def __str__(self):
         return self.name

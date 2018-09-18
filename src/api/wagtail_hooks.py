@@ -15,7 +15,7 @@ class ApiKeyModelAdmin(ModelAdmin):
 
     model = APIKey
     menu_icon = "cogs"
-    list_display = ("name", "created")
+    list_display = ("name", "created", "get_status")
     search_fields = ("name",)
 
 
