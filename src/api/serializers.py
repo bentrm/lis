@@ -167,12 +167,18 @@ class MemorialSerializer(serializers.ModelSerializer):
     """Serializes Memorial pages to flat JSON objects output to list views."""
 
     title = serializers.ReadOnlyField(source="i18n_title")
+    thumbnail = serializers.SerializerMethodField()
     tags = MemorialTagSerializer(source="memorial_type_tags", many=True, read_only=True)
     authors = serializers.SerializerMethodField()
     geometry = geo_serializers.GeometryField(
         precision=5, source="coordinates", read_only=True
     )
     created = serializers.ReadOnlyField(source="last_published_at")
+
+    def get_thumbnail(self, obj):
+        """Return a static url path to the title images thumbnail rendition."""
+        if obj.title_image:
+            return obj.title_image.get_rendition(THUMBNAIL_FILTER_SPEC).url
 
     def get_authors(self, obj):
         """Return a list of primary keys of related authors."""
@@ -188,20 +194,28 @@ class MemorialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Memorial
-        fields = ("id", "title", "tags", "authors", "geometry", "created")
+        fields = ("id", "title", "thumbnail", "tags", "authors", "geometry", "created")
 
 
 class MemorialDetailSerializer(MemorialSerializer):
     """Serializes Memorial pages to flat JSON objects output to detail views."""
 
+    cover = serializers.SerializerMethodField()
     address = serializers.ReadOnlyField(source="i18n_address")
     desc = serializers.ReadOnlyField(source="i18n_introduction")
+
+    def get_cover(self, obj):
+        """Return a static url path to the title images cover rendition."""
+        if obj.title_image:
+            return obj.title_image.get_rendition(MEDIUM_FILTER_SPEC).url
 
     class Meta:
         model = Memorial
         fields = (
             "id",
             "title",
+            "thumbnail",
+            "cover",
             "tags",
             "address",
             "desc",

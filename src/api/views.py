@@ -70,7 +70,7 @@ class SearchView(mixins.ListModelMixin, GenericAPIView):
 class AuthorList(mixins.ListModelMixin, GenericAPIView):
     """Returns a list of all authors."""
 
-    queryset = Author.objects.all()
+    queryset = Author.objects.select_related("title_image")
     serializer_class = serializers.AuthorSerializer
     filter_backends = (
         DjangoFilterBackend,
@@ -89,7 +89,7 @@ class AuthorList(mixins.ListModelMixin, GenericAPIView):
 class AuthorDetail(mixins.RetrieveModelMixin, GenericAPIView):
     """Returns details about an author."""
 
-    queryset = Author.objects.all()
+    queryset = Author.objects.select_related("title_image")
     serializer_class = serializers.AuthorDetailSerializer
 
     def get(self, *args, **kwargs):
@@ -100,7 +100,7 @@ class AuthorDetail(mixins.RetrieveModelMixin, GenericAPIView):
 class MemorialList(mixins.ListModelMixin, GenericAPIView):
     """Returns a list of memorials."""
 
-    queryset = Memorial.objects.all()
+    queryset = Memorial.objects.select_related("title_image")
     serializer_class = serializers.MemorialSerializer
     filter_class = filters.MemorialFilter
     filter_backends = (
@@ -123,7 +123,7 @@ class MemorialList(mixins.ListModelMixin, GenericAPIView):
 class MemorialDetail(mixins.RetrieveModelMixin, GenericAPIView):
     """Returns details about a memorial object."""
 
-    queryset = Memorial.objects.all()
+    queryset = Memorial.objects.select_related("title_image")
     serializer_class = serializers.MemorialDetailSerializer
 
     def get(self, *args, **kwargs):
