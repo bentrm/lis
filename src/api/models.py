@@ -23,6 +23,7 @@ class APIKey(models.Model):
     key = models.CharField(max_length=40, unique=True, blank=True, default=generate_key)
 
     def get_status(self):
+        """Return human readable status string."""
         num_requests = self.get_num_requests()
         output = []
         for ttl, max_requests, count in num_requests:
@@ -35,6 +36,7 @@ class APIKey(models.Model):
         return ", ".join(output)
 
     def get_num_requests(self):
+        """Return an array of rate/request-mappings."""
         return ApiKeyThrottle.get_requests_for_api_key(self.key)
 
     def __str__(self):
