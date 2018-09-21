@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-21 06:47+0000\n"
+"POT-Creation-Date: 2018-09-21 06:04+0000\n"
 "PO-Revision-Date: 2018-06-15 11:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,38 +18,160 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Poedit 2.0.8\n"
 
-#: templates/base.html:70
-msgid "Project management"
-msgstr "Řízení projektů"
-
-#: templates/base.html:73
-msgid "CMS"
-msgstr "CMS"
-
-#: templates/base.html:76
-msgid "Data protection"
-msgstr "Ochrana osobních údajů"
-
-#: templates/base.html:121
-msgid "Current status"
+#: api/filters.py:16 api/templates/rest_framework/api.html:21
+msgid "Search"
 msgstr ""
 
-#: templates/base.html:124
+#: api/filters.py:17
+msgid "A search term."
+msgstr ""
+
+#: api/filters.py:56
+msgid "Content type"
+msgstr ""
+
+#: api/filters.py:57
+msgid "One of 'author' or 'memorial'."
+msgstr ""
+
+#: api/filters.py:70
+msgid "Gender"
+msgstr ""
+
+#: api/filters.py:71
+msgid "Gender of the author."
+msgstr ""
+
+#: api/filters.py:75
+msgid "Year of birth"
+msgstr ""
+
+#: api/filters.py:77
+msgid ""
+"Used to filter authors year of birth. A discrete value may be given. A range "
+"may be defined by appending _min or _max to the parameter name."
+msgstr ""
+
+#: api/filters.py:84
+msgid "Year of death"
+msgstr ""
+
+#: api/filters.py:86
+msgid "Used to filter author by year of death. See yob for more information."
+msgstr ""
+
+#: api/filters.py:92
+msgid "Languages"
+msgstr ""
+
+#: api/filters.py:93
+msgid "Languages the author has been active in."
+msgstr ""
+
+#: api/filters.py:98
+msgid "Genres"
+msgstr ""
+
+#: api/filters.py:99
+msgid "Genres the author has been active in."
+msgstr ""
+
+#: api/filters.py:104
+msgid "Literary periods"
+msgstr ""
+
+#: api/filters.py:105
+msgid "Literary periods the author has been active in."
+msgstr ""
+
+#: api/filters.py:119
+msgid "Tags"
+msgstr ""
+
+#: api/filters.py:120
+msgid "Tags that describe the memorial type."
+msgstr ""
+
+#: api/models.py:46
+msgid "API key"
+msgstr ""
+
+#: api/models.py:47
+msgid "API keys"
+msgstr ""
+
+#: api/permissions.py:12
+msgid "Invalid or missing API Key."
+msgstr ""
+
+#: api/templates/rest_framework/api.html:22 templates/base.html:158
 msgid "Authors"
 msgstr ""
 
-#: templates/base.html:125
+#: api/templates/rest_framework/api.html:23
+msgid "Memorials"
+msgstr ""
+
+#: api/wagtail_hooks.py:25
+msgid "Admin"
+msgstr ""
+
+#: templates/base.html:96
+#, fuzzy
+#| msgid "Signup"
+msgid "Sign out"
+msgstr "Přihlásit se"
+
+#: templates/base.html:131
+msgid "Preview"
+msgstr ""
+
+#: templates/base.html:131
+msgid "Go to current live version."
+msgstr ""
+
+#: templates/base.html:155
+msgid "Current status"
+msgstr ""
+
+#: templates/base.html:159
 msgid "Memorial sites"
 msgstr ""
 
-#: templates/base.html:128
+#: templates/base.html:162
 #, fuzzy
 #| msgid "Project management"
 msgid "Project partner"
 msgstr "Řízení projektů"
 
-#~ msgid "Signup"
-#~ msgstr "Přihlásit se"
+#: templates/registration/login.html:4 templates/registration/login.html:9
+msgid "Login"
+msgstr ""
+
+#: templates/registration/login.html:21
+msgid "Please login to see this page."
+msgstr ""
+
+#: templates/registration/login.html:25
+msgid "Your username and password didn\\"
+msgstr ""
+
+#: templates/registration/login.html:39
+msgid "Log in"
+msgstr ""
+
+#: templates/registration/login.html:40
+msgid "Lost password?"
+msgstr ""
+
+#~ msgid "Project management"
+#~ msgstr "Řízení projektů"
+
+#~ msgid "CMS"
+#~ msgstr "CMS"
+
+#~ msgid "Data protection"
+#~ msgstr "Ochrana osobních údajů"
 
 #~ msgid "Demo"
 #~ msgstr "Demo"
