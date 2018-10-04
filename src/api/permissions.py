@@ -16,5 +16,8 @@ class HasAPIAccess(permissions.BasePermission):
         if request.user.is_authenticated:
             return True
 
-        api_key = request.META.get("HTTP_API_KEY", "")
-        return APIKey.objects.filter(key=api_key).exists()
+        api_key = request.META.get("HTTP_AUTHORIZATION", "")
+        if not api_key.startswith("Bearer "):
+            return False
+
+        return APIKey.objects.filter(key=api_key.replace("Bearer ", "")).exists()
