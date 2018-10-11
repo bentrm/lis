@@ -3,6 +3,8 @@
 from django.core.cache import cache
 from rest_framework.throttling import BaseThrottle
 
+from .models import ApiKey
+
 
 class ApiKeyThrottle(BaseThrottle):
     """Custom API throttling implementation that maps API keys to rates."""
@@ -22,6 +24,15 @@ class ApiKeyThrottle(BaseThrottle):
     def allow_request(self, request, view):
         """Return True if rate has not been exceeded."""
         api_key = request.META.get("HTTP_API_KEY", "")
+        if not api_key and request.user.is_authenticated:
+            username = request.user.username
+            try:
+                print(username)
+                instance = ApiKey.objects.get(user__username=username)
+                api_key = instance.key
+            except ApiKey.DoesNotExist:
+                pass
+
         if api_key:
             for ttl, max_requests in self.caches:
                 cache_key = f"{api_key}_{ttl}"

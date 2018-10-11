@@ -66,7 +66,7 @@ class SearchResultSerializer(serializers.Serializer):
     title = serializers.CharField(source="i18n_title")
     created = serializers.ReadOnlyField(source="last_published_at")
     thumbnail = serializers.SerializerMethodField()
-    content_type = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
     details = serializers.SerializerMethodField()
 
     def get_thumbnail(self, obj):
@@ -74,7 +74,7 @@ class SearchResultSerializer(serializers.Serializer):
         if obj.title_image:
             return obj.title_image.get_rendition(THUMBNAIL_FILTER_SPEC).url
 
-    def get_content_type(self, obj):
+    def get_type(self, obj):
         """Return the model name of the linked content type."""
         return obj.content_type.model
 

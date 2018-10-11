@@ -1,7 +1,6 @@
 """Custom filters that can be used to drill down the domain models."""
 
 import django_filters
-from django.contrib.contenttypes.models import ContentType
 from django.utils.encoding import force_text
 from django.utils.translation import gettext_lazy as _
 from rest_framework.compat import coreapi, coreschema
@@ -89,9 +88,9 @@ class AuthorFilter(django_filters.rest_framework.FilterSet):
             "Used to filter author by year of death. " "See yob for more information."
         ),
     )
-    language = django_filters.ModelMultipleChoiceFilter(
-        field_name="language_tags",
-        queryset=LanguageTag.objects.all(),
+    language = django_filters.MultipleChoiceFilter(
+        field_name="language_tags__title",
+        choices=LanguageTag.objects.values_list("title", "title"),
         label=_("Languages"),
         help_text=_("Languages the author has been active in."),
     )

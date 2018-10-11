@@ -51,6 +51,10 @@ class SearchView(mixins.ListModelMixin, GenericAPIView):
     search_fields = ("title", "title_de", "title_cs")
     ordering_fields = ("id", "title")
 
+    def filter_queryset(self, queryset):
+        print(self.request.query_params)
+        return super().filter_queryset(queryset)
+
     def get_queryset(self):
         """Return a generic page queryset."""
         return I18nPage.objects.filter(

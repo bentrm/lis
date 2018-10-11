@@ -3,7 +3,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 
-from .models import APIKey
+from .models import ApiKey
 
 
 class HasAPIAccess(permissions.BasePermission):
@@ -11,13 +11,17 @@ class HasAPIAccess(permissions.BasePermission):
 
     message = _("Invalid or missing API Key.")
 
+    def is_valid_key(self, key):
+        return ApiKey.objects.filter(key=key).exists()
+
     def has_permission(self, request, view):
         """Return true of request headers include valid API key."""
         if request.user.is_authenticated:
             return True
 
-        api_key = request.META.get("HTTP_AUTHORIZATION", "")
-        if not api_key.startswith("Bearer "):
-            return False
+        authorization_header = request.META.get("HTTP_AUTHORIZATION", "Bearer ").replace("Bearer ", "")
+        authorization_param = request.GET.get("token", "")
 
-        return APIKey.objects.filter(key=api_key.replace("Bearer ", "")).exists()
+        print(authorization_param)
+
+        return self.is_valid_key(authorization_header) or self.is_valid_key(authorization_param)
