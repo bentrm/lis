@@ -48,17 +48,20 @@ class WagtailSearchFilterBackend(BaseFilterBackend):
 class SearchResultFilter(django_filters.rest_framework.FilterSet):
     """Custom filters to go with our generic search view."""
 
-    content_type = django_filters.ModelChoiceFilter(
-        field_name="content_type",
-        queryset=ContentType.objects.filter(
-            app_label="cms", model__in=("author", "memorial")
-        ),
+    CHOICES = (
+        ("author", _("Author")),
+        ("memorial", _("Memorial")),
+    )
+
+    type = django_filters.ChoiceFilter(
+        field_name="content_type__model",
+        choices=CHOICES,
         label=_("Content type"),
         help_text=_("One of 'author' or 'memorial'."),
     )
 
     class Meta:
-        fields = ("content_type",)
+        fields = ("type",)
 
 
 class AuthorFilter(django_filters.rest_framework.FilterSet):
