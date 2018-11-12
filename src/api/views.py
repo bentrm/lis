@@ -52,7 +52,6 @@ class SearchView(mixins.ListModelMixin, GenericAPIView):
     ordering_fields = ("id", "title")
 
     def filter_queryset(self, queryset):
-        print(self.request.query_params)
         return super().filter_queryset(queryset)
 
     def get_queryset(self):

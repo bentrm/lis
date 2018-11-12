@@ -27,7 +27,6 @@ class ApiKeyThrottle(BaseThrottle):
         if not api_key and request.user.is_authenticated:
             username = request.user.username
             try:
-                print(username)
                 instance = ApiKey.objects.get(user__username=username)
                 api_key = instance.key
             except ApiKey.DoesNotExist:

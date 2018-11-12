@@ -22,6 +22,4 @@ class HasAPIAccess(permissions.BasePermission):
         authorization_header = request.META.get("HTTP_AUTHORIZATION", "Bearer ").replace("Bearer ", "")
         authorization_param = request.GET.get("token", "")
 
-        print(authorization_param)
-
         return self.is_valid_key(authorization_header) or self.is_valid_key(authorization_param)
