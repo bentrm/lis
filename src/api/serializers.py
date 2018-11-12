@@ -182,7 +182,7 @@ class MemorialSerializer(serializers.ModelSerializer):
 
     def get_authors(self, obj):
         """Return a list of primary keys of related authors."""
-        return [author.pk for author in obj.authors.all()]
+        return [location_author.author.pk for location_author in obj.authors.all()]
 
     def get_tags(self, obj):
         """Return a list of memorial type tags as string."""
