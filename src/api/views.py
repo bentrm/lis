@@ -11,7 +11,7 @@ from rest_framework import (
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework_gis.filters import InBBoxFilter, TMSTileFilter
 
-from cms.models import I18nPage, Author, Memorial
+from cms.models import I18nPage, Author, Memorial, GenreTag, LanguageTag, MemorialTag, PeriodTag
 
 from . import filters, serializers
 
@@ -36,6 +36,41 @@ class GenericAPIView(generics.GenericAPIView):
 
     pagination_class = DefaultResultsetPagination
     versioning_class = DefaultVersioning
+
+
+class TagList(mixins.ListModelMixin, GenericAPIView):
+
+    filter_backends = (
+        DjangoFilterBackend,
+        drf_filters.SearchFilter,
+        drf_filters.OrderingFilter,
+    )
+    search_fields = ("title", "title_de", "title_cs")
+    ordering_fields = ("id", "title")
+
+    def get(self, *args, **kwargs):
+        """Return a list of author objects."""
+        return self.list(*args, **kwargs)
+
+
+class GenreList(TagList):
+    queryset = GenreTag.objects.all()
+    serializer_class = serializers.GenreTagSerializer
+
+
+class LanguageList(TagList):
+    queryset = LanguageTag.objects.all()
+    serializer_class = serializers.LanguageTagSerializer
+
+
+class MemorialTypeList(TagList):
+    queryset = MemorialTag.objects.all()
+    serializer_class = serializers.MemorialTagSerializer
+
+
+class PeriodList(TagList):
+    queryset = PeriodTag.objects.all()
+    serializer_class = serializers.PeriodTagSerializer
 
 
 class SearchView(mixins.ListModelMixin, GenericAPIView):

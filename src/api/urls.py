@@ -5,7 +5,29 @@ from . import views
 
 urlpatterns = [
     re_path(
-        r"^(?P<version>(v1))/$", views.SearchView.as_view(), name="api-search-list"
+        r"^(?P<version>(v1))/tag/genre/$",
+        views.GenreList.as_view(),
+        name="api-genre-list",
+    ),
+    re_path(
+        r"^(?P<version>(v1))/tag/language/$",
+        views.LanguageList.as_view(),
+        name="api-language-list",
+    ),
+    re_path(
+        r"^(?P<version>(v1))/tag/memorial/$",
+        views.MemorialTypeList.as_view(),
+        name="api-memorial-type-list",
+    ),
+    re_path(
+        r"^(?P<version>(v1))/tag/period/$",
+        views.PeriodList.as_view(),
+        name="api-period-list",
+    ),
+    re_path(
+        r"^(?P<version>(v1))/$",
+        views.SearchView.as_view(),
+        name="api-search-list",
     ),
     re_path(
         r"^(?P<version>(v1))/author/$",
