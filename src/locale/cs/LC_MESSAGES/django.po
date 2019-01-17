@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-09-21 06:04+0000\n"
-"PO-Revision-Date: 2018-09-21 08:27+0200\n"
+"PO-Revision-Date: 2019-01-16 10:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -16,95 +16,93 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 2.0.8\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: api/filters.py:16 api/templates/rest_framework/api.html:21
 msgid "Search"
-msgstr ""
+msgstr "Hledat"
 
 #: api/filters.py:17
 msgid "A search term."
-msgstr ""
+msgstr "Hledaný termín."
 
 #: api/filters.py:56
 msgid "Content type"
-msgstr ""
+msgstr "Typ obsahu"
 
 #: api/filters.py:57
 msgid "One of 'author' or 'memorial'."
-msgstr ""
+msgstr "\"Autor\" nebo \"pamětní místo\""
 
 #: api/filters.py:71
 msgid "Gender of the author."
-msgstr ""
+msgstr "Pohlaví autora."
 
 #: api/filters.py:77
 msgid "Used to filter authors year of birth. A discrete value may be given. A range may be defined by appending _min or _max to the parameter name."
 msgstr ""
+"Slouží k filtrování autorů podle roku narození. Může být uvedena samostatná hodnota. Rozsah může být definován připojením _min nebo _max k názvu "
+"parametru."
 
 #: api/filters.py:86
 msgid "Used to filter author by year of death. See yob for more information."
-msgstr ""
+msgstr "Slouží k filtrování autorů podle roku úmrtí. Další informace naleznete v tématu Yob."
 
 #: api/filters.py:93
 msgid "Languages the author has been active in."
-msgstr ""
+msgstr "Jazyky, ve kterých autor publikoval."
 
 #: api/filters.py:99
 msgid "Genres the author has been active in."
-msgstr ""
+msgstr "Žánrové zařazení děl autora."
 
 #: api/filters.py:105
 msgid "Literary periods the author has been active in."
-msgstr ""
+msgstr "Zařazení autora s ohledem na literární období."
 
 #: api/filters.py:120
 msgid "Tags that describe the memorial type."
-msgstr ""
+msgstr "Tags popisující typ památníku."
 
 #: api/models.py:46
 msgid "API key"
-msgstr ""
+msgstr "Klíč API"
 
 #: api/models.py:47
 msgid "API keys"
-msgstr ""
+msgstr "Klíče API"
 
 #: api/permissions.py:12
 msgid "Invalid or missing API Key."
-msgstr ""
+msgstr "Klíč rozhraní API je neplatný nebo chybí."
 
 #: api/templates/rest_framework/api.html:23
 msgid "Memorials"
-msgstr ""
+msgstr "Pamětní místa"
 
 #: api/wagtail_hooks.py:25
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/base.html:96
-#, fuzzy
-#| msgid "Signup"
 msgid "Sign out"
-msgstr "Přihlásit se"
+msgstr "Odhlásit se"
 
 #: templates/base.html:155
 msgid "Current status"
-msgstr ""
+msgstr "Aktuální stav"
 
 #: templates/base.html:162
-#, fuzzy
-#| msgid "Project management"
 msgid "Project partner"
-msgstr "Řízení projektů"
+msgstr "Partner projektu"
 
 #: templates/registration/login.html:4 templates/registration/login.html:9
 msgid "Login"
-msgstr ""
+msgstr "Přihlášení"
 
 #: templates/registration/login.html:21
 msgid "Please login to see this page."
-msgstr ""
+msgstr "Pro zobrazení této stránky se, prosím, přihlašte."
 
 #: templates/registration/login.html:25
 msgid "Your username and password didn\\"
@@ -112,11 +110,11 @@ msgstr ""
 
 #: templates/registration/login.html:39
 msgid "Log in"
-msgstr ""
+msgstr "Přihlásit"
 
 #: templates/registration/login.html:40
 msgid "Lost password?"
-msgstr ""
+msgstr "Zapomenuté heslo?"
 
 #: cms/blocks.py:26
 msgid "Linkable tag"
@@ -124,7 +122,7 @@ msgstr "Označení"
 
 #: cms/blocks.py:28
 msgid "A tag that allows to link the footnote with the paragraphs text content in the form '[tag]'."
-msgstr "Štítek, který umožňuje propojit poznámku pod čarou s obsahem textu formou [označení]."
+msgstr "Štítek umožňující spojení poznámky pod čarou s příslušným místem v textu [označení]."
 
 #: cms/blocks.py:34 cms/blocks.py:39 cms/wagtail_hooks.py:125
 msgid "Footnote"
@@ -140,7 +138,7 @@ msgstr "Volitelný nadpis"
 
 #: cms/blocks.py:54
 msgid "An optional heading to structure comprehensive text content."
-msgstr "Volitelný nadpis sloužící k rozčlenění obsáhlého obsahu textu."
+msgstr "Volitelný nadpis sloužící k rozčlenění obsáhlejšího textu."
 
 #: cms/blocks.py:59
 msgid "Images"
@@ -148,16 +146,15 @@ msgstr "Obrázky"
 
 #: cms/blocks.py:61
 msgid "Images that will be displayed alongside the text content of the paragraph."
-msgstr "Obrázky, které se zobrazí v textu."
+msgstr "Obrázky přímo související s obsahem textu."
 
-#: cms/blocks.py:67 cms/messages.py:131 cms/messages.py:132
-#: cms/templates/cms/includes/levels.html:23
+#: cms/blocks.py:67 cms/messages.py:131 cms/messages.py:132 cms/templates/cms/includes/levels.html:23
 msgid "Content"
 msgstr "Obsah"
 
 #: cms/blocks.py:68
 msgid "The actual text content of this paragraph."
-msgstr "Vlastní obsah tohoto odstavce."
+msgstr "Vlastní obsah odstavce."
 
 #: cms/blocks.py:73
 msgid "Footnotes"
@@ -173,7 +170,7 @@ msgstr "Editor"
 
 #: cms/blocks.py:79
 msgid "Author or translator of the content."
-msgstr "Autor nebo překladatel textu."
+msgstr "Autor/ka nebo překladatel/ka textu."
 
 #: cms/blocks.py:83
 msgid "Paragraph"
@@ -200,10 +197,8 @@ msgid "Invalid keyword."
 msgstr "Neplatné klíčové slovo."
 
 #: cms/messages.py:9
-#, fuzzy
-#| msgid "owner"
 msgid "Owner"
-msgstr "vlastník"
+msgstr "Vlastník"
 
 #: cms/messages.py:9
 msgid "editor"
@@ -211,18 +206,17 @@ msgstr "editor"
 
 #: cms/messages.py:12
 msgid "Age groups"
-msgstr ""
+msgstr "Věkové skupiny"
 
 #: cms/messages.py:13
 msgid "Age group"
-msgstr ""
+msgstr "Věková skupina"
 
 #: cms/messages.py:14 cms/messages.py:20 cms/messages.py:26
 msgid "Author that this mapping is referencing."
-msgstr "Autor, k němuž se vztahuje toto mapování."
+msgstr "Autor, k němuž se odkaz vztahuje."
 
-#: cms/messages.py:15 cms/messages.py:21 cms/messages.py:27 cms/messages.py:126
-#: cms/messages.py:245
+#: cms/messages.py:15 cms/messages.py:21 cms/messages.py:27 cms/messages.py:126 cms/messages.py:245
 msgid "Author"
 msgstr "Autor"
 
@@ -235,16 +229,12 @@ msgid "Literary genre"
 msgstr "Literární žánr"
 
 #: cms/messages.py:18
-#, fuzzy
-#| msgid "The name of the author."
 msgid "Genres of the author"
-msgstr "Autorovo jméno."
+msgstr "Žánry autora"
 
 #: cms/messages.py:19
-#, fuzzy
-#| msgid "The name of the author."
 msgid "Genre of the author"
-msgstr "Autorovo jméno."
+msgstr "Žánr autora"
 
 #: cms/messages.py:22
 msgid "Language that the author has been active in."
@@ -255,16 +245,12 @@ msgid "Language"
 msgstr "Jazyk"
 
 #: cms/messages.py:24
-#, fuzzy
-#| msgid "The name of the author."
 msgid "Languages of the author"
-msgstr "Autorovo jméno."
+msgstr "Jazyky autora"
 
 #: cms/messages.py:25
-#, fuzzy
-#| msgid "The name of the author."
 msgid "Language of the author"
-msgstr "Autorovo jméno."
+msgstr "Jazyk autora"
 
 #: cms/messages.py:29
 msgid "Literary period that the author is associated with."
@@ -275,16 +261,12 @@ msgid "Literary period"
 msgstr "Literární období"
 
 #: cms/messages.py:32
-#, fuzzy
-#| msgid "Literary periods"
 msgid "Literary periods of the author"
-msgstr "Literární období"
+msgstr "Literární období autora"
 
 #: cms/messages.py:33
-#, fuzzy
-#| msgid "Literary period"
 msgid "Literary period of the author"
-msgstr "Literární období"
+msgstr "Literární období autora"
 
 #: cms/messages.py:34 cms/messages.py:41
 msgid "The day that the author is born on."
@@ -332,7 +314,7 @@ msgstr "Datum úmrtí"
 
 #: cms/messages.py:48
 msgid "Gender"
-msgstr ""
+msgstr "Pohlaví"
 
 #: cms/messages.py:49
 msgid "The literary genres the author is associated with."
@@ -340,26 +322,21 @@ msgstr "Literární žánry, s nimiž je autor spojován."
 
 #: cms/messages.py:50 cms/messages.py:143
 msgid "Genre"
-msgstr ""
+msgstr "Žánr"
 
 #: cms/messages.py:51
 msgid "The languages that the author has been active in."
 msgstr "Jazyky, kterými autor psal."
 
-#: cms/messages.py:52 cms/messages.py:161
-#: cms/templates/cms/includes/author.html:18
+#: cms/messages.py:52 cms/messages.py:161 cms/templates/cms/includes/author.html:18
 msgid "Languages"
 msgstr "Jazyky"
 
 #: cms/messages.py:54
-#, fuzzy
-#| msgid "The literary genres the author is associated with."
 msgid "The literary categories the author is associated with."
 msgstr "Literární žánry, s nimiž je autor spojován."
 
 #: cms/messages.py:56
-#, fuzzy
-#| msgid "Literary genres"
 msgid "Literary categories"
 msgstr "Literární žánry"
 
@@ -367,14 +344,13 @@ msgstr "Literární žánry"
 msgid "The literary periods the author has been active in."
 msgstr "Literární období, v nichž autor tvořil."
 
-#: cms/messages.py:60 cms/messages.py:210
-#: cms/templates/cms/includes/author.html:30
+#: cms/messages.py:60 cms/messages.py:210 cms/templates/cms/includes/author.html:30
 msgid "Literary periods"
 msgstr "Literární období"
 
 #: cms/messages.py:62 cms/messages.py:65
 msgid "Birth name of the author if different from international spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Autorovo/ Autorčino rodné jméno, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:68
 msgid "Birth name of the author if different from last name."
@@ -386,17 +362,15 @@ msgstr "Rodné jméno"
 
 #: cms/messages.py:72 cms/messages.py:84
 msgid "The first name in Czech if different from international spelling."
-msgstr "Křestní jméno v češtině pokud se liší od mezinárodního pravopisu."
+msgstr "Křestní jméno, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:75
 msgid "The first name in German if different from international spelling."
-msgstr "Křestní jméno v němčině pokud se liší od mezinárodního pravopisu."
+msgstr "Křestní jméno, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:78
-#, fuzzy
-#| msgid "The name of the author."
 msgid "The name of the author"
-msgstr "Autorovo jméno."
+msgstr "Jméno autora"
 
 #: cms/messages.py:80
 msgid "This name has been used as a pseudonym by the author."
@@ -408,30 +382,25 @@ msgstr "Pseudonym"
 
 #: cms/messages.py:87
 msgid "The last name in German if different from international spelling."
-msgstr "Příjmení v němčině pokud se liší od mezinárodního pravopisu."
+msgstr "Příjmení, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:90
 msgid "Names"
 msgstr "Jména"
 
 #: cms/messages.py:92
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Academic title of the author in Czech if different from international spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Akademický titul autora, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:95
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Academic title of the author in German if different from international spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Akademický titul autora, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:97
 msgid "Academic title of the author if any."
 msgstr "Autorův akademický titul."
 
-#: cms/messages.py:98 cms/messages.py:241 cms/messages.py:321
-#: cms/messages.py:334
+#: cms/messages.py:98 cms/messages.py:241 cms/messages.py:321 cms/messages.py:334
 msgid "Title"
 msgstr "Název"
 
@@ -444,72 +413,52 @@ msgid "Name"
 msgstr "Jméno"
 
 #: cms/messages.py:104
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Place of birth if different in Czech spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Místo narození autora, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:107
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Place of birth if different in German spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Místo narození autora, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:109
-#, fuzzy
-#| msgid "The year that the author is born in."
 msgid "The city or village where the author was born."
-msgstr "Rok autorova narození."
+msgstr "Město či obec, kde se autor narodil."
 
 #: cms/messages.py:110
-#, fuzzy
-#| msgid "Date of birth"
 msgid "Place of birth"
-msgstr "Datum narození"
+msgstr "Místo narození"
 
 #: cms/messages.py:112
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Place of death if different in Czech spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Místo úmrtí, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:115
-#, fuzzy
-#| msgid "Birth name of the author if different from international spelling."
 msgid "Place of death if different in German spelling."
-msgstr "Autorovo/ Autorčino rodné jméno pokud se liší od mezinárodního pravopisu."
+msgstr "Místo úmrtí, pokud se liší od mezinárodního pravopisu."
 
 #: cms/messages.py:117
-#, fuzzy
-#| msgid "The year that the author died in."
 msgid "The city or village the author died in."
-msgstr "Rok autorova úmrtí."
+msgstr "Město či obec, kde autor zemřel."
 
 #: cms/messages.py:118
-#, fuzzy
-#| msgid "Date of death"
 msgid "Place of death"
-msgstr "Datum úmrtí"
+msgstr "Místo úmrtí"
 
 #: cms/messages.py:119 cms/messages.py:257
 msgid "Authors"
-msgstr "Autorky a autoři"
+msgstr "Autoři"
 
 #: cms/messages.py:120
-#, fuzzy
-#| msgid "Author"
 msgid "Author name"
-msgstr "Autor"
+msgstr "Jméno autora"
 
 #: cms/messages.py:121
-#, fuzzy
-#| msgid "Authors"
 msgid "Author names"
-msgstr "Autorky a autoři"
+msgstr "Jména autora"
 
 #: cms/messages.py:123
 msgid "A meaningful image that will be used to present the author to the user."
-msgstr "Obrázek, který uživatele seznámí s autorem."
+msgstr "Vhodný obrázek zachycující autora."
 
 #: cms/messages.py:125 cms/messages.py:236 cms/messages.py:292
 msgid "Title image"
@@ -517,63 +466,51 @@ msgstr "Titulní obrázek"
 
 #: cms/messages.py:127
 msgid "Blog pages"
-msgstr ""
+msgstr "Blogové stránky"
 
 #: cms/messages.py:128
 msgid "Blog page"
-msgstr ""
+msgstr "Blogová stránka"
 
 #: cms/messages.py:129
-#, fuzzy
-#| msgid "Contact type"
 msgid "Contact types"
-msgstr "Typ kontaktu"
+msgstr "Typy kontaktu"
 
 #: cms/messages.py:130
 msgid "Contact type"
 msgstr "Typ kontaktu"
 
 #: cms/messages.py:133
-#, fuzzy
-#| msgid "Czech name"
 msgid "Czech summary"
-msgstr "České jméno"
+msgstr "Shrnutí v češtině"
 
 #: cms/messages.py:134
-#, fuzzy
-#| msgid "German name"
 msgid "German summary"
-msgstr "Německé jméno"
+msgstr "Shrnutí v němčině"
 
 #: cms/messages.py:136
 msgid "A short and concise summary of the content of the document."
-msgstr ""
+msgstr "Krátké výstižné shrnutí obsahu dokumentu."
 
 #: cms/messages.py:138
 msgid "Summary"
-msgstr ""
+msgstr "Shrnutí"
 
 #: cms/messages.py:139
-#, fuzzy
-#| msgid "Female"
 msgid "female"
-msgstr "Žena"
+msgstr "žena"
 
 #: cms/messages.py:140
-#, fuzzy
-#| msgid "Female"
 msgid "male"
-msgstr "Žena"
+msgstr "muž"
 
 #: cms/messages.py:141
-#, fuzzy
-#| msgid "Unknown"
 msgid "unknown"
-msgstr "Neznámý"
+msgstr "neznámý"
 
 #: cms/messages.py:142
 msgid "Genres"
-msgstr ""
+msgstr "Žánry"
 
 #: cms/messages.py:144 cms/messages.py:158
 msgid "Czech"
@@ -597,17 +534,15 @@ msgstr "Metainformace"
 
 #: cms/messages.py:149
 msgid "Promote"
-msgstr ""
+msgstr "Zveřejnit"
 
 #: cms/messages.py:150
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #: cms/messages.py:151
-#, fuzzy
-#| msgid "Homepage"
 msgid "Homepages"
-msgstr "Domovská stránka"
+msgstr "Domovské stránky"
 
 #: cms/messages.py:152
 msgid "Homepage"
@@ -615,7 +550,7 @@ msgstr "Domovská stránka"
 
 #: cms/messages.py:153
 msgid "Caption in Czech translations."
-msgstr "Popisek obrázku v českých překladech."
+msgstr "Popisek obrázku používaný v českém překladu."
 
 #: cms/messages.py:154
 msgid "Czech caption"
@@ -627,7 +562,7 @@ msgstr "Německý popisek obrázku"
 
 #: cms/messages.py:156
 msgid "A caption that may be presented with the file."
-msgstr "Popisek obrázku, který může být zobrazen se souborem."
+msgstr "Popisek obrázku, který může být zobrazen spolu se souborem."
 
 #: cms/messages.py:157
 msgid "Caption"
@@ -655,17 +590,15 @@ msgstr "I. Objevuj"
 
 #: cms/messages.py:177
 msgid "A short description of important connections (i.e. people) that have been mentioned in the text."
-msgstr "Stručný popis významných vztahů (tj. lidé), které byly uvedený v textu."
+msgstr "Stručné poznámky k osobám zmíněným v textu."
 
 #: cms/messages.py:179
 msgid "Connections"
-msgstr "Vztahy"
+msgstr "Souvislosti"
 
 #: cms/messages.py:181
-#, fuzzy
-#| msgid "Short full texts (i.e. poems, short stories) by the author that have been mentioned or partially quoted in the text about the author."
 msgid "Short full texts (i.e. poems, short stories) by the author that have been mentioned or are partially quoted in the text about the author."
-msgstr "Autorovy krátké texty (básně, povídky), které byly zmíněny nebo částečně citovány v textu o autorovi."
+msgstr "Krátké texty (básně, povídky), které jsou v textu zmíněny nebo částečně citovány."
 
 #: cms/messages.py:183
 msgid "Full texts"
@@ -673,11 +606,11 @@ msgstr "Texty"
 
 #: cms/messages.py:185
 msgid "A more in-depth description for interested users on how the author has been received."
-msgstr "Podrobnější informace o tom, jak bylo autorovo dílo vnímáno a přijímáno."
+msgstr "Podrobnější informace týkající se recepce autorova díla určené pro odbornou veřejnost."
 
 #: cms/messages.py:187
 msgid "Reception"
-msgstr "Vnímání"
+msgstr "Recepce"
 
 #: cms/messages.py:192
 msgid "II. Delving deeper"
@@ -685,7 +618,7 @@ msgstr "II. Poznávej"
 
 #: cms/messages.py:194
 msgid "A more in-depth presentation of primary literature of the author for an academic user."
-msgstr "Podrobnější představení autorových textů určené odborné veřejnosti."
+msgstr "Podrobný soupis primárních textů autora určený odborné veřejnosti."
 
 #: cms/messages.py:196
 msgid "Primary literature"
@@ -693,7 +626,7 @@ msgstr "Primární texty"
 
 #: cms/messages.py:198
 msgid "Further secondary literature about the author and his works aimed at academic users."
-msgstr "Další sekundární literatura o autorovi a jeho díle určená odborníkům."
+msgstr "Podrobný soupis sekundární literatury k danému autorovi určený odborné veřejnosti."
 
 #: cms/messages.py:200
 msgid "Secondary literature"
@@ -701,41 +634,35 @@ msgstr "Sekundární literatura"
 
 #: cms/messages.py:202
 msgid "Extant documents about the author by other people, e.g. correspondence with the author, lecture notes."
-msgstr "Dokumenty o autorovi sepsané jinými osobami, tj. korespondence, přednášky."
+msgstr "Dochované dokumenty o autorovi sepsané jinými osobami, korespondence, poznámky atp."
 
 #: cms/messages.py:204
 msgid "Testimony"
 msgstr "Svědectví"
 
 #: cms/messages.py:205
-#, fuzzy
-#| msgid "II. Memorial site"
 msgid "III. Material"
-msgstr "II. památková stránka"
+msgstr "III. Materiály"
 
 #: cms/messages.py:207
 msgid "A general description of the literary period and its significance."
-msgstr "Obecný popis literárního období a jeho znaky."
+msgstr "Obecný popis literárního období a jeho významu."
 
 #: cms/messages.py:209 cms/messages.py:325
 msgid "Description"
 msgstr "Popis"
 
 #: cms/messages.py:212
-#, fuzzy
-#| msgid "Types of locations"
 msgid "Types of memorials"
-msgstr "Typy míst"
+msgstr "Typy pamětních míst"
 
 #: cms/messages.py:213
-#, fuzzy
-#| msgid "Types of locations"
 msgid "Type of memorials"
-msgstr "Typy míst"
+msgstr "Typ pamětních míst"
 
 #: cms/messages.py:214 cms/messages.py:252
 msgid "The postal address of the location if any."
-msgstr "Poštovní adresa místa."
+msgstr "Poštovní adresa místa, je-li uvedena."
 
 #: cms/messages.py:215 cms/messages.py:253 cms/templates/cms/location.html:49
 msgid "Address"
@@ -743,19 +670,15 @@ msgstr "Adresa"
 
 #: cms/messages.py:217 cms/messages.py:259
 msgid "An address, a weblink or phone contact that may be helpful to visit this place."
-msgstr ""
+msgstr "Poštovní adresa, webový odkaz či telefonní kontakt, které uživateli umožní místo najít."
 
 #: cms/messages.py:219 cms/messages.py:261 cms/templates/cms/location.html:54
-#, fuzzy
-#| msgid "Contact information"
 msgid "Contact info"
 msgstr "Kontaktní informace"
 
 #: cms/messages.py:220 cms/messages.py:262
-#, fuzzy
-#| msgid "Contact information"
 msgid "Contacts of this location."
-msgstr "Kontaktní informace"
+msgstr "Kontakty pro toto pamětní místo."
 
 #: cms/messages.py:221 cms/messages.py:263
 msgid "Contact information"
@@ -763,7 +686,7 @@ msgstr "Kontaktní informace"
 
 #: cms/messages.py:222 cms/messages.py:264
 msgid "The actual geographic location."
-msgstr "Skutečná zeměpisná poloha."
+msgstr "Aktuální zeměpisná poloha."
 
 #: cms/messages.py:223 cms/messages.py:265
 msgid "Location coordinates"
@@ -771,21 +694,19 @@ msgstr "Souřadnice"
 
 #: cms/messages.py:225 cms/messages.py:275
 msgid "A short description of directions to find the location."
-msgstr "Krátký popis cesty k místu."
+msgstr "Krátký popis cesty k danému místu."
 
 #: cms/messages.py:227 cms/messages.py:277
 msgid "How to get there"
-msgstr "Jak se tam dostat/ Popis cesty"
+msgstr "Popis cesty"
 
 #: cms/messages.py:229 cms/messages.py:281 cms/messages.py:285
 msgid "The location types that describe this location best."
-msgstr ""
+msgstr "Typy umístění, které tuto polohu popisují nejlépe."
 
 #: cms/messages.py:231 cms/messages.py:283 cms/messages.py:287
-#, fuzzy
-#| msgid "Locations"
 msgid "Location types"
-msgstr "Místa"
+msgstr "Typy míst"
 
 #: cms/messages.py:232
 msgid "Locations"
@@ -808,35 +729,29 @@ msgid "German title"
 msgstr "Německý název"
 
 #: cms/messages.py:240
-#, fuzzy
-#| msgid "Czech title of the page."
 msgid "Title of the media item."
 msgstr "Český název stránky."
 
 #: cms/messages.py:243
 msgid "The author that is remebered by this memorial site."
-msgstr "Autor, kterého tento památník připomíná."
+msgstr "Autor, ke kterému se pamětní místo vztahuje."
 
 #: cms/messages.py:247
 msgid "The memorial site this mapping references to."
-msgstr "Pamětní místo, k němuž se vztahuje toto mapování."
+msgstr "Pamětní místo, k němuž se odkazuje."
 
-#: cms/messages.py:249 cms/messages.py:293 cms/messages.py:294
-#: cms/templates/cms/includes/levels.html:28
-#: cms/templates/cms/includes/levels.html:45
+#: cms/messages.py:249 cms/messages.py:293 cms/messages.py:294 cms/templates/cms/includes/levels.html:28 cms/templates/cms/includes/levels.html:45
 #: cms/templates/cms/includes/levels.html:49
 msgid "Memorial site"
 msgstr "Pamětní místo/ památník"
 
 #: cms/messages.py:250
-#, fuzzy
-#| msgid "Memorial sites"
 msgid "Dedicated sites"
-msgstr "Pamětní místa/ památníky"
+msgstr "Věnovaná místa"
 
 #: cms/messages.py:251
 msgid "Dedicated site"
-msgstr ""
+msgstr "Věnované místo"
 
 #: cms/messages.py:255
 msgid "The authors that this memorial site is dedicated to."
@@ -848,7 +763,7 @@ msgstr "Popis pamětního místa a jeho význam pro dané autory."
 
 #: cms/messages.py:269
 msgid "I. Memorial site"
-msgstr "I. pamětní stránka"
+msgstr "I. pamětní místo"
 
 #: cms/messages.py:271
 msgid "A detailed description of the memorial site and its significance to the referenced authors."
@@ -856,11 +771,11 @@ msgstr "Podrobný popis pamětního místa a jeho význam pro dané autory."
 
 #: cms/messages.py:273
 msgid "II. Memorial site"
-msgstr "II. památková stránka"
+msgstr "II. pamětní místo"
 
 #: cms/messages.py:278
 msgid "A short introduction text."
-msgstr "Krátký úvod text."
+msgstr "Krátký úvodní text."
 
 #: cms/messages.py:279 cms/templates/cms/memorial_site.html:67
 msgid "Introduction"
@@ -868,49 +783,39 @@ msgstr "Úvod"
 
 #: cms/messages.py:288 cms/messages.py:295 cms/templates/cms/author.html:42
 msgid "Memorial sites"
-msgstr "Pamětní místa/ památníky"
+msgstr "Pamětní místa"
 
 #: cms/messages.py:290
 msgid "A meaningful image that will be used to present the memorial site to the user."
-msgstr "Obrázek, který uživateli představí pamětní místo."
+msgstr "Výstižný obrázek, který uživateli představí pamětní místo."
 
 #: cms/messages.py:297
-#, fuzzy
-#| msgid "German title of the page as given in the latest draft."
 msgid "Czech title of the page as given of the latest draft."
-msgstr "Německý název stránky uvedený v posledním návrhu."
+msgstr "Český název stránky uvedený v posledním návrhu."
 
 #: cms/messages.py:299
-#, fuzzy
-#| msgid "Czech title"
 msgid "Czech draft title"
-msgstr "Český název"
+msgstr "Český název návrhu"
 
 #: cms/messages.py:301
-#, fuzzy
-#| msgid "German title of the page as given in the latest draft."
 msgid "German title of the page as given of the latest draft."
 msgstr "Německý název stránky uvedený v posledním návrhu."
 
 #: cms/messages.py:303
-#, fuzzy
-#| msgid "German title"
 msgid "German draft title"
-msgstr "Německý název"
+msgstr "Německý název návrhu"
 
 #: cms/messages.py:304
-#, fuzzy
-#| msgid "German title of the page as given in the latest draft."
 msgid "Title of the page as given of the lastest draft."
-msgstr "Německý název stránky uvedený v posledním návrhu."
+msgstr "Název stránky uvedený v posledním návrhu."
 
 #: cms/messages.py:305
 msgid "Draft title"
-msgstr "Návrh názvu"
+msgstr "Název návrhu"
 
 #: cms/messages.py:306
 msgid "Name or initials of the author of this content page."
-msgstr "Jméno nebo iniciály autora obsahu stránky."
+msgstr "Jméno nebo iniciály editora obsahu stránky."
 
 #: cms/messages.py:309
 msgid "The language this content has been originally written in."
@@ -937,24 +842,20 @@ msgid "German title of the page."
 msgstr "Německý název stránky."
 
 #: cms/messages.py:320
-#, fuzzy
-#| msgid "Czech title of the page."
 msgid "Title of the page."
-msgstr "Český název stránky."
+msgstr "Název stránky."
 
 #: cms/messages.py:322
 msgid "The image this rendition is based on."
-msgstr "Obrázek, na kterém je tato interpretace založena."
+msgstr "Originální obrázek, ze kterého toto provedení vychází."
 
 #: cms/messages.py:323
 msgid "Image rendition"
-msgstr "Interpretace obrazu"
+msgstr "Oříznutí obrázku"
 
 #: cms/messages.py:324
-#, fuzzy
-#| msgid "A short description of directions to find the location."
 msgid "A short description of the tag."
-msgstr "Krátký popis cesty k místu."
+msgstr "Krátký popis hesla."
 
 #: cms/messages.py:326 cms/wagtail_hooks.py:230
 msgid "Tags"
@@ -962,45 +863,39 @@ msgstr ""
 
 #: cms/messages.py:327
 msgid "Defines the relative order of the tag in the UI."
-msgstr ""
+msgstr "Definuje pořadí zobrazených hesel."
 
 #: cms/messages.py:328
 msgid "Sort order"
-msgstr ""
+msgstr "Pořadí třídění"
 
 #: cms/messages.py:329
-#, fuzzy
-#| msgid "Czech title of the page."
 msgid "The czech title of the tag as show to the user."
-msgstr "Český název stránky."
+msgstr "Heslo v češtině, které se zobrazí uživateli."
 
 #: cms/messages.py:331
-#, fuzzy
-#| msgid "German title of the page as given in the latest draft."
 msgid "The german title of the tag as shown to the user."
-msgstr "Německý název stránky uvedený v posledním návrhu."
+msgstr "Heslo v němčině, které se zobrazí uživateli."
 
 #: cms/messages.py:333
-#, fuzzy
-#| msgid "German title of the page as given in the latest draft."
 msgid "The title of this tag as shown to the user."
-msgstr "Německý název stránky uvedený v posledním návrhu."
+msgstr "Heslo, které se zobrazí uživateli."
 
 #: cms/messages.py:335
 msgid "Tag"
-msgstr ""
+msgstr "Heslo"
 
 #: cms/models/domain.py:905
 #, python-brace-format
 msgctxt "female"
 msgid "born {birth_name}"
-msgstr ""
+msgstr "narozena {birth_name}"
 
 #: cms/models/domain.py:907
 #, python-brace-format
 msgctxt "male"
 msgid "born {birth_name}"
-msgstr ""
+msgstr "narozen {birth_name}"
 
 #: cms/models/helpers.py:58
 msgid "February cannot have more than 29 days."
@@ -1011,18 +906,14 @@ msgid "Day is out of range for the indicated month."
 msgstr "Den není v rozsahu daného měsíce."
 
 #: cms/templates/cms/author.html:26
-#, fuzzy
-#| msgid "Also known as"
 msgctxt "female"
 msgid "Also known as"
-msgstr "Také známý jako"
+msgstr "Známá také jako"
 
 #: cms/templates/cms/author.html:26
-#, fuzzy
-#| msgid "Also known as"
 msgctxt "male"
 msgid "Also known as"
-msgstr "Také známý jako"
+msgstr "Známý také jako"
 
 #: cms/templates/cms/author.html:66
 msgid "Preview"
@@ -1030,42 +921,35 @@ msgstr "Náhled"
 
 #: cms/templates/cms/author.html:66
 msgid "Only published memorial sites can be listed here."
-msgstr ""
+msgstr "Do seznamu lze zařadit pouze již zveřejněná pamětní místa."
 
 #: cms/templates/cms/blocks/paragraph_struct_block.html:26
 msgid "Additional notes and sources"
-msgstr "Další poznámky a zdroje"
+msgstr "Další poznámky a prameny"
 
-#: cms/templates/cms/includes/author.html:10
-#: cms/templates/cms/includes/author.html:14
+#: cms/templates/cms/includes/author.html:10 cms/templates/cms/includes/author.html:14
 msgid "in"
-msgstr ""
+msgstr "v"
 
 #: cms/templates/cms/includes/author.html:26
 msgid "Categories"
 msgstr "Rubriky"
 
 #: cms/templates/cms/location.html:59
-#, fuzzy
-#| msgid "Connections"
 msgid "Directions"
-msgstr "Vztahy"
+msgstr "Popis cesty"
 
 #: cms/templates/cms/memorial_site.html:38
-#, fuzzy
-#| msgid "How to get there"
 msgid "How to find it"
-msgstr "Jak se tam dostat/ Popis cesty"
+msgstr "Popis cesty"
 
 #: cms/templates/cms/memorial_site.html:74
 msgid "Delving deeper"
 msgstr "Poznávej"
 
 #: cms/templates/cms/memorial_site.html:80
-#, fuzzy
-#| msgid "The name of the author."
 msgid "More about the author"
-msgstr "Autorovo jméno."
+msgstr "Více o autorovi"
 
 #: cms/templates/cms/signup.html:5
 msgid "Signup"
@@ -1168,10 +1052,8 @@ msgid "Welcome to LIS admin."
 msgstr "Vítejte ve správě LIS."
 
 #: cms/templates/wagtailadmin/login.html:4
-#, fuzzy
-#| msgid "Welcome to LIS admin."
 msgid "Sign in to LIS admin."
-msgstr "Vítejte ve správě LIS."
+msgstr "Přihlášení do správy LIS."
 
 #: cms/templates/wagtailimages/images/results.html:6
 #, python-format
@@ -1208,7 +1090,7 @@ msgstr "Žádné obrázky neodpovídají \"<em>%(query_string)s</em>\""
 #: cms/templates/wagtailimages/images/results.html:39
 #, python-format
 msgid "You have not uploaded any images in this collection yet. Why not <a href=\"%(wagtailimages_add_image_url)s\">upload one now</a>?"
-msgstr "Zatím jste do této sbírky neuložili žádné obrázky. Proč <a href=\"%(wagtailimages_add_image_url)s\"> nějaký neuložit teď</a>?"
+msgstr "Zatím jste do této skupiny neuložili žádné obrázky. Proč <a href=\"%(wagtailimages_add_image_url)s\"> nějaký neuložit teď</a>?"
 
 #: cms/templates/wagtailimages/images/results.html:41
 #, python-format
