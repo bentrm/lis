@@ -964,7 +964,7 @@ class LevelPage(I18nPage):
 
     def serve(self, request, *args, **kwargs):
         """Defer to the parent pages serve method."""
-        return self.get_parent().specific.serve(request, *args, **kwargs)
+        return self.get_parent().specific.serve(request, *args, *kwargs)
 
     def get_texts(self):
         """Return the text type fields of the page as an iterable."""

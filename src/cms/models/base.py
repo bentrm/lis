@@ -154,11 +154,11 @@ class I18nPage(Page):
             .exists()
         )
 
-    def serve(self, request):
+    def serve(self, request, *args, **kwargs):
         """Return a redirect of the temporary_redirect property is set."""
         if self.temporary_redirect:
             return redirect(self.temporary_redirect, permanent=False)
-        return super(I18nPage, self).serve(request)
+        return super(I18nPage, self).serve(request, *args, **kwargs)
 
     def get_admin_display_title(self):
         """Return title to be displayed in the admins UI."""
