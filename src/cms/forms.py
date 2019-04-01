@@ -23,10 +23,10 @@ class SignupForm(UserCreationForm):
         return keyword
 
     def save(self, commit=True):
-        """Create new user adding her to the editors group."""
+        """Create new user adding her to the readonly group."""
         new_user = super(SignupForm, self).save(commit=True)
-        editors_group = Group.objects.get(name="Editors")
-        editors_group.user_set.add(new_user)
+        readonly_group = Group.objects.get(name="READONLY")
+        readonly_group.user_set.add(new_user)
 
     class Meta:
         model = User

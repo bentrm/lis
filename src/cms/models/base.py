@@ -4,6 +4,7 @@ import logging
 from collections import namedtuple
 from typing import NewType, Tuple
 
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
@@ -180,6 +181,11 @@ class I18nPage(Page):
         changed=True,
     ):
         """Add applications and translation specific fields to the revision of the page."""
+
+        # TODO: Add explicit read-only permission to support access to admin backend
+        if user.groups.filter(name='READONLY').exists():
+            raise PermissionDenied
+
         self.full_clean()
 
         # Create revision
