@@ -31,6 +31,7 @@ from wagtail.search import index
 from cms.blocks import ParagraphStructBlock
 from cms.edit_handlers import FieldPanelTab, FieldPanelTabs
 from cms.messages import TXT
+from cms.widgets import CustomGooglePointFieldWidget
 
 from .base import (
     DB_TABLE_PREFIX,
@@ -1521,7 +1522,7 @@ class Memorial(I18nPage):
             heading=_(TXT["memorial_site.directions"]),
             show_label=False,
         ),
-        FieldPanel("coordinates", widget=GooglePointFieldWidget()),
+        FieldPanel("coordinates", widget=CustomGooglePointFieldWidget()),
     ]
     english_panels = I18nPage.english_panels + [
         FieldPanel("introduction"),
