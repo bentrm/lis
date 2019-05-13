@@ -4,7 +4,6 @@ set -o nounset
 set -o errexit
 
 # Docker Host settings
-DOCKER_MACHINE_NAME='lis-manager1'
 DOCKER_MEDIA_VOLUME='lis_media'
 
 DOCKER_DB_SERVICE='lis_db'
@@ -19,9 +18,6 @@ DUMP_FILE="$BACKUP_DIR/dump_$SUFFIX.sql"
 # Local Docker settings
 MEDIA_ROOT='files/media'
 
-# Activate remote docker host
-eval $(docker-machine env $DOCKER_MACHINE_NAME)
-
 # Backup files
 docker run --rm --volume "$DOCKER_MEDIA_VOLUME:/backup" busybox sh -c 'tar c -vOz -f - -C /backup --exclude ./images ./' > "$MEDIA_ARCHIVE"
 
@@ -31,6 +27,3 @@ touch $DUMP_FILE
 docker exec -it -u postgres \
     $(docker ps --filter name=$DOCKER_DB_SERVICE --format "{{.ID}}") \
     pg_dump --clean --if-exists -d $POSTGRES_DB > "$DUMP_FILE"
-
-# Unset to activate local docker host
-eval $(docker-machine env -u)

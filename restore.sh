@@ -3,9 +3,6 @@
 set -o nounset
 set -o errexit
 
-# Unset to activate local docker host
-eval $(docker-machine env -u)
-
 # Backup settings
 BACKUP_DIR=$(realpath 'backups')
 DUMP_FILE=$(ls -t $BACKUP_DIR/dump_* | head -1)
@@ -14,10 +11,14 @@ MEDIA_ARCHIVE=$(ls -t $BACKUP_DIR/media_* | head -1)
 # Local docker settings
 DOCKER_DB_VOLUME='lis_pgdata'
 DOCKER_MEDIA_VOLUME='lis_media'
-POSTGRES_IMAGE='mdillon/postgis:10-alpine'
+
+POSTGRES_IMAGE='mdillon/postgis:11-alpine'
 POSTGRES_USER='django'
 POSTGRES_DB='django'
-DB_RESTORE_CONTAINER_NAME='backup-lis'
+DB_RESTORE_CONTAINER_NAME='lis-restore-db'
+
+MEDIA_IMAGE='nginx:alpine'
+MEDIA_RESTORE_CONTAINER_NAME='lis-restore-media'
 MEDIA_ROOT='files/media'
 
 if [[ $(docker ps -a --filter volume=$DOCKER_DB_VOLUME --format "{{.ID}}") ]]; then
@@ -46,5 +47,10 @@ docker exec -it $DB_RESTORE_CONTAINER_NAME \
     psql -U $POSTGRES_USER -d $POSTGRES_DB -f /dump.sql
 docker stop $DB_RESTORE_CONTAINER_NAME
 
-# Restore media files
-tar -xvf $MEDIA_ARCHIVE -C $MEDIA_ROOT
+docker run --rm -d --name $MEDIA_RESTORE_CONTAINER_NAME \
+    --volume "$MEDIA_ARCHIVE:/media.tar" \
+    --volume "$DOCKER_MEDIA_VOLUME:/usr/share/nginx/html/media" \
+    $MEDIA_IMAGE
+docker exec -it $MEDIA_RESTORE_CONTAINER_NAME \
+    tar -xvf /media.tar -C /usr/share/nginx/html/media
+docker stop $MEDIA_RESTORE_CONTAINER_NAME
