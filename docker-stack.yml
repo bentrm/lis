@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   db:
-    image: mdillon/postgis:9.6-alpine
+    image: mdillon/postgis:11-alpine
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -13,19 +13,17 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.5'
-          memory: 128M
+          cpus: '1'
+          memory: 512M
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - lis
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_PASSWORD: ${LIS_DB_PASSWORD}
       POSTGRES_USER: ${LIS_DB_USER}
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.2
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -38,12 +36,15 @@ services:
         limits:
           cpus: '1'
           memory: 1024M
-    networks:
-      - lis
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m -server"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
       - cluster.name=lis-cluster
       - discovery.type=single-node
 
@@ -57,10 +58,8 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.25'
-          memory: 256M
-    networks:
-      - lis
+          cpus: '1'
+          memory: 512M
 
   django:
     image: registry.gitlab.com/bentrm/lis:${LIS_VERSION}
@@ -75,9 +74,8 @@ services:
         limits:
           cpus: '1'
           memory: 512M
-    networks:
-      - lis
-      - proxy
+    ports:
+      - "8000:8000"
     volumes:
       - static:/html/static
       - media:/html/media
@@ -89,11 +87,12 @@ services:
       DB_PASSWORD: ${LIS_DB_PASSWORD}
       DB_PORT: ${LIS_DB_PORT}
       DB_USER: ${LIS_DB_USER}
+      DEBUG: ${LIS_DEBUG}
       DEFAULT_FROM_EMAIL: ${LIS_EMAIL_FROM}
       EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      EMAIL_HOST: ${LIS_EMAIL_HOST}
       EMAIL_HOST_PASSWORD: ${LIS_EMAIL_HOST_PASSWORD}
       EMAIL_HOST_USER: ${LIS_EMAIL_HOST_USER}
-      EMAIL_HOST: ${LIS_EMAIL_HOST}
       EMAIL_USE_SSL: 0
       EMAIL_USE_TLS: 1
       GOOGLE_MAP_API_KEY: ${LIS_GOOGLE_MAP_API_KEY}
@@ -101,12 +100,11 @@ services:
       LETSENCRYPT_HOST: ${LIS_VIRTUAL_HOST}
       LIS_SIGNUP_KEYWORD: ${LIS_SIGNUP_KEYWORD}
       MEDIA_ROOT: /html/media
-      MEDIA_URL: ${LIS_MEDIA_PATH}/
+      MEDIA_URL: ${LIS_MEDIA_URL}
       SECRET_KEY: ${LIS_SECRET_KEY}
       STATIC_ROOT: /html/static
-      STATIC_URL: ${LIS_STATIC_PATH}/
+      STATIC_URL: ${LIS_STATIC_URL}
       VIRTUAL_HOST: ${LIS_VIRTUAL_HOST}
-      VIRTUAL_PATH: ${LIS_VIRTUAL_PATH}
     depends_on:
       - db
       - elasticsearch
@@ -121,16 +119,12 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.25'
-          memory: 64M
-    networks:
-      - lis
-      - proxy
+          cpus: '.5'
+          memory: 128M
+    ports:
+      - "8001:80"
     volumes:
       - static:/usr/share/nginx/html/static:ro
-    environment:
-      VIRTUAL_HOST: ${LIS_VIRTUAL_HOST}
-      VIRTUAL_PATH: ${LIS_STATIC_PATH}
 
   media:
     image: nginx:alpine
@@ -142,24 +136,15 @@ services:
         window: 60s
       resources:
         limits:
-          cpus: '.25'
-          memory: 64M
-    networks:
-      - lis
-      - proxy
+          cpus: '.5'
+          memory: 128M
+    ports:
+      - "8002:80"
     volumes:
       - media:/usr/share/nginx/html/media:ro
-    environment:
-      VIRTUAL_HOST: ${LIS_VIRTUAL_HOST}
-      VIRTUAL_PATH: ${LIS_MEDIA_PATH}
 
 volumes:
   pgdata:
   esdata:
   static:
   media:
-
-networks:
-  lis:
-  proxy:
-    external: true
