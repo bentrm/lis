@@ -36,10 +36,6 @@ services:
         limits:
           cpus: '1'
           memory: 1024M
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
@@ -141,7 +137,7 @@ services:
     ports:
       - "8002:80"
     volumes:
-      - media:/usr/share/nginx/html/media:ro
+      - media:/usr/share/nginx/html/media
 
 volumes:
   pgdata:
