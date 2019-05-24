@@ -220,11 +220,6 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-# Geotools
-GDAL_LIBRARY_PATH = env("GDAL_LIBRARY_PATH", required=True)
-GEOS_LIBRARY_PATH = env("GEOS_LIBRARY_PATH", required=True)
-SPATIALITE_LIBRARY_PATH = env("SPATIALITE_LIBRARY_PATH", required=True)
-
 # Map widgets
 MAP_WIDGETS = {
     "GooglePointFieldWidget": (

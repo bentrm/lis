@@ -1,46 +1,18 @@
-FROM bentrm/geopython:latest
+FROM python:3.7-stretch
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends binutils libproj-dev gdal-bin \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /requirements.txt
-ENV LIBRARY_PATH=/lib:/usr/lib
-
-RUN addgroup -S gunicorn && adduser -S -G gunicorn gunicorn
-
-RUN set -ex \
-    && apk add --no-cache \
-        inotify-tools \
-        su-exec \
-    && apk add --no-cache --virtual .build-deps \
-        gcc \
-        make \
-        libstdc++ \
-        libc-dev \
-        musl-dev \
-        linux-headers \
-        pcre-dev \
-        postgresql-dev \
-        jpeg-dev \
-        zlib-dev \
-    && python -m venv /venv \
-    && /venv/bin/pip install -U pip \
-    && LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/venv/bin/pip install --no-cache-dir -r /requirements.txt" \
-    && runDeps="$( \
-            scanelf --needed --nobanner --recursive /venv \
-                    | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-                    | sort -u \
-                    | xargs -r apk info --installed \
-                    | sort -u \
-    )" \
-    && apk del .build-deps
+RUN addgroup --system gunicorn && adduser --system --ingroup gunicorn gunicorn
 
 # Copy your application code to the container.
-RUN mkdir /src/
-WORKDIR /src/
-ADD src /src
+COPY . /app
 
-COPY docker/clearsessions /etc/periodic/15min
+RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN ln -s /app/bin/clearsessions.sh /etc/cron.daily/
 
-COPY docker/docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 
 EXPOSE 8000
-CMD ["gunicorn"]
+WORKDIR /app/src
+CMD ["gunicorn", "-c", "python:config.gunicorn", "lis.wsgi:application"]
