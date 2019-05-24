@@ -1,0 +1,80 @@
+version: '3.7'
+
+services:
+  cms:
+    build: ./cms
+    ports:
+      - "${PORT_CMS:-8000}:8000"
+    volumes:
+      - static:/html/static
+      - media:/html/media
+    restart: always
+    environment:
+      CMS_VERSION: ${VERSION}
+      DB_ENGINE: django.contrib.gis.db.backends.postgis
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DEBUG: ${DEBUG}
+      DEFAULT_FROM_EMAIL: ${EMAIL_FROM}
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_USE_SSL: 0
+      EMAIL_USE_TLS: 1
+      GOOGLE_MAP_API_KEY: ${GOOGLE_MAP_API_KEY}
+      LIS_SIGNUP_KEYWORD: ${SIGNUP_KEYWORD}
+      BASE_URL: ${BASE_URL}
+      MEDIA_ROOT: /html/media
+      MEDIA_URL: ${MEDIA_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      STATIC_ROOT: /html/static
+      STATIC_URL: ${STATIC_URL}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+    depends_on:
+      - db
+      - search
+      - cache
+
+  db:
+    image: mdillon/postgis:11-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+
+  search:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.2
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: always
+    environment:
+      - "ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}"
+      - bootstrap.memory_lock=true
+      - cluster.name=lis-cluster
+      - discovery.type=single-node
+
+  cache:
+    image: memcached:alpine
+    restart: always
+
+  static:
+    image: nginx:alpine
+    ports:
+      - "${PORT_STATIC:-8001}:80"
+    volumes:
+      - static:/usr/share/nginx/html/static:ro
+      - media:/usr/share/nginx/html/media:ro
+    restart: always
+
+volumes:
+  pgdata:
+  esdata:
+  static:
+  media:
