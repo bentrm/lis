@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  cms:
+    volumes:
+      - ./cms:/app
+    restart: "no"
+    environment:
+      DEBUG: 1

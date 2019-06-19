@@ -62,7 +62,6 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
-    "api",
     "cms",
     "dal",
     "dal_select2",
@@ -195,8 +194,6 @@ USE_TZ = True
 
 LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATICFILES_DIRS = [os.path.join(SRC_DIR, "static")]
 STATIC_ROOT = env("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 STATIC_URL = env("STATIC_URL", "/static/")
@@ -233,16 +230,6 @@ MAP_WIDGETS = {
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include "/admin" or a trailing slash
 BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
-
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": (
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": ("api.permissions.HasAPIAccess",),
-    "DEFAULT_FILTER_BACKENDS": (),
-    "DEFAULT_THROTTLE_CLASSES": ("api.throttling.ApiKeyThrottle",),
-}
 
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_WHITELIST = ["null"]
