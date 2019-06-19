@@ -216,7 +216,7 @@ WAGTAIL_GRAVATAR_PROVIDER_URL = None
 WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "cms.search.CustomElasticsearchSearchBackend",
-        "URLS": ["http://elasticsearch:9200"],
+        "URLS": [env("SEARCH_URLS", "http://search:9200").split(",")],
     }
 }
 

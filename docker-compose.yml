@@ -17,7 +17,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
-      DEBUG: ${DEBUG}
+      DEBUG: 0
       DEFAULT_FROM_EMAIL: ${EMAIL_FROM}
       EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       EMAIL_HOST: ${EMAIL_HOST}
@@ -65,7 +65,7 @@ services:
     restart: always
 
   static:
-    image: nginx:alpine
+    build: ./static
     ports:
       - "${PORT_STATIC:-8001}:80"
     volumes:

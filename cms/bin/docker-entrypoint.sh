@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 if [[ "$1" = 'gunicorn' ]]; then
@@ -8,9 +8,6 @@ if [[ "$1" = 'gunicorn' ]]; then
     # init Django app
     python manage.py migrate
     python manage.py collectstatic --no-input
-
-    # init Cron scripts purging sessions
-    crond -bS
 
     # run app as user gunicorn
     exec gosu gunicorn "$@"

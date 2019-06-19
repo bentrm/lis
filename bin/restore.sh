@@ -40,5 +40,5 @@ echo "Cleanup..."
 docker exec -i $DOCKER_APP_CONTAINER sh -c "rm /backup.tgz"
 
 echo "Pruning renditions..."
-docker exec -i -u postgres $DOCKER_APP_CONTAINER \
-    /venv/bin/python manage.py prunerenditions
+docker exec -i $DOCKER_APP_CONTAINER \
+    python manage.py prunerenditions
