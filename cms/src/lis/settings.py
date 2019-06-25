@@ -63,6 +63,7 @@ if not DEBUG:
 
 INSTALLED_APPS = [
     "cms",
+    "api",
     "dal",
     "dal_select2",
     "wagtail.contrib.modeladmin",
@@ -212,8 +213,8 @@ WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 WAGTAIL_GRAVATAR_PROVIDER_URL = None
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "cms.search.CustomElasticsearchSearchBackend",
-        "URLS": [env("SEARCH_URLS", "http://search:9200").split(",")],
+        "BACKEND": "wagtail.search.backends.elasticsearch6.SearchBackend",
+        "URLS": env("SEARCH_URLS", "http://search:9200").split(","),
     }
 }
 
@@ -239,3 +240,39 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)
+
+# RESTful API
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 10,
+    'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework_json_api.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework_json_api.renderers.JSONRenderer',
+        # If you're performance testing, you will want to use the browseable API
+        # without forms, as the forms can generate their own queries.
+        # If performance testing, enable:
+        # 'example.utils.BrowsableAPIRendererWithoutForms',
+        # Otherwise, to play around with the browseable API, enable:
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ),
+    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_json_api.filters.QueryParameterValidationFilter',
+        'rest_framework_json_api.filters.OrderingFilter',
+        'rest_framework_json_api.django_filters.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ),
+    'SEARCH_PARAM': 'filter[search]',
+    # 'SEARCH_PARAM': 'search',
+    'TEST_REQUEST_RENDERER_CLASSES': (
+        'rest_framework_json_api.renderers.JSONRenderer',
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'vnd.api+json'
+}
+JSON_API_FORMAT_FIELD_NAMES = 'camelize'
