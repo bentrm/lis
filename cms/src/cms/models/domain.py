@@ -450,7 +450,7 @@ class Author(I18nPage):
         help_text=_(TXT["author.date_of_birth_year.help"]),
     )
     date_of_birth_month = models.PositiveSmallIntegerField(
-        choices=dates.MONTHS.items(),
+        choices=list(dates.MONTHS.items()),
         null=True,
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
@@ -492,7 +492,7 @@ class Author(I18nPage):
         help_text=_(TXT["author.date_of_death_year.help"]),
     )
     date_of_death_month = models.PositiveSmallIntegerField(
-        choices=dates.MONTHS.items(),
+        choices=list(dates.MONTHS.items()),
         null=True,
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
@@ -811,6 +811,9 @@ class Author(I18nPage):
         verbose_name = _(TXT["author"])
         verbose_name_plural = _(TXT["author.plural"])
 
+    class JSONAPIMeta:
+        resource_name = 'authors'
+
 
 class AuthorName(Orderable):
     """A join relation that holds the name of an author."""
@@ -945,6 +948,9 @@ class AuthorName(Orderable):
         db_table = DB_TABLE_PREFIX + "author_name"
         verbose_name = _(TXT["author_name"])
         verbose_name_plural = _(TXT["author_name.plural"])
+
+    class JSONAPIMeta:
+        resource_name = 'names'
 
 
 class LevelPage(I18nPage):
@@ -1330,6 +1336,12 @@ class Memorial(I18nPage):
         verbose_name=_(TXT["memorial_site.title_image"]),
         help_text=_(TXT["memorial_site.title_image.help"]),
     )
+
+    remembered_authors = ParentalManyToManyField(
+        "Author",
+        related_name="memorials",
+    )
+
     memorial_type_tags = ParentalManyToManyField(
         "MemorialTag",
         db_table=DB_TABLE_PREFIX + "memorial_site_tag_memorial_type",
@@ -1488,6 +1500,12 @@ class Memorial(I18nPage):
                 attrs={"data-maximum-selection-length": 1},
             ),
         ),
+        FieldPanel(
+            "remembered_authors",
+            widget=autocomplete.ModelSelect2Multiple(
+                url="autocomplete-author",
+            ),
+        ),
         InlinePanel(
             "authors",
             label=_(TXT["memorial_site.authors"]),
@@ -1555,6 +1573,9 @@ class Memorial(I18nPage):
         verbose_name = _(TXT["memorial"])
         verbose_name_plural = _(TXT["memorial.plural"])
 
+    class JSONAPIMeta:
+        resource_name = 'memorials'
+
 
 class LocationAuthor(Orderable):
     """Join page type to add multiple authors to one memorial site."""
@@ -1579,3 +1600,5 @@ class LocationAuthor(Orderable):
         db_table = DB_TABLE_PREFIX + "memorial_site_author"
         verbose_name = _(TXT["memorial_site_author"])
         verbose_name_plural = _(TXT["memorial_site_author.plural"])
+
+

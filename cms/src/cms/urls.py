@@ -1,9 +1,10 @@
 """CMS url mappings."""
-
+from django.conf.urls import url
 from django.urls import include, path
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail.images.views.serve import ServeView
 
 from . import views
 
@@ -11,6 +12,11 @@ urlpatterns = [
     path("cms/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("signup/", views.SignupView.as_view(), name="signup"),
+    path(
+        "autocomplete/author/",
+        views.AuthorAutocompleteView.as_view(),
+        name="autocomplete-author",
+    ),
     path(
         "autocomplete/language/",
         views.LanguageAutocomplete.as_view(),
@@ -30,6 +36,11 @@ urlpatterns = [
         "autocomplete/literary-period/",
         views.LiteraryPeriodAutocomplete.as_view(),
         name="autocomplete-literary-period",
+    ),
+    url(
+        r'^images/([^/]*)/(\d*)/([^/]*)/[^/]*$',
+        ServeView.as_view(action='redirect'),
+        name='wagtailimages_serve',
     ),
     path("", include(wagtail_urls)),
 ]

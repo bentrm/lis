@@ -108,6 +108,9 @@ class GenreTag(Tag):
         verbose_name = _(TXT["genre"])
         verbose_name_plural = _(TXT["genre.plural"])
 
+    class JSONAPIMeta:
+        resource_name = 'genres'
+
 
 class LanguageTag(Tag):
     """Used to tag languages spoken by an author."""
@@ -117,6 +120,8 @@ class LanguageTag(Tag):
         verbose_name = _(TXT["language"])
         verbose_name_plural = _(TXT["language.plural"])
 
+    class JSONAPIMeta:
+        resource_name = 'languages'
 
 class MemorialTag(Tag):
     """Used to tag memorials."""
@@ -125,6 +130,9 @@ class MemorialTag(Tag):
         db_table = DB_TABLE_PREFIX + "memorial_type"
         verbose_name = _(TXT["memorial_type"])
         verbose_name_plural = _(TXT["memorial_type.plural"])
+
+    class JSONAPIMeta:
+        resource_name = 'memorialTypes'
 
 
 class PeriodTag(SortableTag):
@@ -135,6 +143,9 @@ class PeriodTag(SortableTag):
         verbose_name = _(TXT["literary_period"])
         verbose_name_plural = _(TXT["literary_period.plural"])
 
+    class JSONAPIMeta:
+        resource_name = 'periods'
+
 
 class AgeGroupTag(SortableTag):
     """Used to tag age groups."""
@@ -143,3 +154,6 @@ class AgeGroupTag(SortableTag):
         db_table = DB_TABLE_PREFIX + "age_group"
         verbose_name = _(TXT["age_group"])
         verbose_name_plural = _(TXT["age_group.plural"])
+
+    class JSONAPIMeta:
+        resource_name = 'ageGroups'

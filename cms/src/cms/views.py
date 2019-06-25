@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.views import View
 
 from . import forms
-from .models import GenreTag, LanguageTag, MemorialTag, PeriodTag, Tag
+from .models import GenreTag, LanguageTag, MemorialTag, PeriodTag, Tag, Author
 
 
 class SignupView(View):
@@ -36,10 +36,8 @@ class SignupView(View):
         return render(request, self.template_name, {"form": form})
 
 
-class TagAutocompleteView(autocomplete.Select2QuerySetView):
+class GenericAutocompleteView(autocomplete.Select2QuerySetView):
     """Generic autocomplete view to search title fields."""
-
-    model = Tag
 
     def get_queryset(self):
         """Return queryset filtered by user authentication status and search term."""
@@ -55,25 +53,31 @@ class TagAutocompleteView(autocomplete.Select2QuerySetView):
         return qs
 
 
-class LanguageAutocomplete(TagAutocompleteView):
+class AuthorAutocompleteView(GenericAutocompleteView):
+    """Author autocomplete view."""
+
+    model = Author
+
+
+class LanguageAutocomplete(GenericAutocompleteView):
     """Language tag autocomplete view."""
 
     model = LanguageTag
 
 
-class LocationTypeAutocomplete(TagAutocompleteView):
+class LocationTypeAutocomplete(GenericAutocompleteView):
     """Location type tag autocomplete view."""
 
     model = MemorialTag
 
 
-class GenreAutocomplete(TagAutocompleteView):
+class GenreAutocomplete(GenericAutocompleteView):
     """Genre tag autocomplete view."""
 
     model = GenreTag
 
 
-class LiteraryPeriodAutocomplete(TagAutocompleteView):
+class LiteraryPeriodAutocomplete(GenericAutocompleteView):
     """Literary period tag autocomplete view."""
 
     model = PeriodTag
