@@ -269,7 +269,6 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ),
     'SEARCH_PARAM': 'filter[search]',
-    # 'SEARCH_PARAM': 'search',
     'TEST_REQUEST_RENDERER_CLASSES': (
         'rest_framework_json_api.renderers.JSONRenderer',
     ),
