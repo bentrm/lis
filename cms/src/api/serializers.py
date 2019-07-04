@@ -118,6 +118,7 @@ class AuthorSerializer(serializers.ModelSerializer, ImageSerializerMixin):
         model = Author
         fields = (
             'name',
+            'slug',
             'names',
             'sex',
             'image',
@@ -154,7 +155,7 @@ class MemorialSerializer(serializers.ModelSerializer, ImageSerializerMixin):
     postal = serializers.CharField()
     way = serializers.CharField()
     contact = serializers.CharField()
-    geometry = GeometryField(source='coordinates',      precision=5, remove_duplicates=True)
+    geometry = GeometryField(source='coordinates', precision=5, remove_duplicates=True)
     authors = ResourceRelatedField(
         source='remembered_authors',
         read_only=True,
@@ -170,6 +171,7 @@ class MemorialSerializer(serializers.ModelSerializer, ImageSerializerMixin):
         model = Memorial
         fields = (
             'name',
+            'slug',
             'image',
             'image_thumbnail',
             'image_title',
