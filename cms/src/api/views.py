@@ -1,12 +1,12 @@
 from django.db.models import Case, When, Q, F
 from django.utils.translation import get_language
 from rest_framework.filters import SearchFilter
-from rest_framework_gis.filters import InBBoxFilter
 from rest_framework_json_api.django_filters import DjangoFilterBackend
 from rest_framework_json_api.filters import OrderingFilter
 from rest_framework_json_api.views import ReadOnlyModelViewSet
 
-from api.filters import MemorialFilter, AuthorFilter, SpatialQueryParameterValidationFilter
+from api.filters import MemorialFilter, AuthorFilter, SpatialQueryParameterValidationFilter, BoundingBoxFilter, \
+    DistanceFilter
 from api.serializers import AuthorSerializer, MemorialSerializer, LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, AuthorNameSerializer
 from cms.models import Memorial, LanguageTag, PeriodTag, GenreTag, MemorialTag, Author, AuthorName
@@ -196,11 +196,14 @@ class MemorialViewSet(ReadOnlyModelViewSet):
        SpatialQueryParameterValidationFilter,
        OrderingFilter,
        DjangoFilterBackend,
-       InBBoxFilter,
+       BoundingBoxFilter,
+       DistanceFilter,
        SearchFilter,
     )
     bbox_filter_field = 'coordinates'
     bbox_filter_include_overlapping = True
+    distance_filter_field = 'coordinates'
+    distance_filter_convert_meters = True
     filterset_class = MemorialFilter
     ordering_fields = (
         'name',
