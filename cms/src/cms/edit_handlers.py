@@ -45,7 +45,7 @@ class FieldPanelTabs(MultiFieldPanel):
 
 
 class FieldPanelTab(FieldPanel):
-    def on_instance_bound(self):
+    def on_form_bound(self):
         self.bound_field = self.form[self.field_name]
         self.heading = self.heading if self.heading else self.bound_field.label
         self.help_text = self.bound_field.help_text
