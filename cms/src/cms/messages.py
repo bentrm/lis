@@ -266,11 +266,11 @@ TXT = {
     "memorial_site.description.help": _(
         "A description of the memorial site and its significance to the referenced authors."
     ),
-    "memorial_site.description": _("I. Memorial site"),
+    "memorial_site.description": _("I. Discover - Memorial site"),
     "memorial_site.detailed_description.help": _(
         "A detailed description of the memorial site and its significance to the referenced authors."
     ),
-    "memorial_site.detailed_description": _("II. Memorial site"),
+    "memorial_site.detailed_description": _("II. Delving deeper - Memorial site"),
     "memorial_site.directions.help": _(
         "A short description of directions to find the location."
     ),

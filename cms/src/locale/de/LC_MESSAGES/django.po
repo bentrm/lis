@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-29 13:12+0000\n"
+"POT-Creation-Date: 2019-07-04 14:33+0200\n"
 "PO-Revision-Date: 2019-03-29 14:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: LIS-Team <postmaster@mg.lis-map.eu>\n"
@@ -17,127 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
-
-#: api/filters.py:15 api/templates/rest_framework/api.html:21
-msgid "Search"
-msgstr "Suchen"
-
-#: api/filters.py:16
-msgid "A search term."
-msgstr "Ein Suchbegriff."
-
-#: api/filters.py:51 cms/messages.py:15 cms/messages.py:21 cms/messages.py:27
-#: cms/messages.py:126 cms/messages.py:245
-msgid "Author"
-msgstr "Autorin oder Autor"
-
-#: api/filters.py:52
-msgid "Memorial"
-msgstr "Erinnerungsstelle"
-
-#: api/filters.py:58
-msgid "Content type"
-msgstr "Typ"
-
-#: api/filters.py:59
-msgid "One of 'author' or 'memorial'."
-msgstr "Entweder „author“ oder „memorial“."
-
-#: api/filters.py:72 cms/messages.py:48
-msgid "Gender"
-msgstr "Geschlecht"
-
-#: api/filters.py:73
-msgid "Gender of the author."
-msgstr "Geschlecht des Autors oder der Autorin."
-
-#: api/filters.py:77 cms/messages.py:39
-msgid "Year of birth"
-msgstr "Geburtsjahr"
-
-#: api/filters.py:79
-msgid ""
-"Used to filter authors year of birth. A discrete value may be given. A range "
-"may be defined by appending _min or _max to the parameter name."
-msgstr ""
-
-#: api/filters.py:86 cms/messages.py:46
-msgid "Year of death"
-msgstr "Sterbejahr"
-
-#: api/filters.py:88
-msgid "Used to filter author by year of death. See yob for more information."
-msgstr ""
-
-#: api/filters.py:94 api/templates/rest_framework/api.html:31
-#: cms/messages.py:52 cms/messages.py:161
-#: cms/templates/cms/includes/author.html:18
-msgid "Languages"
-msgstr "Sprachen"
-
-#: api/filters.py:95
-msgid "Languages the author has been active in."
-msgstr "Sprachen, in denen die Autorin oder der Autor publiziert hat."
-
-#: api/filters.py:100 api/templates/rest_framework/api.html:30
-#: cms/messages.py:142
-msgid "Genres"
-msgstr "Genre"
-
-#: api/filters.py:101
-msgid "Genres the author has been active in."
-msgstr "Genres, in denen die Autorin oder der Autor aktiv war."
-
-#: api/filters.py:106 cms/messages.py:60 cms/messages.py:210
-#: cms/templates/cms/includes/author.html:30
-msgid "Literary periods"
-msgstr "Literaturperioden"
-
-#: api/filters.py:107
-msgid "Literary periods the author has been active in."
-msgstr "Literaraturperioden, in denen der Autor aktiv war."
-
-#: api/filters.py:121 api/templates/rest_framework/api.html:26
-#: cms/messages.py:326 cms/wagtail_hooks.py:230
-msgid "Tags"
-msgstr "Schlagworte"
-
-#: api/filters.py:122
-msgid "Tags that describe the memorial type."
-msgstr "Schlagworte die die Art der Erinnerungsstelle näher beschreiben."
-
-#: api/models.py:28
-msgid "API key"
-msgstr "API-Schlüssel"
-
-#: api/models.py:29
-msgid "API keys"
-msgstr "API-Schlüssel"
-
-#: api/permissions.py:12
-msgid "Invalid or missing API Key."
-msgstr "Ungültiger oder fehlender API-Schlüssel."
-
-#: api/templates/rest_framework/api.html:22 cms/messages.py:119
-#: cms/messages.py:257 templates/base.html:158
-msgid "Authors"
-msgstr "Autorinnen & Autoren"
-
-#: api/templates/rest_framework/api.html:23
-msgid "Memorials"
-msgstr "Erinnerungsstellen"
-
-#: api/templates/rest_framework/api.html:32
-msgid "Memorial types"
-msgstr "Ortstypen"
-
-#: api/templates/rest_framework/api.html:33
-msgid "Periods"
-msgstr "Epochen"
-
-#: api/wagtail_hooks.py:40
-msgid "Admin"
-msgstr "Admin"
 
 #: cms/blocks.py:26
 msgid "Linkable tag"
@@ -249,6 +128,11 @@ msgstr "Altersgruppe"
 msgid "Author that this mapping is referencing."
 msgstr "Die Autorin oder der Autor, der durch die Zuweisung referenziert wird."
 
+#: cms/messages.py:15 cms/messages.py:21 cms/messages.py:27 cms/messages.py:126
+#: cms/messages.py:245
+msgid "Author"
+msgstr "Autorin oder Autor"
+
 #: cms/messages.py:16
 msgid "Literary genre that the author is associated with."
 msgstr ""
@@ -321,6 +205,10 @@ msgstr "Geburtsmonat"
 msgid "The year that the author is born in."
 msgstr "Das Kalenderjahr, in dem die Autorin oder der Autor geboren ist."
 
+#: cms/messages.py:39
+msgid "Year of birth"
+msgstr "Geburtsjahr"
+
 #: cms/messages.py:40 cms/templates/cms/includes/author.html:10
 msgid "Date of birth"
 msgstr "Geburtstag"
@@ -333,9 +221,17 @@ msgstr "Todestag"
 msgid "Month of death"
 msgstr "Todesmonat"
 
+#: cms/messages.py:46
+msgid "Year of death"
+msgstr "Sterbejahr"
+
 #: cms/messages.py:47 cms/templates/cms/includes/author.html:14
 msgid "Date of death"
 msgstr "Todestag"
+
+#: cms/messages.py:48
+msgid "Gender"
+msgstr "Geschlecht"
 
 #: cms/messages.py:49
 msgid "The literary genres the author is associated with."
@@ -352,6 +248,11 @@ msgid "The languages that the author has been active in."
 msgstr ""
 "Sprachen, mit denen die Autorin oder der Autor in Verbindung gebracht werden."
 
+#: cms/messages.py:52 cms/messages.py:161
+#: cms/templates/cms/includes/author.html:18
+msgid "Languages"
+msgstr "Sprachen"
+
 #: cms/messages.py:54
 msgid "The literary categories the author is associated with."
 msgstr ""
@@ -367,6 +268,11 @@ msgid "The literary periods the author has been active in."
 msgstr ""
 "Die Literaturepochen, mit denen die Autorin oder der Autor in Verbindung "
 "gebracht werden."
+
+#: cms/messages.py:60 cms/messages.py:210
+#: cms/templates/cms/includes/author.html:30
+msgid "Literary periods"
+msgstr "Literaturperioden"
 
 #: cms/messages.py:62 cms/messages.py:65
 msgid "Birth name of the author if different from international spelling."
@@ -494,6 +400,10 @@ msgstr ""
 msgid "Place of death"
 msgstr "Sterbeort"
 
+#: cms/messages.py:119 cms/messages.py:257 templates/base.html:158
+msgid "Authors"
+msgstr "Autorinnen & Autoren"
+
 #: cms/messages.py:120
 msgid "Author name"
 msgstr "Name der Autorin oder des Autors"
@@ -553,6 +463,10 @@ msgstr "Männlich"
 #: cms/messages.py:141
 msgid "unknown"
 msgstr "Unbekannt"
+
+#: cms/messages.py:142
+msgid "Genres"
+msgstr "Genre"
 
 #: cms/messages.py:144 cms/messages.py:158
 msgid "Czech"
@@ -843,8 +757,9 @@ msgstr ""
 "referenzierten Autorinnen und Autoren für alle Besucher."
 
 #: cms/messages.py:269
-msgid "I. Memorial site"
-msgstr "I. Erinnerungsstelle"
+#| msgid "I. Memorial site"
+msgid "I. Discover - Memorial site"
+msgstr "I. Entdecken - Erinnerungsstelle"
 
 #: cms/messages.py:271
 msgid ""
@@ -855,8 +770,9 @@ msgstr ""
 "den referenzierten Autorinnen und Autoren für interessierte Besucher."
 
 #: cms/messages.py:273
-msgid "II. Memorial site"
-msgstr "II. Erinnerungsstelle"
+#| msgid "II. Delving deeper"
+msgid "II. Delving deeper - Memorial site"
+msgstr "II. Vertiefen - Erinnerungsstelle"
 
 #: cms/messages.py:278
 msgid "A short introduction text."
@@ -947,6 +863,10 @@ msgstr "Bildzuschnitt"
 msgid "A short description of the tag."
 msgstr "Eine kurze Beschreibung zum Schlagwort."
 
+#: cms/messages.py:326 cms/wagtail_hooks.py:230
+msgid "Tags"
+msgstr "Schlagworte"
+
 #: cms/messages.py:327
 msgid "Defines the relative order of the tag in the UI."
 msgstr "Definiert die Reihenfolge der Schlagworte in der Anzeige."
@@ -973,13 +893,13 @@ msgstr "Das Schlagwort, wie es dem Nutzer präsentiert wird."
 msgid "Tag"
 msgstr "Schlagwort"
 
-#: cms/models/domain.py:905
+#: cms/models/domain.py:909
 #, python-brace-format
 msgctxt "female"
 msgid "born {birth_name}"
 msgstr "geborene {birth_name}"
 
-#: cms/models/domain.py:907
+#: cms/models/domain.py:911
 #, python-brace-format
 msgctxt "male"
 msgid "born {birth_name}"
@@ -1232,8 +1152,8 @@ msgid "Please login to see this page."
 msgstr "Bitte melden Sie sich an um diese Seite aufzurufen."
 
 #: templates/registration/login.html:25
-msgid "Your username and password didn\\"
-msgstr "Ihr Nutzername und Passwort…"
+msgid "Your username and password didn't match. Please try again."
+msgstr "Ihr Nutzername oder Passwort ist nicht korrekt. Bitte versuchen Sie es erneut."
 
 #: templates/registration/login.html:39
 msgid "Log in"
@@ -1242,6 +1162,60 @@ msgstr "Anmelden"
 #: templates/registration/login.html:40
 msgid "Lost password?"
 msgstr "Passwort vergessen?"
+
+#~ msgid "Search"
+#~ msgstr "Suchen"
+
+#~ msgid "A search term."
+#~ msgstr "Ein Suchbegriff."
+
+#~ msgid "Memorial"
+#~ msgstr "Erinnerungsstelle"
+
+#~ msgid "Content type"
+#~ msgstr "Typ"
+
+#~ msgid "One of 'author' or 'memorial'."
+#~ msgstr "Entweder „author“ oder „memorial“."
+
+#~ msgid "Gender of the author."
+#~ msgstr "Geschlecht des Autors oder der Autorin."
+
+#~ msgid "Languages the author has been active in."
+#~ msgstr "Sprachen, in denen die Autorin oder der Autor publiziert hat."
+
+#~ msgid "Genres the author has been active in."
+#~ msgstr "Genres, in denen die Autorin oder der Autor aktiv war."
+
+#~ msgid "Literary periods the author has been active in."
+#~ msgstr "Literaraturperioden, in denen der Autor aktiv war."
+
+#~ msgid "Tags that describe the memorial type."
+#~ msgstr "Schlagworte die die Art der Erinnerungsstelle näher beschreiben."
+
+#~ msgid "API key"
+#~ msgstr "API-Schlüssel"
+
+#~ msgid "API keys"
+#~ msgstr "API-Schlüssel"
+
+#~ msgid "Invalid or missing API Key."
+#~ msgstr "Ungültiger oder fehlender API-Schlüssel."
+
+#~ msgid "Memorials"
+#~ msgstr "Erinnerungsstellen"
+
+#~ msgid "Memorial types"
+#~ msgstr "Ortstypen"
+
+#~ msgid "Periods"
+#~ msgstr "Epochen"
+
+#~ msgid "Admin"
+#~ msgstr "Admin"
+
+#~ msgid "II. Memorial site"
+#~ msgstr "II. Erinnerungsstelle"
 
 #~ msgid "Project management"
 #~ msgstr "Projektmanagement"
