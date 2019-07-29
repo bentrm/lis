@@ -797,7 +797,7 @@ class Author(I18nPage):
         context["levels"] = sorted(levels, key=lambda x: x.level_order)
 
         # add memorial sites
-        memorial_sites = Memorial.objects.filter(authors__author=self)
+        memorial_sites = Memorial.objects.filter(remembered_authors=self)
         if request.is_preview:
             memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
         else:
@@ -812,7 +812,7 @@ class Author(I18nPage):
         verbose_name_plural = _(TXT["author.plural"])
 
     class JSONAPIMeta:
-        resource_name = 'authors'
+        resource_name = "authors"
 
 
 class AuthorName(Orderable):
@@ -950,7 +950,7 @@ class AuthorName(Orderable):
         verbose_name_plural = _(TXT["author_name.plural"])
 
     class JSONAPIMeta:
-        resource_name = 'names'
+        resource_name = "names"
 
 
 class LevelPage(I18nPage):
@@ -1339,7 +1339,11 @@ class Memorial(I18nPage):
 
     remembered_authors = ParentalManyToManyField(
         "Author",
+        # db_table=DB_TABLE_PREFIX + "memorial_author",
         related_name="memorials",
+        blank=False,
+        verbose_name=_(TXT["memorial_site.authors"]),
+        help_text=_(TXT["memorial_site.authors.help"]),
     )
 
     memorial_type_tags = ParentalManyToManyField(
@@ -1505,13 +1509,6 @@ class Memorial(I18nPage):
             widget=autocomplete.ModelSelect2Multiple(
                 url="autocomplete-author",
             ),
-        ),
-        InlinePanel(
-            "authors",
-            label=_(TXT["memorial_site.authors"]),
-            min_num=1,
-            help_text=_(TXT["memorial_site.authors"]),
-            panels=[PageChooserPanel("author", "cms.Author")],
         ),
         FieldPanelTabs(
             children=[
