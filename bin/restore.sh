@@ -1,15 +1,22 @@
 #!/bin/bash
 
 set -o nounset
-#set -o errexit
+set -o errexit
+
+while IFS= read -r line
+do
+  IFS='=' read -r temp val <<< "$line"
+  printf -v $temp "$val"
+  export $temp
+done < "$1"
 
 # Backup settings
 BACKUP_DIR=$(realpath 'backups')
 
 # Restore database
 DUMP_FILE=$(ls -t $BACKUP_DIR/dump_* | head -1)
-POSTGRES_USER='django'
-POSTGRES_DB='django'
+POSTGRES_DB=$DB_NAME
+POSTGRES_USER=$DB_USER
 DOCKER_DB_CONTAINER=$(docker ps --filter label=com.docker.compose.service=db -q)
 
 echo 'Terminating all connections...'
