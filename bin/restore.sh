@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -o nounset
-#set -o errexit
+set -o errexit
 
 # Backup settings
 BACKUP_DIR=$(realpath 'backups')
