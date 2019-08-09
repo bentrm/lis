@@ -29,8 +29,8 @@
     <div id="map"></div>
     <script>
       (function() {
-        const mapId = "map"
-        const geojson = '{{ page.coordinates.geojson|safe }}'
+        const mapId = "map";
+        const geojson = '{{ page.coordinates.geojson|safe }}';
         if (geojson) {
           const coordinates = JSON.parse(geojson).coordinates;
           createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");

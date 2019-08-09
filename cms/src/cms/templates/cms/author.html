@@ -55,8 +55,8 @@
   </div>
   <script>
     (function() {
-      const mapId = "map-{{forloop.counter}}"
-      const geojson = '{{ memorial_site.coordinates.geojson|safe }}'
+      const mapId = "map-{{forloop.counter}}";
+      const geojson = '{{ memorial_site.coordinates.geojson|safe }}';
       const coordinates = JSON.parse(geojson).coordinates;
       createStaticMap(mapId, coordinates, "{% static 'icons/castle.png' %}");
     })();

@@ -123,6 +123,7 @@ class LanguageTag(Tag):
     class JSONAPIMeta:
         resource_name = 'languages'
 
+
 class MemorialTag(Tag):
     """Used to tag memorials."""
 

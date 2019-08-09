@@ -21,6 +21,7 @@ from wagtail.core.models import BaseViewRestriction, Page
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
+from .helpers import TranslatedField
 from ..messages import TXT
 
 LOGGER = logging.getLogger("cms.models")
