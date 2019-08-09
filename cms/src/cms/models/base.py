@@ -22,8 +22,6 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
 from ..messages import TXT
-from .helpers import TranslatedField
-
 
 LOGGER = logging.getLogger("cms.models")
 DB_TABLE_PREFIX = "cms_"

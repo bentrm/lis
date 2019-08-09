@@ -190,6 +190,10 @@ TXT = {
     ),
     "level2.works": _("Literary works"),
     "level2": _("II. Delving deeper"),
+    "level3.didactic_material": _("Didactic material"),
+    "level3.didactic_material.help": _(
+        "Didactic material that is offered to teachers and students."
+    ),
     "level3.primary_literature.help": _(
         "A more in-depth presentation of primary literature of the author for an academic user."
     ),

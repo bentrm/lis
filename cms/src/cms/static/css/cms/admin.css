@@ -55,11 +55,13 @@
   z-index: 2;
 }
 
-li.sequence-member .paragraph-struct-block.struct-block ul.fields {
+li.sequence-member .paragraph-struct-block.struct-block ul.fields,
+li.sequence-member .didactic-material-struct-block.struct-block ul.fields {
   width: 100%;
 }
 
-li.sequence-member .paragraph-struct-block.struct-block .sequence-container .sequence-container-inner {
+li.sequence-member .paragraph-struct-block.struct-block .sequence-container .sequence-container-inner,
+li.sequence-member .didactic-material-struct-block.struct-block .sequence-container .sequence-container-inner {
     width: 100%;
 }
 

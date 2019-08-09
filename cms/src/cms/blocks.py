@@ -2,6 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 from wagtail.core import blocks
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
 
 RICH_TEXT_FEATURES_FOOTNOTE = ["bold", "italic", "strikethrough", "link"]
@@ -83,3 +84,37 @@ class ParagraphStructBlock(blocks.StructBlock):
         label = _("Paragraph")
         form_classname = "paragraph-struct-block struct-block"
         template = "cms/blocks/paragraph_struct_block.html"
+
+
+class DidacticMaterialStructBlock(blocks.StructBlock):
+    heading = blocks.CharBlock(
+        required=True,
+        label=_("Heading"),
+        help_text=_("A heading that describes the linked document replacing or complementing the files title."),
+    )
+    document = DocumentChooserBlock(
+        required=True,
+        label=_("Document"),
+    )
+    content = blocks.RichTextBlock(
+        required=False,
+        features=RICH_TEXT_FEATURES_CONTENT,
+        label=_("Content"),
+        help_text=_("A description of the documents content."),
+    )
+    footnotes = blocks.ListBlock(
+        FootnoteStructBlock(),
+        default=[],
+        label=_("Footnotes"),
+        help_text=_("Optional footnotes that can be linked in the content description."),
+    )
+    editor = blocks.CharBlock(
+        required=True,
+        label=_("Editor"),
+        help_text=_("Author or translator of the content."),
+    )
+
+    class Meta:
+        label = _("Document")
+        form_classname = "didactic-material-struct-block struct-block"
+        template = "cms/blocks/didactic_material_struct_block.html"

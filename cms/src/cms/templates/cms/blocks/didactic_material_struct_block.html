@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<section class="row block">
+
+  <div class="col-12">
+    <div class="media">
+      <i class="fas fa-file fa-6x align-self-start center mr-3"></i>
+      <div class="media-body">
+        <h5 class="mt-0">
+          <a
+            href="{{ value.document.url }}"
+            title="{{ value.document.i18n_title }}"
+          >
+            {{ value.heading }} ({% widthratio value.document.file_size 1000.0 1 %}kB)
+          </a>
+        </h5>
+        {% include_block value.content %}
+
+        {% if value.footnotes %}
+        <footer class="footnotes">
+          <h5>{% trans 'Additional notes and sources' %}</h5>
+          <ol>
+            {% for footnote in value.footnotes %}
+            {% include_block footnote %}
+            {% endfor %}
+          </ol>
+        </footer>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
