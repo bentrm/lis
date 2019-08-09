@@ -2,7 +2,6 @@
 
 from django.conf import settings
 from django.urls import include, path
-from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),

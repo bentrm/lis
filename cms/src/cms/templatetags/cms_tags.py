@@ -38,6 +38,7 @@ def humanize_list(arg):
 
 
 class TextExtractor(HTMLParser):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""
@@ -51,6 +52,9 @@ class TextExtractor(HTMLParser):
         self.feed(data)
         self.close()
         return self.text
+
+    def error(self, message):
+        pass
 
 
 @register.filter

@@ -39,7 +39,7 @@ class DistanceFilter(DistanceToPointFilter):
         except ValueError:
             raise ParseError('Invalid distance string supplied for parameter {0}'.format(self.dist_param))
 
-        if (convert_distance_input):
+        if convert_distance_input:
             # Warning:  assumes that the point is (lon,lat)
             dist = self.dist_to_deg(dist, point[1])
 
@@ -47,7 +47,7 @@ class DistanceFilter(DistanceToPointFilter):
 
 
 class SpatialQueryParameterValidationFilter(QueryParameterValidationFilter):
-    query_regex = re.compile(r'^(sort|include)$|^(filter|fields|page|spatial)(\[[\w\.\-]+\])?$')
+    query_regex = re.compile(r'^(sort|include)$|^(filter|fields|page|spatial)(\[[\w.\-]+\])?$')
 
 
 class NumberInFilter(django_filters.BaseInFilter, django_filters.NumberFilter):

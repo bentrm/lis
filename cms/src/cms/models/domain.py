@@ -1525,7 +1525,6 @@ class Memorial(I18nPage):
             "memorial_type_tags",
             widget=autocomplete.ModelSelect2Multiple(
                 url="autocomplete-location-type",
-                attrs={"data-maximum-selection-length": 1},
             ),
         ),
         FieldPanel(

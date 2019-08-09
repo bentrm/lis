@@ -216,13 +216,13 @@ class I18nPage(Page):
 
         # Log
         LOGGER.info(
-            f'Page edited: "{self.title}" id={self.id} revision_id={revision.id}'
+            f'Page edited: "{self.title}" id={self.pk} revision_id={revision.id}'
         )
 
         if submitted_for_moderation:
             LOGGER.info(
                 f""""
-            Page submitted for moderation: \"{self.title}\" id={self.id} revision_id={revision.id}
+            Page submitted for moderation: \"{self.title}\" id={self.pk} revision_id={revision.id}
             """
             )
 
