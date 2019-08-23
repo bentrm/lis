@@ -1,0 +1,8 @@
+{% load wagtailimages_tags %}
+
+{% if author.title_image %}
+  {% image author.title_image fill-100x100 class=class_names %}
+{% else %}
+  <span class="placeholder"></span>
+{#  <img data-src="holder.js/100x100?auto=yes&theme=gray&text=%20" class="{{ class_names }}">#}
+{% endif %}

@@ -1,0 +1,39 @@
+.marker-cluster-small {
+    background-color: rgba($primary-100, 0.6);
+}
+.marker-cluster-small div {
+    background-color: rgba($primary-200, 0.6);
+}
+
+.marker-cluster-medium {
+    background-color: rgba($primary-300, 0.6);
+}
+.marker-cluster-medium div {
+    background-color: rgba($primary-400, 0.6);
+}
+
+.marker-cluster-large {
+    background-color: rgba($primary-500, 0.6);
+}
+.marker-cluster-large div {
+    background-color: rgba($primary-600, 0.6);
+}
+
+.marker-cluster {
+    background-clip: padding-box;
+    border-radius: 20px;
+}
+.marker-cluster div {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    margin-top: 5px;
+
+    text-align: center;
+    border-radius: 15px;
+    color: $light;
+    font: 12px SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.marker-cluster span {
+    line-height: 30px;
+}

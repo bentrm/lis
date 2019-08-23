@@ -15,6 +15,7 @@ from wagtail.admin.edit_handlers import (
     StreamFieldPanel,
     TabbedInterface,
 )
+from wagtail.api import APIField
 from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import StreamField
 from wagtail.core.models import BaseViewRestriction, Page
@@ -40,7 +41,8 @@ EDITOR_FEATURES = [
     "link",
 ]
 
-TextType = namedtuple("TextType", ["field", "heading"])
+ContentFilter = namedtuple("ContentFilter", ("name", "field", "endpoint", "label"))
+TextType = namedtuple("TextType", ("field", "heading"))
 
 
 # TODO: Rename to CmsPage
@@ -119,10 +121,16 @@ class I18nPage(Page):
     is_creatable = False
 
     search_fields = Page.search_fields + [
-        index.SearchField("title_de", partial_match=True, boost=2),
-        index.SearchField("title_cs", partial_match=True, boost=2),
+        index.SearchField("title_de", boost=2),
+        index.SearchField("title_cs", boost=2),
         index.FilterField("title_de"),
         index.FilterField("title_cs"),
+    ]
+
+    api_fields = [
+        APIField("title_de"),
+        APIField("title_cs"),
+        APIField("editor"),
     ]
 
     english_panels = [FieldPanel("title", classname="full title")]
@@ -156,8 +164,8 @@ class I18nPage(Page):
 
     def serve(self, request, *args, **kwargs):
         """Return a redirect of the temporary_redirect property is set."""
-        if self.temporary_redirect:
-            return redirect(self.temporary_redirect, permanent=False)
+        # if self.temporary_redirect:
+        #     return redirect(self.temporary_redirect, permanent=False)
         return super(I18nPage, self).serve(request, *args, **kwargs)
 
     def get_admin_display_title(self):

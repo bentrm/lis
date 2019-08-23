@@ -2,7 +2,9 @@
 
 from django.conf import settings
 
-from .models import Author, HomePage, Memorial
+from cms.models import HomePage
+from cms.models import Author
+from cms.models import Memorial
 
 
 def app_status(request):

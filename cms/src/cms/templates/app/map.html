@@ -1,0 +1,56 @@
+{% extends 'app/base.html' %}
+
+{% block AppExtraCls %}mvh-100 vh-100{% endblock %}
+
+{% block Content %}
+
+  <div class="MapView container-fluid flex-grow-1 no-gutters">
+
+    <div class="row h-100">
+
+      <main class="col p-0">
+        <div id="map-outlet"></div>
+      </main>
+
+      <aside class="col-6 col-lg-4 col-xl-3 h-100 overflow-auto border-left">
+        <div id="MemorialListContainer"></div>
+      </aside>
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block Templates %}
+
+  <script id="map-container-template" type="x-template">
+    <leaflet-map
+      :currentSelection="currentSelection"
+      :memorials="memorials"
+    >
+    </leaflet-map>
+  </script>
+
+  <script id="MemorialList" type="x-template">
+    <ul class="list-unstyled mt-4">
+      <li v-for="memorial in memorials">
+        <div class="Memorial-card media">
+          <div class="media-body">
+            <a class="nav-link" href="#"
+              v-on:click="selectMemorial(memorial)"
+              :alt="memorial.title"
+            >
+              [[memorial.title]]
+            </a>
+          </div>
+          <img v-if="memorial.thumb"
+               :src="memorial.thumb"
+               :alt="memorial.title"
+               class="Memorial-badge border border-primary rounded-circle align-self-center">
+          <span v-else class="placeholder"></span>
+        </div>
+      </li>
+    </ul>
+  </script>
+{% endblock %}

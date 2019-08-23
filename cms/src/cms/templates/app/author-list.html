@@ -1,0 +1,86 @@
+{% extends 'app/readable.html' %}
+
+{% load i18n %}
+{%  load wagtailimages_tags %}
+{%  load wagtailcore_tags %}
+
+{% block Content %}
+
+  <div class="AuthorList container">
+
+    <div class="row">
+
+      <main class="col-xs-12 col-sm mt-4">
+          <div id="authors-list-outlet"></div>
+      </main>
+
+      <aside id="Filterbar" class="Filterbar col-sm-5 col-md-3 col-lg-2 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last mb-2">
+        <div id="filter-form-outlet"></div>
+      </aside>
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block Templates %}
+
+  <script id="author-card-list-template" type="x-template">
+    <div class="row">
+      <div class="col-12">
+        <h3>{% trans 'Authors' %} ([[ count ]])</h3>
+      </div>
+      <div class="col-12">
+        <pagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          v-on:change="setPage"
+        >
+        </pagination>
+      </div>
+      <div
+        v-for="author in authors"
+        :key="author.id"
+        class="col-12"
+      >
+        <author-card
+          :thumb="author.thumb"
+          :url="author.url"
+          :name="author.name"
+        >
+        </author-card>
+      </div>
+      <div class="col-12">
+        <pagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          v-on:change="setPage"
+        >
+        </pagination>
+      </div>
+    </div>
+  </script>
+
+  <script id="filter-form-template" type="x-template">
+    <form name="filter-form" class="p-2">
+      <tag-filter
+        v-for="filter in tagFilters"
+        :key="filter.id"
+        :id="filter.id"
+        :label="filter.label"
+        :param="filter.param"
+        :path="filter.path"
+        v-on:change="onFilterChange">
+      </tag-filter>
+      <radio-filter
+        :id="genderFilter.id"
+        :label="genderFilter.label"
+        :param="genderFilter.param"
+        :options="genderFilter.options"
+        v-on:change="onFilterChange"
+      >
+      </radio-filter>
+    </form>
+  </script>
+{% endblock %}

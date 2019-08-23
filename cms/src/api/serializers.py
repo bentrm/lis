@@ -1,188 +1,140 @@
-from rest_framework_gis.fields import GeometryField
-from rest_framework_json_api import serializers
-from rest_framework_json_api.relations import ResourceRelatedField
-from wagtail.images.views.serve import generate_image_url
+from rest_framework import serializers
 
-from cms.models import Author, Memorial, MemorialTag, LanguageTag, GenreTag, PeriodTag, AuthorName
+from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName
 
 
-class TagSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(read_only=True)
+class TitleSerializerMixin(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
 
+    def get_title(self, obj):
+        return obj.i18n_title
+
+
+class LanguageSerializer(TitleSerializerMixin):
     class Meta:
-        fields = (
-            "name",
-        )
-
-
-class LanguageSerializer(TagSerializer):
-    class Meta:
-        fields = (
-            "name",
-        )
+        fields = ("id", "title")
         model = LanguageTag
 
 
-class GenreSerializer(TagSerializer):
+class GenreSerializer(TitleSerializerMixin):
     class Meta:
-        fields = (
-            "name",
-        )
+        fields = ("id", "title")
         model = GenreTag
 
 
-class PeriodSerializer(TagSerializer):
+class PeriodSerializer(TitleSerializerMixin):
     class Meta:
-        fields = (
-            "name",
-        )
+        fields = ("id", "title")
         model = PeriodTag
 
 
-class MemorialTypeSerializer(TagSerializer):
+class MemorialTypeSerializer(TitleSerializerMixin):
     class Meta:
-        fields = (
-            "name",
-        )
+        fields = ("id", "title")
         model = MemorialTag
 
 
-class ImageSerializerMixin(object):
-    def get_image(self, obj):
-        if obj.title_image:
-            return generate_image_url(obj.title_image, 'max-1000x1000|jpegquality-60')
-
-    def get_image_thumbnail(self, obj):
-        if obj.title_image:
-            return generate_image_url(obj.title_image, 'fill-250x250|jpegquality-60')
-
-    def get_image_title(self, obj):
-        if obj.title_image:
-            return obj.title_image.i18n_title
-
-    def get_image_caption(self, obj):
-        if obj.title_image:
-            return obj.title_image.i18n_caption
-
-
 class AuthorNameSerializer(serializers.ModelSerializer):
-    surname = serializers.CharField()
-    given_name = serializers.CharField()
-    born = serializers.CharField()
+    title = serializers.SerializerMethodField(required=False)
+    first_name = serializers.SerializerMethodField(required=False)
+    last_name = serializers.SerializerMethodField()
+    birth_name = serializers.SerializerMethodField(required=False)
 
-    author = ResourceRelatedField(
-        read_only=True,
-        model=Author
-    )
+    def get_title(self, obj):
+        return obj.i18n_title
+
+    def get_first_name(self, obj):
+        return obj.i18n_first_name
+
+    def get_last_name(self, obj):
+        return obj.i18n_last_name
+
+    def get_birth_name(self, obj):
+        return obj.i18n_birth_name
 
     class Meta:
+        fields = (
+            "id",
+            "is_pseudonym",
+            "title",
+            "first_name",
+            "last_name",
+            "birth_name",
+        )
         model = AuthorName
-        fields = (
-            'author',
-            'sort_order',
-            'is_pseudonym',
-            'surname',
-            'given_name',
-            'born',
-        )
 
 
-class AuthorSerializer(serializers.ModelSerializer, ImageSerializerMixin):
-    name = serializers.CharField(read_only=True)
-    image = serializers.SerializerMethodField()
-    image_thumbnail = serializers.SerializerMethodField()
-    image_title = serializers.SerializerMethodField()
-    image_caption = serializers.SerializerMethodField()
-    born_in = serializers.CharField(read_only=True)
-    died_in = serializers.CharField(read_only=True)
-    languages = ResourceRelatedField(
-        source='language_tags',
-        read_only=True,
-        many=True,
-        model=LanguageTag
-    )
-    genres = ResourceRelatedField(
-        source='genre_tags',
-        read_only=True,
-        many=True,
-        model=GenreTag
-    )
-    periods = ResourceRelatedField(
-        source='literary_period_tags',
-        read_only=True,
-        many=True,
-        model=PeriodTag
-    )
+class AuthorSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    thumb = serializers.SerializerMethodField(required=False)
+    also_known_as = serializers.SerializerMethodField()
+    genres = GenreSerializer(source="genre_tags", many=True)
+    languages = GenreSerializer(source="language_tags", many=True)
+    periods = PeriodSerializer(source="literary_period_tags", many=True)
+    url = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        name = obj.names.first()
+        serializer = AuthorNameSerializer(instance=name)
+        return serializer.data
+
+    def get_thumb(self, obj):
+        if obj.title_image:
+            return obj.title_image.get_rendition('fill-100x100|jpegquality-60').url
+
+    def get_also_known_as(self, obj):
+        names = obj.names.all()[1:]
+        serializer = AuthorNameSerializer(instance=names, many=True)
+        return serializer.data
+
+    def get_url(self, obj):
+        return obj.get_url()
 
     class Meta:
-        model = Author
         fields = (
+            'id',
             'name',
-            'slug',
-            'names',
-            'sex',
-            'image',
-            'image_thumbnail',
-            'image_title',
-            'image_caption',
-            'date_of_birth_year',
-            'date_of_birth_month',
-            'date_of_birth_day',
-            'born_in',
-            'date_of_death_year',
-            'date_of_death_month',
-            'date_of_death_day',
-            'died_in',
-            'memorials',
-            'languages',
+            'thumb',
+            'also_known_as',
             'genres',
+            'languages',
             'periods',
+            'url',
         )
-
-    class JSONAPIMeta:
-        resource_name = 'authors'
+        model = Author
 
 
-class MemorialSerializer(serializers.ModelSerializer, ImageSerializerMixin):
-    name = serializers.CharField(read_only=True)
-    image = serializers.SerializerMethodField()
-    image_thumbnail = serializers.SerializerMethodField()
-    image_title = serializers.SerializerMethodField()
-    image_caption = serializers.SerializerMethodField()
-    intro = serializers.CharField()
-    desc = serializers.CharField()
-    details = serializers.CharField()
-    postal = serializers.CharField()
-    way = serializers.CharField()
-    contact = serializers.CharField()
-    geometry = GeometryField(source='coordinates', precision=5, remove_duplicates=True)
-    authors = ResourceRelatedField(
-        source='remembered_authors',
-        read_only=True,
-        many=True,
-    )
-    memorial_types = ResourceRelatedField(
-        source='memorial_type_tags',
-        read_only=True,
-        many=True,
-    )
+class MemorialSerializer(TitleSerializerMixin):
+    thumb = serializers.SerializerMethodField(required=False)
+    position = serializers.SerializerMethodField()
+    authors = AuthorSerializer(source="remembered_authors", many=True)
+    memorial_types = MemorialTypeSerializer(source="memorial_type_tags", many=True)
+
+    def get_thumb(self, obj):
+        if obj.title_image:
+            return obj.title_image.get_rendition('fill-100x100|jpegquality-60').url
+
+    def get_position(self, obj):
+        return obj.coordinates.coords
 
     class Meta:
-        model = Memorial
         fields = (
-            'name',
-            'slug',
-            'image',
-            'image_thumbnail',
-            'image_title',
-            'image_caption',
-            'intro',
-            'desc',
-            'details',
-            'postal',
-            'way',
-            'contact',
-            'geometry',
-            'authors',
-            'memorial_types',
+            "id",
+            "title",
+            "thumb",
+            "authors",
+            "position",
+            "memorial_types",
         )
+        model = Memorial
+
+
+class AuthorFilterSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            "pk",
+            "title",
+            "title_de",
+            "title_cs",
+        )
+        model = Author

@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.fields import RichTextField
+from wagtail.search import index
 
 from cms.messages import TXT
 
@@ -13,7 +14,7 @@ DB_TABLE_PREFIX = "cms_tag_"
 RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
 
 
-class Tag(models.Model):
+class Tag(models.Model, index.Indexed):
     """
     Abstract base class for all tag implementations.
 
@@ -76,6 +77,15 @@ class Tag(models.Model):
         ),
     ]
 
+    search_fields = [
+        index.SearchField('title'),
+        index.SearchField('title_de'),
+        index.SearchField('title_cs'),
+        index.SearchField('description'),
+        index.SearchField('description_de'),
+        index.SearchField('description_cs'),
+    ]
+
     def __str__(self):
         return str(self.i18n_title)
 
@@ -93,7 +103,9 @@ class SortableTag(Tag):
         verbose_name=_(TXT["tag.sort_order"]), help_text=_(TXT["tag.sort_order.help"])
     )
 
-    panels = Tag.panels + [FieldPanel("sort_order")]
+    panels = Tag.panels + [
+        FieldPanel("sort_order"),
+    ]
 
     class Meta:
         abstract = True
@@ -120,9 +132,6 @@ class LanguageTag(Tag):
         verbose_name = _(TXT["language"])
         verbose_name_plural = _(TXT["language.plural"])
 
-    class JSONAPIMeta:
-        resource_name = 'languages'
-
 
 class MemorialTag(Tag):
     """Used to tag memorials."""
@@ -131,9 +140,6 @@ class MemorialTag(Tag):
         db_table = DB_TABLE_PREFIX + "memorial_type"
         verbose_name = _(TXT["memorial_type"])
         verbose_name_plural = _(TXT["memorial_type.plural"])
-
-    class JSONAPIMeta:
-        resource_name = 'memorialTypes'
 
 
 class PeriodTag(SortableTag):
@@ -144,9 +150,6 @@ class PeriodTag(SortableTag):
         verbose_name = _(TXT["literary_period"])
         verbose_name_plural = _(TXT["literary_period.plural"])
 
-    class JSONAPIMeta:
-        resource_name = 'periods'
-
 
 class AgeGroupTag(SortableTag):
     """Used to tag age groups."""
@@ -155,6 +158,3 @@ class AgeGroupTag(SortableTag):
         db_table = DB_TABLE_PREFIX + "age_group"
         verbose_name = _(TXT["age_group"])
         verbose_name_plural = _(TXT["age_group.plural"])
-
-    class JSONAPIMeta:
-        resource_name = 'ageGroups'

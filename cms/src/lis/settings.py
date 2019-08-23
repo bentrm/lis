@@ -22,9 +22,9 @@ CMS_VERSION = env("CMS_VERSION", default="latest")
 
 
 # Build paths inside the project like this: os.path.join(SRC_DIR, ...)
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-SRC_DIR = os.path.dirname(PROJECT_DIR)
-BASE_DIR = os.path.dirname(SRC_DIR)
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.dirname(APP_DIR)
+PROJECT_DIR = os.path.dirname(SRC_DIR)
 
 
 ADMINS = [x.split("=") for x in env("LIS_ADMINS", "").split(";")]
@@ -45,7 +45,7 @@ EMAIL_SUBJECT_PREFIX = "[LIS] "
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 DEBUG = env("DEBUG", False, parse_to_bool=True)
-INTERNAL_IPS = ["127.0.0.1", "10.255.0.2"]
+INTERNAL_IPS = ["127.0.0.1", "172.19.0.6"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", required=True)
@@ -62,13 +62,15 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
-    "cms",
     "api",
+    "cms",
     "dal",
     "dal_select2",
+    "wagtail.api.v2",
     "wagtail.contrib.modeladmin",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.postgres_search",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -96,7 +98,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -153,12 +154,19 @@ DATABASES = {
 CACHE_MIDDLEWARE_ALIAS = "default"
 CACHE_MIDDLEWARE_SECONDS = 60
 CACHE_MIDDLEWARE_KEY_PREFIX = ""
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
-        "LOCATION": "cache:11211",
-        "TIMEOUT": 60,
+if DEBUG:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
     }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+            "LOCATION": "cache:11211",
+            "TIMEOUT": 60,
+        }
 }
 
 # Logging
@@ -195,11 +203,19 @@ USE_TZ = True
 
 LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 
-STATICFILES_DIRS = [os.path.join(SRC_DIR, "static")]
-STATIC_ROOT = env("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+STATICFILES_DIRS = [
+    os.path.join(SRC_DIR, "static"),
+]
+
+if DEBUG:
+    STATICFILES_DIRS = STATICFILES_DIRS + [
+        "/html/client",
+    ]
+
+STATIC_ROOT = "/html/static"
 STATIC_URL = env("STATIC_URL", "/static/")
 
-MEDIA_ROOT = env("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+MEDIA_ROOT = "/html/media"
 MEDIA_URL = env("MEDIA_URL", "/media/")
 
 # Wagtail settings
@@ -213,10 +229,15 @@ WAGTAIL_FRONTEND_LOGIN_URL = "/accounts/login/"
 WAGTAIL_GRAVATAR_PROVIDER_URL = None
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.elasticsearch6.SearchBackend",
-        "URLS": env("SEARCH_URLS", "http://search:9200").split(","),
+        "BACKEND": "wagtail.contrib.postgres_search.backend",
+        'SEARCH_CONFIG': 'english',
+    },
+    "german": {
+        "BACKEND": "wagtail.contrib.postgres_search.backend",
+        'SEARCH_CONFIG': 'german',
     }
 }
+WAGTAILAPI_LIMIT_MAX = None
 
 # Map widgets
 MAP_WIDGETS = {
@@ -232,46 +253,16 @@ MAP_WIDGETS = {
 # e.g. in notification emails. Don't include "/admin" or a trailing slash
 BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
 
+# API settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
+
 CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = ["null"]
 CORS_ALLOWED_METHODS = ("GET", "OPTIONS", "HEAD")
 CORS_ALLOW_HEADERS = default_headers + ("api-key",)
 CORS_URLS_REGEX = r"^/api/.*$"
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)
-
-# RESTful API
-REST_FRAMEWORK = {
-    'PAGE_SIZE': 10,
-    'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework_json_api.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser'
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework_json_api.renderers.JSONRenderer',
-        # If you're performance testing, you will want to use the browseable API
-        # without forms, as the forms can generate their own queries.
-        # If performance testing, enable:
-        # 'example.utils.BrowsableAPIRendererWithoutForms',
-        # Otherwise, to play around with the browseable API, enable:
-        'rest_framework.renderers.BrowsableAPIRenderer'
-    ),
-    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
-    'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework_json_api.filters.QueryParameterValidationFilter',
-        'rest_framework_json_api.filters.OrderingFilter',
-        'rest_framework_json_api.django_filters.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-    ),
-    'SEARCH_PARAM': 'filter[search]',
-    'TEST_REQUEST_RENDERER_CLASSES': (
-        'rest_framework_json_api.renderers.JSONRenderer',
-    ),
-    'TEST_REQUEST_DEFAULT_FORMAT': 'vnd.api+json'
-}
-JSON_API_FORMAT_FIELD_NAMES = 'camelize'

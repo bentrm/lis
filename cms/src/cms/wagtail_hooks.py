@@ -19,13 +19,13 @@ from wagtail.core.models import PageRevision
 
 from .models import (
     AgeGroupTag,
-    Author,
     GenreTag,
     I18nPage,
     LanguageTag,
     PeriodTag,
     MemorialTag,
 )
+from cms.models import Author
 
 
 def as_page_object(self):

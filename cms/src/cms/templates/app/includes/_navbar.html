@@ -1,0 +1,95 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load wagtailcore_tags %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% get_language_info for LANGUAGE_CODE as current_language %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+
+<div class="navbar navbar-light">
+  <a class="Sponsors navbar-brand ml-auto" href="http://www.sn-cz2020.eu/">
+    <img src="{% static 'logos/logo_eu.svg' %}" alt="Logo EU Fonds" class="SponsorLogo img img-fluid">
+    <img src="{% static 'logos/logo_sn_cz.svg' %}" alt="Logo SN CZ" class="SponsorLogo img img-fluid">
+  </a>
+</div>
+
+<div class="sticky-top">
+  <header class="navbar navbar-expand-md navbar-dark bg-primary">
+    <a class="navbar-brand" href="/" aria-label="LIS">
+      <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i> {% trans 'Literary landscape' %}
+    </a>
+
+    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#headerMenu">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="headerMenu">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% slugurl 'map' %}">{% trans 'Map' %}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% slugurl 'author' %}">{% trans 'Authors' %}</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">{% trans 'More' %}</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% slugurl 'about' %}">{% trans 'About' %}</a>
+            <a class="dropdown-item" href="{% slugurl 'imprint' %}">{% trans 'Imprint' %}</a>
+            <a class="dropdown-item" href="{% url 'wagtailadmin_home' %}">{% trans 'Admin' %}</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ redirect_to }}" />
+
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">{% trans current_language.name %}</a>
+            <div class="dropdown-menu">
+              {% for language in languages %}
+                <button name="language" value="{{ language.code }}" type="submit" class="dropdown-item" {% if language.code == LANGUAGE_CODE %}disabled{% endif %}>{{ language.name }}</button>
+              {% endfor %}
+            </div>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </header>
+  {% block ExtraHeader %}{% endblock %}
+</div>
+
+{#<nav class="Navbar navbar navbar-expand-md navbar-dark bg-primary align-baseline align-items-start">#}
+{##}
+{#  <button class="btn btn-sm btn-outline-light" data-toggle-target=".Sidebar">{% trans 'Menu' %}</button>#}
+{##}
+{#  <button class="navbar-toggler"#}
+{#          type="button"#}
+{#          data-toggle="collapse"#}
+{#          data-target="#navbarContent"#}
+{#          aria-controls="navbarContent"#}
+{#          aria-expanded="false"#}
+{#          aria-label="Toggle navigation"#}
+{#  >#}
+{#    <span class="navbar-toggler-icon"></span>#}
+{#  </button>#}
+{##}
+{#  <div class="collapse navbar-collapse" id="navbarContent">#}
+{##}
+{#    <!-- search form -->#}
+{#    <form class="form-inline">#}
+{#      <div class="input-group mr-2">#}
+{#        <input type="text" class="form-control form-control-sm" placeholder="Autor/in, Ort, Epoche, Typ, ...">#}
+{#        <div class="input-group-append">#}
+{#          <button class="btn btn-sm btn-outline-light" type="button">#}
+{#            <i class="fas fa-search"></i>#}
+{#          </button>#}
+{#        </div>#}
+{#      </div>#}
+{#      <button class="btn btn-sm btn-outline-light" type="button" data-toggle-target=".Filterbar">Filter</button>#}
+{#    </form>#}
+{##}
+{#  </div>#}
+{##}
+{##}
+{#</nav>#}

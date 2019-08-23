@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Memorial
+from cms.models import Memorial
 
 
 def migrate_memorial_authors():

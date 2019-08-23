@@ -9,7 +9,7 @@ from wagtail.images.views.serve import ServeView
 from . import views
 
 urlpatterns = [
-    path("cms/", include(wagtailadmin_urls)),
+    path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("signup/", views.SignupView.as_view(), name="signup"),
     path(
@@ -36,6 +36,11 @@ urlpatterns = [
         "autocomplete/literary-period/",
         views.LiteraryPeriodAutocomplete.as_view(),
         name="autocomplete-literary-period",
+    ),
+    path(
+        "autocomplete/age-group/",
+        views.AgeGroupAutocomplete.as_view(),
+        name="autocomplete-age-group",
     ),
     url(
         r'^images/([^/]*)/(\d*)/([^/]*)/[^/]*$',

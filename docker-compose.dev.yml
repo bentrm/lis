@@ -1,9 +1,20 @@
 version: '3.7'
 
 services:
+  app:
+    build: './client'
+    volumes:
+      - ./client/src:/app/src
+      - ./client/dist:/app/dist
+      - ./client/package.json:/app/package.json
+      - ./client/package-lock.json:/app/package-lock.json
+    command: ["start"]
   cms:
+    restart: "no"
     volumes:
       - ./cms:/app
-    restart: "no"
+      - ./client/dist:/html/client
     environment:
       DEBUG: 1
+      MEDIA_URL: /media/
+      STATIC_URL: /static/

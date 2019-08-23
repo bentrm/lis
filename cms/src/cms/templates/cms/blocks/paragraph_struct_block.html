@@ -2,66 +2,63 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<section class="row block">
-  <div class="col-12">
-    {% if value.heading %}
-    <h4>{{ value.heading }}</h4>
-    {% endif %}
+<section>
 
-    {% if value.images %}
-    <div class="row align-items-center">
-      {% for image in value.images %}
-      {% image image max-400x400 as rendition %}
-      <div class="col-6 col-sm-4 col-md-3 col-xl-2">
-        <img src="{{ rendition.url }}" class="img img-fluid shadow my-2" style="cursor: pointer;" alt="{{ image.i18n_title }}" data-toggle="modal" data-target="#{{ prefix }}-img-{{ forloop.counter }}">
+  {% if value.heading %}
+  <h4>{{ value.heading }}</h4>
+  {% endif %}
+
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-3 order-lg-last">
+      <div class="row">
+        {% for image in value.images %}
+          <div class="col-xs-3 col-sm-2 col-lg-12 flex-lg-column">
+            {% image image max-200x200 as rendition %}
+            <figure class="figure d-flex flex-column align-items-center">
+              <img src="{{ rendition.url }}" class="figure-img img-fluid shadow" alt="{{ image.i18n_alt }}" data-toggle="modal" data-target="#img-{{ image.pk }}">
+              {% if image.i18n_caption %}
+                <figcaption class="figure-caption p-2">{{ image.i18n_caption|richtext }}</figcaption>
+              {% endif %}
+            </figure>
+          </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
-    {% endif %}
 
-    {% include_block value.content %}
+    <div class="col-xs-12 col-md-9">
+      {% include_block value.content %}
 
-    {% if value.footnotes %}
-    <footer class="footnotes">
-      <h5>{% trans 'Additional notes and sources' %}</h5>
-      <ol>
-      {% for footnote in value.footnotes %}
-        {% include_block footnote %}
-      {% endfor %}
-      </ol>
-    </footer>
-    {% endif %}
+      {% if value.footnotes %}
+        <footer class="footnotes">
+          <ol class="border-left">
+            {% for footnote in value.footnotes %}
+              {% include_block footnote %}
+            {% endfor %}
+          </ol>
+        </footer>
+      {% endif %}
+    </div>
 
-    {% if value.images %}
-    {% for image in value.images %}
-    {% image image max-1000x1000 as rendition %}
-    <div class="modal carousel-modal fade" id="{{ prefix }}-img-{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="{{ prefix }}-img-{{ forloop.counter }}-label" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="{{ prefix }}-img-{{ forloop.counter }}-label">{{image.i18n_title}}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <img data-src="{{ rendition.url }}" class="d-block w-100 carousel-modal-rendition" alt="{{ image.i18n_alt }}">
-          </div>
-          {% if image.i18n_caption %}
-          <div class="modal-footer">
-            {{ image.i18n_caption|richtext}}
-          </div>
-          {% endif %}
+  </div>
+
+  {% if value.images %}
+  {% for image in value.images %}
+  {% image image max-1000x1000 as rendition %}
+  <div class="modal fade" id="img-{{ image.pk }}" tabindex="-1" role="dialog" aria-labelledby="img-{{ image.pk }}-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <figure class="figure d-flex flex-column align-items-center">
+            <img data-src="{{ rendition.url }}" class="figure-img img-fluid modal-rendition" alt="{{ image.i18n_alt }}" data-toggle="modal" data-target="#img-{{ image.pk }}">
+            {% if image.i18n_caption %}
+            <figcaption class="figure-caption p-2">{{ image.i18n_caption|richtext}}</figcaption>
+            {% endif %}
+          </figure>
         </div>
       </div>
     </div>
-    <script>
-    $("#{{ prefix }}-img-{{ forloop.counter }}").on('show.bs.modal', function (e) {
-      const rendition = $(".carousel-modal-rendition", e.target)[0];
-      rendition.src = rendition.dataset.src;
-    });
-    </script>
-    {% endfor %}
-    {% endif %}
   </div>
+  {% endfor %}
+  {% endif %}
 </section>

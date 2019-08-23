@@ -2,4 +2,4 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-<li{% if value.tag %} data-tag="{{value.tag|slugify}}"{% endif %} class="p-2">{{ value.footnote|richtext }}</li>
+<li{% if value.tag %} data-tag="{{value.tag|slugify}}"{% endif %}>{{ value.footnote|richtext }}</li>
