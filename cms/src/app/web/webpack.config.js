@@ -3,8 +3,8 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    index: ['whatwg-fetch', './src/js/index.js'],
-    main: './src/scss/main.scss'
+    index: ['whatwg-fetch', './js/index.js'],
+    main: './scss/main.scss'
   },
   mode: 'development',
   watch: false,
@@ -12,7 +12,7 @@ module.exports = {
     ignored: ['node_modules', 'dist']
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../static/app'),
     publicPath: '/static/'
   },
   module: {

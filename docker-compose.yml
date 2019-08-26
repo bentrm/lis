@@ -1,20 +1,11 @@
 version: '3.7'
 
 services:
-  app:
-    build: './client'
-    restart: "no"
-    volumes:
-      - ./client/src:/app/src
-      - ./client/dist:/app/dist
-      - ./client/package.json:/app/package.json
-      - ./client/package-lock.json:/app/package-lock.json
   cms:
     build: ./cms
     ports:
       - "${PORT_CMS:-8000}:8000"
     volumes:
-      - ./client/dist:/html/client:ro
       - static:/html/static
       - media:/html/media
     restart: always

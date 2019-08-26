@@ -18,6 +18,8 @@ import {debounce} from './utils';
 
 const api = new Api('/api/v2');
 
+alert("Hello");
+
 // initialize map
 const mapOutlet = document.querySelector('#map-outlet');
 if (mapOutlet) {

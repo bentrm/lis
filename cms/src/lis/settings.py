@@ -62,6 +62,7 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "app",
     "api",
     "cms",
     "dal",
@@ -206,11 +207,6 @@ LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 STATICFILES_DIRS = [
     os.path.join(SRC_DIR, "static"),
 ]
-
-if DEBUG:
-    STATICFILES_DIRS = STATICFILES_DIRS + [
-        "/html/client",
-    ]
 
 STATIC_ROOT = "/html/static"
 STATIC_URL = env("STATIC_URL", "/static/")
