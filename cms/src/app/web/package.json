@@ -13,26 +13,25 @@
   "license": "EUPL-1.2",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.10.1",
+    "@yaireo/tagify": "^2.23.1",
     "autoprefixer": "^9.6.1",
+    "bootstrap": "^4.3.1",
     "css-loader": "^3.2.0",
     "extract-loader": "^3.1.0",
     "file-loader": "^4.2.0",
-    "node-sass": "^4.12.0",
-    "postcss-loader": "^3.0.0",
-    "sass-loader": "^7.2.0",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6",
-    "whatwg-fetch": "3.0.0"
-  },
-  "dependencies": {
-    "@yaireo/tagify": "^2.23.1",
-    "bootstrap": "^4.3.1",
     "holderjs": "^2.9.6",
     "jquery": "^3.4.1",
     "leaflet": "^1.5.1",
     "leaflet.locatecontrol": "^0.67.0",
     "leaflet.markercluster": "^1.4.1",
+    "node-sass": "^4.12.0",
     "popper.js": "^1.15.0",
-    "vue": "^2.6.10"
-  }
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.2.0",
+    "vue": "^2.6.10",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "whatwg-fetch": "3.0.0"
+  },
+  "dependencies": {}
 }
