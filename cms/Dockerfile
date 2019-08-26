@@ -1,3 +1,10 @@
+FROM node:lts AS webapp
+COPY src/app /src
+WORKDIR /src/web
+RUN npm install
+RUN npm run-script build
+
+
 FROM python:3.7-stretch
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gosu binutils libproj-dev gdal-bin wait-for-it \
@@ -10,6 +17,7 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
+COPY --from=webapp /src/static/ /app/src/static
 WORKDIR /app/src
 RUN ln -s /app/bin/clearsessions.sh /etc/cron.daily/
 

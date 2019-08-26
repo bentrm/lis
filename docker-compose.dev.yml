@@ -5,7 +5,3 @@ services:
     restart: "no"
     volumes:
       - ./cms:/app
-    environment:
-      DEBUG: 1
-      MEDIA_URL: /media/
-      STATIC_URL: /static/

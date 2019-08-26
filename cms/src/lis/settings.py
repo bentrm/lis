@@ -50,7 +50,7 @@ INTERNAL_IPS = ["127.0.0.1", "172.19.0.6"]
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", required=True)
 
-if not DEBUG:
+if env("USE_SSL", True, parse_to_bool=True):
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
