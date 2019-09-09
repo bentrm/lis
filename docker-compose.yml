@@ -35,6 +35,7 @@ services:
       STATIC_URL: ${STATIC_URL}
       USE_SSL: ${USE_SSL:-1}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
+      MAX_WORKERS: ${MAX_WORKERS}
     depends_on:
       - db
       - cache
