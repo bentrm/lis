@@ -33,7 +33,15 @@ export default class Api {
     return this.getResults(`/authors/${id}`, options);
   }
 
+  getPositions(options) {
+    return this.getResults('/positions', options);
+  }
+
   getMemorials(options) {
     return this.getResults('/memorials', options);
+  }
+
+  getMemorial(id) {
+    return this.getResults(`/memorials/${id}`);
   }
 }

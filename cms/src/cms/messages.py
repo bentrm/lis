@@ -243,6 +243,8 @@ TXT = {
     "media.title_de": _("German title"),
     "media.title.help": _("Title of the media item."),
     "media.title": _("Title"),
+    "media.copyright": _("Copyright"),
+    "media.copyright.help": _("License and copyright information regarding this media file."),
     "memorial_site_author.author.help": _(
         "The author that is remebered by this memorial site."
     ),

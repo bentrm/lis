@@ -1,5 +1,4 @@
 const path = require('path');
-var webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -12,8 +11,8 @@ module.exports = {
     ignored: ['node_modules', 'dist']
   },
   output: {
-    path: path.resolve(__dirname, '../static/app'),
-    publicPath: '/static/'
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/static/app/'
   },
   module: {
     rules: [

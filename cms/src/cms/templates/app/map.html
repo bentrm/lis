@@ -12,8 +12,8 @@
         <div id="map-outlet"></div>
       </main>
 
-      <aside class="col-6 col-lg-4 col-xl-3 h-100 overflow-auto border-left">
-        <div id="MemorialListContainer"></div>
+      <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
+        <div id="memorial-detail-outlet"></div>
       </aside>
 
     </div>
@@ -27,9 +27,32 @@
   <script id="map-container-template" type="x-template">
     <leaflet-map
       :currentSelection="currentSelection"
-      :memorials="memorials"
+      :positions="positions"
+      v-on:click="showMemorial"
     >
     </leaflet-map>
+  </script>
+
+  <script id="memorial-detail-template" type="x-template">
+    <div v-if="memorial">
+      <h3>[[memorial.title]]</h3>
+      <img v-if="memorial.thumb"
+           :src="memorial.thumb"
+           :alt="memorial.title"
+           class="Memorial-badge border border-primary rounded-circle align-self-center">
+      <ul class="list-unstyled">
+        <li
+          v-for="author in memorial.authors"
+          :key="author.id"
+        >
+          <a :href="author.url">[[author.name.first_name]] [[author.name.last_name]]</a>
+        </li>
+      </ul>
+      <div v-html="memorial.address"></div>
+      <div v-html="memorial.contact_info"></div>
+      <div v-html="memorial.directions"></div>
+      <div v-html="memorial.introduction"></div>
+    </div>
   </script>
 
   <script id="MemorialList" type="x-template">
@@ -41,7 +64,11 @@
               v-on:click="selectMemorial(memorial)"
               :alt="memorial.title"
             >
-              [[memorial.title]]
+              <h3>[[memorial.title]]</h3>
+              <p v-if="memorial.address">[[memorial.address]]</p>
+              <p v-if="memorial.contact_info">[[memorial.address</p>
+              <p v-if="memorial.directions">[[memorial.directions]]</p>
+              <div v-if="memorial.introduction">[[memorial.introduction]]</div>
             </a>
           </div>
           <img v-if="memorial.thumb"

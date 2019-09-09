@@ -5,6 +5,7 @@ import './components/Pagination';
 import './components/RadioFilter';
 import './components/TagFilter';
 import './components/Map';
+import './components/SearchBar';
 
 
 window.$ = $;
@@ -18,39 +19,64 @@ import {debounce} from './utils';
 
 const api = new Api('/api/v2');
 
-alert("Hello");
+
+const searchBar = new Vue({
+  el: '#search-bar-outlet',
+  data: {
+    results: []
+  }
+});
+
 
 // initialize map
 const mapOutlet = document.querySelector('#map-outlet');
 if (mapOutlet) {
+
+  // const memorialList = new Vue({
+  //   el: '#MemorialListContainer',
+  //   template: '#MemorialList',
+  //   delimiters: ["[[", "]]"],
+  //   data: {
+  //     memorials: [],
+  //   },
+  //   methods: {
+  //     selectMemorial: function(memorial) {
+  //
+  //     },
+  //   }
+  // });
+
+  const memorialDetails = new Vue({
+    el: '#memorial-detail-outlet',
+    template: '#memorial-detail-template',
+    delimiters: ["[[", "]]"],
+    data: {
+      memorial: null
+    },
+  });
+
   const mapContainer = new Vue({
     el: mapOutlet,
     template: '#map-container-template',
     data: {
       currentSelection: null,
-      memorials: [],
-    },
-  });
-
-  const memorialList = new Vue({
-    el: '#MemorialListContainer',
-    template: '#MemorialList',
-    delimiters: ["[[", "]]"],
-    data: {
-      memorials: [],
+      positions: [],
     },
     methods: {
-      selectMemorial: function(memorial) {
-        mapContainer.currentSelection = memorial;
+      showMemorial: function (id) {
+        api
+          .getMemorial(id)
+          .then(json => {
+            memorialDetails.memorial = json
+          });
       }
     }
   });
 
   api
-    .getMemorials({ limit: 1000 })
+    .getPositions({ limit: 1000 })
     .then(json => {
-      mapContainer.memorials = json.results;
-      memorialList.memorials = json.results;
+      mapContainer.positions = json.results;
   });
 
   $(window).resize(debounce(setMapHeight, 250));
@@ -165,6 +191,7 @@ if (authorListOutlet && filterFormOutlet) {
     delimiters: ["[[", "]]"],
     data: {
       filters: {
+        ordering: 'last_name',
         limit: 20,
         offset: 0,
       },
@@ -188,6 +215,9 @@ if (authorListOutlet && filterFormOutlet) {
         this.setFilterParam('offset', newOffset);
       },
       setFilterParam: function(param, value) {
+        if (param !== 'offset') {
+          this.filters['offset'] = 0;
+        }
         this.filters[param] = value;
         this.fetchAuthors()
       },

@@ -16,7 +16,6 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from config.helpers import env
-from corsheaders.defaults import default_headers
 
 CMS_VERSION = env("CMS_VERSION", default="latest")
 
@@ -45,7 +44,7 @@ EMAIL_SUBJECT_PREFIX = "[LIS] "
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 DEBUG = env("DEBUG", False, parse_to_bool=True)
-INTERNAL_IPS = ["127.0.0.1", "172.19.0.6"]
+INTERNAL_IPS = ["127.0.0.1", "localhost", "172.21.0.1"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", required=True)
@@ -84,7 +83,6 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "mapwidgets",
-    "corsheaders",
     "rest_framework",
     "rest_framework_gis",
     "django_filters",
@@ -206,6 +204,7 @@ LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 
 STATICFILES_DIRS = [
     os.path.join(SRC_DIR, "static"),
+    "/assets"
 ]
 
 STATIC_ROOT = "/html/static"
@@ -254,11 +253,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_METHODS = ("GET", "OPTIONS", "HEAD")
-CORS_ALLOW_HEADERS = default_headers + ("api-key",)
-CORS_URLS_REGEX = r"^/api/.*$"
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)

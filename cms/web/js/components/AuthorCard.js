@@ -5,8 +5,8 @@ const template = `
       <div class="media-body mr-4">
         <p class="p-0 h4">
           <a :href="url" class="stretched-link">
-            <span v-if="name.first_name" class="small text-muted">{{ name.first_name }}</span>
-            {{ name.last_name }}
+            <span v-if="first_name" class="small text-muted">{{ first_name }}</span>
+            {{ last_name }}
           </a>
         </p>
       </div>
@@ -20,6 +20,6 @@ const template = `
   `;
 
 Vue.component('author-card', {
-  props: ['thumb', 'url', 'name'],
+  props: ['thumb', 'url', 'academic_title', 'first_name', 'last_name', 'birth_name'],
   template,
 });

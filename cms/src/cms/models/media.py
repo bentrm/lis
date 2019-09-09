@@ -25,6 +25,14 @@ class Media(models.Model):
     )
     i18n_title = TranslatedField.named("title", True)
 
+    copyright = models.CharField(
+        max_length=2000,
+        null=True,
+        blank=True,
+        verbose_name=_(TXT['media.copyright']),
+        help_text=_(TXT['media.copyright.help']),
+    )
+
     search_fields = CollectionMember.search_fields + [
         index.SearchField("title", partial_match=True, boost=10),
         index.FilterField("title"),
@@ -73,6 +81,7 @@ class ImageMedia(Media, AbstractImage):
         "title",
         "title_de",
         "title_cs",
+        "copyright",
         "file",
         "collection",
         "caption",
@@ -133,6 +142,7 @@ class DocumentMedia(Media, AbstractDocument):
         "title",
         "title_de",
         "title_cs",
+        "copyright",
         "file",
         "collection",
         "summary",

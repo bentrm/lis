@@ -71,7 +71,7 @@ $enable-responsive-font-sizes:                true;
 }
 @include media-breakpoint-up(xl) {
     html {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 
@@ -199,5 +199,43 @@ dl {
         p {
             margin-bottom: 0.2rem;
         }
+    }
+
+    .Level-Btn.active::after {
+        border-bottom: none;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 15px solid darken(theme-color("primary"), 10%);
+        bottom: -15px;
+        content: ' ';
+        left: 50%;
+        position: absolute;
+        right: 50%;
+    }
+}
+
+.search-bar {
+    position: relative;
+
+    .search-bar-results {
+        display: none;
+        font-size: .8rem;
+        position: absolute;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border: 1px solid theme-color("primary");
+        padding: .2rem;
+        z-index: 1000;
+
+        li {
+          margin-bottom: .2rem
+        }
+    }
+}
+
+.search-bar:focus-within {
+    .search-bar-results {
+        display: block;
     }
 }

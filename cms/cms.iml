@@ -19,7 +19,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/static" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/cms/static" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/app/static" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/app/web" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/web" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />

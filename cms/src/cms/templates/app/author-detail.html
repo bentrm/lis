@@ -5,14 +5,6 @@
 {% load wagtailimages_tags %}
 {% load cms_tags %}
 
-{% block ExtraHeader %}
-  <div class="btn-group d-flex" role="group">
-    {% for level in levels %}
-      <button type="button" class="btn btn-primary {% if forloop.first %}active{% endif %}" data-group="Level" data-target="#level-{{ level.pk }}">{{ level }}</button>
-    {% endfor %}
-  </div>
-{% endblock %}
-
 {% block Content %}
 
   <div class="Author container mt-4">
@@ -96,6 +88,14 @@
               <img src="{{ memorial_title_image.url }}" class="img img-fluid shadow" alt="{{ memorial_title_image.alt }}">
             {% endfor %}
           </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="btn-group d-flex" role="group">
+          {% for level in levels %}
+            <button type="button" class="Level-Btn btn btn-primary {% if forloop.first %}active{% endif %}" data-group="Level" data-target="#level-{{ level.pk }}">{{ level }}</button>
+          {% endfor %}
         </div>
       </div>
 

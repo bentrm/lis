@@ -1,13 +1,13 @@
 import django_filters
+from django.db.models import OuterRef, Subquery
 from rest_framework import filters, viewsets
-from wagtail.api.v2.endpoints import PagesAPIEndpoint
-from wagtail.api.v2.filters import RestrictedChildOfFilter, RestrictedDescendantOfFilter, OrderingFilter
+from wagtail.api.v2.filters import OrderingFilter
 
-from api.filters import BoundingBoxFilter, CustomWagtailSearchBackend, CustomFieldsFilter, PostgreSQLSearchFilter, \
+from api.filters import BoundingBoxFilter, PostgreSQLSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
-    MemorialTypeSerializer, GenreSerializer, MemorialSerializer, AuthorSerializer
-from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author
+    MemorialTypeSerializer, GenreSerializer, MemorialSerializer, AuthorSerializer, PositionSerializer
+from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
@@ -20,7 +20,30 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = AuthorFilterSet
 
     def get_queryset(self):
-        queryset = Author.objects.all()
+        popular_name_qs = AuthorName.objects.filter(author_id=OuterRef('pk')).order_by('sort_order')[:1]
+        queryset = Author.objects.annotate(
+            academic_title=Subquery(popular_name_qs.values('title')),
+            first_name=Subquery(popular_name_qs.values('first_name')),
+            last_name=Subquery(popular_name_qs.values('last_name')),
+            birth_name=Subquery(popular_name_qs.values('birth_name')),
+        ).prefetch_related('names')
+
+        if self.request.user.is_authenticated:
+            return queryset
+        return queryset.public().live()
+
+
+class PositionViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PositionSerializer
+    filter_backends = (
+        BoundingBoxFilter,
+        DistanceFilter,
+    )
+    bbox_filter_field = "coordinates"
+    distance_filter_field = "coordinates"
+
+    def get_queryset(self):
+        queryset = Memorial.objects.all()
 
         if self.request.user.is_authenticated:
             return queryset
@@ -41,80 +64,11 @@ class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = MemorialFilterSet
 
     def get_queryset(self):
-        queryset = Memorial.objects.all()
+        queryset = Memorial.objects.select_related('title_image')
 
         if self.request.user.is_authenticated:
             return queryset
         return queryset.public().live()
-
-
-class AuthorApiEndpoint(PagesAPIEndpoint):
-    filter_backends = [
-        CustomFieldsFilter,
-        RestrictedChildOfFilter,
-        RestrictedDescendantOfFilter,
-        OrderingFilter,
-        CustomWagtailSearchBackend
-    ]
-    name = "authors"
-
-    def get_queryset(self):
-        request = self.request
-
-        # Get live pages that are not in a private section
-        queryset = Author.objects.public().live()
-
-        # Filter by site
-        if request.site:
-            queryset = queryset.descendant_of(request.site.root_page, inclusive=True)
-        else:
-            # No sites configured
-            queryset = queryset.none()
-
-        return queryset
-
-
-class MemorialApiEndpoint(PagesAPIEndpoint):
-    filter_backends = [
-        BoundingBoxFilter,
-        CustomFieldsFilter,
-        RestrictedChildOfFilter,
-        RestrictedDescendantOfFilter,
-        OrderingFilter,
-        CustomWagtailSearchBackend
-    ]
-    known_query_parameters = PagesAPIEndpoint.known_query_parameters.union([
-        "bbox",
-    ])
-
-    listing_default_fields = PagesAPIEndpoint.listing_default_fields + [
-        'title_de',
-        'title_cs',
-        'coordinates',
-    ]
-    nested_default_fields = PagesAPIEndpoint.nested_default_fields + [
-        'title_de',
-        'title_cs',
-        'coordinates',
-    ]
-
-    name = "memorials"
-    bbox_filter_field = "coordinates"
-
-    def get_queryset(self):
-        request = self.request
-
-        # Get live pages that are not in a private section
-        queryset = Memorial.objects.public().live()
-
-        # Filter by site
-        if request.site:
-            queryset = queryset.descendant_of(request.site.root_page, inclusive=True)
-        else:
-            # No sites configured
-            queryset = queryset.none()
-
-        return queryset
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

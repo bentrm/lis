@@ -5,3 +5,4 @@ services:
     restart: "no"
     volumes:
       - ./cms:/app
+      - ./cms/web/dist:/assets/app

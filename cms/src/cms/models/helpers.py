@@ -30,7 +30,7 @@ class TranslatedField(object):
         self.default_field = default_field
 
     @staticmethod
-    def named(field: str, defaults_to_en: bool = False):
+    def  named(field: str, defaults_to_en: bool = False):
         """Return a new instance."""
         default_field = field if defaults_to_en else None
         return TranslatedField(field, f"{field}_de", f"{field}_cs", default_field)

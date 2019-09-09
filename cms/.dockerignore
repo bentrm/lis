@@ -1,4 +1,8 @@
 .dockerignore
 Dockerfile
-**/node_modules
 requirements-dev.txt
+
+**/node_modules
+venv
+
+web/dist

@@ -14,7 +14,7 @@ from cms.edit_handlers import FieldPanelTabs, FieldPanelTab
 
 from cms.messages import TXT
 from cms.widgets import CustomGooglePointFieldWidget
-from .base import CategoryPage, ContentFilter, DB_TABLE_PREFIX, I18nPage, TranslatedField
+from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
 
 
 class LocationIndex(CategoryPage):
@@ -22,24 +22,6 @@ class LocationIndex(CategoryPage):
 
     parent_page_types = ["HomePage"]
     template = "app/map.html"
-
-    def get_context(self, request, *args, **kwargs):
-        """Add all child geometries to context.."""
-        context = super(LocationIndex, self).get_context(request, *args, **kwargs)
-
-        locations = Memorial.objects.all()
-        if request.is_preview:
-            locations = [x.get_latest_revision_as_page() for x in locations]
-        else:
-            locations = locations.public().live()
-
-        context["content_filters"] = [
-            ContentFilter("memorialTypeFilter", "memorialTypes", "/memorialTypes", _("Memorial types")),
-            ContentFilter("authorFilter", "authors", "/authors", _("Authors")),
-        ]
-
-        context["locations"] = locations
-        return context
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "locations"

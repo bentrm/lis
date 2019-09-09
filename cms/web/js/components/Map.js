@@ -27,7 +27,7 @@ const Icon = L.Icon.extend({
 const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
 Vue.component('leaflet-map', {
-  props: ['currentSelection', 'memorials'],
+  props: ['currentSelection', 'positions'],
   template,
   mounted: function() {
     const vm = this;
@@ -42,6 +42,10 @@ Vue.component('leaflet-map', {
       spiderLegPolylineOptions: {
         color: '#69140e'
       }
+    });
+
+    vm.clusterLayer.on('click', ({layer}) => {
+      this.$emit('click', layer.options.id);
     });
 
     vm.map = L.map(vm.$el, {
@@ -67,27 +71,18 @@ Vue.component('leaflet-map', {
 
   },
   watch: {
-    currentSelection: function(newSelection, oldSelection) {
+    positions: function(newPositions, oldPositions) {
       const vm = this;
-
-      if (newSelection) {
-        const [lng, lat] = newSelection.position;
-        const center = [lat, lng];
-        vm.map.flyTo(center, 14);
-      }
-    },
-    memorials: function(newMemorials, oldMemorials) {
-      const vm = this;
-      const newMarkers = newMemorials.map(memorial => {
-        const [lng, lat] = memorial.position;
+      const newMarkers = newPositions.map(({position: [lng, lat], ...otherProps}) => {
         return L.marker([lat, lng], {
           icon: new Icon,
-          title: memorial.title
+          ...otherProps
         });
       });
 
       vm.clusterLayer.clearLayers();
       vm.clusterLayer.addLayers(newMarkers);
+      vm.map.fitBounds(vm.clusterLayer.getBounds());
     }
   }
 });

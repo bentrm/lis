@@ -25,26 +25,6 @@ class AuthorIndex(CategoryPage):
     parent_page_types = ["HomePage"]
     template = "app/author-list.html"
 
-    def get_context(self, request, *args, **kwargs):
-        """Add more context information on view requests."""
-        context = super(AuthorIndex, self).get_context(request, *args, **kwargs)
-
-        authors = Author.objects.prefetch_related()
-        if request.is_preview:
-            authors = (x.get_latest_revision_as_page() for x in authors)
-        else:
-            authors = authors.public().live()
-
-        context["authors"] = sorted(authors, key=lambda x: x.names.first().last_name)
-
-        context["content_filters"] = [
-            ContentFilter("genreFilter", "genre_tags", "/genres", _("Genre")),
-            ContentFilter("languageFilter", "language_tags", "/languages", _("Languages")),
-            ContentFilter("literaryPeriodFilter", "literary_period_tags", "/periods", _("Literary periods")),
-        ]
-
-        return context
-
     class Meta:
         db_table = DB_TABLE_PREFIX + "authors"
         verbose_name = _(TXT["author.plural"])
