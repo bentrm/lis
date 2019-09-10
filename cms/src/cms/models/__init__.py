@@ -7,3 +7,4 @@ from .tags import GenreTag, LanguageTag, MemorialTag, PeriodTag, AgeGroupTag
 from .author import AuthorIndex, Author, AuthorName
 from .content import Level1Page, Level2Page, Level3Page
 from .memorial import LocationIndex, Memorial
+from .route import MemorialPathIndex, MemorialPath, Waypoint

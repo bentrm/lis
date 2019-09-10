@@ -8,6 +8,7 @@ if [[ "$1" = 'gunicorn' ]]; then
     # init Django app
     python manage.py migrate
     python manage.py collectstatic --no-input
+    python manage.py update_index
 
     # run app as user gunicorn
     exec gosu gunicorn "$@"
