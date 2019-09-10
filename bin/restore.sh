@@ -17,7 +17,7 @@ BACKUP_DIR=$(realpath 'backups')
 DUMP_FILE=$(ls -t $BACKUP_DIR/dump_* | head -1)
 POSTGRES_DB=$DB_NAME
 POSTGRES_USER=$DB_USER
-DOCKER_DB_CONTAINER=$(docker ps --filter label=com.docker.compose.service=db -q)
+DOCKER_DB_CONTAINER=$(docker-compose ps -q db)
 
 echo 'Terminating all connections...'
 docker exec -i -u postgres $DOCKER_DB_CONTAINER \
@@ -34,7 +34,7 @@ docker exec -i $DOCKER_DB_CONTAINER \
 
 # Restore media files
 MEDIA_ARCHIVE=$(ls -t $BACKUP_DIR/media_* | head -1)
-DOCKER_APP_CONTAINER=$(docker ps --filter label=com.docker.compose.service=cms -q)
+DOCKER_APP_CONTAINER=$(docker-compose ps -q cms)
 
 echo "Copying media archive $MEDIA_ARCHIVE to running container $DOCKER_APP_CONTAINER..."
 docker cp $MEDIA_ARCHIVE $DOCKER_APP_CONTAINER:/backup.tgz
