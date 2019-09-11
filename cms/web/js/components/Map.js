@@ -32,8 +32,11 @@ Vue.component('leaflet-map', {
   mounted: function() {
     const vm = this;
     const osmLayer = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {attribution},
+      'https://kosm.geoinformation.htw-dresden.de/geoserver/gwc/service/tms/1.0.0/osm:OSM@EPSG:900913@png/{z}/{x}/{y}.png',
+      {
+        attribution,
+        tms: true
+      },
     );
     vm.clusterLayer = L.markerClusterGroup({
       polygonOptions: {
