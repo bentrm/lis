@@ -40,6 +40,12 @@ class SignupView(View):
 class GenericAutocompleteView(autocomplete.Select2QuerySetView):
     """Generic autocomplete view to search title fields."""
 
+    def get_result_label(self, item):
+        return item.i18n_title
+
+    def get_selected_result_label(self, item):
+        return item.i18n_title
+
     def get_queryset(self):
         """Return queryset filtered by user authentication status and search term."""
         if not self.request.user.is_authenticated:
