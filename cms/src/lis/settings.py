@@ -61,7 +61,6 @@ if env("USE_SSL", True, parse_to_bool=True):
 # Application definition
 
 INSTALLED_APPS = [
-    "app",
     "api",
     "cms",
     "dal",
