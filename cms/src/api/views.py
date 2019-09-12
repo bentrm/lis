@@ -3,7 +3,7 @@ from django.db.models import OuterRef, Subquery, Prefetch
 from rest_framework import filters, viewsets
 from wagtail.api.v2.filters import OrderingFilter
 
-from api.filters import BoundingBoxFilter, PostgreSQLSearchFilter, \
+from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, PositionSerializer, \
@@ -15,7 +15,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = AuthorFilterSet
     filter_backends = (
         django_filters.rest_framework.DjangoFilterBackend,
-        PostgreSQLSearchFilter,
+        PostgresSearchFilter,
         filters.OrderingFilter,
     )
     serializer_class = AuthorDetailSerializer
@@ -70,7 +70,7 @@ class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
         BoundingBoxFilter,
         DistanceFilter,
         django_filters.rest_framework.DjangoFilterBackend,
-        PostgreSQLSearchFilter,
+        PostgresSearchFilter,
         filters.OrderingFilter,
     )
     filterset_class = MemorialFilterSet
