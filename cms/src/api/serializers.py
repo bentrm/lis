@@ -1,7 +1,7 @@
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 
-from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName
+from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath
 
 
 class TitleSerializerMixin(serializers.ModelSerializer):
@@ -215,3 +215,38 @@ class MemorialDetailSerializer(MemorialListSerializer):
             "detailed_description",
         )
         model = Memorial
+
+
+class MemorialPathListSerializer(TitleSerializerMixin):
+
+    description = serializers.SerializerMethodField()
+
+    def get_description(self, obj):
+        return obj.i18n_description
+
+    class Meta:
+        model = MemorialPath
+        fields = (
+            'id',
+            'title',
+            'description',
+        )
+
+
+class MemorialPathDetailSerializer(MemorialPathListSerializer):
+    waypoints = serializers.SerializerMethodField()
+
+    def get_waypoints(self, obj):
+        queryset = obj.waypoints.order_by('sort_order')
+        memorials = [x.memorial for x in queryset if x.memorial.live]
+        serializer = MemorialListSerializer(memorials, many=True, read_only=True)
+        return serializer.data
+
+    class Meta:
+        model = MemorialPath
+        fields = (
+            'id',
+            'title',
+            'description',
+            'waypoints',
+        )

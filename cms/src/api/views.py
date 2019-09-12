@@ -7,11 +7,26 @@ from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, PositionSerializer, \
-    AuthorListSerializer, MemorialListSerializer
-from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName
+    AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer
+from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath
 
 
-class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
+class ActionAwareReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
+    list_serializer_class = None
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            assert self.list_serializer_class is not None, (
+                "'%s' should either include a `list_serializer_class` attribute, "
+                "or override the `get_serializer_class()` method."
+                % self.__class__.__name__
+            )
+            return self.list_serializer_class
+        else:
+            return super().get_serializer_class()
+
+
+class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
     filterset_class = AuthorFilterSet
     filter_backends = (
         django_filters.rest_framework.DjangoFilterBackend,
@@ -19,9 +34,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         filters.OrderingFilter,
     )
     serializer_class = AuthorDetailSerializer
-    serializer_action_classes = {
-        'list': AuthorListSerializer,
-    }
+    list_serializer_class = AuthorListSerializer
 
     def get_queryset(self):
         popular_name_qs = AuthorName.objects.filter(author_id=OuterRef('pk')).order_by('sort_order')[:1]
@@ -45,12 +58,6 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
         return queryset.public().live()
 
-    def get_serializer_class(self):
-        try:
-            return self.serializer_action_classes[self.action]
-        except KeyError:
-            return super().get_serializer_class()
-
 
 class PositionViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (
@@ -65,7 +72,7 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
         return Memorial.objects.public().live()
 
 
-class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
+class MemorialViewSet(ActionAwareReadOnlyModelViewSet):
     filter_backends = (
         BoundingBoxFilter,
         DistanceFilter,
@@ -77,19 +84,17 @@ class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
     bbox_filter_field = 'coordinates'
     distance_filter_field = 'coordinates'
     serializer_class = MemorialDetailSerializer
-    serializer_action_classes = {
-        'list': MemorialListSerializer,
-    }
+    list_serializer_class = MemorialListSerializer
 
     def get_queryset(self):
         queryset = Memorial.objects.select_related('title_image')
         return queryset.public().live()
 
-    def get_serializer_class(self):
-        try:
-            return self.serializer_action_classes[self.action]
-        except KeyError:
-            return super().get_serializer_class()
+
+class MemorialPathViewSet(ActionAwareReadOnlyModelViewSet):
+    queryset = MemorialPath.objects.public().live()
+    serializer_class = MemorialPathDetailSerializer
+    list_serializer_class = MemorialPathListSerializer
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
