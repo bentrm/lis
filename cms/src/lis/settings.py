@@ -44,7 +44,7 @@ EMAIL_SUBJECT_PREFIX = "[LIS] "
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
 DEBUG = env("DEBUG", False, parse_to_bool=True)
-INTERNAL_IPS = ["127.0.0.1", "localhost", "172.21.0.1"]
+INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", required=True)
