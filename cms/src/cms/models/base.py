@@ -6,7 +6,6 @@ from typing import NewType, Tuple
 
 from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.shortcuts import redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.edit_handlers import (

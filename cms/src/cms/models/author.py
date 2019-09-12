@@ -14,9 +14,9 @@ from wagtail.search import index
 
 from cms.edit_handlers import FieldPanelTabs, FieldPanelTab
 from cms.messages import TXT
-from .base import CategoryPage, ContentFilter, DB_TABLE_PREFIX, I18nPage, TranslatedField
-from .memorial import Memorial
+from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
 from .helpers import validate_date, format_date
+from .memorial import Memorial
 
 
 class AuthorIndex(CategoryPage):
