@@ -24,7 +24,7 @@ const Icon = L.Icon.extend({
   },
 });
 
-const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de/">Labor Geoinformatik, HTW Dresden</a>; Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
+const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de">Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
 Vue.component('leaflet-map', {
   props: ['currentSelection', 'positions'],

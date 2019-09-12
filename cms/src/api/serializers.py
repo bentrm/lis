@@ -1,3 +1,4 @@
+from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 
 from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName
@@ -161,13 +162,24 @@ class MemorialListSerializer(TitleSerializerMixin):
 
 
 class MemorialDetailSerializer(MemorialListSerializer):
-    authors = AuthorListSerializer(source="remembered_authors", many=True)
+    authors = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
     contact_info = serializers.SerializerMethodField()
     directions = serializers.SerializerMethodField()
     introduction = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     detailed_description = serializers.SerializerMethodField()
+
+    def get_authors(self, obj):
+        popular_name_qs = AuthorName.objects.filter(author_id=OuterRef('pk')).order_by('sort_order')[:1]
+        queryset = Author.objects.filter(memorials=obj).annotate(
+            academic_title=Subquery(popular_name_qs.values('title')),
+            first_name=Subquery(popular_name_qs.values('first_name')),
+            last_name=Subquery(popular_name_qs.values('last_name')),
+            birth_name=Subquery(popular_name_qs.values('birth_name')),
+        ).select_related('title_image').live().public()
+        serializer = AuthorListSerializer(queryset, many=True)
+        return serializer.data
 
     def get_address(self, obj):
         return obj.i18n_address

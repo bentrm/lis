@@ -45,7 +45,7 @@
           v-for="author in memorial.authors"
           :key="author.id"
         >
-          <a :href="author.url">[[author.name.first_name]] [[author.name.last_name]]</a>
+          <a :href="author.url">[[author.first_name]] [[author.last_name]]</a>
         </li>
       </ul>
       <div v-html="memorial.address"></div>
