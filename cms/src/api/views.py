@@ -63,7 +63,11 @@ class PositionViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (
         BoundingBoxFilter,
         DistanceFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+        PostgresSearchFilter,
+        filters.OrderingFilter,
     )
+    filterset_class = MemorialFilterSet
     bbox_filter_field = 'coordinates'
     distance_filter_field = 'coordinates'
     serializer_class = PositionSerializer
