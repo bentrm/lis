@@ -14,6 +14,7 @@
 
       <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
         <div id="memorial-detail-outlet"></div>
+          <div id="memorial-filter-form-outlet"></div>
       </aside>
 
     </div>
@@ -79,5 +80,24 @@
         </div>
       </li>
     </ul>
+  </script>
+
+  <script id="filter-form-template" type="x-template">
+    <form name="filter-form" class="p-2">
+      <author-filter
+        :id="author-filter"
+        v-on:change="onAuthorChange"
+      >
+      </author-filter>
+      <tag-filter
+        v-for="filter in tagFilters"
+        :key="filter.id"
+        :id="filter.id"
+        :label="filter.label"
+        :param="filter.param"
+        :path="filter.path"
+        v-on:change="onFilterChange">
+      </tag-filter>
+    </form>
   </script>
 {% endblock %}

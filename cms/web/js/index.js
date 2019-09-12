@@ -4,6 +4,7 @@ import './components/AuthorCard';
 import './components/Pagination';
 import './components/RadioFilter';
 import './components/TagFilter';
+import './components/AuthorFilter';
 import './components/Map';
 import './components/SearchBar';
 
@@ -30,7 +31,9 @@ const searchBar = new Vue({
 
 // initialize map
 const mapOutlet = document.querySelector('#map-outlet');
-if (mapOutlet) {
+const memorialFilterFormOutlet = document.querySelector('#memorial-filter-form-outlet');
+
+if (mapOutlet && memorialFilterFormOutlet) {
 
   // const memorialList = new Vue({
   //   el: '#MemorialListContainer',
@@ -61,8 +64,30 @@ if (mapOutlet) {
     data: {
       currentSelection: null,
       positions: [],
+      filters: {
+        limit: 1000,
+      }
+    },
+    mounted: function () {
+      const vm = this;
+      vm.$nextTick(function () {
+        vm.fetchPositions();
+      })
     },
     methods: {
+      fetchPositions: function() {
+        const vm = this;
+        api
+          .getPositions(vm.filters)
+          .then(json => {
+            vm.positions = json.results;
+          });
+      },
+      setFilterParam: function(param, value) {
+        const vm = this;
+        this.filters[param] = value;
+        this.fetchPositions()
+      },
       showMemorial: function (id) {
         api
           .getMemorial(id)
@@ -73,10 +98,28 @@ if (mapOutlet) {
     }
   });
 
-  api
-    .getPositions({ limit: 1000 })
-    .then(json => {
-      mapContainer.positions = json.results;
+  new Vue({
+    el: memorialFilterFormOutlet,
+    template: '#filter-form-template',
+    delimiters: ["[[", "]]"],
+    data: {
+      tagFilters: [
+        {
+          id: 'memorialType',
+          label: 'Memorial type',
+          param: 'memorial_type',
+          path: '/memorialTypes',
+        },
+      ],
+    },
+    methods: {
+      onAuthorChange: function (author) {
+        mapContainer.setFilterParam('author', author);
+      },
+      onFilterChange: function (param, value) {
+        mapContainer.setFilterParam(param, value);
+      }
+    }
   });
 
   $(window).resize(debounce(setMapHeight, 250));
