@@ -24,18 +24,24 @@ const Icon = L.Icon.extend({
   },
 });
 
-const attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
+const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de/">Labor Geoinformatik, HTW Dresden</a>; Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
 Vue.component('leaflet-map', {
   props: ['currentSelection', 'positions'],
   template,
   mounted: function() {
     const vm = this;
-    const osmLayer = L.tileLayer(
-      'https://kosm.geoinformation.htw-dresden.de/geoserver/gwc/service/tms/1.0.0/osm:OSM@EPSG:900913@png/{z}/{x}/{y}.png',
+    const osmLayer = L.tileLayer.wms(
+      'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
       {
         attribution,
-        tms: true
+        format: 'image/png',
+        format_options: `dpi:${Math.ceil(96*window.devicePixelRatio)}`,
+        layers: 'osm:OSM',
+        tiled: true,
+        tileSize: 512,
+        transparent: true,
+        version: '1.3.0',
       },
     );
     vm.clusterLayer = L.markerClusterGroup({
