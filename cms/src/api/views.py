@@ -1,23 +1,27 @@
 import django_filters
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, Prefetch
 from rest_framework import filters, viewsets
 from wagtail.api.v2.filters import OrderingFilter
 
 from api.filters import BoundingBoxFilter, PostgreSQLSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
-    MemorialTypeSerializer, GenreSerializer, MemorialSerializer, AuthorSerializer, PositionSerializer
+    MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, PositionSerializer, \
+    AuthorListSerializer, MemorialListSerializer
 from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = AuthorSerializer
+    filterset_class = AuthorFilterSet
     filter_backends = (
         django_filters.rest_framework.DjangoFilterBackend,
         PostgreSQLSearchFilter,
         filters.OrderingFilter,
     )
-    filterset_class = AuthorFilterSet
+    serializer_class = AuthorDetailSerializer
+    serializer_action_classes = {
+        'list': AuthorListSerializer,
+    }
 
     def get_queryset(self):
         popular_name_qs = AuthorName.objects.filter(author_id=OuterRef('pk')).order_by('sort_order')[:1]
@@ -26,32 +30,42 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
             first_name=Subquery(popular_name_qs.values('first_name')),
             last_name=Subquery(popular_name_qs.values('last_name')),
             birth_name=Subquery(popular_name_qs.values('birth_name')),
-        ).prefetch_related('names')
+        )
 
-        if self.request.user.is_authenticated:
-            return queryset
+        queryset = queryset.select_related('title_image')
+
+        if self.action == 'list':
+            # an author may be known by multiple names
+            queryset = queryset.prefetch_related('names')
+
+            # related memorials might not be published
+            memorials_qs = Memorial.objects.public().live()
+            memorials_prefetch = Prefetch('memorials', queryset=memorials_qs)
+            queryset = queryset.prefetch_related(memorials_prefetch)
+
         return queryset.public().live()
+
+    def get_serializer_class(self):
+        try:
+            return self.serializer_action_classes[self.action]
+        except KeyError:
+            return super().get_serializer_class()
 
 
 class PositionViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = PositionSerializer
     filter_backends = (
         BoundingBoxFilter,
         DistanceFilter,
     )
-    bbox_filter_field = "coordinates"
-    distance_filter_field = "coordinates"
+    bbox_filter_field = 'coordinates'
+    distance_filter_field = 'coordinates'
+    serializer_class = PositionSerializer
 
     def get_queryset(self):
-        queryset = Memorial.objects.all()
-
-        if self.request.user.is_authenticated:
-            return queryset
-        return queryset.public().live()
+        return Memorial.objects.public().live()
 
 
 class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = MemorialSerializer
     filter_backends = (
         BoundingBoxFilter,
         DistanceFilter,
@@ -59,16 +73,23 @@ class MemorialViewSet(viewsets.ReadOnlyModelViewSet):
         PostgreSQLSearchFilter,
         filters.OrderingFilter,
     )
-    bbox_filter_field = "coordinates"
-    distance_filter_field = "coordinates"
     filterset_class = MemorialFilterSet
+    bbox_filter_field = 'coordinates'
+    distance_filter_field = 'coordinates'
+    serializer_class = MemorialDetailSerializer
+    serializer_action_classes = {
+        'list': MemorialListSerializer,
+    }
 
     def get_queryset(self):
         queryset = Memorial.objects.select_related('title_image')
-
-        if self.request.user.is_authenticated:
-            return queryset
         return queryset.public().live()
+
+    def get_serializer_class(self):
+        try:
+            return self.serializer_action_classes[self.action]
+        except KeyError:
+            return super().get_serializer_class()
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
