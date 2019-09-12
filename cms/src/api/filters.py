@@ -14,7 +14,7 @@ from wagtail.api.v2.utils import BadRequestError, parse_boolean
 from wagtail.search.backends import get_search_backend
 from wagtail.search.backends.base import FilterFieldError, OrderByFieldError
 
-from cms.models import Author, Memorial, GenreTag, LanguageTag, PeriodTag
+from cms.models import Author, Memorial, GenreTag, LanguageTag, PeriodTag, MemorialTag
 
 GENDER_CHOICES = (
     ('F', _('Female')),
@@ -26,22 +26,23 @@ class AuthorFilterSet(django_filters.FilterSet):
     gender = django_filters.ChoiceFilter(
         label=_('Gender'),
         field_name='sex',
-        choices=GENDER_CHOICES)
+        choices=GENDER_CHOICES
+    )
     genre = django_filters.ModelMultipleChoiceFilter(
         label=_('Genre'),
         field_name='genre_tags',
-        queryset=GenreTag.objects.all(),
-        conjoined=True)
+        queryset=GenreTag.objects.all()
+    )
     language = django_filters.ModelMultipleChoiceFilter(
         label=_('Language'),
         field_name='language_tags',
-        queryset=LanguageTag.objects.all(),
-        conjoined=True)
+        queryset=LanguageTag.objects.all()
+    )
     period = django_filters.ModelMultipleChoiceFilter(
         label=_('Period'),
         field_name='literary_period_tags',
-        queryset=PeriodTag.objects.all(),
-        conjoined=True)
+        queryset=PeriodTag.objects.all()
+    )
 
     class Meta:
         model = Author
@@ -49,11 +50,20 @@ class AuthorFilterSet(django_filters.FilterSet):
 
 
 class MemorialFilterSet(django_filters.FilterSet):
-    memorial_type = django_filters.BaseInFilter(field_name='memorial_type_tags__pk')
+    author = django_filters.ModelMultipleChoiceFilter(
+        label=_('Author'),
+        field_name='remembered_authors',
+        queryset=Author.objects.live().public()
+    )
+    memorial_type = django_filters.ModelMultipleChoiceFilter(
+        label=_('Memorial type'),
+        field_name='memorial_type_tags',
+        queryset=MemorialTag.objects.all()
+    )
 
     class Meta:
         model = Memorial
-        fields = ('memorial_type',)
+        fields = ('author', 'memorial_type',)
 
 
 class PostgreSQLSearchFilter(SearchFilter):
