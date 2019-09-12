@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-08 15:42+0200\n"
+"POT-Creation-Date: 2019-09-12 10:36+0200\n"
 "PO-Revision-Date: 2019-03-29 14:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: LIS-Team <postmaster@mg.lis-map.eu>\n"
@@ -17,6 +17,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
+
+#: api/filters.py:15 cms/templates/app/includes/_filterbar.html:36
+#| msgid "female"
+msgid "Female"
+msgstr "Weiblich"
+
+#: api/filters.py:16 cms/templates/app/includes/_filterbar.html:40
+msgid "Male"
+msgstr "Männlich"
+
+#: api/filters.py:22 cms/messages.py:48
+#: cms/templates/app/includes/_filterbar.html:28
+msgid "Gender"
+msgstr "Geschlecht"
+
+#: api/filters.py:27 cms/messages.py:50 cms/messages.py:143
+#: cms/templates/app/author-detail.html:65
+msgid "Genre"
+msgstr "Genre"
+
+#: api/filters.py:32 cms/messages.py:23 cms/messages.py:162
+msgid "Language"
+msgstr "Sprache"
+
+#: api/filters.py:37
+#| msgid "Periods"
+msgid "Period"
+msgstr "Epoche"
+
+#: api/filters.py:49 cms/messages.py:15 cms/messages.py:21 cms/messages.py:27
+#: cms/messages.py:126 cms/messages.py:251
+msgid "Author"
+msgstr "Autorin oder Autor"
+
+#: api/filters.py:54
+#| msgid "Memorial types"
+msgid "Memorial type"
+msgstr "Ortstyp"
 
 #: cms/blocks.py:27
 msgid "Linkable tag"
@@ -75,7 +113,7 @@ msgstr "Fußnoten"
 msgid "Optional footnotes to the text content."
 msgstr "Optionale Fußnoten zum Textinhalt."
 
-#: cms/blocks.py:79 cms/blocks.py:113 cms/messages.py:311
+#: cms/blocks.py:79 cms/blocks.py:113 cms/messages.py:313
 msgid "Editor"
 msgstr "Editor"
 
@@ -96,19 +134,19 @@ msgstr "Überschrift"
 msgid ""
 "A heading that describes the linked document replacing or complementing the "
 "files title."
-msgstr "Eine Überschrift die das verlinkte Dokument beschreibt und den maschinenlesbaren Dokumententitel ersetzt."
+msgstr ""
+"Eine Überschrift die das verlinkte Dokument beschreibt und den "
+"maschinenlesbaren Dokumententitel ersetzt."
 
 #: cms/blocks.py:97 cms/blocks.py:118
 msgid "Document"
 msgstr "Dokument"
 
 #: cms/blocks.py:103
-#| msgid "A description of documents content and its function."
 msgid "A description of the documents content."
 msgstr "Eine Beschreibung des Inhalts und des Zwecks des verlinkten Dokuments."
 
 #: cms/blocks.py:109
-#| msgid "Optional footnotes to the text content."
 msgid "Optional footnotes that can be linked in the content description."
 msgstr "Optionale Fußnoten die in der Beschreibung verlinkt werden können."
 
@@ -152,11 +190,6 @@ msgstr "Altersgruppe"
 msgid "Author that this mapping is referencing."
 msgstr "Die Autorin oder der Autor, der durch die Zuweisung referenziert wird."
 
-#: cms/messages.py:15 cms/messages.py:21 cms/messages.py:27 cms/messages.py:126
-#: cms/messages.py:249
-msgid "Author"
-msgstr "Autorin oder Autor"
-
 #: cms/messages.py:16
 msgid "Literary genre that the author is associated with."
 msgstr ""
@@ -178,10 +211,6 @@ msgstr "Genre des Autors"
 msgid "Language that the author has been active in."
 msgstr ""
 "Sprachen, mit denen die Autorin oder der Autor in Verbindung gerbacht wird."
-
-#: cms/messages.py:23 cms/messages.py:162
-msgid "Language"
-msgstr "Sprache"
 
 #: cms/messages.py:24
 msgid "Languages of the author"
@@ -253,19 +282,11 @@ msgstr "Sterbejahr"
 msgid "Date of death"
 msgstr "Todestag"
 
-#: cms/messages.py:48
-msgid "Gender"
-msgstr "Geschlecht"
-
 #: cms/messages.py:49
 msgid "The literary genres the author is associated with."
 msgstr ""
 "Die Genre, mit denen die Autorin oder der Autor in Verbindung gebracht "
 "werden."
-
-#: cms/messages.py:50 cms/messages.py:143
-msgid "Genre"
-msgstr "Genre"
 
 #: cms/messages.py:51
 msgid "The languages that the author has been active in."
@@ -273,6 +294,7 @@ msgstr ""
 "Sprachen, mit denen die Autorin oder der Autor in Verbindung gebracht werden."
 
 #: cms/messages.py:52 cms/messages.py:161
+#: cms/templates/app/author-detail.html:56
 #: cms/templates/cms/includes/author.html:18
 msgid "Languages"
 msgstr "Sprachen"
@@ -294,6 +316,7 @@ msgstr ""
 "gebracht werden."
 
 #: cms/messages.py:60 cms/messages.py:214
+#: cms/templates/app/author-detail.html:74
 #: cms/templates/cms/includes/author.html:30
 msgid "Literary periods"
 msgstr "Literaturperioden"
@@ -370,8 +393,8 @@ msgstr ""
 msgid "Academic title of the author if any."
 msgstr "Der akademische Titel der Autorin oder des Autors."
 
-#: cms/messages.py:98 cms/messages.py:245 cms/messages.py:325
-#: cms/messages.py:338
+#: cms/messages.py:98 cms/messages.py:245 cms/messages.py:327
+#: cms/messages.py:346
 msgid "Title"
 msgstr "Titel"
 
@@ -379,7 +402,7 @@ msgstr "Titel"
 msgid "Name entries must at least contain a first name or a last name."
 msgstr "Ein Name muss zumindest einen Vor- oder Nachnamen umfassen."
 
-#: cms/messages.py:102
+#: cms/messages.py:102 cms/templates/app/includes/_filterbar.html:6
 msgid "Name"
 msgstr "Name"
 
@@ -424,7 +447,10 @@ msgstr ""
 msgid "Place of death"
 msgstr "Sterbeort"
 
-#: cms/messages.py:119 cms/messages.py:261 templates/base.html:158
+#: cms/messages.py:119 cms/messages.py:263
+#: cms/templates/app/author-list.html:32 cms/templates/app/base.html:57
+#: cms/templates/app/includes/_navbar.html:33
+#: cms/templates/app/includes/_sidebar.html:14 templates/base.html:158
 msgid "Authors"
 msgstr "Autorinnen & Autoren"
 
@@ -440,7 +466,7 @@ msgstr "Namen der Autorin oder des Autors"
 msgid "A meaningful image that will be used to present the author to the user."
 msgstr "Ein prägnates Bild, das die Autorin oder den Autor darstellt."
 
-#: cms/messages.py:125 cms/messages.py:240 cms/messages.py:296
+#: cms/messages.py:125 cms/messages.py:240 cms/messages.py:298
 msgid "Title image"
 msgstr "Titelbild"
 
@@ -662,7 +688,7 @@ msgid "A general description of the literary period and its significance."
 msgstr ""
 "Eine allgemeine Beschreibung der Literaturepoche und ihrer Bedeutsamkeit."
 
-#: cms/messages.py:213 cms/messages.py:329
+#: cms/messages.py:213 cms/messages.py:332 cms/messages.py:337
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -674,15 +700,15 @@ msgstr "Arten der Erinnerungsstellen"
 msgid "Type of memorials"
 msgstr "Art der Erinnerungsstelle"
 
-#: cms/messages.py:218 cms/messages.py:256
+#: cms/messages.py:218 cms/messages.py:258
 msgid "The postal address of the location if any."
 msgstr "Die Postadresse dieses Ortes, wenn zutreffend."
 
-#: cms/messages.py:219 cms/messages.py:257 cms/templates/cms/location.html:49
+#: cms/messages.py:219 cms/messages.py:259 cms/templates/cms/location.html:49
 msgid "Address"
 msgstr "Adresse"
 
-#: cms/messages.py:221 cms/messages.py:263
+#: cms/messages.py:221 cms/messages.py:265
 msgid ""
 "An address, a weblink or phone contact that may be helpful to visit this "
 "place."
@@ -690,39 +716,39 @@ msgstr ""
 "Eine Adresse, ein Link oder eine Telefonnummer, die es dem Nutzer "
 "erleichtert diesen Ort zu entdecken."
 
-#: cms/messages.py:223 cms/messages.py:265 cms/templates/cms/location.html:54
+#: cms/messages.py:223 cms/messages.py:267 cms/templates/cms/location.html:54
 msgid "Contact info"
 msgstr "Kontaktinformationen"
 
-#: cms/messages.py:224 cms/messages.py:266
+#: cms/messages.py:224 cms/messages.py:268
 msgid "Contacts of this location."
 msgstr "Kontakte für diese Erinnerungsstelle."
 
-#: cms/messages.py:225 cms/messages.py:267
+#: cms/messages.py:225 cms/messages.py:269
 msgid "Contact information"
 msgstr "Kontaktinformationen"
 
-#: cms/messages.py:226 cms/messages.py:268
+#: cms/messages.py:226 cms/messages.py:270
 msgid "The actual geographic location."
 msgstr "Die eigentliche geographische Position."
 
-#: cms/messages.py:227 cms/messages.py:269
+#: cms/messages.py:227 cms/messages.py:271
 msgid "Location coordinates"
 msgstr "Koordinaten"
 
-#: cms/messages.py:229 cms/messages.py:279
+#: cms/messages.py:229 cms/messages.py:281
 msgid "A short description of directions to find the location."
 msgstr "Eine kurze Wegbeschreibung um den Ort aufzufinden."
 
-#: cms/messages.py:231 cms/messages.py:281
+#: cms/messages.py:231 cms/messages.py:283
 msgid "How to get there"
 msgstr "Wegbeschreibung"
 
-#: cms/messages.py:233 cms/messages.py:285 cms/messages.py:289
+#: cms/messages.py:233 cms/messages.py:287 cms/messages.py:291
 msgid "The location types that describe this location best."
 msgstr "Der Type, der diesen Ort am treffensten beschreibt."
 
-#: cms/messages.py:235 cms/messages.py:287 cms/messages.py:291
+#: cms/messages.py:235 cms/messages.py:289 cms/messages.py:293
 msgid "Location types"
 msgstr "Ortstypen"
 
@@ -739,11 +765,11 @@ msgstr "Ein aussagekräftiges Bild zum Präsentieren des Ortes."
 msgid "Location"
 msgstr "Ort"
 
-#: cms/messages.py:242 cms/messages.py:321 cms/messages.py:334
+#: cms/messages.py:242 cms/messages.py:323 cms/messages.py:342
 msgid "Czech title"
 msgstr "Tschechischer Titel"
 
-#: cms/messages.py:243 cms/messages.py:323 cms/messages.py:336
+#: cms/messages.py:243 cms/messages.py:325 cms/messages.py:344
 msgid "German title"
 msgstr "Deutscher Titel"
 
@@ -751,36 +777,44 @@ msgstr "Deutscher Titel"
 msgid "Title of the media item."
 msgstr "Titel des Medieninhalts."
 
+#: cms/messages.py:246
+msgid "Copyright"
+msgstr "Copyright"
+
 #: cms/messages.py:247
+msgid "License and copyright information regarding this media file."
+msgstr "Lizenzangabe zur Mediendatei."
+
+#: cms/messages.py:249
 msgid "The author that is remebered by this memorial site."
 msgstr ""
 "Die Autorin oder der Autor, dem mit dieser Erinnerungsstelle gedacht wird."
 
-#: cms/messages.py:251
+#: cms/messages.py:253
 msgid "The memorial site this mapping references to."
 msgstr "Die Erinnerungsstelle, auf die die Zuordnung referenziert."
 
-#: cms/messages.py:253 cms/messages.py:297 cms/messages.py:298
+#: cms/messages.py:255 cms/messages.py:299 cms/messages.py:300
 #: cms/templates/cms/includes/levels.html:28
 #: cms/templates/cms/includes/levels.html:45
 #: cms/templates/cms/includes/levels.html:49
 msgid "Memorial site"
 msgstr "Erinnerungsstelle"
 
-#: cms/messages.py:254
+#: cms/messages.py:256
 msgid "Dedicated sites"
 msgstr "Gewidmete Orte"
 
-#: cms/messages.py:255
+#: cms/messages.py:257
 msgid "Dedicated site"
 msgstr "Gewidmeter Ort"
 
-#: cms/messages.py:259
+#: cms/messages.py:261
 msgid "The authors that this memorial site is dedicated to."
 msgstr ""
 "Die Autorinnen oder Autoren, denen dieses Erinnerungsstelle gewidmet ist."
 
-#: cms/messages.py:271
+#: cms/messages.py:273
 msgid ""
 "A description of the memorial site and its significance to the referenced "
 "authors."
@@ -788,11 +822,11 @@ msgstr ""
 "Eine Beschreibung der Erinnerungsstelle und ihres Bezugs zu den "
 "referenzierten Autorinnen und Autoren für alle Besucher."
 
-#: cms/messages.py:273
+#: cms/messages.py:275
 msgid "I. Discover - Memorial site"
 msgstr "I. Entdecken - Erinnerungsstelle"
 
-#: cms/messages.py:275
+#: cms/messages.py:277
 msgid ""
 "A detailed description of the memorial site and its significance to the "
 "referenced authors."
@@ -800,24 +834,24 @@ msgstr ""
 "Eine detailiertere Beschreibung der Erinnerungsstelle und ihres Bezugs zu "
 "den referenzierten Autorinnen und Autoren für interessierte Besucher."
 
-#: cms/messages.py:277
+#: cms/messages.py:279
 msgid "II. Delving deeper - Memorial site"
 msgstr "II. Vertiefen - Erinnerungsstelle"
 
-#: cms/messages.py:282
+#: cms/messages.py:284
 msgid "A short introduction text."
 msgstr "Eine kurze Einführung."
 
-#: cms/messages.py:283 cms/templates/cms/memorial_site.html:67
+#: cms/messages.py:285 cms/templates/cms/memorial_site.html:67
 msgid "Introduction"
 msgstr "Einstieg"
 
-#: cms/messages.py:292 cms/messages.py:299 cms/templates/cms/author.html:42
+#: cms/messages.py:294 cms/messages.py:301 cms/templates/cms/author.html:42
 #: templates/base.html:159
 msgid "Memorial sites"
 msgstr "Erinnerungsstellen"
 
-#: cms/messages.py:294
+#: cms/messages.py:296
 msgid ""
 "A meaningful image that will be used to present the memorial site to the "
 "user."
@@ -825,111 +859,134 @@ msgstr ""
 "Ein aussagekräftiges Bild, das genutzt wird um die Erinnerungsstelle "
 "gegenüber dem Nutzer zu präsentieren."
 
-#: cms/messages.py:301
+#: cms/messages.py:303
 msgid "Czech title of the page as given of the latest draft."
 msgstr "Tschechischer Seitentitel des letzten Entwurfs."
 
-#: cms/messages.py:303
+#: cms/messages.py:305
 msgid "Czech draft title"
 msgstr "Tschechischer Entwurfstitel"
 
-#: cms/messages.py:305
+#: cms/messages.py:307
 msgid "German title of the page as given of the latest draft."
 msgstr "Deutscher Seitentitel des letzten Entwurfs."
 
-#: cms/messages.py:307
+#: cms/messages.py:309
 msgid "German draft title"
 msgstr "Deutscher Entwurfstitel"
 
-#: cms/messages.py:308
+#: cms/messages.py:310
 msgid "Title of the page as given of the lastest draft."
 msgstr "Seitentitel des letzten Entwurfs."
 
-#: cms/messages.py:309
+#: cms/messages.py:311
 msgid "Draft title"
 msgstr "Entwurfstitel"
 
-#: cms/messages.py:310
+#: cms/messages.py:312
 msgid "Name or initials of the author of this content page."
 msgstr "Name oder Initialen des Editors oder der Editorin dieser Seite."
 
-#: cms/messages.py:313
+#: cms/messages.py:315
 msgid "The language this content has been originally written in."
 msgstr "Sprache, in der der Seiteninhalt ursprünglich verfasst wurde."
 
-#: cms/messages.py:315
+#: cms/messages.py:317
 msgid "Original language"
 msgstr "Verfassersprache"
 
-#: cms/messages.py:317
+#: cms/messages.py:319
 msgid "A target url or slug that this page will redirect to."
 msgstr "Eine Ziel-Url auf die die Seite beim Aufrufen umleitet."
 
-#: cms/messages.py:319
+#: cms/messages.py:321
 msgid "Temporary redirect target"
 msgstr "Ziel der vorübergehenden Umleitung"
 
-#: cms/messages.py:320
+#: cms/messages.py:322
 msgid "Czech title of the page."
 msgstr "Tschechischer Titel der Seite."
 
-#: cms/messages.py:322
+#: cms/messages.py:324
 msgid "German title of the page."
 msgstr "Deutscher Titel der Seite."
 
-#: cms/messages.py:324
+#: cms/messages.py:326
 msgid "Title of the page."
 msgstr "Titel der Seite."
 
-#: cms/messages.py:326
+#: cms/messages.py:328
 msgid "The image this rendition is based on."
 msgstr "Das Originalbild, von dem diese Manipulation abgeleitet wurde."
 
-#: cms/messages.py:327
+#: cms/messages.py:329
 msgid "Image rendition"
 msgstr "Bildzuschnitt"
 
-#: cms/messages.py:328
+#: cms/messages.py:330
+#| msgid "Memorial site"
+msgid "Memorial path"
+msgstr "Erinnerungspfad"
+
+#: cms/messages.py:331
+#| msgid "Memorial sites"
+msgid "Memorial paths"
+msgstr "Erinnerungspfade"
+
+#: cms/messages.py:333
+#| msgid "A short description of the tag."
+msgid "A short description of the highlights of this memorial path."
+msgstr "Eine kurze Beschreibung zum Erinnerungspfad."
+
+#: cms/messages.py:334
+msgid "Waypoint"
+msgstr "Wegpunkt"
+
+#: cms/messages.py:335
+msgid "Waypoints"
+msgstr "Wegpunkte"
+
+#: cms/messages.py:336
 msgid "A short description of the tag."
 msgstr "Eine kurze Beschreibung zum Schlagwort."
 
-#: cms/messages.py:330 cms/wagtail_hooks.py:230
+#: cms/messages.py:338 cms/wagtail_hooks.py:230
 msgid "Tags"
 msgstr "Schlagworte"
 
-#: cms/messages.py:331
+#: cms/messages.py:339
 msgid "Defines the relative order of the tag in the UI."
 msgstr "Definiert die Reihenfolge der Schlagworte in der Anzeige."
 
-#: cms/messages.py:332
+#: cms/messages.py:340
 msgid "Sort order"
 msgstr "Sortierreihenfolge"
 
-#: cms/messages.py:333
+#: cms/messages.py:341
 msgid "The czech title of the tag as show to the user."
 msgstr ""
 "Das Schlagwort in tschechischer Sprache, wie es dem Nutzer präsentiert wird."
 
-#: cms/messages.py:335
+#: cms/messages.py:343
 msgid "The german title of the tag as shown to the user."
 msgstr ""
 "Das Schlagwort in deutscher Sprache, wie es dem Nutzer präsentiert wird."
 
-#: cms/messages.py:337
+#: cms/messages.py:345
 msgid "The title of this tag as shown to the user."
 msgstr "Das Schlagwort, wie es dem Nutzer präsentiert wird."
 
-#: cms/messages.py:339
+#: cms/messages.py:347
 msgid "Tag"
 msgstr "Schlagwort"
 
-#: cms/models/domain.py:909
+#: cms/models/author.py:524
 #, python-brace-format
 msgctxt "female"
 msgid "born {birth_name}"
 msgstr "geborene {birth_name}"
 
-#: cms/models/domain.py:911
+#: cms/models/author.py:526
 #, python-brace-format
 msgctxt "male"
 msgid "born {birth_name}"
@@ -942,6 +999,65 @@ msgstr "Der Februar kann nicht mehr als 29 Tage haben."
 #: cms/models/helpers.py:60
 msgid "Day is out of range for the indicated month."
 msgstr "Tag liegt nicht im angegeben Monat."
+
+#: cms/templates/app/author-detail.html:27
+msgid "also known as "
+msgstr "Auch bekannt als"
+
+#: cms/templates/app/author-detail.html:32
+msgid "born"
+msgstr "geboren"
+
+#: cms/templates/app/author-detail.html:36
+#: cms/templates/app/author-detail.html:48
+msgid ""
+"\n"
+"                    in %(place)s\n"
+"                  "
+msgstr ""
+"\n"
+"                    in %(place)s\n"
+"        "
+
+#: cms/templates/app/author-detail.html:44
+msgid "died"
+msgstr "gestorben"
+
+#: cms/templates/app/base.html:44 cms/templates/app/includes/_navbar.html:20
+msgid "Literary landscape"
+msgstr "Literaturlandschaft"
+
+#: cms/templates/app/base.html:54 cms/templates/app/includes/_navbar.html:30
+#: cms/templates/app/includes/_sidebar.html:11
+msgid "Map"
+msgstr "Karte"
+
+#: cms/templates/app/base.html:60 cms/templates/app/includes/_navbar.html:36
+msgid "More"
+msgstr "Mehr"
+
+#: cms/templates/app/base.html:62 cms/templates/app/includes/_navbar.html:38
+#: cms/templates/app/includes/_sidebar.html:17
+msgid "About"
+msgstr "Über"
+
+#: cms/templates/app/base.html:63 cms/templates/app/includes/_navbar.html:39
+#: cms/templates/app/includes/_sidebar.html:23
+msgid "Imprint"
+msgstr "Impressum"
+
+#: cms/templates/app/base.html:64 cms/templates/app/includes/_navbar.html:40
+#: cms/templates/app/includes/_sidebar.html:20
+msgid "Admin"
+msgstr "Admin"
+
+#: cms/templates/app/includes/_filterbar.html:8
+msgid "Search"
+msgstr "Suchen"
+
+#: cms/templates/app/includes/_filterbar.html:32
+msgid "All"
+msgstr "Alle"
 
 #: cms/templates/cms/author.html:26
 msgctxt "female"
@@ -964,7 +1080,6 @@ msgstr ""
 "werden."
 
 #: cms/templates/cms/blocks/didactic_material_struct_block.html:23
-#: cms/templates/cms/blocks/paragraph_struct_block.html:26
 msgid "Additional notes and sources"
 msgstr "Zusätzliche Hinweise und Quellen"
 
@@ -1196,9 +1311,6 @@ msgstr "Anmelden"
 msgid "Lost password?"
 msgstr "Passwort vergessen?"
 
-#~ msgid "Search"
-#~ msgstr "Suchen"
-
 #~ msgid "A search term."
 #~ msgstr "Ein Suchbegriff."
 
@@ -1237,15 +1349,6 @@ msgstr "Passwort vergessen?"
 
 #~ msgid "Memorials"
 #~ msgstr "Erinnerungsstellen"
-
-#~ msgid "Memorial types"
-#~ msgstr "Ortstypen"
-
-#~ msgid "Periods"
-#~ msgstr "Epochen"
-
-#~ msgid "Admin"
-#~ msgstr "Admin"
 
 #~ msgid "II. Memorial site"
 #~ msgstr "II. Erinnerungsstelle"
@@ -1320,9 +1423,6 @@ msgstr "Passwort vergessen?"
 #~ msgid "Types of contact"
 #~ msgstr "Kontakttypen"
 
-#~ msgid "Male"
-#~ msgstr "Männlich"
-
 #~ msgid "Sex"
 #~ msgstr "Geschlecht"
 
@@ -1346,9 +1446,6 @@ msgstr "Passwort vergessen?"
 
 #~ msgid "Next"
 #~ msgstr "Vor"
-
-#~ msgid "born"
-#~ msgstr "geboren"
 
 #~ msgid "Discovery"
 #~ msgstr "Entdecken"
