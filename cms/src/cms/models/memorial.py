@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalManyToManyField
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 from wagtail.api import APIField
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
@@ -17,11 +18,22 @@ from cms.widgets import CustomGooglePointFieldWidget
 from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
 
 
-class LocationIndex(CategoryPage):
+class LocationIndex(RoutablePageMixin, CategoryPage):
     """A category page to place locations in."""
 
     parent_page_types = ["HomePage"]
     template = "app/map.html"
+
+    @route(r'^$')
+    def serve_base_map(self, request):
+        """
+        View function for the current events page
+        """
+        return self.serve(request)
+
+    @route(r'^@.*$')
+    def serve_positioned_base_map(self, request):
+        return self.serve(request)
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "locations"
