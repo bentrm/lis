@@ -1,4 +1,4 @@
-const template = `
+<template>
   <div class="form-group">
     <label :for="id">
       {{ label }}
@@ -21,15 +21,16 @@ const template = `
       </label>
     </div>
   </div>
-`;
+</template>
 
-export default {
-  props: ['id', 'label', 'param', 'options'],
-  template,
-  methods: {
-    onChange: function(e) {
-      const input = e.target;
-      this.$emit('change', this.param, input.value);
+<script>
+  export default {
+    props: ['id', 'label', 'param', 'options'],
+    methods: {
+      onChange: function (e) {
+        const input = e.target;
+        this.$emit('change', this.param, input.value);
+      }
     }
-  }
-};
+  };
+</script>

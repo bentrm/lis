@@ -5,9 +5,9 @@ import $ from 'jquery';
 import 'popper.js';
 import Vue from 'vue/dist/vue.esm';
 import Api from './Api';
-import AuthorListView from './components/AuthorListView';
-import MapView from './components/MapView';
-import SearchBar from './components/SearchBar';
+import AuthorListView from './components/AuthorListView.vue';
+import MapView from './components/MapView.vue';
+import SearchBar from './components/SearchBar.vue';
 import {debounce} from './utils';
 
 

@@ -1,4 +1,5 @@
 const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   entry: {
@@ -14,11 +15,22 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/static/app/'
   },
+  plugins: [
+    // make sure to include the plugin!
+    new VueLoaderPlugin()
+  ],
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
         test: /.scss$/,
         use: [
+          {
+            loader: 'vue-style-loader',
+          },
           {
             loader: 'file-loader',
             options: {

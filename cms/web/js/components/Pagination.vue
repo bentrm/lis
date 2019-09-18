@@ -1,4 +1,4 @@
-const template = `
+<template>
   <nav>
     <ul class="pagination">
       <li
@@ -15,14 +15,15 @@ const template = `
       </li>
     </ul>
   </nav>
-  `;
+</template>
 
-export default {
-  props: ['param', 'currentPage', 'totalPages'],
-  template,
-  methods: {
-    emitChange: function(pageNumber) {
-      this.$emit('change', pageNumber)
+<script>
+  export default {
+    props: ['param', 'currentPage', 'totalPages'],
+    methods: {
+      emitChange: function (pageNumber) {
+        this.$emit('change', pageNumber);
+      }
     }
-  }
-};
+  };
+</script>

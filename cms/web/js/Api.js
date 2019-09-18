@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {currentLanguage} from './lang';
 
 
 const filter = (obj) =>
@@ -20,7 +19,7 @@ export default class Api {
     return fetch(url, {
       headers: {
         'Content-Type': 'application/json',
-        'Accept-Language': currentLanguage,
+        'Accept-Language': document.documentElement.lang,
       }
     }).then(response => response.json());
   }
