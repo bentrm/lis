@@ -1,5 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
-
 const template = `
   <nav>
     <ul class="pagination">
@@ -19,7 +17,7 @@ const template = `
   </nav>
   `;
 
-Vue.component('pagination', {
+export default {
   props: ['param', 'currentPage', 'totalPages'],
   template,
   methods: {
@@ -27,4 +25,4 @@ Vue.component('pagination', {
       this.$emit('change', pageNumber)
     }
   }
-});
+};

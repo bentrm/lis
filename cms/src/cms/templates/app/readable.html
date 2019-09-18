@@ -1,11 +1,35 @@
 {% extends 'app/base.html' %}
 
+{% load i18n %}
+{% load staticfiles %}
+{% load wagtailcore_tags %}
+
 {% block extra_main_cls %}Readable{% endblock %}
 
 {% block Footer %}
-  <div class="Footer-container container-fluid bg-primary">
-    <div class="row">
-      <div class="Footer-content col-12">
+  <div class="Footer-container bg-primary">
+    <div class="container">
+      <div class="row">
+        <div class="Footer-content col-12">
+{#          <h6><a href="{% slugurl 'partner' %}">{% trans 'Project partner' %}</a></h6>#}
+{#          <div class="row justify-content-center">#}
+{#            <div class="col-6 col-md-4">#}
+{#              <a class="bg-light stretched-link" href="{% slugurl 'tu-dresden' %}">#}
+{#                <img src="{% static 'logos/logo_tu_dresden.svg' %}" alt="Logo TU Dresden" class="img-fluid m-2">#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="col-6 col-md-4">#}
+{#              <a class="bg-light stretched-link" href="{% slugurl 'tu-liberec' %}">#}
+{#                <img src="{% static 'logos/logo_tu_liberec.svg' %}" alt="Logo TU Liberec" class="img-fluid m-2">#}
+{#              </a>#}
+{#            </div>#}
+{#            <div class="col-6 col-md-4">#}
+{#              <a class="bg-light stretched-link" href="{% slugurl 'htw-dresden' %}">#}
+{#                <img src="{% static 'logos/logo_htw_dresden.svg' %}" alt="Logo HTW Dresden" class="img-fluid m-2">#}
+{#              </a>#}
+{#            </div>#}
+{#          </div>#}
+        </div>
       </div>
     </div>
   </div>

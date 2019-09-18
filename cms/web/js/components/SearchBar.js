@@ -1,8 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
-import Api from '../Api';
-
-const api = new Api('/api/v2');
-
 const template = `
   <form class="form-inline d-flex search-bar">
     <div class="flex-grow-1 ml-lg-4 mr-lg-2">
@@ -35,7 +30,9 @@ const template = `
   </form>
 `;
 
-Vue.component('search-bar', {
+export default {
+  name: 'search-bar',
+  props: ['api'],
   template,
   data: function() {
     return {
@@ -49,10 +46,10 @@ Vue.component('search-bar', {
       const vm = this;
       const options = { search: query, limit: 5 };
 
-      api
+      vm.api
         .getMemorials(options)
         .then(json => vm.memorials = json.results);
-      api
+      vm.api
         .getAuthors(options)
         .then(json => vm.authors = json.results);
     }
@@ -63,4 +60,4 @@ Vue.component('search-bar', {
       vm.fetchQueryResults(newQuery);
     }
   }
-});
+};

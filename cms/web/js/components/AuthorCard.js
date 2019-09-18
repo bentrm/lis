@@ -1,5 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
-
 const template = `
     <div class="Author-card media">
       <div class="media-body mr-4">
@@ -19,7 +17,7 @@ const template = `
     </div>
   `;
 
-Vue.component('author-card', {
+export default {
   props: ['thumb', 'url', 'academic_title', 'first_name', 'last_name', 'birth_name'],
   template,
-});
+};

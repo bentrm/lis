@@ -1,136 +1,66 @@
+import '@fortawesome/fontawesome-free/js/all';
+import 'bootstrap';
+import 'holderjs';
 import $ from 'jquery';
+import 'popper.js';
 import Vue from 'vue/dist/vue.esm';
-import './components/AuthorCard';
-import './components/Pagination';
-import './components/RadioFilter';
-import './components/TagFilter';
-import './components/AuthorFilter';
-import './components/Map';
-import './components/SearchBar';
+import Api from './Api';
+import AuthorListView from './components/AuthorListView';
+import MapView from './components/MapView';
+import SearchBar from './components/SearchBar';
+import {debounce} from './utils';
 
 
 window.$ = $;
 
-import 'popper.js';
-import 'bootstrap';
-import 'holderjs';
-import '@fortawesome/fontawesome-free/js/all'
-import Api from './Api';
-import {debounce} from './utils';
-
 const api = new Api('/api/v2');
-
-
-const searchBar = new Vue({
+new Vue({
   el: '#search-bar-outlet',
+  components: {
+    SearchBar,
+  },
   data: {
+    api,
     results: []
   }
 });
 
+setTimeout(() => {
+  $('.SponsorsNav').hide({
+    duration: 400,
+    complete: () => $(window).trigger('resize'),
+  });
+}, 5000);
 
 // initialize map
-const mapOutlet = document.querySelector('#map-outlet');
-const memorialFilterFormOutlet = document.querySelector('#memorial-filter-form-outlet');
-
-if (mapOutlet && memorialFilterFormOutlet) {
-
-  // const memorialList = new Vue({
-  //   el: '#MemorialListContainer',
-  //   template: '#MemorialList',
-  //   delimiters: ["[[", "]]"],
-  //   data: {
-  //     memorials: [],
-  //   },
-  //   methods: {
-  //     selectMemorial: function(memorial) {
-  //
-  //     },
-  //   }
-  // });
-
-  const memorialDetails = new Vue({
-    el: '#memorial-detail-outlet',
-    template: '#memorial-detail-template',
-    delimiters: ["[[", "]]"],
-    data: {
-      memorial: null
-    },
-  });
-
-  const mapContainer = new Vue({
-    el: mapOutlet,
-    template: '#map-container-template',
-    data: {
-      currentSelection: null,
-      positions: [],
-      filters: {
-        limit: 1000,
-      }
-    },
-    mounted: function () {
-      const vm = this;
-      vm.$nextTick(function () {
-        vm.fetchPositions();
-      })
-    },
-    methods: {
-      fetchPositions: function() {
-        const vm = this;
-        api
-          .getPositions(vm.filters)
-          .then(json => {
-            vm.positions = json.results;
-          });
-      },
-      setFilterParam: function(param, value) {
-        const vm = this;
-        this.filters[param] = value;
-        this.fetchPositions()
-      },
-      showMemorial: function (id) {
-        api
-          .getMemorial(id)
-          .then(json => {
-            memorialDetails.memorial = json
-          });
-      }
-    }
-  });
-
+const mapViewOutlet = document.querySelector('#map-view-outlet');
+if (mapViewOutlet) {
   new Vue({
-    el: memorialFilterFormOutlet,
-    template: '#filter-form-template',
-    delimiters: ["[[", "]]"],
-    data: {
-      tagFilters: [
-        {
-          id: 'memorialType',
-          label: 'Memorial type',
-          param: 'memorial_type',
-          path: '/memorialTypes',
-        },
-      ],
+    el: mapViewOutlet,
+    components: {
+      MapView,
     },
-    methods: {
-      onAuthorChange: function (author) {
-        mapContainer.setFilterParam('author', author);
-      },
-      onFilterChange: function (param, value) {
-        mapContainer.setFilterParam(param, value);
-      }
+    data: {
+      api,
     }
   });
 
-  $(window).resize(debounce(setMapHeight, 250));
+  window.addEventListener("resize", debounce(setMapHeight, 250));
   setMapHeight();
 }
 
-setTimeout(() => {
-  $('.SponsorsNav').hide({
-    duration: 400
-  })             ;
-}, 5000);
+const authorListViewOutlet = document.querySelector('#author-list-view-outlet');
+if (authorListViewOutlet) {
+  new Vue({
+    el: authorListViewOutlet,
+    components: {
+      AuthorListView,
+    },
+    data: {
+      api,
+    }
+  })
+}
 
 
 const $btns = $('button[data-group="Level"]');
@@ -220,104 +150,6 @@ if ($('.AuthorList').get(0)) {
         });
       });
     });
-  });
-}
-
-const authorListOutlet = document.querySelector('#authors-list-outlet');
-const filterFormOutlet = document.querySelector('#filter-form-outlet');
-
-if (authorListOutlet && filterFormOutlet) {
-
-  const authorList = new Vue({
-    el: authorListOutlet,
-    template: '#author-card-list-template',
-    delimiters: ["[[", "]]"],
-    data: {
-      filters: {
-        ordering: 'last_name',
-        limit: 20,
-        offset: 0,
-      },
-      count: 0,
-      authors: [],
-    },
-    computed: {
-      currentPage: function() {
-        return this.filters.offset / this.limit;
-      },
-      totalPages: function() {
-        return Math.ceil(this.count / this.filters.limit);
-      }
-    },
-    created: function() {
-      this.fetchAuthors();
-    },
-    methods: {
-      setPage: function(pageNumber) {
-        const newOffset = (pageNumber - 1) * this.filters.limit;
-        this.setFilterParam('offset', newOffset);
-      },
-      setFilterParam: function(param, value) {
-        if (param !== 'offset') {
-          this.filters['offset'] = 0;
-        }
-        this.filters[param] = value;
-        this.fetchAuthors()
-      },
-      fetchAuthors: function() {
-        const vm = this;
-        api
-          .getAuthors(this.filters)
-          .then(json => {
-            vm.count = json.count;
-            vm.authors = json.results
-          });
-      }
-    },
-
-  });
-
-  new Vue({
-    el: filterFormOutlet,
-    template: '#filter-form-template',
-    delimiters: ["[[", "]]"],
-    data: {
-      tagFilters: [
-        {
-          id: 'genre',
-          label: 'Genre',
-          param: 'genre',
-          path: '/genres',
-        },
-        {
-          id: 'language',
-          label: 'Languages',
-          param: 'language',
-          path: '/languages',
-        },
-        {
-          id: 'period',
-          label: 'Period',
-          param: 'period',
-          path: '/periods'
-        }
-      ],
-      genderFilter: {
-        id: 'gender',
-        label: 'Gender',
-        param: 'gender',
-        options: [
-          {label: 'All', value: '', checked: true},
-          {label: 'Female', value: 'F', checked: false},
-          {label: 'Male', value: 'M', checked: false},
-        ]
-      },
-    },
-    methods: {
-      onFilterChange: function (param, value) {
-        authorList.setFilterParam(param, value);
-      }
-    }
   });
 }
 

@@ -1,4 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
 import Tagify from '@yaireo/tagify';
 import Api from '../Api';
 
@@ -19,7 +18,7 @@ const template = `
 `;
 
 
-Vue.component('tag-filter', {
+export default {
   props: ['id', 'label', 'param', 'path'],
   template,
   mounted: function () {
@@ -61,4 +60,4 @@ Vue.component('tag-filter', {
       this.$emit('change', this.param, value)
     }
   }
-});
+}

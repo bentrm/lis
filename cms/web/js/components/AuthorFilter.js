@@ -1,8 +1,4 @@
-import Vue from 'vue/dist/vue.esm';
 import Tagify from '@yaireo/tagify';
-import Api from '../Api';
-
-const api = new Api('/api/v2');
 
 const template = `
   <div class="form-group">
@@ -19,8 +15,9 @@ const template = `
 `;
 
 
-Vue.component('author-filter', {
-  props: ['id'],
+export default {
+  name: 'author-filter',
+  props: ['id', 'api'],
   template,
   mounted: function () {
     const vm = this;
@@ -45,7 +42,8 @@ Vue.component('author-filter', {
   },
   methods: {
     getAuthors: function() {
-      api
+      const vm = this;
+      vm.api
         .getAuthors(this.path, {ordering: 'last_name', limit: 1000})
         .then(response => {
           this.tagify.settings.whitelist = response.results.map(author => {
@@ -62,4 +60,4 @@ Vue.component('author-filter', {
       this.$emit('change', value)
     }
   }
-});
+};

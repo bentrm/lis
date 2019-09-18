@@ -1,4 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
 import L from 'leaflet';
 import 'leaflet.locatecontrol';
 import 'leaflet.markercluster';
@@ -26,8 +25,9 @@ const Icon = L.Icon.extend({
 
 const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de">Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
-Vue.component('leaflet-map', {
-  props: ['currentSelection', 'positions'],
+export default {
+  name: 'leaflet-map',
+  props: ['initialView', 'positions'],
   template,
   mounted: function() {
     const vm = this;
@@ -36,12 +36,13 @@ Vue.component('leaflet-map', {
       {
         attribution,
         format: 'image/png',
-        format_options: `dpi:${Math.ceil(96*window.devicePixelRatio)}`,
+        format_options: 'dpi:180',
         layers: 'osm:OSM',
         tiled: true,
-        tileSize: 512,
+        tileSize: 256,
         transparent: true,
         version: '1.3.0',
+        detectRetina: true,
       },
     );
     vm.clusterLayer = L.markerClusterGroup({
@@ -58,9 +59,14 @@ Vue.component('leaflet-map', {
     });
 
     vm.map = L.map(vm.$el, {
-      center: [50.7, 14.9],
+      center: vm.initialCenter,
       layers: [osmLayer, vm.clusterLayer],
-      zoom: 8,
+      zoom: vm.initialZoom,
+    });
+
+    vm.map.on('moveend', () => {
+      const {lat, lng} = vm.map.getCenter();
+      vm.$emit('moveend', [lng, lat], vm.map.getZoom());
     });
 
     const scaleControl = L.control.scale();
@@ -80,6 +86,10 @@ Vue.component('leaflet-map', {
 
   },
   watch: {
+    initialView: function({center, zoom}, oldView) {
+      const vm = this;
+      vm.map.flyTo(center, zoom)
+    },
     positions: function(newPositions, oldPositions) {
       const vm = this;
       const newMarkers = newPositions.map(({position: [lng, lat], ...otherProps}) => {
@@ -94,4 +104,4 @@ Vue.component('leaflet-map', {
       vm.map.fitBounds(vm.clusterLayer.getBounds());
     }
   }
-});
+};

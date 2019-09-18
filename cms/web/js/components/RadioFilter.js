@@ -1,5 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
-
 const template = `
   <div class="form-group">
     <label :for="id">
@@ -25,7 +23,7 @@ const template = `
   </div>
 `;
 
-Vue.component('radio-filter', {
+export default {
   props: ['id', 'label', 'param', 'options'],
   template,
   methods: {
@@ -34,4 +32,4 @@ Vue.component('radio-filter', {
       this.$emit('change', this.param, input.value);
     }
   }
-});
+};

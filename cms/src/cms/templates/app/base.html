@@ -18,6 +18,7 @@
   <title>{{ 'LIS' }}</title>
 
   <link rel="stylesheet" href="{% static 'app/css/main.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
 </head>
 <body>
 
@@ -80,7 +81,7 @@
         </ul>
 
         <div id="search-bar-outlet" class="flex-grow-1">
-          <search-bar></search-bar>
+          <search-bar :api="api"></search-bar>
         </div>
       </div>
     </header>
@@ -92,7 +93,6 @@
   {% block Footer %}{% endblock %}
 
 </div>
-{% block Templates %}{% endblock %}
 {% block Scripts %}
   <script src="{%  static 'app/index.js' %}"></script>
 {% endblock %}
