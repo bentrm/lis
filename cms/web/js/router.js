@@ -13,11 +13,11 @@ export default new VueRouter({
   mode: 'history',
   routes: [{
     path: '/map/:mapState?',
-    name: 'map',
     component: MapView,
     children: [{
       path: '',
       component: MapFilter,
+      name: 'map',
       props: true,
     }, {
       path: 'memorial/:id',
