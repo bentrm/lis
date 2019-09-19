@@ -6,7 +6,6 @@ module.exports = {
     index: ['whatwg-fetch', './js/index.js'],
     main: './scss/main.scss'
   },
-  mode: 'development',
   watch: false,
   watchOptions: {
     ignored: ['node_modules', 'dist']
