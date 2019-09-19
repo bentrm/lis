@@ -17,7 +17,6 @@
 
 
   export default {
-    name: 'author-filter',
     props: ['id', 'api'],
     mounted: function () {
       const vm = this;

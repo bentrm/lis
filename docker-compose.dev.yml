@@ -2,6 +2,10 @@ version: '3.7'
 
 services:
   cms:
+    build:
+      context: ./cms
+      args:
+        NODE_ENV: development
     restart: "no"
     volumes:
       - ./cms:/app

@@ -239,3 +239,14 @@ dl {
         display: block;
     }
 }
+
+.drop-shadow {
+  -webkit-filter: drop-shadow(0 0 2px rgba(0, 0, 0, .7));
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, .7));
+
+  &:hover {
+    -webkit-filter: drop-shadow(0 0 5px rgba(0, 0, 0, .7));
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, .7));
+    transition: filter 0.2s ease-in-out;
+  }
+}

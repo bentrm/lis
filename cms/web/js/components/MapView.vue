@@ -4,61 +4,27 @@
     <main class="col p-0">
       <Map
         :initialView="initialView"
-        :positions="positions"
-        v-on:click="showMemorial"
+        :memorials="memorials"
+        v-on:click="selectMemorial"
         v-on:moveend="onMapMoveEnd"></Map>
     </main>
 
     <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
-
-      <div v-if="memorial">
-        <span v-on:click="onUnselect"><i class="fas fa-times-circle"></i></span>
-        <h3>{{memorial.title}}</h3>
-        <img
-          v-if="memorial.thumb"
-          :src="memorial.thumb"
-          :alt="memorial.title"
-          class="Memorial-badge border border-primary rounded-circle align-self-center">
-        <ul class="list-unstyled">
-          <li v-for="author in memorial.authors" v-if="author" :key="author.id">
-            <a :href="author.url">{{author.first_name}} {{author.last_name}}</a>
-          </li>
-        </ul>
-        <div v-html="memorial.address"></div>
-        <div v-html="memorial.contact_info"></div>
-        <div v-html="memorial.directions"></div>
-        <div v-html="memorial.introduction"></div>
-      </div>
-
-      <form v-else name="filter-form" class="p-2">
-        <AuthorFilter
-          id="author-filter"
-          :api="api"
-          v-on:change="onAuthorChange"
-        ></AuthorFilter>
-        <TagFilter
-          v-for="(filter, index) in tagFilters"
-          :key="index"
-          :api="api"
-          :id="filter.id"
-          :label="filter.label"
-          :param="filter.param"
-          :path="filter.path"
-          v-on:change="onFilterChange"></TagFilter>
-      </form>
+      <router-view
+        :api="api"
+        v-on:hideMemorialDetail="unselectMemorial"></router-view>
     </aside>
   </div>
 </template>
 
 <script>
-  import {getMapView, setMapView} from '../utils';
-  import AuthorFilter from './AuthorFilter.vue';
+  import {getMapView, mapCenterToPath, setMapView} from '../utils';
   import Map from './Map.vue';
-  import TagFilter from './TagFilter.vue';
-
+  import api from '../Api';
 
   function data() {
     return {
+      api,
       filters: {
         limit: 1000,
       },
@@ -67,21 +33,13 @@
         zoom: 8,
       },
       memorial: null,
-      positions: [],
-      tagFilters: [
-        {
-          id: 'memorialType',
-          label: 'Memorial type',
-          param: 'memorial_type',
-          path: '/memorialTypes',
-        },
-      ],
+      memorials: [],
     };
   }
 
   function mounted() {
     const vm = this;
-    vm.fetchPositions();
+    vm.fetchMemorials();
 
     window.onpopstate = vm.onPopState;
   }
@@ -98,31 +56,29 @@
 
   function onMapMoveEnd(center, zoom) {
     const vm = this;
-    const newHref = setMapView(window.location.href, {center, zoom});
+    const mapState = mapCenterToPath(center, zoom);
 
     if (vm.historyAction) {
       vm.historyAction = false;
       return;
     }
 
-    window.history.pushState({center, zoom}, document.title, newHref);
+    this.$router.push({name: this.$route.name, params: { mapState }});
   }
 
-  function fetchPositions() {
+  function fetchMemorials() {
     const vm = this;
     vm.api
-      .getPositions(vm.filters)
-      .then(json => vm.positions = json.results);
+      .getMemorials(vm.filters)
+      .then(json => vm.memorials = json.results);
   }
 
-  function showMemorial(id) {
+  function selectMemorial(id) {
     const vm = this;
-    vm.api
-      .getMemorial(id)
-      .then(json => vm.memorial = json);
+    vm.$router.push({name: 'memorial-detail', params: { ...this.$route.params, id}});
   }
 
-  function onUnselect() {
+  function unselectMemorial() {
     const vm = this;
     vm.memorial = null;
   }
@@ -130,7 +86,7 @@
   function setFilterParam(param, value) {
     const vm = this;
     vm.filters[param] = value;
-    vm.fetchPositions();
+    vm.fetchMemorials();
   }
 
   function onAuthorChange(author) {
@@ -144,21 +100,17 @@
   }
 
   export default {
-    name: 'map-view',
-    props: ['api'],
     components: {
-      AuthorFilter,
       Map,
-      TagFilter,
     },
     data,
     mounted,
     methods: {
       onMapMoveEnd,
-      fetchPositions,
+      fetchMemorials,
       setFilterParam,
-      showMemorial,
-      onUnselect,
+      selectMemorial,
+      unselectMemorial,
       onAuthorChange,
       onFilterChange,
       onPopState

@@ -1,6 +1,8 @@
 FROM node:lts AS webapp
 COPY web /src
 WORKDIR /src
+ARG NODE_ENV
+ENV NODE_ENV ${NODE_ENV:-production}
 RUN npm install
 RUN npm run-script build
 

@@ -4,16 +4,15 @@ import 'holderjs';
 import $ from 'jquery';
 import 'popper.js';
 import Vue from 'vue/dist/vue.esm';
-import Api from './Api';
+import api from './Api';
+import router from './router';
 import AuthorListView from './components/AuthorListView.vue';
-import MapView from './components/MapView.vue';
 import SearchBar from './components/SearchBar.vue';
 import {debounce} from './utils';
 
 
 window.$ = $;
 
-const api = new Api('/api/v2');
 new Vue({
   el: '#search-bar-outlet',
   components: {
@@ -37,12 +36,7 @@ const mapViewOutlet = document.querySelector('#map-view-outlet');
 if (mapViewOutlet) {
   new Vue({
     el: mapViewOutlet,
-    components: {
-      MapView,
-    },
-    data: {
-      api,
-    }
+    router
   });
 
   window.addEventListener("resize", debounce(setMapHeight, 250));

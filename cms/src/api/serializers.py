@@ -123,21 +123,6 @@ class AuthorDetailSerializer(AuthorListSerializer):
         model = Author
 
 
-class PositionSerializer(TitleSerializerMixin):
-    position = serializers.SerializerMethodField()
-
-    def get_position(self, obj):
-        return obj.coordinates.coords
-
-    class Meta:
-        fields = (
-            'id',
-            'title',
-            'position'
-        )
-        model = Memorial
-
-
 class MemorialListSerializer(TitleSerializerMixin):
     thumb = serializers.SerializerMethodField(required=False)
     position = serializers.SerializerMethodField()
@@ -152,11 +137,11 @@ class MemorialListSerializer(TitleSerializerMixin):
 
     class Meta:
         fields = (
-            "id",
-            "title",
-            "thumb",
-            "position",
-            "memorial_types",
+            'id',
+            'title',
+            'thumb',
+            'position',
+            'memorial_types'
         )
         model = Memorial
 

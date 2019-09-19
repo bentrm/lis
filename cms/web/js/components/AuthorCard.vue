@@ -18,13 +18,13 @@
 
 <script>
   export default {
-    props: [
-      'thumb',
-      'url',
-      'academic_title',
-      'first_name',
-      'last_name',
-      'birth_name'
-    ]
+    props: {
+      thumb: String,
+      url: String,
+      academic_title: String,
+      first_name: String,
+      last_name: String,
+      birth_name: String,
+    }
   };
 </script>

@@ -6,7 +6,7 @@ from wagtail.api.v2.filters import OrderingFilter
 from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
-    MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, PositionSerializer, \
+    MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, \
     AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer
 from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath
 
@@ -57,23 +57,6 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
             queryset = queryset.prefetch_related(memorials_prefetch)
 
         return queryset.public().live()
-
-
-class PositionViewSet(viewsets.ReadOnlyModelViewSet):
-    filter_backends = (
-        BoundingBoxFilter,
-        DistanceFilter,
-        django_filters.rest_framework.DjangoFilterBackend,
-        PostgresSearchFilter,
-        filters.OrderingFilter,
-    )
-    filterset_class = MemorialFilterSet
-    bbox_filter_field = 'coordinates'
-    distance_filter_field = 'coordinates'
-    serializer_class = PositionSerializer
-
-    def get_queryset(self):
-        return Memorial.objects.public().live()
 
 
 class MemorialViewSet(ActionAwareReadOnlyModelViewSet):

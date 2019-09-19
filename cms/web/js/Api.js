@@ -6,8 +6,7 @@ const filter = (obj) =>
     .filter(key => obj[key])
     .reduce((res, key) => (res[key] = obj[key], res), {});
 
-
-export default class Api {
+class Api {
   constructor(rootUrl) {
     this.rootUrl = rootUrl;
   }
@@ -32,15 +31,13 @@ export default class Api {
     return this.getResults(`/authors/${id}`, options);
   }
 
-  getPositions(options) {
-    return this.getResults('/positions', options);
-  }
-
   getMemorials(options) {
     return this.getResults('/memorials', options);
   }
 
-  getMemorial(id) {
+  async getMemorial(id) {
     return this.getResults(`/memorials/${id}`);
   }
 }
+
+export default new Api('/api/v2');

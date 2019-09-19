@@ -17,7 +17,13 @@
 
 
   export default {
-    props: ['api', 'id', 'label', 'param', 'path'],
+    props: {
+      api: Object,
+      id: String,
+      label: String,
+      param: String,
+      path: String
+    },
     mounted: function () {
       const vm = this;
 

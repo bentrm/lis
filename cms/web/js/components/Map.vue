@@ -3,31 +3,77 @@
 </template>
 
 <script>
+  import {icon, layer} from '@fortawesome/fontawesome-svg-core';
+  import {
+    faArchive,
+    faBirthdayCake,
+    faBook,
+    faBuilding,
+    faChurch,
+    faCross,
+    faGraduationCap,
+    faInfo,
+    faLandmark,
+    faLightbulb,
+    faMapMarker,
+    faMonument,
+    faMountain,
+    faPalette,
+    faRoad,
+    faSquare
+  } from '@fortawesome/free-solid-svg-icons';
   import L from 'leaflet';
   import 'leaflet.locatecontrol';
   import 'leaflet.markercluster';
-  import iconUrl from 'leaflet/dist/images/marker-icon.png';
-  import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-  import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-  const Icon = L.Icon.extend({
-    options: {
-      iconUrl,
-      iconRetinaUrl,
-      shadowUrl,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize: [41, 41]
-    },
-  });
+
+  const symbols = {
+    16: faBuilding,
+    17: faRoad,
+    18: faBirthdayCake,
+    19: faBuilding,
+    20: faCross,
+    21: faLightbulb,
+    22: faMonument,
+    23: faMonument,
+    24: faSquare,
+    25: faLandmark,
+    26: faGraduationCap,
+    27: faChurch,
+    28: faMountain,
+    29: faMonument,
+    30: faPalette,
+    31: faInfo,
+    32: faPalette,
+    33: faBook,
+    34: faArchive
+  };
+
+  const symbolLayer = symbolId => {
+    const symbol = symbols[symbolId] || faMonument;
+
+    return layer(push => {
+      push(icon(faMapMarker, {
+        styles: {'color': '#69140e'},
+        transform: {size: 48, x: 0, y: 0},
+      }));
+      push(icon(symbol, {
+        styles: {'color': 'white'},
+        transform: {x: 0, y: -4, size: 16}
+      }));
+    }, {
+      classes: ['fa-leaflet-layer', 'drop-shadow']
+    });
+  };
 
   const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de">Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
   export default {
     name: 'leaflet-map',
-    props: ['initialView', 'positions'],
+    props: {
+      initialView: Object,
+      memorials: Array,
+    },
     mounted: function () {
       const vm = this;
       const osmLayer = L.tileLayer.wms(
@@ -35,7 +81,7 @@
         {
           attribution,
           format: 'image/png',
-          // format_options: 'dpi:180',
+          format_options: 'dpi:180',
           layers: 'osm:OSM',
           tiled: true,
           tileSize: 256,
@@ -45,6 +91,7 @@
         },
       );
       vm.clusterLayer = L.markerClusterGroup({
+        animate: true,
         polygonOptions: {
           color: '#69140e'
         },
@@ -89,11 +136,15 @@
         const vm = this;
         vm.map.flyTo(center, zoom);
       },
-      positions: function (newPositions, oldPositions) {
+      memorials: function (newMemorials, oldMemorials) {
         const vm = this;
-        const newMarkers = newPositions.map(({position: [lng, lat], ...otherProps}) => {
+        const newMarkers = newMemorials.map(({position: [lng, lat], memorial_types, ...otherProps}) => {
+          const memorialType = memorial_types[0].id;
           return L.marker([lat, lng], {
-            icon: new Icon,
+            icon: L.divIcon({
+              className: 'fa-leaflet-icon',
+              html: symbolLayer(memorialType).html,
+            }),
             ...otherProps
           });
         });
