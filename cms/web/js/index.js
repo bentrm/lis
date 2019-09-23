@@ -1,8 +1,8 @@
-import '@fortawesome/fontawesome-free/js/all';
 import 'bootstrap';
 import 'holderjs';
 import $ from 'jquery';
 import 'popper.js';
+import './icons';
 import Vue from 'vue/dist/vue.esm';
 import api from './Api';
 import router from './router';

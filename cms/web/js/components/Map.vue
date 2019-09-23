@@ -3,79 +3,33 @@
 </template>
 
 <script>
-  import {icon, layer} from '@fortawesome/fontawesome-svg-core';
-  import {
-    faArchive,
-    faBirthdayCake,
-    faBook,
-    faBuilding,
-    faChurch,
-    faCross,
-    faGraduationCap,
-    faInfo,
-    faLandmark,
-    faLightbulb,
-    faMapMarker,
-    faMonument,
-    faMountain,
-    faPalette,
-    faRoad,
-    faSquare
-  } from '@fortawesome/free-solid-svg-icons';
   import L from 'leaflet';
   import 'leaflet.locatecontrol';
   import 'leaflet.markercluster';
-
-
-  const symbols = {
-    16: faBuilding,
-    17: faRoad,
-    18: faBirthdayCake,
-    19: faBuilding,
-    20: faCross,
-    21: faLightbulb,
-    22: faMonument,
-    23: faMonument,
-    24: faSquare,
-    25: faLandmark,
-    26: faGraduationCap,
-    27: faChurch,
-    28: faMountain,
-    29: faMonument,
-    30: faPalette,
-    31: faInfo,
-    32: faPalette,
-    33: faBook,
-    34: faArchive
-  };
-
-  const symbolLayer = symbolId => {
-    const symbol = symbols[symbolId] || faMonument;
-
-    return layer(push => {
-      push(icon(faMapMarker, {
-        styles: {'color': '#69140e'},
-        transform: {size: 48, x: 0, y: 0},
-      }));
-      push(icon(symbol, {
-        styles: {'color': 'white'},
-        transform: {x: 0, y: -4, size: 16}
-      }));
-    }, {
-      classes: ['fa-leaflet-layer', 'drop-shadow']
-    });
-  };
-
-  const attribution = 'Rendering <a href="https://geoinformatik.htw-dresden.de">Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
+  import Extent from '../leaflet.extentcontrol';
+  import marker from '../markers';
 
   export default {
-    name: 'leaflet-map',
+
     props: {
       initialView: Object,
+      memorial: Object,
       memorials: Array,
     },
-    mounted: function () {
+
+    data () {
+      return {
+        selectedMarker: null,
+      }
+    },
+
+    mounted () {
       const vm = this;
+      const attribution =
+          'Rendering <a href="https://geoinformatik.htw-dresden.de">'
+        + 'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; '
+        + '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, '
+        + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
       const osmLayer = L.tileLayer.wms(
         'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
         {
@@ -110,6 +64,10 @@
         zoom: vm.initialZoom,
       });
 
+      vm.map.on('click', () => {
+        this.$emit('click', null);
+      });
+
       vm.map.on('moveend', () => {
         const {lat, lng} = vm.map.getCenter();
         vm.$emit('moveend', [lng, lat], vm.map.getZoom());
@@ -117,6 +75,11 @@
 
       const scaleControl = L.control.scale();
       scaleControl.addTo(vm.map);
+
+      const extentControl = new Extent({
+        layer: vm.clusterLayer
+      });
+      extentControl.addTo(vm.map);
 
       const locateControl = L.control.locate({
         flyTo: true,
@@ -131,19 +94,46 @@
       locateControl.addTo(vm.map);
 
     },
+
     watch: {
-      initialView: function ({center, zoom}, oldView) {
+
+      initialView ({center, zoom}, oldView) {
         const vm = this;
         vm.map.flyTo(center, zoom);
       },
-      memorials: function (newMemorials, oldMemorials) {
+
+      selectedMarker (newSelectedMarker, oldSelectedMarker) {
+        if (oldSelectedMarker) {
+          const oldElement = oldSelectedMarker.getElement();
+          oldSelectedMarker.getElement().classList.remove('leaflet-marker-icon-selected');
+        }
+        if (newSelectedMarker) {
+          newSelectedMarker.getElement().classList.add('leaflet-marker-icon-selected');
+        }
+      },
+
+      memorial (newMemorial, oldMemorial) {
+        const vm = this;
+
+        if (newMemorial) {
+          vm.map.eachLayer(layer => {
+            if (layer.options.id === newMemorial.id) {
+              vm.selectedMarker = layer;
+            }
+          })
+        } else {
+          vm.selectedMarker = null;
+        }
+      },
+
+      memorials (newMemorials, oldMemorials) {
         const vm = this;
         const newMarkers = newMemorials.map(({position: [lng, lat], memorial_types, ...otherProps}) => {
           const memorialType = memorial_types[0].id;
           return L.marker([lat, lng], {
             icon: L.divIcon({
               className: 'fa-leaflet-icon',
-              html: symbolLayer(memorialType).html,
+              html: marker(memorialType).html,
             }),
             ...otherProps
           });

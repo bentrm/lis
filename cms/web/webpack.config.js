@@ -1,11 +1,13 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const isProd = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   entry: {
     index: ['whatwg-fetch', './js/index.js'],
     main: './scss/main.scss'
   },
+  devtool: isProd ? 'eval-source-map' : 'source-map',
   watch: false,
   watchOptions: {
     ignored: ['node_modules', 'dist']
@@ -13,6 +15,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/static/app/'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      name: 'vendor',
+    }
   },
   plugins: [
     // make sure to include the plugin!
@@ -28,27 +36,16 @@ module.exports = {
         test: /.scss$/,
         use: [
           {
-            loader: 'vue-style-loader',
-          },
-          {
             loader: 'file-loader',
             options: {
               name: '[name].css',
               outputPath: 'css'
             }
           },
-          {
-            loader: 'extract-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'postcss-loader'
-          },
-          {
-            loader: 'sass-loader'
-          }
+          'extract-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
         ]
       },
       {

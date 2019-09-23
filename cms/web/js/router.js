@@ -3,17 +3,16 @@ import Vue from 'vue/dist/vue.esm';
 import MapFilter from './components/MapFilter.vue';
 import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
-import api from './Api';
 
 
 Vue.use(VueRouter);
-
 
 export default new VueRouter({
   mode: 'history',
   routes: [{
     path: '/map/:mapState?',
     component: MapView,
+    props: true,
     children: [{
       path: '',
       component: MapFilter,

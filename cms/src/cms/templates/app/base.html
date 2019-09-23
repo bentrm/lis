@@ -18,7 +18,6 @@
   <title>{{ 'LIS' }}</title>
 
   <link rel="stylesheet" href="{% static 'app/css/main.css' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
 </head>
 <body>
 
@@ -94,6 +93,7 @@
 
 </div>
 {% block Scripts %}
+  <script src="{% static 'app/vendor.js' %}"></script>
   <script src="{%  static 'app/index.js' %}"></script>
 {% endblock %}
 

@@ -1,22 +1,22 @@
 .marker-cluster-small {
-    background-color: rgba($primary-100, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 .marker-cluster-small div {
-    background-color: rgba($primary-200, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 
 .marker-cluster-medium {
-    background-color: rgba($primary-300, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 .marker-cluster-medium div {
-    background-color: rgba($primary-400, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 
 .marker-cluster-large {
-    background-color: rgba($primary-500, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 .marker-cluster-large div {
-    background-color: rgba($primary-600, 0.6);
+    background-color: rgba(theme-color("primary"), 0.6);
 }
 
 .marker-cluster {
