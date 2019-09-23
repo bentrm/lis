@@ -22,11 +22,7 @@ export default new VueRouter({
       path: 'memorial/:id',
       name: 'memorial-detail',
       component: MemorialCard,
-      props (route) {
-        const params = route.params;
-        params.id = parseInt(params.id);
-        return params;
-      },
+      props: true,
     }]
   }]
 });

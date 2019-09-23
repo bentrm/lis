@@ -55,7 +55,7 @@
       });
 
       vm.clusterLayer.on('click', ({layer}) => {
-        this.$emit('click', layer.options.id);
+        vm.$emit('click', layer.options.id);
       });
 
       vm.map = L.map(vm.$el, {
@@ -65,7 +65,7 @@
       });
 
       vm.map.on('click', () => {
-        this.$emit('click', null);
+        vm.$emit('click', null);
       });
 
       vm.map.on('moveend', () => {
@@ -97,7 +97,7 @@
 
     watch: {
 
-      initialView ({center, zoom}, oldView) {
+      initialView ({center, zoom}) {
         const vm = this;
         vm.map.flyTo(center, zoom);
       },
@@ -112,7 +112,7 @@
         }
       },
 
-      memorial (newMemorial, oldMemorial) {
+      memorial (newMemorial) {
         const vm = this;
 
         if (newMemorial) {
@@ -126,9 +126,10 @@
         }
       },
 
-      memorials (newMemorials, oldMemorials) {
+      memorials (newMemorials) {
         const vm = this;
-        const newMarkers = newMemorials.map(({position: [lng, lat], memorial_types, ...otherProps}) => {
+        const newMarkers = newMemorials.map(memorial => {
+          const {position: [lng, lat], memorial_types, ...otherProps} = memorial;
           const memorialType = memorial_types[0].id;
           return L.marker([lat, lng], {
             icon: L.divIcon({

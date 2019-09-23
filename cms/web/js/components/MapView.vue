@@ -6,14 +6,15 @@
         :initialView="initialView"
         :memorial="memorial"
         :memorials="memorials"
-        v-on:click="onMapClick"
+        v-on:click="selectMemorial"
         v-on:moveend="onMapMoveEnd"></Map>
     </main>
 
     <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
       <router-view
         :api="api"
-        v-on:hideMemorialDetail="unselectMemorial"></router-view>
+        :memorial="memorial"
+        v-on:hideMemorialDetail="selectMemorial(null)"></router-view>
     </aside>
   </div>
 </template>
@@ -38,15 +39,24 @@
     data() {
       return {
         api,
-        filters: {
-          limit: 1000,
-        },
+
         initialView: {
           center: [50.7, 14.9],
           zoom: 8,
         },
+
+        // memorial details
         memorial: null,
+        memorialError: null,
+        memorialLoading: false,
+
+        // memorials
         memorials: [],
+        memorialFilters: {
+          limit: 1000,
+        },
+        memorialsError: null,
+        memorialsLoading: false,
       };
     },
 
@@ -107,25 +117,31 @@
       fetchMemorials() {
         const vm = this;
         vm.api
-          .getMemorials(vm.filters)
+          .getMemorials(vm.memorialFilters)
           .then(json => vm.memorials = json.results);
       },
 
       setFilterParam(param, value) {
         const vm = this;
-        vm.filters[param] = value;
+        vm.memorialFilters[param] = value;
         vm.fetchMemorials();
       },
 
-      onMapClick(featureId) {
+      selectMemorial(memorialId) {
         const vm = this;
-        const id = featureId ? featureId : -1;
-        vm.memorial = vm.memorials.find(x => x.id === id);
-      },
 
-      unselectMemorial() {
-        const vm = this;
-        vm.memorial = null;
+        if (!memorialId) {
+          vm.memorial = null;
+          return;
+        }
+
+        vm.memorialLoading = true;
+        vm.api
+          .getMemorial(memorialId)
+          .then(json => {
+            vm.memorial = json;
+            vm.memorialLoading = false;
+          });
       },
 
       onAuthorChange(author) {

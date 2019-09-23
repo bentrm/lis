@@ -1,8 +1,7 @@
 <template>
   <div>
-    <span v-if="loading">Loading...</span>
     <div v-if="memorial">
-      <span @click="hide">
+      <span @click="$emit('hideMemorialDetail')">
         <i class="fas fa-times-circle"></i>
       </span>
       <h3>{{memorial.title}}</h3>
@@ -28,34 +27,7 @@
   export default {
     props: {
       api: Object,
-      id: Number,
+      memorial: Object,
     },
-    data() {
-      return {
-        error: null,
-        loading: true,
-        memorial: null
-      };
-    },
-    created() {
-      this.fetchData();
-    },
-    watch: {
-      id: 'fetchData'
-    },
-    methods: {
-      fetchData() {
-        this.memorial = this.error = null;
-        this.api
-          .getMemorial(this.id)
-          .then(json => {
-            this.memorial = json;
-            this.loading = false;
-          });
-      },
-      hide () {
-        this.$emit('hideMemorialDetail');
-      }
-    }
   };
 </script>
