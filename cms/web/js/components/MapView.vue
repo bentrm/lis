@@ -230,11 +230,7 @@
         const vm = this;
         api
           .getAuthors(vm.authorFilters)
-          .then(json => {
-            const results = json.results;
-            results.forEach(x => x.title = `${x.first_name} ${x.last_name}`);
-            vm.authors = results;
-          });
+          .then(json => vm.authors = json.results);
       },
 
       fetchTypes() {

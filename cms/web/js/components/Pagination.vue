@@ -19,7 +19,7 @@
 
 <script>
   export default {
-    props: ['param', 'currentPage', 'totalPages'],
+    props: ['currentPage', 'totalPages'],
     methods: {
       emitChange: function (pageNumber) {
         this.$emit('change', pageNumber);
