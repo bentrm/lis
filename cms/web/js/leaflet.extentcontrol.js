@@ -28,18 +28,13 @@ export default L.Control.extend({
       .on(this._link, 'click', this._onClick, this)
       .on(this._link, 'dblclick', L.DomEvent.stopPropagation);
 
-
-    this.options.layer.on('layerremove', this._updateDisabled, this);
-
     return container;
   },
 
   _onClick () {
-    this._map.fitBounds(this.options.layer.getBounds());
-  },
-
-  _updateDisabled () {
-    console.log(this.options.layer);
+    if (this.options.layer.getLayers().length) {
+      this._map.fitBounds(this.options.layer.getBounds());
+    }
   }
 
 });
