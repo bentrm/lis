@@ -16,6 +16,4 @@ def app_status(request):
         .live()
         .in_menu()
         .specific(),
-        "AUTHOR_COUNT": Author.objects.count(),
-        "MEMORIAL_SITE_COUNT": Memorial.objects.count(),
     }
