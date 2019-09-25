@@ -23,7 +23,6 @@ module.exports = {
     }
   },
   plugins: [
-    // make sure to include the plugin!
     new VueLoaderPlugin()
   ],
   module: {
@@ -33,18 +32,10 @@ module.exports = {
         loader: 'vue-loader'
       },
       {
-        test: /.scss$/,
+        test: /\.scss$/,
         use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].css',
-              outputPath: 'css'
-            }
-          },
-          'extract-loader',
+          'vue-style-loader',
           'css-loader',
-          'postcss-loader',
           'sass-loader',
         ]
       },
