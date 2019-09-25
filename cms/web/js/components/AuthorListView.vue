@@ -7,7 +7,7 @@
         </div>
         <div class="col-12">
           <Pagination
-            :currentPage="currentPage"
+            :currentPage="page"
             :totalPages="totalPages"
             v-on:change="setPage"></Pagination>
         </div>
@@ -26,7 +26,7 @@
         </div>
         <div class="col-12">
           <Pagination
-            :currentPage="currentPage"
+            :currentPage="page"
             :totalPages="totalPages"
             v-on:change="setPage"></Pagination>
         </div>
@@ -37,21 +37,45 @@
       class="Filterbar col-sm-5 col-md-3 col-lg-2 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last mb-2"
     >
       <form name="filter-form" class="p-2">
-        <TagFilter
-          v-for="filter in tagFilters"
-          :key="filter.id"
-          :api="api"
-          :id="filter.id"
-          :label="filter.label"
-          :param="filter.param"
-          :path="filter.path"
-          v-on:change="onFilterChange"></TagFilter>
-        <RadioFilter
-          :id="genderFilter.id"
-          :label="genderFilter.label"
-          :param="genderFilter.param"
-          :options="genderFilter.options"
-          v-on:change="onFilterChange"></RadioFilter>
+        <filter-list
+          v-on:change="onGenreFilterChange"
+          :items="genres"
+          :selection="genreSelection">
+          <template v-slot:header>{{ genreFiltersHeader }}</template>
+          <template v-slot:item="{item}">
+            {{item.name}}
+          </template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onLanguageFilterChange"
+          :items="languages"
+          :selection="languageSelection">
+          <template v-slot:header>{{ languageFiltersHeader }}</template>
+          <template v-slot:item="{item}">
+            {{item.name}}
+          </template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onPeriodFilterChange"
+          :items="periods"
+          :selection="periodSelection">
+          <template v-slot:header>{{ periodFiltersHeader }}</template>
+          <template v-slot:item="{item}">
+            {{item.name}}
+          </template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onGenderFilterChange"
+          :items="genders"
+          :selection="genderSelection">
+          <template v-slot:header>Gender</template>
+          <template v-slot:item="{item}">
+            {{item.name}}
+          </template>
+        </filter-list>
       </form>
     </aside>
   </div>
@@ -60,99 +84,166 @@
 <script>
   import AuthorCard from './AuthorCard.vue';
   import Pagination from './Pagination.vue';
-  import RadioFilter from './RadioFilter.vue';
-  import TagFilter from './TagFilter.vue';
+  import FilterList from './FilterList.vue';
+  import FilterItem from './FilterItem.vue';
+  import api from '../Api';
 
 
   export default {
     props: ['api'],
+
     components: {
       AuthorCard,
       Pagination,
-      RadioFilter,
-      TagFilter,
+      FilterList,
+      FilterItem,
     },
-    data: function () {
+
+    data () {
       return {
-        filters: {
-          ordering: 'last_name',
-          limit: 20,
-          offset: 0,
-        },
-        count: 0,
+        page: 1,
+        limit: 20,
         authors: [],
-        tagFilters: [
-          {
-            id: 'genre',
-            label: 'Genre',
-            param: 'genre',
-            path: '/genres',
-          },
-          {
-            id: 'language',
-            label: 'Languages',
-            param: 'language',
-            path: '/languages',
-          },
-          {
-            id: 'period',
-            label: 'Period',
-            param: 'period',
-            path: '/periods'
-          }
+        count: 0,
+
+        genres: [],
+        genreSelection: new Set(),
+
+        languages: [],
+        languageSelection: new Set(),
+
+        periods: [],
+        periodSelection: new Set(),
+
+        genders: [
+          {name: 'Female', id: 'F'},
+          {name: 'Male', id: 'M'}
         ],
-        genderFilter: {
-          id: 'gender',
-          label: 'Gender',
-          param: 'gender',
-          options: [
-            {label: 'All', value: '', checked: true},
-            {label: 'Female', value: 'F', checked: false},
-            {label: 'Male', value: 'M', checked: false},
-          ]
-        },
+        genderSelection: new Set()
       };
     },
     computed: {
-      currentPage: function () {
+
+      offset () {
         const vm = this;
-        return vm.filters.offset / vm.limit;
+        return (vm.page - 1) * vm.limit;
       },
+
       totalPages: function () {
         const vm = this;
-        return Math.ceil(vm.count / vm.filters.limit);
+        return Math.ceil(vm.count / vm.limit);
+      },
+
+      authorParams () {
+        const vm = this;
+        return {
+          genre: [...vm.genreSelection],
+          language: [...vm.languageSelection],
+          period: [...vm.periodSelection],
+          gender: [...vm.genderSelection],
+          ordering: 'last_name',
+          limit: vm.limit,
+          offset: vm.offset,
+        };
+      },
+
+      tagParams () {
+        return {
+          ordering: 'name',
+          limit: 1000,
+        };
+      },
+
+      genreFiltersHeader () {
+        const vm = this;
+        return `Genres (${vm.genreSelection.size} / ${vm.genres.length})`;
+      },
+
+      languageFiltersHeader () {
+        const vm = this;
+        return `Languages (${vm.languageSelection.size} / ${vm.languages.length})`;
+      },
+
+      periodFiltersHeader () {
+        const vm = this;
+        return `Periods (${vm.periodSelection.size} / ${vm.periods.length})`;
       }
     },
-    created: function () {
-      const vm = this;
-      vm.fetchAuthors();
-    },
-    methods: {
-      setPage: function (pageNumber) {
+
+    watch: {
+      authorParams () {
         const vm = this;
-        const newOffset = (pageNumber - 1) * vm.filters.limit;
-        vm.setFilterParam('offset', newOffset);
-      },
-      setFilterParam: function (param, value) {
-        const vm = this;
-        if (param !== 'offset') {
-          vm.filters['offset'] = 0;
-        }
-        vm.filters[param] = value;
         vm.fetchAuthors();
       },
+    },
+
+    created: function () {
+      const vm = this;
+      vm.fetchGenres();
+      vm.fetchLanguages();
+      vm.fetchPeriods();
+      vm.fetchAuthors();
+    },
+
+    methods: {
+
       fetchAuthors: function () {
         const vm = this;
-        vm.api
-          .getAuthors(vm.filters)
+        api
+          .getAuthors(vm.authorParams)
           .then(json => {
             vm.count = json.count;
             vm.authors = json.results;
           });
       },
-      onFilterChange: function (param, value) {
+
+      fetchGenres () {
         const vm = this;
-        vm.setFilterParam(param, value);
+        api
+          .getResults('/genres', vm.tagParams)
+          .then(json => vm.genres = json.results);
+      },
+
+      fetchLanguages () {
+        const vm = this;
+        api
+          .getResults('/languages', vm.tagParams)
+          .then(json => vm.languages = json.results);
+      },
+
+      fetchPeriods () {
+        const vm = this;
+        api
+          .getResults('/periods', vm.tagParams)
+          .then(json => vm.periods = json.results);
+      },
+
+      onGenreFilterChange (selection) {
+        const vm = this;
+        vm.setPage(1);
+        vm.genreSelection = selection;
+      },
+
+      onLanguageFilterChange (selection) {
+        const vm = this;
+        vm.setPage(1);
+        vm.languageSelection = selection;
+      },
+
+      onPeriodFilterChange (selection) {
+        const vm = this;
+        vm.setPage(1);
+        vm.periodSelection = selection;
+      },
+
+      onGenderFilterChange (selection) {
+        const vm = this;
+        vm.setPage(1);
+        vm.genderSelection = selection;
+      },
+
+      setPage: function (pageNumber) {
+        this.page = pageNumber;
       }
     }
   };
