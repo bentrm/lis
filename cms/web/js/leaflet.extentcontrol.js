@@ -29,7 +29,7 @@ export default L.Control.extend({
       .on(this._link, 'dblclick', L.DomEvent.stopPropagation);
 
 
-    this._map.on('moveend', this._updateDisabled, this);
+    this.options.layer.on('layerremove', this._updateDisabled, this);
 
     return container;
   },
@@ -39,7 +39,7 @@ export default L.Control.extend({
   },
 
   _updateDisabled () {
-    console.log('movened');
+    console.log(this.options.layer);
   }
 
 });
