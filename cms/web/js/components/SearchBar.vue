@@ -14,7 +14,9 @@
       >
         <li class="display-4" v-if="memorials.length">Memorials</li>
         <li v-for="result in memorials">
-          {{ result.title }}
+          <a :href="`/map/@${result.position[0]},${result.position[1]},18z/memorial/${result.id}`" :alt="result.name">
+          {{ result.name }}
+          </a>
         </li>
         <li class="display-4" v-if="authors.length">Authors</li>
         <li v-for="result in authors">
