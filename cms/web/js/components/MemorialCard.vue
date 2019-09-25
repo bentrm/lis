@@ -2,7 +2,7 @@
   <div>
     <div v-if="memorial">
       <h3>
-        {{memorial.title}}
+        {{memorial.name}}
         <span @click="$emit('hide')">
           <i class="fas fa-times"></i>
         </span>
@@ -10,7 +10,7 @@
       <img
         v-if="memorial.thumb"
         :src="memorial.thumb"
-        :alt="memorial.title"
+        :alt="memorial.name"
         class="Memorial-badge border border-primary rounded-circle align-self-center">
       <ul class="list-unstyled">
         <li v-for="author in memorial.authors" :key="author.id">

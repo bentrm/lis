@@ -1,27 +1,48 @@
 <template>
   <div class="filter-list">
     <div class="filter-list-heading">
-      <span>{{ title }} ({{selection.size}}/{{items.length}})</span>
-      <span v-if="selection.size" v-on:click="onClear"><i class="fas fa-times"></i></span>
+      <slot name="header">
+        <span v-if="selection.size">
+          {{selection.size}} filters selected.
+        </span>
+        <span v-else>
+          No filters selected.
+        </span>
+      </slot>
+      <span v-if="selection.size" v-on:click="resetFilter">
+        <i class="fas fa-times"></i>
+      </span>
     </div>
     <ul class="list-unstyled">
-      <li v-for="item in items"
-          :key="item.id"
-          :class="{'active': selection.has(item.id)}"
-          v-on:click="onClick(item)"
+      <filter-item
+        v-for="item in items"
+        v-on:enabled="enableFilter"
+        v-on:disabled="disableFilter"
+        :item="item"
+        :enabled="selection.has(item.id)"
       >
-        {{ item.title }} <span v-if="selection.has(item.id)"><i class="fas fa-times"></i></span>
-      </li>
+        <template v-slot:default>
+          <slot name="item" v-bind:item="item">
+            {{item.title}}
+          </slot>
+        </template>
+      </filter-item>
+        <li v-if="!items.length">
+          <slot name="empty">
+            No filters available.
+          </slot>
+        </li>
     </ul>
   </div>
 </template>
 
 <script>
+  import FilterItem from './FilterItem.vue';
+
   export default {
     props: {
-      title: String,
       items: {
-        type: Array,
+        type: [Array, Set],
         default () {
           return [];
         }
@@ -29,28 +50,31 @@
       selection: {
         type: Set,
         default () {
-          return new Set;
+          return new Set();
         }
-      },
+      }
+    },
+    components: {
+      FilterItem,
     },
     methods: {
-      onClear () {
+      resetFilter() {
         this.$emit('change', new Set());
       },
 
-      onClick (item) {
+      enableFilter (item) {
         const vm = this;
-        const id = item.id;
-        const currentSet = new Set(vm.selection);
+        const newSelection = new Set(vm.selection);
+        newSelection.add(item.id);
+        vm.$emit('change', newSelection);
+      },
 
-        if (currentSet.has(id)) {
-          currentSet.delete(id);
-        } else {
-          currentSet.add(id);
-        }
-
-        vm.$emit('change', currentSet);
-      }
+      disableFilter (item) {
+        const vm = this;
+        const newSelection = new Set(vm.selection);
+        newSelection.delete(item.id);
+        vm.$emit('change', newSelection);
+      },
     }
   }
 </script>
@@ -66,7 +90,7 @@
     ul {
       border: 1px solid theme-color("secondary");
       font-size: .8rem;
-      max-height: 8rem;
+      height: 8rem;
       overflow: scroll;
 
       li {

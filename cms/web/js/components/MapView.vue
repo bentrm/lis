@@ -12,16 +12,28 @@
     <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
 
       <div class="p-2" v-if="$route.name === 'map'">
-        <FilterList
-          :title="'Authors'"
+
+        <h4>{{memorials.length}} memorials found:</h4>
+
+        <filter-list
+          v-on:change="onAuthorFilterChange"
           :items="authors"
-          :selection="authorSelection"
-          v-on:change="onAuthorSelectionChange"></FilterList>
-        <FilterList
-          :title="'Memorial types'"
+          :selection="authorSelection">
+          <template v-slot:header>{{ authorFiltersHeader }}</template>
+          <template v-slot:item="{item}">
+            {{item.last_name}}, {{item.first_name}}
+          </template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onTypeSelectionChange"
           :items="types"
-          :selection="typeSelection"
-          v-on:change="onTypeSelectionChange"></FilterList>
+          :selection="typeSelection">
+          <template v-slot:header>{{ typeFiltersHeader }}</template>
+          <template v-slot:item="{item}">
+            {{item.name}}
+          </template>
+        </filter-list>
       </div>
 
       <router-view
@@ -71,9 +83,19 @@
 
     computed: {
 
+      authorFiltersHeader () {
+        const vm = this;
+        return `Authors (${vm.authorSelection.size} / ${vm.authors.length})`;
+      },
+
+      typeFiltersHeader () {
+        const vm = this;
+        return `Types (${vm.typeSelection.size} / ${vm.types.length})`;
+      },
+
       authorFilters () {
         return {
-          ordering: 'last_name',
+          ordering: 'last_name,first_name',
           limit: 1000,
         };
       },
@@ -82,13 +104,14 @@
         return {
           author: [...this.authorSelection],
           memorial_type: [...this.typeSelection],
+          ordering: 'name',
           limit: 1000,
         };
       },
 
       typeFilters () {
         return {
-          ordering: 'title',
+          ordering: 'name',
           limit: 1000,
         };
       }
@@ -171,7 +194,7 @@
         this.manualRouteTransition = true;
       },
 
-      onAuthorSelectionChange (selection) {
+      onAuthorFilterChange (selection) {
         this.authorSelection = selection;
       },
 
