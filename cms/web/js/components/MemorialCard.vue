@@ -1,10 +1,12 @@
 <template>
   <div>
     <div v-if="memorial">
-      <span @click="$emit('hideMemorialDetail')">
-        <i class="fas fa-times-circle"></i>
-      </span>
-      <h3>{{memorial.title}}</h3>
+      <h3>
+        {{memorial.title}}
+        <span @click="$emit('hide')">
+          <i class="fas fa-times"></i>
+        </span>
+      </h3>
       <img
         v-if="memorial.thumb"
         :src="memorial.thumb"

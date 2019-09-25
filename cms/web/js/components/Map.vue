@@ -9,28 +9,22 @@
   import Extent from '../leaflet.extentcontrol';
   import marker from '../markers';
 
+  const attribution =
+    'Rendering <a href="https://geoinformatik.htw-dresden.de">'
+    + 'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; '
+    + '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, '
+    + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
+
   export default {
 
     props: {
-      initialView: Object,
-      memorial: Object,
-      memorials: Array,
+      initialMapState: Object,
+      features: Array,
     },
 
-    data () {
-      return {
-        selectedMarker: null,
-      }
-    },
-
-    mounted () {
+    created () {
       const vm = this;
-      const attribution =
-          'Rendering <a href="https://geoinformatik.htw-dresden.de">'
-        + 'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; '
-        + '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, '
-        + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
-      const osmLayer = L.tileLayer.wms(
+      vm.osmLayer = L.tileLayer.wms(
         'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
         {
           attribution,
@@ -53,35 +47,11 @@
           color: '#69140e'
         }
       });
-
-      vm.clusterLayer.on('click', ({layer}) => {
-        vm.$emit('click', layer.options.id);
-      });
-
-      vm.map = L.map(vm.$el, {
-        center: vm.initialCenter,
-        layers: [osmLayer, vm.clusterLayer],
-        zoom: vm.initialZoom,
-      });
-
-      vm.map.on('click', () => {
-        vm.$emit('click', null);
-      });
-
-      vm.map.on('moveend', () => {
-        const {lat, lng} = vm.map.getCenter();
-        vm.$emit('moveend', [lng, lat], vm.map.getZoom());
-      });
-
-      const scaleControl = L.control.scale();
-      scaleControl.addTo(vm.map);
-
-      const extentControl = new Extent({
+      vm.scaleControl = L.control.scale();
+      vm.extentControl = new Extent({
         layer: vm.clusterLayer
       });
-      extentControl.addTo(vm.map);
-
-      const locateControl = L.control.locate({
+      vm.locateControl = L.control.locate({
         flyTo: true,
         icon: 'fas fa-location-arrow',
         iconLoading: 'fas fa-spinner fa-spin',
@@ -91,45 +61,42 @@
         },
         showPopup: false,
       });
-      locateControl.addTo(vm.map);
+    },
 
+    mounted () {
+      const vm = this;
+      const {center, zoom} = vm.initialMapState;
+      const map = vm.map = L.map(vm.$el, {
+        center, zoom,
+        layers: [
+          vm.osmLayer,
+          vm.clusterLayer
+        ],
+      });
+      vm.scaleControl.addTo(map);
+      vm.locateControl.addTo(map);
+      vm.extentControl.addTo(map);
+
+      map.on('click', vm.onMapClick);
+      map.on('moveend', vm.onMoveEnd);
+      vm.clusterLayer.on('click', vm.onFeatureSelect);
     },
 
     watch: {
 
-      initialView ({center, zoom}) {
-        const vm = this;
-        vm.map.flyTo(center, zoom);
+      /**
+       * Describes the inital map center and zoom.
+       * @param center
+       * @param zoom
+       */
+      initialMapState ({center, zoom}) {
+        this.map.flyTo(center, zoom);
       },
 
-      selectedMarker (newSelectedMarker, oldSelectedMarker) {
-        if (oldSelectedMarker) {
-          const oldElement = oldSelectedMarker.getElement();
-          oldSelectedMarker.getElement().classList.remove('leaflet-marker-icon-selected');
-        }
-        if (newSelectedMarker) {
-          newSelectedMarker.getElement().classList.add('leaflet-marker-icon-selected');
-        }
-      },
-
-      memorial (newMemorial) {
+      features (newFeatures) {
         const vm = this;
-
-        if (newMemorial) {
-          vm.map.eachLayer(layer => {
-            if (layer.options.id === newMemorial.id) {
-              vm.selectedMarker = layer;
-            }
-          })
-        } else {
-          vm.selectedMarker = null;
-        }
-      },
-
-      memorials (newMemorials) {
-        const vm = this;
-        const newMarkers = newMemorials.map(memorial => {
-          const {position: [lng, lat], memorial_types, ...otherProps} = memorial;
+        const newMarkers = newFeatures.map(feature => {
+          const {position: [lng, lat], memorial_types, ...otherProps} = feature;
           const memorialType = memorial_types[0].id;
           return L.marker([lat, lng], {
             icon: L.divIcon({
@@ -142,8 +109,25 @@
 
         vm.clusterLayer.clearLayers();
         vm.clusterLayer.addLayers(newMarkers);
-        vm.map.fitBounds(vm.clusterLayer.getBounds());
       }
+    },
+
+    methods: {
+
+      onMapClick () {
+        this.$emit('select', null);
+      },
+
+      onMoveEnd () {
+        const vm = this;
+        const {lat, lng} = vm.map.getCenter();
+        vm.$emit('moveend', [lng, lat], vm.map.getZoom());
+      },
+
+      onFeatureSelect ({layer}) {
+        this.$emit('select', layer.options.id);
+      }
+
     }
   };
 </script>

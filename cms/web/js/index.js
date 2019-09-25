@@ -13,6 +13,14 @@ import {debounce} from './utils';
 
 window.$ = $;
 
+window.onerror = function(message, source, lineno, colno, error) {
+  console.log('Exception: ', error)
+};
+
+Vue.config.errorHandler = err => {
+  console.log('Exception: ', err)
+};
+
 new Vue({
   el: '#search-bar-outlet',
   components: {
