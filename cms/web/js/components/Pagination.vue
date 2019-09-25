@@ -3,10 +3,10 @@
     <ul class="pagination">
       <li
         v-for="n in totalPages"
-        class="page-item"
+        :class="{'page-item': true, 'active': n === currentPage}"
       >
         <button
-          :class="{'page-link': true, 'active': n === currentPage}"
+          class="page-link"
           :data-page="n"
           v-on:click="emitChange(n)"
         >
