@@ -120,7 +120,6 @@ class DistanceFilter(DistanceToPointFilter):
 
         point = self.get_filter_point(request)
 
-        print(point)
         if not point:
             return queryset
 

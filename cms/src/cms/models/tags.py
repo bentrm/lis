@@ -7,6 +7,7 @@ from wagtail.core.fields import RichTextField
 from wagtail.search import index
 
 from cms.messages import TXT
+from cms.models.base import TranslatedTitleManager
 
 from .helpers import TranslatedField
 
@@ -21,6 +22,8 @@ class Tag(models.Model, index.Indexed):
     Subclasses may add domain specific fields that will be used for querying.
 
     """
+
+    objects = TranslatedTitleManager()
 
     title = models.CharField(
         verbose_name=_(TXT["tag.title"]),

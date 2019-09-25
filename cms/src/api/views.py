@@ -1,7 +1,7 @@
 import django_filters
-from django.db.models import OuterRef, Subquery, Prefetch
+from django.db.models import OuterRef, Subquery, Prefetch, Count, Q, F, When, Case
+from django.utils.translation import get_language
 from rest_framework import filters, viewsets
-from wagtail.api.v2.filters import OrderingFilter
 
 from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
@@ -9,6 +9,11 @@ from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, \
     AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer
 from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath
+
+
+# Notice: All views in this page override the get_queryset method to make sure the language code
+#         is set appropriately. Otherwise the querset will be prepared before any language
+#         information is available to the custom translation processor.
 
 
 class ActionAwareReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
@@ -74,47 +79,56 @@ class MemorialViewSet(ActionAwareReadOnlyModelViewSet):
     list_serializer_class = MemorialListSerializer
 
     def get_queryset(self):
-        queryset = Memorial.objects.select_related('title_image')
-        return queryset.public().live()
+        """Overrides default to make sure language is set when processing the view."""
+        return Memorial.objects.select_related('title_image').public().live()
 
 
 class MemorialPathViewSet(ActionAwareReadOnlyModelViewSet):
-    queryset = MemorialPath.objects.public().live()
     serializer_class = MemorialPathDetailSerializer
     list_serializer_class = MemorialPathListSerializer
+
+    def get_queryset(self):
+        """Overrides default to make sure language is set when processing the view."""
+        return MemorialPath.objects.public().live()
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [
-        OrderingFilter,
+        filters.OrderingFilter,
     ]
-    search_fields = [
-        'title',
-        'title_de',
-        'title_cs',
-    ]
-    ordering_fields = (
-        'title',
-        'title_de',
-        'title_cs',
-    )
 
 
 class LanguageViewSet(TagViewSet):
-    queryset = LanguageTag.objects.all()
     serializer_class = LanguageSerializer
+
+    def get_queryset(self):
+        return LanguageTag.objects.annotate(
+            rel_count=Count('authors', filter=Q(authors__live=True))
+        ).filter(rel_count__gt=0)
 
 
 class GenreViewSet(TagViewSet):
-    queryset = GenreTag.objects.all()
     serializer_class = GenreSerializer
+
+    def get_queryset(self):
+        return GenreTag.objects.annotate(
+            rel_count=Count('authors', filter=Q(authors__live=True))
+        ).filter(rel_count__gt=0)
 
 
 class PeriodViewSet(TagViewSet):
-    queryset = PeriodTag.objects.all()
     serializer_class = PeriodSerializer
+
+    def get_queryset(self):
+        return PeriodTag.objects.annotate(
+            rel_count=Count('authors', filter=Q(authors__live=True))
+        ).filter(rel_count__gt=0)
 
 
 class MemorialTypeViewSet(TagViewSet):
-    queryset = MemorialTag.objects.all()
     serializer_class = MemorialTypeSerializer
+
+    def get_queryset(self):
+        return MemorialTag.objects.annotate(
+            rel_count=Count('memorial_site', filter=Q(memorial_site__live=True))
+        ).filter(rel_count__gt=0)

@@ -6,8 +6,9 @@ from typing import NewType, Tuple
 
 from django.core.exceptions import PermissionDenied
 from django.db import models
+from django.db.models import Case, When, Q, F
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, get_language, get_supported_language_variant
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     ObjectList,
@@ -17,12 +18,13 @@ from wagtail.admin.edit_handlers import (
 from wagtail.api import APIField
 from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import StreamField
-from wagtail.core.models import BaseViewRestriction, Page
+from wagtail.core.models import BaseViewRestriction, Page, PageManager
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
 from .helpers import TranslatedField
 from ..messages import TXT
+
 
 LOGGER = logging.getLogger("cms.models")
 DB_TABLE_PREFIX = "cms_"
@@ -44,6 +46,42 @@ ContentFilter = namedtuple("ContentFilter", ("name", "field", "endpoint", "label
 TextType = namedtuple("TextType", ("field", "heading"))
 
 
+def annotate_with_translated_name(queryset):
+    language_code = get_language()
+    language_variant = get_supported_language_variant(language_code)
+
+    if language_variant == 'de':
+        queryset = queryset.annotate(
+            name=Case(
+                When(~Q(title_de__exact=''), then='title_de'),
+                default='title'
+            )
+        )
+    elif language_variant == 'cs':
+        queryset = queryset.annotate(
+            name=Case(
+                When(~Q(title_cs__exact=''), then='title_cs'),
+                default='title'
+            )
+        )
+    else:
+        queryset = queryset.annotate(name=F('title'))
+
+    return queryset
+
+
+class TranslatedTitleManager(models.Manager):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return annotate_with_translated_name(queryset)
+
+
+class TranslatedTitlePageManager(PageManager):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return annotate_with_translated_name(queryset)
+
+
 # TODO: Rename to CmsPage
 class I18nPage(Page):
     """
@@ -55,6 +93,8 @@ class I18nPage(Page):
     multilingual content is handled the same as the default fields.
 
     """
+
+    objects = TranslatedTitlePageManager()
 
     ORIGINAL_LANGUAGE_ENGLISH = "en"
     ORIGINAL_LANGUAGE_GERMAN = "de"

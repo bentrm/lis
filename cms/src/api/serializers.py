@@ -5,33 +5,30 @@ from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Me
 
 
 class TitleSerializerMixin(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-
-    def get_title(self, obj):
-        return obj.i18n_title
+    name = serializers.CharField()
 
 
 class LanguageSerializer(TitleSerializerMixin):
     class Meta:
-        fields = ("id", "title")
+        fields = ("id", "name")
         model = LanguageTag
 
 
 class GenreSerializer(TitleSerializerMixin):
     class Meta:
-        fields = ("id", "title")
+        fields = ("id", "name")
         model = GenreTag
 
 
 class PeriodSerializer(TitleSerializerMixin):
     class Meta:
-        fields = ("id", "title")
+        fields = ("id", "name")
         model = PeriodTag
 
 
 class MemorialTypeSerializer(TitleSerializerMixin):
     class Meta:
-        fields = ("id", "title")
+        fields = ("id", "name")
         model = MemorialTag
 
 
@@ -138,7 +135,7 @@ class MemorialListSerializer(TitleSerializerMixin):
     class Meta:
         fields = (
             'id',
-            'title',
+            'name',
             'thumb',
             'position',
             'memorial_types'
@@ -187,7 +184,7 @@ class MemorialDetailSerializer(MemorialListSerializer):
     class Meta:
         fields = (
             "id",
-            "title",
+            "name",
             "thumb",
             "authors",
             "position",
@@ -213,7 +210,7 @@ class MemorialPathListSerializer(TitleSerializerMixin):
         model = MemorialPath
         fields = (
             'id',
-            'title',
+            'name',
             'description',
         )
 
@@ -231,7 +228,7 @@ class MemorialPathDetailSerializer(MemorialPathListSerializer):
         model = MemorialPath
         fields = (
             'id',
-            'title',
+            'name',
             'description',
             'waypoints',
         )
