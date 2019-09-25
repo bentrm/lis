@@ -53,7 +53,7 @@
     props: {
       mapStatePath: {
         type: String,
-        default: '@13.4,51.8,7z',
+        default: '@14.9304,50.625,7z'
       },
       memorialId: [String, Number],
     },
