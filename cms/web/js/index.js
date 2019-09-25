@@ -32,13 +32,6 @@ new Vue({
   }
 });
 
-setTimeout(() => {
-  $('.SponsorsNav').hide({
-    duration: 400,
-    complete: () => $(window).trigger('resize'),
-  });
-}, 5000);
-
 // initialize map
 const mapViewOutlet = document.querySelector('#map-view-outlet');
 if (mapViewOutlet) {
