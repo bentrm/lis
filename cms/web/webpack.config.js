@@ -6,6 +6,10 @@ const env = process.env.NODE_ENV;
 const isProd = env === 'production';
 
 
+console.log(env);
+console.log(isProd);
+
+
 module.exports = {
   mode: env || 'development',
   entry: {
@@ -36,6 +40,21 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                useBuiltIns: 'entry',
+                corejs: '3.2',
+              }]
+            ]
+          }
+        }
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader'
