@@ -105,22 +105,6 @@ dl {
   padding-top: 1rem;
   max-height: 100%;
   min-width: 250px;
-
-  .filter {
-    padding: 0.375rem 0.75rem;
-  }
-
-  .tagify {
-    font-size: 0.75rem;
-  }
-}
-
-.tagify--focus {
-  border-color: theme-color("primary");
-}
-
-.tagify__dropdown {
-  font-size: 0.75rem;
 }
 
 .Readable {
