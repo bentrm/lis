@@ -16,10 +16,11 @@
     <ul class="list-unstyled">
       <filter-item
         v-for="item in items"
-        v-on:enabled="enableFilter"
-        v-on:disabled="disableFilter"
+        :key="item.id"
         :item="item"
         :enabled="selection.has(item.id)"
+        v-on:enabled="enableFilter"
+        v-on:disabled="disableFilter"
       >
         <template v-slot:default>
           <slot name="item" v-bind:item="item">
