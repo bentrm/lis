@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <main class="col-xs-12 col-sm mt-4">
+    <main class="col m-4">
       <div class="row">
         <div class="col-12">
           <h3>Authors ({{ count }})</h3>
@@ -34,7 +34,7 @@
     </main>
     <aside
       id="Filterbar"
-      class="Filterbar col-sm-5 col-md-3 col-lg-2 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last mb-2"
+      class="Filterbar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last mb-2"
     >
       <form name="filter-form" class="p-2">
         <filter-list

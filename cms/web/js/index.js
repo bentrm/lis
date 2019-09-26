@@ -29,13 +29,13 @@ new Vue({
 // initialize map
 const mapViewOutlet = document.querySelector('#map-view-outlet');
 if (mapViewOutlet) {
+  window.addEventListener('load', setMapHeight, { once: true });
+  window.addEventListener('resize', debounce(setMapHeight, 250));
+
   new Vue({
     el: mapViewOutlet,
-    router
+    router,
   });
-
-  window.addEventListener("resize", debounce(setMapHeight, 250));
-  setMapHeight();
 }
 
 const authorListViewOutlet = document.querySelector('#author-list-view-outlet');
@@ -102,7 +102,9 @@ if ($('.AuthorList').get(0)) {
           const template = `
             <span class="bookmark fa-layers">
               <i class="fas fa-bookmark footnote"></i>
-              <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-5 up-2">${$footnote.index() + 1}</span>
+              <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-5 up-2">
+                ${$footnote.index() + 1}
+              </span>
             </span>
           `;
           const $node = $(template);

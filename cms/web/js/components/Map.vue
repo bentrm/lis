@@ -80,6 +80,11 @@
       map.on('click', vm.onMapClick);
       map.on('moveend', vm.onMoveEnd);
       vm.clusterLayer.on('click', vm.onFeatureSelect);
+
+      vm.$nextTick(() => {
+        // TODO: Quickfix for map not displaying correctly after first load.
+        setTimeout(() => map.invalidateSize(), 1000);
+      });
     },
 
     watch: {
