@@ -1,13 +1,17 @@
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const isProd = process.env.NODE_ENV !== 'production';
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const env = process.env.NODE_ENV;
+const isProd = env === 'production';
+
 
 module.exports = {
+  mode: env || 'development',
   entry: {
     index: ['whatwg-fetch', './js/index.js'],
-    main: './scss/main.scss'
   },
-  devtool: isProd ? 'eval-source-map' : 'source-map',
+  devtool: isProd ? 'source-map' : 'eval-source-map',
   watch: false,
   watchOptions: {
     ignored: ['node_modules', 'dist']
@@ -23,7 +27,12 @@ module.exports = {
     }
   },
   plugins: [
-    new VueLoaderPlugin()
+    new CleanWebpackPlugin(),
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[id].css'
+    })
   ],
   module: {
     rules: [
@@ -32,11 +41,18 @@ module.exports = {
         loader: 'vue-loader'
       },
       {
-        test: /\.scss$/,
+        test: /\.(sa|sc|c)ss$/,
         use: [
-          'vue-style-loader',
+          isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
           'css-loader',
-          'sass-loader',
+          'resolve-url-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              sourceMapContents: false
+            }
+          }
         ]
       },
       {
@@ -46,7 +62,7 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'images'
+              outputPath: 'images/'
             }
           },
         ],

@@ -131,3 +131,9 @@
     }
   };
 </script>
+
+<style lang="scss">
+  @import "~leaflet/dist/leaflet";
+  @import "~leaflet.locatecontrol/src/L.Control.Locate";
+  @import "../../scss/marker";
+</style>

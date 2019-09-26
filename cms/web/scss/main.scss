@@ -1,7 +1,4 @@
 @import "bootstrap";
-@import "~leaflet/dist/leaflet.css", "~leaflet.locatecontrol/src/L.Control.Locate";
-@import "tagify";
-@import "marker";
 
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
@@ -217,8 +214,8 @@ dl {
     left: 0;
     right: 0;
     background-color: white;
-    border: 1px solid theme-color("primary");
-    padding: .2rem;
+    border: $input-border-width solid $input-border-color;
+    padding: $input-padding-x $input-padding-y;
     z-index: 1000;
 
     li {

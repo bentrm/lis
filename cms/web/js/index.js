@@ -10,6 +10,8 @@ import AuthorListView from './components/AuthorListView.vue';
 import SearchBar from './components/SearchBar.vue';
 import {debounce} from './utils';
 
+import '../scss/main.scss';
+
 
 window.$ = $;
 
