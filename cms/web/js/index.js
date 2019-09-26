@@ -4,7 +4,6 @@ import $ from 'jquery';
 import 'popper.js';
 import './icons';
 import Vue from 'vue/dist/vue.esm';
-import api from './Api';
 import router from './router';
 import AuthorListView from './components/AuthorListView.vue';
 import SearchBar from './components/SearchBar.vue';
@@ -21,7 +20,6 @@ new Vue({
     SearchBar,
   },
   data: {
-    api,
     results: []
   }
 });

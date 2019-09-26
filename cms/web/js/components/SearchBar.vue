@@ -33,9 +33,10 @@
 </template>
 
 <script>
+  import api from '../Api';
+
   export default {
     name: 'search-bar',
-    props: ['api'],
     data: function () {
       return {
         query: '',
@@ -48,10 +49,10 @@
         const vm = this;
         const options = {search: query, limit: 5};
 
-        vm.api
+        api
           .getMemorials(options)
           .then(json => vm.memorials = json.results);
-        vm.api
+        api
           .getAuthors(options)
           .then(json => vm.authors = json.results);
       }
