@@ -1,21 +1,22 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-
 import 'bootstrap';
-import 'holderjs';
+import 'core-js/stable';
+import {dom} from '@fortawesome/fontawesome-svg-core';
 import $ from 'jquery';
 import 'popper.js';
-import './icons';
+import 'regenerator-runtime/runtime';
 import Vue from 'vue/dist/vue.esm';
-import router from './router';
-import AuthorListView from './components/AuthorListView.vue';
-import SearchBar from './components/SearchBar.vue';
-import {debounce} from './utils';
 
 import '../scss/main.scss';
+import AuthorListView from './components/AuthorListView.vue';
+import SearchBar from './components/SearchBar.vue';
+
+import './icons';
+import router from './router';
+import {debounce} from './utils';
 
 
 window.$ = $;
+dom.watch();
 
 new Vue({
   el: '#search-bar-outlet',

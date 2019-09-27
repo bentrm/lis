@@ -1,44 +1,44 @@
 import {icon, layer} from '@fortawesome/fontawesome-svg-core';
 import {
-  faArchive,
-  faBirthdayCake,
-  faBook,
-  faBuilding,
-  faChurch,
-  faCross,
-  faGraduationCap,
-  faInfo,
-  faLandmark,
-  faLightbulb,
-  faMapMarker,
-  faMonument,
-  faMountain,
-  faPalette,
-  faRoad,
-  faSquare
-} from '@fortawesome/free-solid-svg-icons';
+  archive,
+  birthdayCake,
+  book,
+  building,
+  church,
+  cross,
+  graduationCap,
+  info,
+  landmark,
+  lightbulb,
+  mapMarker,
+  monument,
+  mountain,
+  palette,
+  road,
+  square
+} from './icons';
 
 
 const symbols = {
-  16: faBuilding,
-  17: faRoad,
-  18: faBirthdayCake,
-  19: faBuilding,
-  20: faCross,
-  21: faLightbulb,
-  22: faMonument,
-  23: faMonument,
-  24: faSquare,
-  25: faLandmark,
-  26: faGraduationCap,
-  27: faChurch,
-  28: faMountain,
-  29: faMonument,
-  30: faPalette,
-  31: faInfo,
-  32: faPalette,
-  33: faBook,
-  34: faArchive
+  16: building,
+  17: road,
+  18: birthdayCake,
+  19: building,
+  20: cross,
+  21: lightbulb,
+  22: monument,
+  23: monument,
+  24: square,
+  25: landmark,
+  26: graduationCap,
+  27: church,
+  28: mountain,
+  29: monument,
+  30: palette,
+  31: info,
+  32: palette,
+  33: book,
+  34: archive,
 };
 
 /**
@@ -47,10 +47,10 @@ const symbols = {
  * @returns {Layer}
  */
 export default (symbolId) => {
-  const symbol = symbols[symbolId] || faMonument;
+  const symbol = symbols[symbolId] || monument;
 
   return layer(push => {
-    push(icon(faMapMarker, {
+    push(icon(mapMarker, {
       styles: {'color': '#69140e'},
       transform: {size: 48, x: 0, y: 0},
     }));
