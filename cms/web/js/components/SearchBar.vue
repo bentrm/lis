@@ -5,20 +5,20 @@
         v-model="query"
         class="form-control w-100"
         type="search"
-        placeholder="Search..."
+        :placeholder="'Search' | translate"
         aria-label="Search"
       >
       <ul
-        class="list-unstyled search-bar-results"
+        class="list-unstyled ml-lg-4 search-bar-results"
         v-if="memorials.length || authors.length"
       >
-        <li class="display-4" v-if="memorials.length">Memorials</li>
+        <li class="text-muted text-monospace" v-if="memorials.length">{{ memorialsHeading }}</li>
         <li v-for="result in memorials">
           <a :href="`/map/@${result.position[0]},${result.position[1]},18z/memorial/${result.id}`" :alt="result.name">
           {{ result.name }}
           </a>
         </li>
-        <li class="display-4" v-if="authors.length">Authors</li>
+        <li class="text-muted text-monospace" v-if="authors.length">{{ authorsHeading }}</li>
         <li v-for="result in authors">
           <a :href="result.url">
             {{ result.first_name }} {{ result.last_name }}
@@ -34,27 +34,48 @@
 
 <script>
   import api from '../Api';
+  import translate, {trans} from '../i18n';
 
   export default {
     name: 'search-bar',
+    filters: {
+      translate,
+    },
     data: function () {
       return {
+        limit: 5,
         query: '',
         authors: [],
+        authorsCount: 0,
         memorials: [],
+        memorialsCount: 0,
       };
+    },
+    computed: {
+      memorialsHeading () {
+        return `${trans('Memorials')} (${this.limit} / ${this.memorialsCount})`;
+      },
+      authorsHeading () {
+        return `${trans('Authors')} (${this.limit} / ${this.authorsCount})`;
+      }
     },
     methods: {
       fetchQueryResults: function (query) {
         const vm = this;
-        const options = {search: query, limit: 5};
+        const options = {search: query, limit: vm.limit};
 
         api
           .getMemorials(options)
-          .then(json => vm.memorials = json.results);
+          .then(json => {
+            vm.memorials = json.results;
+            vm.memorialsCount = json.count;
+          });
         api
           .getAuthors(options)
-          .then(json => vm.authors = json.results);
+          .then(json => {
+            vm.authors = json.results;
+            vm.authorsCount = json.count;
+          });
       }
     },
     watch: {
@@ -66,3 +87,33 @@
   };
 
 </script>
+
+<style lang="scss">
+  @import "../../scss/variables";
+
+  .search-bar {
+    position: relative;
+
+    .search-bar-results {
+      display: none;
+      font-size: .8rem;
+      position: absolute;
+      left: 0;
+      right: 0;
+      background-color: white;
+      border: $input-border-width solid $input-border-color;
+      padding: $input-padding-x $input-padding-y;
+      z-index: 1000;
+
+      li {
+        margin-bottom: .2rem;
+      }
+    }
+  }
+
+  .search-bar:focus-within {
+    .search-bar-results {
+      display: block;
+    }
+  }
+</style>
