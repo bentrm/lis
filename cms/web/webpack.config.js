@@ -6,8 +6,19 @@ const env = process.env.NODE_ENV;
 const isProd = env === 'production';
 
 
-console.log(env);
-console.log(isProd);
+const plugins = [
+  new CleanWebpackPlugin(),
+  new VueLoaderPlugin(),
+];
+
+if (isProd) {
+  plugins.push(
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[id].css'
+    })
+  );
+}
 
 
 module.exports = {
@@ -30,14 +41,7 @@ module.exports = {
       name: 'vendor',
     }
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-      chunkFilename: 'css/[id].css'
-    })
-  ],
+  plugins,
   module: {
     rules: [
       {
@@ -64,12 +68,12 @@ module.exports = {
         use: [
           isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
           'css-loader',
+          'postcss-loader',
           'resolve-url-loader',
           {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
-              sourceMapContents: false
             }
           }
         ]
