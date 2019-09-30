@@ -74,6 +74,7 @@
           vm.osmLayer,
           vm.clusterLayer
         ],
+        maxBounds: [[35.0, -10.0], [65.0, 30.0]]
       });
       vm.scaleControl.addTo(map);
       vm.locateControl.addTo(map);
