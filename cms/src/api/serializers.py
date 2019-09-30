@@ -1,8 +1,26 @@
+from html.parser import HTMLParser
+
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 from wagtail.images.views.serve import generate_image_url
 
 from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath
+
+
+class TextExtractor(HTMLParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.text = ""
+
+    def handle_data(self, data):
+        self.text += data
+
+    @classmethod
+    def extract_text(cls, data):
+        self = cls()
+        self.feed(data)
+        self.close()
+        return self.text
 
 
 class RenditionField(serializers.Field):
@@ -177,16 +195,20 @@ class MemorialDetailSerializer(MemorialListSerializer):
         return serializer.data
 
     def get_address(self, obj):
-        return obj.i18n_address
+        if TextExtractor.extract_text(obj.i18n_address):
+            return obj.i18n_address
 
     def get_contact_info(self, obj):
-        return obj.i18n_contact_info
+        if TextExtractor.extract_text(obj.i18n_contact_info):
+            return obj.i18n_contact_info
 
     def get_directions(self, obj):
-        return obj.i18n_directions
+        if TextExtractor.extract_text(obj.i18n_directions):
+            return obj.i18n_directions
 
     def get_introduction(self, obj):
-        return obj.i18n_introduction
+        if TextExtractor.extract_text(obj.i18n_introduction):
+            return obj.i18n_introduction
 
     def get_description(self, obj):
         return obj.i18n_description.stream_data if obj.i18n_description else []
