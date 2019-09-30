@@ -1,14 +1,18 @@
 import django_filters
 from django.db.models import OuterRef, Subquery, Prefetch, Count, Q, F, When, Case
-from django.utils.translation import get_language
+from django.http import Http404
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, \
-    AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer
-from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath
+    AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer, \
+    Level1Serializer, Level2Serializer, Level3Serializer
+from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath, \
+    Level1Page, Level2Page, Level3Page
 
 
 # Notice: All views in this page override the get_queryset method to make sure the language code
@@ -62,6 +66,36 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
             queryset = queryset.prefetch_related(memorials_prefetch)
 
         return queryset.public().live()
+
+    @action(detail=True)
+    def discover(self, request, pk=None):
+        try:
+            page = Level1Page.objects.child_of(Author.objects.get(pk=pk)).get()
+        except (Level1Page.DoesNotExist, Author.DoesNotExist):
+            raise Http404
+
+        serializer = Level1Serializer(instance=page)
+        return Response(serializer.data)
+
+    @action(detail=True)
+    def research(self, request, pk=None):
+        try:
+            page = Level2Page.objects.child_of(Author.objects.get(pk=pk)).get()
+        except (Level2Page.DoesNotExist, Author.DoesNotExist):
+            raise Http404
+
+        serializer = Level2Serializer(instance=page)
+        return Response(serializer.data)
+
+    @action(detail=True)
+    def material(self, request, pk=None):
+        try:
+            page = Level3Page.objects.child_of(Author.objects.get(pk=pk)).get()
+        except (Level3Page.DoesNotExist, Author.DoesNotExist):
+            raise Http404
+
+        serializer = Level3Serializer(instance=page)
+        return Response(serializer.data)
 
 
 class MemorialViewSet(ActionAwareReadOnlyModelViewSet):

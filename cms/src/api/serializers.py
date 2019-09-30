@@ -1,39 +1,9 @@
-from html.parser import HTMLParser
-
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
-from wagtail.images.views.serve import generate_image_url
 
-from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath
-
-
-class TextExtractor(HTMLParser):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.text = ""
-
-    def handle_data(self, data):
-        self.text += data
-
-    @classmethod
-    def extract_text(cls, data):
-        self = cls()
-        self.feed(data)
-        self.close()
-        return self.text
-
-
-class RenditionField(serializers.Field):
-    def __init__(self, operation='fill-100x100|jpegquality-40', **kwargs):
-        super().__init__(**kwargs)
-        self.operation = operation
-
-    def to_representation(self, value):
-        """
-        Serialize the value's class name.
-        """
-        if value:
-            return generate_image_url(value, self.operation)
+from api.serializer_fields import RenditionField, TranslationField
+from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath, \
+    Level1Page, Level2Page, Level3Page
 
 
 class TitleSerializerMixin(serializers.ModelSerializer):
@@ -65,22 +35,10 @@ class MemorialTypeSerializer(TitleSerializerMixin):
 
 
 class AuthorNameSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField(required=False)
-    first_name = serializers.SerializerMethodField(required=False)
-    last_name = serializers.SerializerMethodField()
-    birth_name = serializers.SerializerMethodField(required=False)
-
-    def get_title(self, obj):
-        return obj.i18n_title
-
-    def get_first_name(self, obj):
-        return obj.i18n_first_name
-
-    def get_last_name(self, obj):
-        return obj.i18n_last_name
-
-    def get_birth_name(self, obj):
-        return obj.i18n_birth_name
+    title = TranslationField()
+    first_name = TranslationField()
+    last_name = TranslationField()
+    birth_name = TranslationField()
 
     class Meta:
         fields = (
@@ -124,11 +82,23 @@ class AuthorDetailSerializer(AuthorListSerializer):
     genres = GenreSerializer(source="genre_tags", many=True)
     languages = GenreSerializer(source="language_tags", many=True)
     periods = PeriodSerializer(source="literary_period_tags", many=True)
+    has_discover = serializers.SerializerMethodField()
+    has_research = serializers.SerializerMethodField()
+    has_material = serializers.SerializerMethodField()
 
     def get_also_known_as(self, obj):
         names = obj.names.all()[1:]
         serializer = AuthorNameSerializer(instance=names, many=True)
         return serializer.data
+
+    def get_has_discover(self, obj):
+        return Level1Page.objects.child_of(obj).exists()
+
+    def get_has_research(self, obj):
+        return Level2Page.objects.child_of(obj).exists()
+
+    def get_has_material(self, obj):
+        return Level3Page.objects.child_of(obj).exists()
 
     class Meta:
         fields = (
@@ -146,6 +116,9 @@ class AuthorDetailSerializer(AuthorListSerializer):
             'languages',
             'periods',
             'url',
+            'has_discover',
+            'has_research',
+            'has_material',
         )
         model = Author
 
@@ -176,12 +149,12 @@ class MemorialListSerializer(TitleSerializerMixin):
 class MemorialDetailSerializer(MemorialListSerializer):
     banner = RenditionField(source='title_image', operation='fill-800x400|jpegquality-60')
     authors = serializers.SerializerMethodField()
-    address = serializers.SerializerMethodField()
-    contact_info = serializers.SerializerMethodField()
-    directions = serializers.SerializerMethodField()
-    introduction = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
-    detailed_description = serializers.SerializerMethodField()
+    address = TranslationField()
+    contact_info = TranslationField()
+    directions = TranslationField()
+    introduction = TranslationField()
+    description = TranslationField()
+    detailed_description = TranslationField()
 
     def get_authors(self, obj):
         popular_name_qs = AuthorName.objects.filter(author_id=OuterRef('pk')).order_by('sort_order')[:1]
@@ -193,28 +166,6 @@ class MemorialDetailSerializer(MemorialListSerializer):
         ).select_related('title_image').live().public()
         serializer = AuthorListSerializer(queryset, many=True)
         return serializer.data
-
-    def get_address(self, obj):
-        if TextExtractor.extract_text(obj.i18n_address):
-            return obj.i18n_address
-
-    def get_contact_info(self, obj):
-        if TextExtractor.extract_text(obj.i18n_contact_info):
-            return obj.i18n_contact_info
-
-    def get_directions(self, obj):
-        if TextExtractor.extract_text(obj.i18n_directions):
-            return obj.i18n_directions
-
-    def get_introduction(self, obj):
-        if TextExtractor.extract_text(obj.i18n_introduction):
-            return obj.i18n_introduction
-
-    def get_description(self, obj):
-        return obj.i18n_description.stream_data if obj.i18n_description else []
-
-    def get_detailed_description(self, obj):
-        return obj.i18n_detailed_description.stream_data if obj.i18n_detailed_description else []
 
     class Meta:
         fields = (
@@ -236,11 +187,7 @@ class MemorialDetailSerializer(MemorialListSerializer):
 
 
 class MemorialPathListSerializer(TitleSerializerMixin):
-
-    description = serializers.SerializerMethodField()
-
-    def get_description(self, obj):
-        return obj.i18n_description
+    description = TranslationField()
 
     class Meta:
         model = MemorialPath
@@ -268,3 +215,52 @@ class MemorialPathDetailSerializer(MemorialPathListSerializer):
             'description',
             'waypoints',
         )
+
+
+class Level1Serializer(serializers.ModelSerializer):
+    biography = TranslationField()
+    works = TranslationField()
+
+    class Meta:
+        fields = (
+            'id',
+            'biography',
+            'works',
+        )
+        model = Level1Page
+
+
+class Level2Serializer(serializers.ModelSerializer):
+    biography = TranslationField()
+    works = TranslationField()
+    reception = TranslationField()
+    connections = TranslationField()
+    full_texts = TranslationField()
+
+    class Meta:
+        fields = (
+            'id',
+            'biography',
+            'works',
+            'reception',
+            'connections',
+            'full_texts',
+        )
+        model = Level2Page
+
+
+class Level3Serializer(serializers.ModelSerializer):
+    primary_literature = TranslationField()
+    testimony = TranslationField()
+    secondary_literature = TranslationField()
+    didactic_material = TranslationField()
+
+    class Meta:
+        fields = (
+            'id',
+            'primary_literature',
+            'testimony',
+            'secondary_literature',
+            'didactic_material',
+        )
+        model = Level3Page
