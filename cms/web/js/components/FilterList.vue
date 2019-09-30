@@ -39,14 +39,14 @@
           </slot>
         </template>
       </filter-item>
-      <li v-if="!items.length">
+      <filter-item v-if="!items.length">
         <slot name="empty">
           {{ 'No filter item available.' | translate }}
         </slot>
-      </li>
-      <li v-else-if="!expanded && !visibleItems.length">
+      </filter-item>
+      <filter-item v-else-if="!expanded && !visibleItems.length">
         {{ 'No filter item selected.' | translate }}
-      </li>
+      </filter-item>
     </ul>
   </div>
 </template>
@@ -179,7 +179,6 @@
       overflow: scroll;
       resize: vertical;
       max-height: 250px;
-      transition: height 0.5s ease-in-out;
     }
   }
 </style>
