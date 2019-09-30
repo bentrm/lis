@@ -12,13 +12,17 @@
         class="list-unstyled ml-lg-4 search-bar-results"
         v-if="memorials.length || authors.length"
       >
-        <li class="text-muted text-monospace" v-if="memorials.length">{{ memorialsHeading }}</li>
+        <li class="text-muted text-monospace" v-if="memorials.length">
+          <u>{{ memorialsHeading }}</u>
+        </li>
         <li v-for="result in memorials">
           <a :href="`/map/@${result.position[0]},${result.position[1]},18z/memorial/${result.id}`" :alt="result.name">
           {{ result.name }}
           </a>
         </li>
-        <li class="text-muted text-monospace" v-if="authors.length">{{ authorsHeading }}</li>
+        <li class="text-muted text-monospace" v-if="authors.length">
+          <u>{{ authorsHeading }}</u>
+        </li>
         <li v-for="result in authors">
           <a :href="result.url">
             {{ result.first_name }} {{ result.last_name }}
@@ -53,10 +57,10 @@
     },
     computed: {
       memorialsHeading () {
-        return `${translate('Memorials')} (${this.limit} / ${this.memorialsCount})`;
+        return `${translate('Memorials')} (${this.memorials.length} / ${this.memorialsCount})`;
       },
       authorsHeading () {
-        return `${translate('Authors')} (${this.limit} / ${this.authorsCount})`;
+        return `${translate('Authors')} (${this.authors.length} / ${this.authorsCount})`;
       }
     },
     methods: {
