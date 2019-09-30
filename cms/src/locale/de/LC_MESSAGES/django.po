@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-12 10:36+0200\n"
+"POT-Creation-Date: 2019-09-30 08:39+0200\n"
 "PO-Revision-Date: 2019-03-29 14:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: LIS-Team <postmaster@mg.lis-map.eu>\n"
@@ -19,7 +19,6 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: api/filters.py:15 cms/templates/app/includes/_filterbar.html:36
-#| msgid "female"
 msgid "Female"
 msgstr "Weiblich"
 
@@ -42,7 +41,6 @@ msgid "Language"
 msgstr "Sprache"
 
 #: api/filters.py:37
-#| msgid "Periods"
 msgid "Period"
 msgstr "Epoche"
 
@@ -52,7 +50,6 @@ msgid "Author"
 msgstr "Autorin oder Autor"
 
 #: api/filters.py:54
-#| msgid "Memorial types"
 msgid "Memorial type"
 msgstr "Ortstyp"
 
@@ -447,8 +444,7 @@ msgstr ""
 msgid "Place of death"
 msgstr "Sterbeort"
 
-#: cms/messages.py:119 cms/messages.py:263
-#: cms/templates/app/author-list.html:32 cms/templates/app/base.html:57
+#: cms/messages.py:119 cms/messages.py:263 cms/templates/app/base.html:57
 #: cms/templates/app/includes/_navbar.html:33
 #: cms/templates/app/includes/_sidebar.html:14 templates/base.html:158
 msgid "Authors"
@@ -924,17 +920,14 @@ msgid "Image rendition"
 msgstr "Bildzuschnitt"
 
 #: cms/messages.py:330
-#| msgid "Memorial site"
 msgid "Memorial path"
 msgstr "Erinnerungspfad"
 
 #: cms/messages.py:331
-#| msgid "Memorial sites"
 msgid "Memorial paths"
 msgstr "Erinnerungspfade"
 
 #: cms/messages.py:333
-#| msgid "A short description of the tag."
 msgid "A short description of the highlights of this memorial path."
 msgstr "Eine kurze Beschreibung zum Erinnerungspfad."
 
@@ -1010,6 +1003,7 @@ msgstr "geboren"
 
 #: cms/templates/app/author-detail.html:36
 #: cms/templates/app/author-detail.html:48
+#, python-format
 msgid ""
 "\n"
 "                    in %(place)s\n"
@@ -1041,10 +1035,9 @@ msgstr "Mehr"
 msgid "About"
 msgstr "Über"
 
-#: cms/templates/app/base.html:63 cms/templates/app/includes/_navbar.html:39
-#: cms/templates/app/includes/_sidebar.html:23
-msgid "Imprint"
-msgstr "Impressum"
+#: cms/templates/app/base.html:63
+msgid "Imprint & data protection"
+msgstr "Impressum & Datenschutz"
 
 #: cms/templates/app/base.html:64 cms/templates/app/includes/_navbar.html:40
 #: cms/templates/app/includes/_sidebar.html:20
@@ -1058,6 +1051,11 @@ msgstr "Suchen"
 #: cms/templates/app/includes/_filterbar.html:32
 msgid "All"
 msgstr "Alle"
+
+#: cms/templates/app/includes/_navbar.html:39
+#: cms/templates/app/includes/_sidebar.html:23
+msgid "Imprint"
+msgstr "Impressum"
 
 #: cms/templates/cms/author.html:26
 msgctxt "female"
@@ -1358,9 +1356,6 @@ msgstr "Passwort vergessen?"
 
 #~ msgid "CMS"
 #~ msgstr "CMS"
-
-#~ msgid "Data protection"
-#~ msgstr "Datenschutz"
 
 #~ msgid "Demo"
 #~ msgstr "Demo"
