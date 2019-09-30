@@ -1,15 +1,14 @@
 <template>
-  <li :class="{'active': enabled}" v-on:click="onClick">
+  <li :class="['filter-item', {'active': enabled}, 'rounded']" v-on:click="onClick">
     <slot></slot>
-    <span v-if="enabled">
-      <i class="fas fa-times"></i>
-    </span>
   </li>
 </template>
 
 <script>
   export default {
     props: {
+      id: [String, Number],
+      title: String,
       enabled: {
         type: Boolean,
         default: false,
@@ -25,8 +24,30 @@
       onClick () {
         const vm = this;
         const event = vm.enabled ? 'disabled' : 'enabled';
-        vm.$emit(event, vm.item);
+        vm.$emit(event, vm.id);
       }
     }
   }
 </script>
+
+<style lang="scss">
+  @import "../../scss/_variables";
+
+  .filter-item {
+    background-color: $gray-100;
+    padding: 0 10px;
+    margin: 3px;
+    cursor: pointer;
+
+    &.active {
+      background-color: theme-color("primary");
+      color: theme-color("light");
+
+    }
+
+    &:hover {
+      box-shadow: 0 0 3px $gray-100;
+    }
+
+  }
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="row h-100">
+  <div class="MapView row">
 
     <main class="col p-0">
       <Map
@@ -9,37 +9,45 @@
         v-on:moveend="onMapMoveEnd"></Map>
     </main>
 
-    <aside class="col-6 col-lg-4 h-100 overflow-auto border-left">
+    <aside
+      v-if="$route.name === 'map'"
+      class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
+      <h5>{{ 'Keyword search' | translate }}</h5>
+      <filter-list
+        v-on:change="onAuthorSelectionChange"
+        :items="authorFilterList"
+        :selection="authorSelection"
+        :initial-collapse="false"
+      >
+        <template v-slot:header>{{ authorFilterHeader }}</template>
+      </filter-list>
 
-      <div class="p-2" v-if="$route.name === 'map'">
-
-        <h4>{{memorials.length}} memorials found:</h4>
-
-        <filter-list
-          v-on:change="onAuthorFilterChange"
-          :items="authors"
-          :selection="authorSelection">
-          <template v-slot:header>{{ authorFiltersHeader }}</template>
-          <template v-slot:item="{item}">
-            {{item.last_name}}, {{item.first_name}}
-          </template>
-        </filter-list>
-
-        <filter-list
-          v-on:change="onTypeSelectionChange"
-          :items="types"
-          :selection="typeSelection">
-          <template v-slot:header>{{ typeFiltersHeader }}</template>
-          <template v-slot:item="{item}">
-            {{item.name}}
-          </template>
-        </filter-list>
-      </div>
-
-      <router-view
-        :memorial="memorialSelect"
-        v-on:hide="onMemorialDetailHide"></router-view>
+      <filter-list
+        v-on:change="onTypeSelectionChange"
+        :items="typeFilterList"
+        :selection="typeSelection">
+        <template v-slot:header>{{ typeFilterHeader }}</template>
+      </filter-list>
     </aside>
+
+    <aside
+      v-if="$route.name === 'memorial-detail'"
+      class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last p-0"
+    >
+      <memorial-card
+        v-if="memorialSelect"
+        class="border-0"
+        :banner="memorialSelect.banner"
+        :title="memorialSelect.name"
+        :authors="memorialSelect.authors"
+        :address="memorialSelect.address"
+        :contactInfo="memorialSelect.contact_info"
+        :directions="memorialSelect.directions"
+        :introduction="memorialSelect.introduction"
+        v-on:hide="onMemorialDetailHide">
+      </memorial-card>
+    </aside>
+
   </div>
 </template>
 
@@ -47,7 +55,9 @@
   import {mapStateToPath, pathToMapState} from '../utils';
   import Map from './Map.vue';
   import FilterList from './FilterList.vue';
+  import MemorialCard from './MemorialCard.vue';
   import api from '../Api';
+  import translate from '../translate';
 
   export default {
     props: {
@@ -59,8 +69,13 @@
     },
 
     components: {
+      MemorialCard,
       Map,
       FilterList,
+    },
+
+    filters: {
+      translate,
     },
 
     data() {
@@ -83,24 +98,7 @@
 
     computed: {
 
-      authorFiltersHeader () {
-        const vm = this;
-        return `Authors (${vm.authorSelection.size} / ${vm.authors.length})`;
-      },
-
-      typeFiltersHeader () {
-        const vm = this;
-        return `Types (${vm.typeSelection.size} / ${vm.types.length})`;
-      },
-
-      authorFilters () {
-        return {
-          ordering: 'last_name,first_name',
-          limit: 1000,
-        };
-      },
-
-      memorialFilters () {
+      memorialParams () {
         return {
           author: [...this.authorSelection],
           memorial_type: [...this.typeSelection],
@@ -109,7 +107,38 @@
         };
       },
 
-      typeFilters () {
+      authorFilterHeader () {
+        const vm = this;
+        return `${translate('Authors')} (${vm.authorSelection.size} / ${vm.authors.length})`;
+      },
+
+      authorFilterList () {
+        return this.authors.map(x => ({
+          id: x.id,
+          title: `${x.last_name}, ${x.first_name}`,
+        }));
+      },
+
+      authorParams () {
+        return {
+          ordering: 'last_name,first_name',
+          limit: 1000,
+        };
+      },
+
+      typeFilterHeader () {
+        const vm = this;
+        return `${translate('Types')} (${vm.typeSelection.size} / ${vm.types.length})`;
+      },
+
+      typeFilterList () {
+        return this.types.map(x => ({
+          id: x.id,
+          title: x.name,
+        }));
+      },
+
+      typeParams () {
         return {
           ordering: 'name',
           limit: 1000,
@@ -135,7 +164,7 @@
         }
       },
 
-      memorialFilters (newFilters) {
+      memorialParams (newFilters) {
         this.fetchMemorials();
       }
     },
@@ -187,14 +216,18 @@
           return;
         }
 
-        vm.$router.push({name: vm.$route.name, params: { ...vm.$route.params, mapStatePath }});
+        vm.$router.push({
+          name: vm.$route.name,
+          params: { ...vm.$route.params, mapStatePath }},
+          () => {}
+        );
       },
 
       onPopState () {
         this.manualRouteTransition = true;
       },
 
-      onAuthorFilterChange (selection) {
+      onAuthorSelectionChange (selection) {
         this.authorSelection = selection;
       },
 
@@ -215,7 +248,7 @@
       fetchMemorials() {
         const vm = this;
         api
-          .getMemorials(vm.memorialFilters)
+          .getMemorials(vm.memorialParams)
           .then(json => vm.memorials = json.results);
       },
 
@@ -229,16 +262,32 @@
       fetchAuthors() {
         const vm = this;
         api
-          .getAuthors(vm.authorFilters)
+          .getAuthors(vm.authorParams)
           .then(json => vm.authors = json.results);
       },
 
       fetchTypes() {
         const vm = this;
         api
-          .getResults('/memorialTypes', vm.typeFilters)
+          .getResults('/memorialTypes', vm.typeParams)
           .then(json => vm.types = json.results);
       }
     }
   };
 </script>
+
+<style lang="scss">
+  .MapView {
+    height: 80vh;
+    max-height: 80vh;
+
+    .Map {
+      max-height: 80vh;
+    }
+
+    .Sidebar {
+      max-height: 80vh;
+      overflow-x: scroll;
+    }
+  }
+</style>

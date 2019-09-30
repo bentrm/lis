@@ -31,8 +31,8 @@ new Vue({
 // initialize map
 const mapViewOutlet = document.querySelector('#map-view-outlet');
 if (mapViewOutlet) {
-  window.addEventListener('load', setMapHeight, { once: true });
-  window.addEventListener('resize', debounce(setMapHeight, 250));
+  // window.addEventListener('load', setMapHeight, { once: true });
+  // window.addEventListener('resize', debounce(setMapHeight, 250));
 
   new Vue({
     el: mapViewOutlet,

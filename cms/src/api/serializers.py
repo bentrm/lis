@@ -1,7 +1,21 @@
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
+from wagtail.images.views.serve import generate_image_url
 
 from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath
+
+
+class RenditionField(serializers.Field):
+    def __init__(self, operation='fill-100x100|jpegquality-40', **kwargs):
+        super().__init__(**kwargs)
+        self.operation = operation
+
+    def to_representation(self, value):
+        """
+        Serialize the value's class name.
+        """
+        if value:
+            return generate_image_url(value, self.operation)
 
 
 class TitleSerializerMixin(serializers.ModelSerializer):
@@ -66,12 +80,8 @@ class AuthorListSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     birth_name = serializers.CharField(read_only=True)
-    thumb = serializers.SerializerMethodField(required=False)
+    thumb = RenditionField(source='title_image', operation='fill-250x250|jpegquality-60')
     url = serializers.SerializerMethodField()
-
-    def get_thumb(self, obj):
-        if obj.title_image:
-            return obj.title_image.get_rendition('fill-100x100|jpegquality-60').url
 
     def get_url(self, obj):
         return obj.get_url()
@@ -91,6 +101,7 @@ class AuthorListSerializer(serializers.ModelSerializer):
 
 
 class AuthorDetailSerializer(AuthorListSerializer):
+    banner = RenditionField(source='title_image', operation='fill-800x400|jpegquality-60')
     also_known_as = serializers.SerializerMethodField()
     genres = GenreSerializer(source="genre_tags", many=True)
     languages = GenreSerializer(source="language_tags", many=True)
@@ -110,6 +121,7 @@ class AuthorDetailSerializer(AuthorListSerializer):
             'last_name',
             'birth_name',
             'thumb',
+            'banner',
             'also_known_as',
             'memorials',
             'genres',
@@ -144,6 +156,7 @@ class MemorialListSerializer(TitleSerializerMixin):
 
 
 class MemorialDetailSerializer(MemorialListSerializer):
+    banner = RenditionField(source='title_image', operation='fill-800x400|jpegquality-60')
     authors = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
     contact_info = serializers.SerializerMethodField()
@@ -186,6 +199,7 @@ class MemorialDetailSerializer(MemorialListSerializer):
             "id",
             "name",
             "thumb",
+            'banner',
             "authors",
             "position",
             "memorial_types",

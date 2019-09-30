@@ -60,7 +60,7 @@
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">{% trans 'More' %}</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% slugurl 'about' %}">{% trans 'About' %}</a>
-              <a class="dropdown-item" href="{% slugurl 'imprint' %}">{% trans 'Imprint' %}</a>
+              <a class="dropdown-item" href="{% slugurl 'imprint' %}">{% trans 'Imprint & data protection' %}</a>
               <a class="dropdown-item" href="{% url 'wagtailadmin_home' %}">{% trans 'Admin' %}</a>
             </div>
           </li>
@@ -88,9 +88,33 @@
   </div>
 
   {% block Content %}{% endblock %}
+</div>
 
-  {% block Footer %}{% endblock %}
-
+<div class="Footer">
+  <div class="container">
+    <div class="row">
+      <div class="Footer-content col-12">
+        {#          <h6><a href="{% slugurl 'partner' %}">{% trans 'Project partner' %}</a></h6>#}
+        {#          <div class="row justify-content-center">#}
+        {#            <div class="col-6 col-md-4">#}
+        {#              <a class="bg-light stretched-link" href="{% slugurl 'tu-dresden' %}">#}
+        {#                <img src="{% static 'logos/logo_tu_dresden.svg' %}" alt="Logo TU Dresden" class="img-fluid m-2">#}
+        {#              </a>#}
+        {#            </div>#}
+        {#            <div class="col-6 col-md-4">#}
+        {#              <a class="bg-light stretched-link" href="{% slugurl 'tu-liberec' %}">#}
+        {#                <img src="{% static 'logos/logo_tu_liberec.svg' %}" alt="Logo TU Liberec" class="img-fluid m-2">#}
+        {#              </a>#}
+        {#            </div>#}
+        {#            <div class="col-6 col-md-4">#}
+        {#              <a class="bg-light stretched-link" href="{% slugurl 'htw-dresden' %}">#}
+        {#                <img src="{% static 'logos/logo_htw_dresden.svg' %}" alt="Logo HTW Dresden" class="img-fluid m-2">#}
+        {#              </a>#}
+        {#            </div>#}
+        {#          </div>#}
+      </div>
+    </div>
+  </div>
 </div>
 {% block Scripts %}
   <script src="{% static 'app/vendor.js' %}"></script>

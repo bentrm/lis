@@ -10,10 +10,10 @@
 
   <div class="row">
 
-    <div class="col-xs-12 col-lg-3 order-lg-last">
+    <div class="col-12 col-lg-3 order-lg-last">
       <div class="row">
         {% for image in value.images %}
-          <div class="col-xs-3 col-sm-2 col-lg-12 flex-lg-column">
+          <div class="col-12 col-xs-6 col-sm-4 col-lg-12 flex-lg-column">
             {% image image max-200x200 as rendition %}
             <figure class="figure d-flex flex-column align-items-center">
               <img src="{{ rendition.url }}" class="figure-img img-fluid shadow" alt="{{ image.i18n_alt }}" data-toggle="modal" data-target="#img-{{ image.pk }}">

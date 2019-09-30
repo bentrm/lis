@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <div v-if="memorial">
-      <h3>
-        {{memorial.name}}
-        <span @click="$emit('hide')">
+  <div class="card memorial-card">
+    <span class="close" v-on:click="$emit('hide')">
           <i class="fas fa-times"></i>
         </span>
-      </h3>
-      <img
-        v-if="memorial.thumb"
-        :src="memorial.thumb"
-        :alt="memorial.name"
-        class="Memorial-badge border border-primary rounded-circle align-self-center">
+    <img
+      class="card-img-top"
+      v-if="banner"
+      :src="banner"
+      :alt="title">
+    <div class="card-body">
+      <h5>{{ title }}</h5>
       <ul class="list-unstyled">
-        <li v-for="author in memorial.authors" :key="author.id">
+        <li v-for="author in authors" :key="author.id">
           <a :href="author.url">{{author.first_name}} {{author.last_name}}</a>
         </li>
       </ul>
-      <div v-html="memorial.address"></div>
-      <div v-html="memorial.contact_info"></div>
-      <div v-html="memorial.directions"></div>
-      <div v-html="memorial.introduction"></div>
+      <div v-if="introduction" v-html="introduction"></div>
+      <address class="address" v-if="address" v-html="address"></address>
+      <div v-if="contactInfo" v-html="contactInfo"></div>
+      <div v-if="directions" v-html="directions"></div>
     </div>
   </div>
 </template>
@@ -28,8 +26,24 @@
 <script>
   export default {
     props: {
-      api: Object,
-      memorial: Object,
+      banner: String,
+      title: String,
+      authors: Array,
+      address: String,
+      contactInfo: String,
+      directions: String,
+      introduction: String
     },
   };
 </script>
+
+<style lang="scss">
+  .memorial-card {
+    .close {
+      color: white;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+</style>

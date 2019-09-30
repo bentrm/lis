@@ -1,23 +1,34 @@
 <template>
   <div class="filter-list">
-    <div class="filter-list-heading">
-      <slot name="header">
-        <span v-if="selection.size">
-          {{selection.size}} filters selected.
-        </span>
-        <span v-else>
-          No filters selected.
-        </span>
-      </slot>
-      <span v-if="selection.size" v-on:click="resetFilter">
-        <i class="fas fa-times"></i>
+    <span class="filter-list-heading d-flex justify-content-between mb-1">
+      <span class="filter-list-heading-title text-muted">
+        <slot name="header">{{ defaultHeader }}</slot>
       </span>
+      <span class="filter-list-heading-controls">
+        <span :key="'btn-reset'" v-if="selection.size" v-on:click="resetFilter">
+          <i class="fas fa-times"></i>
+        </span>
+        <span :key="'btn-collapse'" v-if="collapsable && collapsed" v-on:click="collapsed = false">
+          <i class="fas fa-eye-slash"></i>
+        </span>
+        <span :key="'btn-show'" v-else-if="collapsable && !collapsed" v-on:click="collapsed = true">
+          <i class="fas fa-eye"></i>
+        </span>
+      </span>
+    </span>
+    <div v-if="searchable && !collapsed" class="filter-list-search">
+      <input type="text" class="form-control border-bottom-0 w-100" :placeholder="searchPlaceholder" v-model="searchTerm">
     </div>
-    <ul class="list-unstyled">
+    <ul
+      class="list-unstyled p-1 d-flex flex-wrap align-content-start"
+      v-on:mouseover="hover = true"
+      v-on:mouseleave="hover = false"
+    >
       <filter-item
-        v-for="item in items"
+        v-for="item in visibleItems"
         :key="item.id"
-        :item="item"
+        :id="item.id"
+        :title="item.title"
         :enabled="selection.has(item.id)"
         v-on:enabled="enableFilter"
         v-on:disabled="disableFilter"
@@ -28,52 +39,124 @@
           </slot>
         </template>
       </filter-item>
-        <li v-if="!items.length">
-          <slot name="empty">
-            No filters available.
-          </slot>
-        </li>
+      <li v-if="!items.length">
+        <slot name="empty">
+          {{ 'No filter item available.' | translate }}
+        </slot>
+      </li>
+      <li v-else-if="!expanded && !visibleItems.length">
+        {{ 'No filter item selected.' | translate }}
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
   import FilterItem from './FilterItem.vue';
+  import translate from '../translate';
+
+  const normalizeString = (str = '') => str.toLowerCase().trim();
 
   export default {
     props: {
+
       items: {
         type: [Array, Set],
         default () {
           return [];
         }
       },
+
       selection: {
         type: Set,
         default () {
           return new Set();
         }
+      },
+
+      searchable: {
+        type: Boolean,
+        default: true,
+      },
+
+      searchPlaceholder: {
+        type: String,
+        default: translate('Keyword..'),
+      },
+
+      collapsable: {
+        type: Boolean,
+        default: true
+      },
+
+      initialCollapse: {
+        type: Boolean,
+        default: true
       }
     },
     components: {
       FilterItem,
     },
+
+    filters: {
+      translate,
+    },
+
+    data () {
+      return {
+        collapsed: true,
+        hover: false,
+        searchTerm: ''
+      };
+    },
+    computed: {
+      defaultHeader () {
+        return `${this.selection.size} ${translate('items selected')}.`;
+      },
+
+      expanded () {
+        if (this.collapsable) {
+          return !this.collapsed || this.hover;
+        } else {
+          return true;
+        }
+      },
+
+      visibleItems () {
+        const vm = this;
+        const selectedItems = vm.items.filter(x => vm.selection.has(x.id));
+
+        if (!vm.expanded) return selectedItems;
+
+        const normalizedSearchTerm = normalizeString(vm.searchTerm);
+        const matchedItems = vm.items.filter(x => {
+          const normalizedTitle = normalizeString(x.title);
+          return !vm.selection.has(x.id) && (normalizedTitle.indexOf(normalizedSearchTerm) > -1);
+        });
+        return selectedItems.concat(matchedItems);
+      }
+    },
+
+    created () {
+      this.collapsed = this.initialCollapse;
+    },
+
     methods: {
       resetFilter() {
         this.$emit('change', new Set());
       },
 
-      enableFilter (item) {
+      enableFilter (id) {
         const vm = this;
         const newSelection = new Set(vm.selection);
-        newSelection.add(item.id);
+        newSelection.add(id);
         vm.$emit('change', newSelection);
       },
 
-      disableFilter (item) {
+      disableFilter (id) {
         const vm = this;
         const newSelection = new Set(vm.selection);
-        newSelection.delete(item.id);
+        newSelection.delete(id);
         vm.$emit('change', newSelection);
       },
     }
@@ -83,25 +166,20 @@
 <style lang="scss">
   @import "../../scss/variables";
 
+
   .filter-list {
-    .filter-list-heading {
-      margin-bottom: 0;
+    font-size: $font-size-sm;
+
+    input {
+      font-size: $font-size-sm;
     }
 
     ul {
       border: 1px solid theme-color("secondary");
-      font-size: .8rem;
-      height: 8rem;
       overflow: scroll;
-
-      li {
-        padding: 0 10px;
-
-        &.active {
-          background-color: $gray-600;
-          color: theme-color("light");
-        }
-      }
+      resize: vertical;
+      max-height: 250px;
+      transition: height 0.5s ease-in-out;
     }
   }
 </style>

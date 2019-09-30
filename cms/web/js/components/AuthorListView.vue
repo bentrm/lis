@@ -1,9 +1,9 @@
-<template>
-  <div class="row">
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+  <div class="row align-items-stretch">
     <main class="col m-4">
       <div class="row">
         <div class="col-12">
-          <h3>Authors ({{ count }})</h3>
+          <h3>{{ 'Authors' | translate }} ({{ count }})</h3>
         </div>
         <div class="col-12">
           <Pagination
@@ -32,51 +32,38 @@
         </div>
       </div>
     </main>
-    <aside
-      id="Filterbar"
-      class="Filterbar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last mb-2"
-    >
-      <form name="filter-form" class="p-2">
-        <filter-list
-          v-on:change="onGenreFilterChange"
-          :items="genres"
-          :selection="genreSelection">
-          <template v-slot:header>{{ genreFiltersHeader }}</template>
-          <template v-slot:item="{item}">
-            {{item.name}}
-          </template>
-        </filter-list>
+    <aside class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
+      <h5>{{ 'Keyword search..' | translate }}</h5>
+      <filter-list
+        v-on:change="onGenreFilterChange"
+        :items="genreFilterList"
+        :selection="genreSelection">
+        <template v-slot:header>{{ genreFilterHeader }}</template>
+      </filter-list>
 
-        <filter-list
-          v-on:change="onLanguageFilterChange"
-          :items="languages"
-          :selection="languageSelection">
-          <template v-slot:header>{{ languageFiltersHeader }}</template>
-          <template v-slot:item="{item}">
-            {{item.name}}
-          </template>
-        </filter-list>
+      <filter-list
+        v-on:change="onLanguageFilterChange"
+        :items="languageFilterList"
+        :selection="languageSelection">
+        <template v-slot:header>{{ languageFilterHeader }}</template>
+      </filter-list>
 
-        <filter-list
-          v-on:change="onPeriodFilterChange"
-          :items="periods"
-          :selection="periodSelection">
-          <template v-slot:header>{{ periodFiltersHeader }}</template>
-          <template v-slot:item="{item}">
-            {{item.name}}
-          </template>
-        </filter-list>
+      <filter-list
+        v-on:change="onPeriodFilterChange"
+        :items="periodFilterList"
+        :selection="periodSelection">
+        <template v-slot:header>{{ periodFilterHeader }}</template>
+      </filter-list>
 
-        <filter-list
-          v-on:change="onGenderFilterChange"
-          :items="genders"
-          :selection="genderSelection">
-          <template v-slot:header>Gender</template>
-          <template v-slot:item="{item}">
-            {{item.name}}
-          </template>
-        </filter-list>
-      </form>
+      <filter-list
+        v-on:change="onGenderFilterChange"
+        :items="genders"
+        :selection="genderSelection"
+        :searchable="false"
+        :collapsable="false"
+      >
+        <template v-slot:header>{{ 'Gender' | translate }}</template>
+      </filter-list>
     </aside>
   </div>
 </template>
@@ -87,6 +74,7 @@
   import FilterList from './FilterList.vue';
   import FilterItem from './FilterItem.vue';
   import api from '../Api';
+  import translate from '../translate';
 
 
   export default {
@@ -96,6 +84,10 @@
       Pagination,
       FilterList,
       FilterItem,
+    },
+
+    filters: {
+      translate,
     },
 
     data () {
@@ -115,8 +107,8 @@
         periodSelection: new Set(),
 
         genders: [
-          {name: 'Female', id: 'F'},
-          {name: 'Male', id: 'M'}
+          {title: 'Female', id: 'F'},
+          {title: 'Male', id: 'M'}
         ],
         genderSelection: new Set()
       };
@@ -153,19 +145,40 @@
         };
       },
 
-      genreFiltersHeader () {
+      genreFilterHeader () {
         const vm = this;
-        return `Genres (${vm.genreSelection.size} / ${vm.genres.length})`;
+        return `${translate('Genres')} (${vm.genreSelection.size} / ${vm.genres.length})`;
       },
 
-      languageFiltersHeader () {
-        const vm = this;
-        return `Languages (${vm.languageSelection.size} / ${vm.languages.length})`;
+      genreFilterList () {
+        return this.genres.map(x => ({
+          id: x.id,
+          title: `${x.name}`,
+        }));
       },
 
-      periodFiltersHeader () {
+      languageFilterHeader () {
         const vm = this;
-        return `Periods (${vm.periodSelection.size} / ${vm.periods.length})`;
+        return `${translate('Languages')} (${vm.languageSelection.size} / ${vm.languages.length})`;
+      },
+
+      languageFilterList () {
+        return this.languages.map(x => ({
+          id: x.id,
+          title: `${x.name}`,
+        }));
+      },
+
+      periodFilterHeader () {
+        const vm = this;
+        return `${translate('Periods')} (${vm.periodSelection.size} / ${vm.periods.length})`;
+      },
+
+      periodFilterList () {
+        return this.periods.map(x => ({
+          id: x.id,
+          title: `${x.name}`,
+        }));
       }
     },
 

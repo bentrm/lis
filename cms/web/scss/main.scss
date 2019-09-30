@@ -60,14 +60,9 @@
   }
 }
 
-html,
-body,
-.App {
-  min-height: 100vh;
-}
-
-.Footer-container {
-  margin-top: 3rem;
+.Footer {
+  border-top: 1.5rem solid theme-color-level("primary", -1);
+  background-color: theme-color("primary");
 }
 
 .Footer-content {
@@ -101,23 +96,11 @@ dl {
   font-size: .8rem;
 }
 
-.Filterbar {
-  padding-top: 1rem;
-  max-height: 100%;
-  min-width: 250px;
-}
-
 .Readable {
   max-width: 60rem;
   margin-top: 2rem;
   margin-left: auto;
   margin-right: auto;
-}
-
-.Map {
-  padding: 0;
-  height: 100%;
-  width: 100%;
 }
 
 .Author-card {

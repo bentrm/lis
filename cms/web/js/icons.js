@@ -24,6 +24,8 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faSquare} from '@fortawesome/free-solid-svg-icons/faSquare';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import {faTimesCircle} from '@fortawesome/free-solid-svg-icons/faTimesCircle';
+import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons/faEyeSlash';
 
 library.add(
   faArchive,
@@ -50,6 +52,8 @@ library.add(
   faSquare,
   faTimes,
   faTimesCircle,
+  faEye,
+  faEyeSlash,
 );
 
 export {

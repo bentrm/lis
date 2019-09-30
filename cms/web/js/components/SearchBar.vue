@@ -34,7 +34,7 @@
 
 <script>
   import api from '../Api';
-  import translate, {trans} from '../i18n';
+  import translate from '../translate';
 
   export default {
     name: 'search-bar',
@@ -53,10 +53,10 @@
     },
     computed: {
       memorialsHeading () {
-        return `${trans('Memorials')} (${this.limit} / ${this.memorialsCount})`;
+        return `${translate('Memorials')} (${this.limit} / ${this.memorialsCount})`;
       },
       authorsHeading () {
-        return `${trans('Authors')} (${this.limit} / ${this.authorsCount})`;
+        return `${translate('Authors')} (${this.limit} / ${this.authorsCount})`;
       }
     },
     methods: {

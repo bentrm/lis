@@ -9,6 +9,8 @@
   import Extent from '../leaflet.extentcontrol';
   import marker from '../markers';
 
+
+  const retina = (window.devicePixelRatio || (window.screen.deviceXDPI / window.screen.logicalXDPI)) > 1;
   const attribution =
     'Rendering <a href="https://geoinformatik.htw-dresden.de">'
     + 'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; '
@@ -24,20 +26,20 @@
 
     created () {
       const vm = this;
-      vm.osmLayer = L.tileLayer.wms(
-        'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
-        {
-          attribution,
-          format: 'image/png',
-          format_options: 'dpi:180',
-          layers: 'osm:OSM',
-          tiled: true,
-          tileSize: 256,
-          transparent: true,
-          version: '1.3.0',
-          detectRetina: true,
-        },
-      );
+      const url = 'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms';
+      const options = {
+        attribution,
+        format: 'image/png',
+        format_options: retina ? 'dpi:180' : 'dpi:90',
+        layers: 'osm:OSM',
+        tiled: true,
+        tileSize: 256,
+        transparent: true,
+        version: '1.3.0',
+        detectRetina: true,
+      };
+
+      vm.osmLayer = L.tileLayer.wms(url, options);
       vm.clusterLayer = L.markerClusterGroup({
         animate: true,
         polygonOptions: {
@@ -141,4 +143,10 @@
   @import "~leaflet/dist/leaflet";
   @import "~leaflet.locatecontrol/src/L.Control.Locate";
   @import "../../scss/marker";
+
+  .Map {
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
 </style>
