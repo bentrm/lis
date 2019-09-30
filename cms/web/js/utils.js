@@ -1,3 +1,8 @@
+export const round = value => {
+  return Math.round(value * 10000) / 10000;
+};
+
+
 /**
  * Encodes a map view center as a String.
  * @param lon
@@ -6,8 +11,8 @@
  * @returns {string}
  */
 export const mapStateToPath = ([lon, lat], zoom) => {
-  lon = Math.round(lon * 10000) / 10000;
-  lat = Math.round(lat * 10000) / 10000;
+  lon = round(lon);
+  lat = round(lat);
   zoom = Math.round(zoom * 10) / 10;
   return `@${lon},${lat},${zoom}z`;
 };

@@ -39,6 +39,7 @@
         class="border-0"
         :banner="memorialSelect.banner"
         :title="memorialSelect.name"
+        :position="memorialSelect.position"
         :authors="memorialSelect.authors"
         :address="memorialSelect.address"
         :contactInfo="memorialSelect.contact_info"

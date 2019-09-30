@@ -15,25 +15,42 @@
           <a :href="author.url">{{author.first_name}} {{author.last_name}}</a>
         </li>
       </ul>
+      <b>{{ 'GPS Position' | translate}}: {{ position[0] | round }}, {{ position[1] | round }}</b>
       <div v-if="introduction" v-html="introduction"></div>
-      <address class="address" v-if="address" v-html="address"></address>
-      <div v-if="contactInfo" v-html="contactInfo"></div>
-      <div v-if="directions" v-html="directions"></div>
+      <template v-if="address">
+        <b>{{ 'Address' | translate }}:</b>
+        <address v-html="address"></address>
+      </template>
+      <template v-if="contactInfo">
+        <b>{{ 'Contact info' | translate }}</b>
+        <div v-html="contactInfo"></div>
+      </template>
+      <template v-if="directions">
+        <i v-if="directions" v-html="directions"></i>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import translate from '../translate';
+  import {round} from '../utils';
+
   export default {
     props: {
       banner: String,
       title: String,
+      position: Array,
       authors: Array,
       address: String,
       contactInfo: String,
       directions: String,
       introduction: String
     },
+    filters: {
+      translate,
+      round,
+    }
   };
 </script>
 
