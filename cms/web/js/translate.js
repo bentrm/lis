@@ -22,6 +22,8 @@ const library = {
   'Periods':   {de: 'Epochen'},
   'Search':    {de: 'Suche'},
   'Types':     {de: 'Arten'},
+  'Male': {de: 'Männlich'},
+  'Female': {de: 'Weiblich'},
 
 };
 

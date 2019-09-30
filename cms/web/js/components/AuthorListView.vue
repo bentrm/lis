@@ -107,8 +107,8 @@
         periodSelection: new Set(),
 
         genders: [
-          {title: 'Female', id: 'F'},
-          {title: 'Male', id: 'M'}
+          {title: translate('Female'), id: 'F'},
+          {title: translate('Male'), id: 'M'}
         ],
         genderSelection: new Set()
       };
