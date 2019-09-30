@@ -295,7 +295,7 @@ class Level3Page(LevelPage):
         TextType("i18n_primary_literature", _(TXT["level3.primary_literature"])),
         TextType("i18n_testimony", _(TXT["level3.testimony"])),
         TextType("i18n_secondary_literature", _(TXT["level3.secondary_literature"])),
-        TextType("i18_didactic_material", _(TXT["level3.didactic_material"])),
+        TextType("i18n_didactic_material", _(TXT["level3.didactic_material"])),
     )
     level_order = 3
 
@@ -377,7 +377,7 @@ class Level3Page(LevelPage):
         verbose_name=_(TXT["level3.didactic_material"]),
         help_text=_(TXT["level3.didactic_material.help"])
     )
-    i18_didactic_material = TranslatedField.named("didactic_material")
+    i18n_didactic_material = TranslatedField.named("didactic_material")
 
     english_panels = [
         StreamFieldPanel("primary_literature"),
