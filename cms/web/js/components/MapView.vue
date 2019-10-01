@@ -39,16 +39,17 @@
         class="border-0"
         :banner="memorialSelect.banner"
         :title="memorialSelect.name"
+        :image="memorialSelect.title_image"
         :position="memorialSelect.position"
         :authors="memorialSelect.authors"
         :address="memorialSelect.address"
         :contactInfo="memorialSelect.contact_info"
         :directions="memorialSelect.directions"
         :introduction="memorialSelect.introduction"
+        :description="memorialSelect.description"
         v-on:hide="onMemorialDetailHide">
       </memorial-card>
     </aside>
-
   </div>
 </template>
 

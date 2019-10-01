@@ -6,29 +6,31 @@
           <h3>{{ 'Authors' | translate }} ({{ count }})</h3>
         </div>
         <div class="col-12">
-          <Pagination
+          <pagination
+            class="align-content-center"
             :currentPage="page"
             :totalPages="totalPages"
-            v-on:change="setPage"></Pagination>
+            v-on:change="setPage"></pagination>
         </div>
         <div
           v-for="author in authors"
           :key="author.id"
           class="col-12"
         >
-          <AuthorCard
-            :thumb="author.thumb"
+          <author-card
+            :image="author.title_image"
             :url="author.url"
             :academic_title="author.academic_title"
             :first_name="author.first_name"
             :last_name="author.last_name"
-            :birth_name="author.birth_name"></AuthorCard>
+            :birth_name="author.birth_name"></author-card>
         </div>
         <div class="col-12">
-          <Pagination
+          <pagination
+            class="align-content-center"
             :currentPage="page"
             :totalPages="totalPages"
-            v-on:change="setPage"></Pagination>
+            v-on:change="setPage"></pagination>
         </div>
       </div>
     </main>

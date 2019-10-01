@@ -1,25 +1,27 @@
 <template lang="html">
   <div class="Author-card media">
-    <div class="media-body mr-4">
+    <img
+      v-if="image"
+      :src="image.thumb"
+      :alt="image.title"
+      :title="image.title"
+      class="border border-primary rounded-circle align-self-baseline">
+    <span v-else class="placeholder"></span>
+    <div class="media-body ml-4">
       <p class="p-0 h4">
-        <a :href="url" class="stretched-link">
+        <a :href="url">
           <span v-if="first_name" class="small text-muted">{{ first_name }}</span>
           {{ last_name }}
         </a>
       </p>
     </div>
-    <img
-      v-if="thumb"
-      :src="thumb"
-      class="Author-badge border border-primary rounded-circle align-self-center">
-    <span v-else class="placeholder"></span>
   </div>
 </template>
 
 <script>
   export default {
     props: {
-      thumb: String,
+      image: Object,
       url: String,
       academic_title: String,
       first_name: String,
@@ -28,3 +30,19 @@
     }
   };
 </script>
+
+<style lang="scss">
+  @import '../../scss/variables';
+
+  .Author-card {
+    img {
+      height: 30px;
+      width: 30px;
+      margin-bottom: $paragraph-margin-bottom;
+    }
+
+    .placeholder {
+      width: 30px;
+    }
+  }
+</style>

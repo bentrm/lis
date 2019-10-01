@@ -5,9 +5,9 @@
         </span>
     <img
       class="card-img-top"
-      v-if="banner"
-      :src="banner"
-      :alt="title">
+      v-if="image"
+      :src="image.banner"
+      :alt="image.title">
     <div class="card-body">
       <h5>{{ title }}</h5>
       <ul class="list-unstyled">
@@ -15,37 +15,52 @@
           <a :href="author.url">{{author.first_name}} {{author.last_name}}</a>
         </li>
       </ul>
-      <b>{{ 'GPS Position' | translate}}: {{ position[0] | round }}, {{ position[1] | round }}</b>
-      <div v-if="introduction" v-html="introduction"></div>
-      <template v-if="address">
-        <b>{{ 'Address' | translate }}:</b>
+      <p>
+        <b>{{ 'GPS Position' | translate}}: {{ position[0] | round }}, {{ position[1] | round }}</b>
+      </p>
+      <div v-if="introduction">
+        <b>{{ 'Intro' | translate }}</b>
+        <div v-html="introduction"></div>
+      </div>
+      <div v-if="address">
+        <b>{{ 'Address' | translate }}</b>
         <address v-html="address"></address>
-      </template>
-      <template v-if="contactInfo">
+      </div>
+      <div v-if="contactInfo">
         <b>{{ 'Contact info' | translate }}</b>
         <div v-html="contactInfo"></div>
-      </template>
-      <template v-if="directions">
+      </div>
+      <div v-if="directions">
+        <b>{{ 'Directions' | translate }}</b>
         <i v-if="directions" v-html="directions"></i>
-      </template>
+      </div>
+      <div v-if="description">
+        <b>{{ 'Description' | translate }}</b>
+        <paragraph v-for="paragraph in description" :key="paragraph.id" v-bind="paragraph.value"></paragraph>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Paragraph from './Paragraph.vue';
   import translate from '../translate';
   import {round} from '../utils';
 
   export default {
     props: {
-      banner: String,
       title: String,
+      image: Object,
       position: Array,
       authors: Array,
       address: String,
       contactInfo: String,
       directions: String,
-      introduction: String
+      introduction: String,
+      description: Array,
+    },
+    components: {
+      Paragraph,
     },
     filters: {
       translate,
@@ -55,6 +70,8 @@
 </script>
 
 <style lang="scss">
+  @import '../../scss/variables';
+
   .memorial-card {
     .close {
       color: white;
@@ -62,6 +79,14 @@
       top: 10px;
       right: 10px;
       filter: drop-shadow(0 0 2px black);
+    }
+
+    .footnotes {
+      font-size: $font-size-sm;
+
+      ol {
+        padding-left: 1.5rem;
+      }
     }
   }
 </style>

@@ -1,7 +1,7 @@
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 
-from api.serializer_fields import RenditionField, TranslationField
+from cms.serializers import TranslationField, RenditionField, ImageSerializer
 from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath, \
     Level1Page, Level2Page, Level3Page
 
@@ -52,11 +52,11 @@ class AuthorNameSerializer(serializers.ModelSerializer):
 
 
 class AuthorListSerializer(serializers.ModelSerializer):
+    title_image = ImageSerializer()
     academic_title = serializers.CharField(read_only=True)
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     birth_name = serializers.CharField(read_only=True)
-    thumb = RenditionField(source='title_image', operation='fill-250x250|jpegquality-60')
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
@@ -66,11 +66,11 @@ class AuthorListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'slug',
+            'title_image',
             'academic_title',
             'first_name',
             'last_name',
             'birth_name',
-            'thumb',
             'url',
         )
         model = Author
@@ -104,12 +104,11 @@ class AuthorDetailSerializer(AuthorListSerializer):
         fields = (
             'id',
             'slug',
+            'title_image',
             'academic_title',
             'first_name',
             'last_name',
             'birth_name',
-            'thumb',
-            'banner',
             'also_known_as',
             'memorials',
             'genres',
@@ -124,13 +123,9 @@ class AuthorDetailSerializer(AuthorListSerializer):
 
 
 class MemorialListSerializer(TitleSerializerMixin):
-    thumb = serializers.SerializerMethodField(required=False)
+    title_image = ImageSerializer()
     position = serializers.SerializerMethodField()
     memorial_types = MemorialTypeSerializer(source="memorial_type_tags", many=True)
-
-    def get_thumb(self, obj):
-        if obj.title_image:
-            return obj.title_image.get_rendition('fill-100x100|jpegquality-60').url
 
     def get_position(self, obj):
         return obj.coordinates.coords
@@ -138,8 +133,8 @@ class MemorialListSerializer(TitleSerializerMixin):
     class Meta:
         fields = (
             'id',
+            'title_image',
             'name',
-            'thumb',
             'position',
             'memorial_types'
         )
@@ -147,7 +142,6 @@ class MemorialListSerializer(TitleSerializerMixin):
 
 
 class MemorialDetailSerializer(MemorialListSerializer):
-    banner = RenditionField(source='title_image', operation='fill-800x400|jpegquality-60')
     authors = serializers.SerializerMethodField()
     address = TranslationField()
     contact_info = TranslationField()
@@ -170,9 +164,8 @@ class MemorialDetailSerializer(MemorialListSerializer):
     class Meta:
         fields = (
             "id",
+            'title_image',
             "name",
-            "thumb",
-            'banner',
             "authors",
             "position",
             "memorial_types",

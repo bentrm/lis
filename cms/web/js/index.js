@@ -12,7 +12,6 @@ import SearchBar from './components/SearchBar.vue';
 
 import './icons';
 import router from './router';
-import {debounce} from './utils';
 
 
 window.$ = $;

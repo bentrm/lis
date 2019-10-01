@@ -1,5 +1,5 @@
 import django_filters
-from django.db.models import OuterRef, Subquery, Prefetch, Count, Q, F, When, Case
+from django.db.models import OuterRef, Subquery, Prefetch, Count, Q
 from django.http import Http404
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
