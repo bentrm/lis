@@ -26,6 +26,11 @@ module.exports = {
   entry: {
     index: ['whatwg-fetch', './js/index.js'],
   },
+  resolve: {
+    alias: {
+      vue$: 'vue/dist/vue.esm.js' // 'vue/dist/vue.runtime.common.js' for webpack 1
+    }
+  },
   devtool: isProd ? 'source-map' : 'eval-source-map',
   watch: false,
   watchOptions: {
@@ -67,7 +72,12 @@ module.exports = {
         test: /\.(sa|sc|c)ss$/,
         use: [
           isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1
+            }
+          },
           'postcss-loader',
           'resolve-url-loader',
           {
@@ -97,7 +107,7 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'fonts/'
+              outputPath: 'files/'
             }
           }
         ]
