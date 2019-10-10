@@ -5,8 +5,6 @@ from wagtail.core import blocks
 from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
 
-from cms.serializers import ImageSerializer
-
 RICH_TEXT_FEATURES_FOOTNOTE = ["bold", "italic", "strikethrough", "link"]
 RICH_TEXT_FEATURES_CONTENT = [
     "bold",
@@ -23,6 +21,8 @@ RICH_TEXT_FEATURES_CONTENT = [
 
 class CustomImageChooserBlock(ImageChooserBlock):
     def get_api_representation(self, value, context=None):
+        # TODO: needed to guard against circular import
+        from cms.serializers import ImageSerializer
         return ImageSerializer(context=context).to_representation(value)
 
 
@@ -89,7 +89,6 @@ class ParagraphStructBlock(blocks.StructBlock):
 
     def get_api_representation(self, value, context=None):
         """ Recursively call get_api_representation on children and return as a plain dict """
-        print("Called")
         return super().get_api_representation(value, context)
 
     class Meta:
