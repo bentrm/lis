@@ -131,7 +131,7 @@
       background-color: white;
       border: $input-border-width solid $input-border-color;
       padding: $input-padding-x $input-padding-y;
-      z-index: 1000;
+      z-index: 1010;
 
       li {
         margin-bottom: .2rem;

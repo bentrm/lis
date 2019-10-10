@@ -14,8 +14,7 @@ const plugins = [
 if (isProd) {
   plugins.push(
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-      chunkFilename: 'css/[id].css'
+      filename: '[name].css',
     })
   );
 }
@@ -38,12 +37,13 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
+    chunkFilename: '[name].bundle.js',
     publicPath: '/static/app/'
   },
   optimization: {
     splitChunks: {
       chunks: 'all',
-      name: 'vendor',
+      name: 'vendor'
     }
   },
   plugins,

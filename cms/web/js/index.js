@@ -1,7 +1,5 @@
 import {dom} from '@fortawesome/fontawesome-svg-core';
 import {ModalPlugin, NavbarPlugin, PopoverPlugin} from 'bootstrap-vue';
-import 'bootstrap/js/dist/collapse';
-import 'bootstrap/js/dist/dropdown';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import VueRouter from 'vue-router';

@@ -145,15 +145,15 @@
       </div>
 
       <div v-if="currentMemorial" class="col-12">
-        <h4>
-          <router-link
-            :to="{name: 'memorial-detail', params: { mapStatePath: toPath(currentMemorial.position), memorialId: currentMemorial.id }}">
-            {{ currentMemorial.name }}
-            <small class="text-muted d-block">
-              {{ 'See on map' | translate }}:  {{ currentMemorial.position| humanizePosition }}
-            </small>
-          </router-link>
-        </h4>
+
+        <router-link
+          :to="{name: 'memorial-detail', params: { mapStatePath: toPath(currentMemorial.position), memorialId: currentMemorial.id }}"
+        >
+          <h4>{{ currentMemorial.name }}</h4>
+          <small class="text-muted d-block">
+            {{ 'See on map' | translate }}:  {{ currentMemorial.position| humanizePosition }}
+          </small>
+        </router-link>
 
         <div v-if="currentLevel === 'discover' && currentMemorial.description.length">
           <paragraph v-for="paragraph in currentMemorial.description" :key="paragraph.id" v-bind="paragraph.value"></paragraph>

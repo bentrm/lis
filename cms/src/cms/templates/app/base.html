@@ -17,7 +17,7 @@
 
   <title>{{ 'LIS' }}</title>
 
-  <link rel="stylesheet" href="{% static 'app/css/index.css' %}">
+  <link rel="stylesheet" href="{% static 'app/index.css' %}">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
 {% csrf_token %}
 
 {% block Scripts %}
-  <script src="{% static 'app/vendor.js' %}"></script>
+  <script src="{% static 'app/vendor.bundle.js' %}"></script>
   <script src="{%  static 'app/index.js' %}"></script>
 {% endblock %}
 
