@@ -6,7 +6,7 @@ from wagtail.documents.api.v2.endpoints import DocumentsAPIEndpoint
 from wagtail.images.api.v2.endpoints import ImagesAPIEndpoint
 
 from api.views import LanguageViewSet, GenreViewSet, PeriodViewSet, MemorialTypeViewSet, MemorialViewSet, AuthorViewSet, \
-    MemorialPathViewSet
+    MemorialPathViewSet, BlogPageViewSet
 
 # Create the router. 'wagtailapi' is the URL namespace
 api_router = WagtailAPIRouter('wagtailapi')
@@ -20,6 +20,7 @@ api_router.register_endpoint('images', ImagesAPIEndpoint)
 api_router.register_endpoint('documents', DocumentsAPIEndpoint)
 
 router = routers.DefaultRouter(trailing_slash=False)
+router.register('page', BlogPageViewSet, basename='page')
 router.register('memorials', MemorialViewSet, basename='memorial')
 router.register('paths', MemorialPathViewSet, basename='path')
 router.register('authors', AuthorViewSet, basename='author')

@@ -13,11 +13,10 @@ from api.serializers import LanguageSerializer, PeriodSerializer, \
     Level1Serializer, Level2Serializer, Level3Serializer
 from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath, \
     Level1Page, Level2Page, Level3Page
-
-
 # Notice: All views in this page override the get_queryset method to make sure the language code
 #         is set appropriately. Otherwise the querset will be prepared before any language
 #         information is available to the custom translation processor.
+from cms.models.base import BlogPage
 
 
 class ActionAwareReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
@@ -35,7 +34,23 @@ class ActionAwareReadOnlyModelViewSet(viewsets.ReadOnlyModelViewSet):
             return super().get_serializer_class()
 
 
+class BlogPageViewSet(ActionAwareReadOnlyModelViewSet):
+    lookup_field = 'slug'
+
+    def get_queryset(self):
+        return BlogPage.objects.live().public()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            from api.serializers import BlogPageSerializer
+            return BlogPageSerializer
+        else:
+            from api.serializers import BlogPageDetailSerializer
+            return BlogPageDetailSerializer
+
+
 class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
+    lookup_field = 'slug'
     filterset_class = AuthorFilterSet
     filter_backends = (
         django_filters.rest_framework.DjangoFilterBackend,
@@ -68,9 +83,9 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
         return queryset.public().live()
 
     @action(detail=True)
-    def discover(self, request, pk=None):
+    def discover(self, request, slug=None):
         try:
-            page = Level1Page.objects.child_of(Author.objects.get(pk=pk)).get()
+            page = Level1Page.objects.child_of(Author.objects.get(slug=slug)).get()
         except (Level1Page.DoesNotExist, Author.DoesNotExist):
             raise Http404
 
@@ -78,9 +93,9 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True)
-    def research(self, request, pk=None):
+    def research(self, request, slug=None):
         try:
-            page = Level2Page.objects.child_of(Author.objects.get(pk=pk)).get()
+            page = Level2Page.objects.child_of(Author.objects.get(slug=slug)).get()
         except (Level2Page.DoesNotExist, Author.DoesNotExist):
             raise Http404
 
@@ -88,9 +103,9 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True)
-    def material(self, request, pk=None):
+    def material(self, request, slug=None):
         try:
-            page = Level3Page.objects.child_of(Author.objects.get(pk=pk)).get()
+            page = Level3Page.objects.child_of(Author.objects.get(slug=slug)).get()
         except (Level3Page.DoesNotExist, Author.DoesNotExist):
             raise Http404
 

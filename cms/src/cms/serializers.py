@@ -1,13 +1,15 @@
 import base64
 import hashlib
 import hmac
-from django.urls import reverse
 from html.parser import HTMLParser
+
 from django.conf import settings
+from django.urls import reverse
+from django.utils.encoding import force_text
 from rest_framework import serializers
 from wagtail.core.fields import RichTextField, StreamField
+
 from cms.models import ImageMedia
-from django.utils.encoding import force_text
 
 
 def generate_signature(image_id, filter_spec, key=None):
@@ -97,6 +99,9 @@ class ImageSerializer(serializers.ModelSerializer):
     copyright = serializers.CharField()
     thumb = RenditionField(operation='fill-250x250|jpegquality-60')
     banner = RenditionField(operation='fill-800x400|jpegquality-60')
+    small = RenditionField(operation='max-250x250|jpegquality-60')
+    mid = RenditionField(operation='max-500x500|jpegquality-60')
+    large = RenditionField(operation='max-800x800|jpegquality-60')
 
     class Meta:
         model = ImageMedia
@@ -107,4 +112,7 @@ class ImageSerializer(serializers.ModelSerializer):
             'copyright',
             'thumb',
             'banner',
+            'small',
+            'mid',
+            'large',
         )

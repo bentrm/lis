@@ -1,9 +1,33 @@
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 
-from cms.serializers import TranslationField, RenditionField, ImageSerializer
 from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath, \
     Level1Page, Level2Page, Level3Page
+from cms.models.base import BlogPage
+from cms.serializers import TranslationField, ImageSerializer
+
+
+class BlogPageSerializer(serializers.ModelSerializer):
+    title = TranslationField()
+
+    class Meta:
+        model = BlogPage
+        fields = (
+            'title',
+            'slug',
+        )
+
+
+class BlogPageDetailSerializer(BlogPageSerializer):
+    body = TranslationField()
+
+    class Meta:
+        model = BlogPage
+        fields = (
+            'title',
+            'slug',
+            'body',
+        )
 
 
 class TitleSerializerMixin(serializers.ModelSerializer):
@@ -57,6 +81,15 @@ class AuthorListSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     birth_name = serializers.CharField(read_only=True)
+    dob = serializers.IntegerField(source='date_of_birth_day')
+    mob = serializers.IntegerField(source='date_of_birth_month')
+    yob = serializers.IntegerField(source='date_of_birth_year')
+    pob = serializers.CharField(source='place_of_death')
+    dod = serializers.IntegerField(source='date_of_death_day')
+    mod = serializers.IntegerField(source='date_of_death_month')
+    yod = serializers.IntegerField(source='date_of_death_year')
+    pod = serializers.CharField(source='place_of_death')
+
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
@@ -71,34 +104,36 @@ class AuthorListSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'birth_name',
+            'dob', 'mob', 'yob', 'pob',
+            'dod', 'mod', 'yod', 'pod',
             'url',
         )
         model = Author
 
 
 class AuthorDetailSerializer(AuthorListSerializer):
-    banner = RenditionField(source='title_image', operation='fill-800x400|jpegquality-60')
     also_known_as = serializers.SerializerMethodField()
     genres = GenreSerializer(source="genre_tags", many=True)
     languages = GenreSerializer(source="language_tags", many=True)
     periods = PeriodSerializer(source="literary_period_tags", many=True)
-    has_discover = serializers.SerializerMethodField()
-    has_research = serializers.SerializerMethodField()
-    has_material = serializers.SerializerMethodField()
+    levels = serializers.SerializerMethodField()
 
     def get_also_known_as(self, obj):
         names = obj.names.all()[1:]
         serializer = AuthorNameSerializer(instance=names, many=True)
         return serializer.data
 
-    def get_has_discover(self, obj):
-        return Level1Page.objects.child_of(obj).exists()
+    def get_levels(self, obj):
+        value = {}
 
-    def get_has_research(self, obj):
-        return Level2Page.objects.child_of(obj).exists()
+        if Level1Page.objects.child_of(obj).exists():
+            value['discover'] = 'discover/'
+        if Level2Page.objects.child_of(obj).exists():
+            value['research'] = 'research/'
+        if Level3Page.objects.child_of(obj).exists():
+            value['material'] = 'material/'
 
-    def get_has_material(self, obj):
-        return Level3Page.objects.child_of(obj).exists()
+        return value
 
     class Meta:
         fields = (
@@ -114,10 +149,10 @@ class AuthorDetailSerializer(AuthorListSerializer):
             'genres',
             'languages',
             'periods',
+            'dob', 'mob', 'yob', 'pob',
+            'dod', 'mod', 'yod', 'pod',
             'url',
-            'has_discover',
-            'has_research',
-            'has_material',
+            'levels',
         )
         model = Author
 
@@ -128,7 +163,8 @@ class MemorialListSerializer(TitleSerializerMixin):
     memorial_types = MemorialTypeSerializer(source="memorial_type_tags", many=True)
 
     def get_position(self, obj):
-        return obj.coordinates.coords
+        lat, lng = obj.coordinates.coords
+        return round(lat, 4), round(lng, 4)
 
     class Meta:
         fields = (
