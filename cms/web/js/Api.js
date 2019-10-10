@@ -1,10 +1,14 @@
-import $ from 'jquery';
+import queryString from 'query-string';
+import {currentLanguage} from './translate';
 
 
 const filter = (obj) =>
   Object.keys(obj)
     .filter(key => obj[key])
-    .reduce((res, key) => (res[key] = obj[key], res), {});
+    .reduce((res, key) => {
+      res[key] = obj[key];
+      return res;
+    }, {});
 
 class Api {
   constructor(rootUrl) {
@@ -13,22 +17,35 @@ class Api {
 
   getResults(path, options = {}) {
     const params = filter(options);
-    const queryParams = `?${$.param(params, true)}`;
-    const url = `${this.rootUrl}${path}${queryParams}`;
+    const queryParams = queryString.stringify(params);
+    const url = `${this.rootUrl}${path}?${queryParams}`;
     return fetch(url, {
       headers: {
         'Content-Type': 'application/json',
-        'Accept-Language': document.documentElement.lang,
+        'Accept-Language': currentLanguage(),
       }
-    }).then(response => response.json());
+    }).then(response => {
+      if (response.status !== 200) {
+        throw response;
+      }
+      return response.json()
+    });
+  }
+
+  getPage(slug, options) {
+    return this.getResults(`/page/${slug}`, options);
   }
 
   getAuthors(options) {
     return this.getResults('/authors', options);
   }
 
-  getAuthor(id, options) {
-    return this.getResults(`/authors/${id}`, options);
+  getAuthor(slug, options) {
+    return this.getResults(`/authors/${slug}`, options);
+  }
+
+  getLevel(slug, level, options) {
+    return this.getResults(`/authors/${slug}/${level}`, options);
   }
 
   getMemorials(options) {
