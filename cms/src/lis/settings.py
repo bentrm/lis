@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "mapwidgets",
     "rest_framework",
     "rest_framework_gis",
+    "corsheaders",
     "django_filters",
     "debug_toolbar",
     "django.contrib.gis",
@@ -97,6 +98,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -256,3 +258,15 @@ REST_FRAMEWORK = {
 
 # Application Settings
 LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)
+
+# CORS configuration
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^http://localhost(:[0-9]{2,6})?",
+    r"^http://141.56.[0-9]{1,3}\.[0-9]{1,3}(:[0-9]{2,6})?$"
+]
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_METHODS = [
+    'GET',
+    'OPTIONS',
+    'POST',
+]
