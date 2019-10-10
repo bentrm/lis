@@ -9,7 +9,7 @@ const library = {
   'Also known as': {de: 'Auch bekannt als'},
   'Author': {de: 'Autor/in'},
   'Authors': {de: 'Autor/innen'},
-  'Back to homepage': {de: 'Zurück zur Startseite'},
+  'Back to homepage.': {de: 'Zurück zur Startseite.'},
   'Biography': {de: 'Biographie'},
   'Born': {de: 'Geboren'},
   'Close': {de: 'Schließen'},
