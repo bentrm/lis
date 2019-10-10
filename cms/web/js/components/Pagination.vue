@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav v-if="totalPages > 1">
     <ul class="pagination">
       <li
         v-for="n in totalPages"
