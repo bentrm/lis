@@ -1,65 +1,69 @@
 <template>
-  <div class="MapView row">
+  <div class="container-fluid">
+    <div class="MapView row">
 
-    <main class="col p-0">
-      <Map
-        :initial-map-state="initialMapState"
-        :features="memorials"
-        v-on:select="onMapSelect"
-        v-on:moveend="onMapMoveEnd"></Map>
-    </main>
+      <main class="col p-0">
+        <map-component
+          :initial-map-state="initialMapState"
+          :features="memorials"
+          v-on:select="onMapSelect"
+          v-on:moveend="onMapMoveEnd"></map-component>
+      </main>
 
-    <aside
-      v-if="$route.name === 'map'"
-      class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
-      <h5>{{ 'Keyword search' | translate }}</h5>
-      <filter-list
-        v-on:change="onAuthorSelectionChange"
-        :items="authorFilterList"
-        :selection="authorSelection"
-        :initial-collapse="false"
+      <aside
+        v-if="$route.name === 'map'"
+        class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
+        <h5>{{ 'Keyword search' | translate }}</h5>
+        <filter-list
+          v-on:change="onAuthorSelectionChange"
+          :items="authorFilterList"
+          :selection="authorSelection"
+          :initial-collapse="false"
+        >
+          <template v-slot:header>{{ authorFilterHeader }}</template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onTypeSelectionChange"
+          :items="typeFilterList"
+          :selection="typeSelection">
+          <template v-slot:header>{{ typeFilterHeader }}</template>
+        </filter-list>
+      </aside>
+
+      <aside
+        v-if="$route.name === 'memorial-detail'"
+        class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last p-0"
       >
-        <template v-slot:header>{{ authorFilterHeader }}</template>
-      </filter-list>
-
-      <filter-list
-        v-on:change="onTypeSelectionChange"
-        :items="typeFilterList"
-        :selection="typeSelection">
-        <template v-slot:header>{{ typeFilterHeader }}</template>
-      </filter-list>
-    </aside>
-
-    <aside
-      v-if="$route.name === 'memorial-detail'"
-      class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last p-0"
-    >
-      <memorial-card
-        v-if="memorialSelect"
-        class="border-0"
-        :banner="memorialSelect.banner"
-        :title="memorialSelect.name"
-        :image="memorialSelect.title_image"
-        :position="memorialSelect.position"
-        :authors="memorialSelect.authors"
-        :address="memorialSelect.address"
-        :contactInfo="memorialSelect.contact_info"
-        :directions="memorialSelect.directions"
-        :introduction="memorialSelect.introduction"
-        :description="memorialSelect.description"
-        v-on:hide="onMemorialDetailHide">
-      </memorial-card>
-    </aside>
+        <memorial-card
+          v-if="memorialSelect"
+          class="border-0"
+          :banner="memorialSelect.banner"
+          :title="memorialSelect.name"
+          :image="memorialSelect.title_image"
+          :position="memorialSelect.position"
+          :authors="memorialSelect.authors"
+          :address="memorialSelect.address"
+          :contact-info="memorialSelect.contact_info"
+          :directions="memorialSelect.directions"
+          :introduction="memorialSelect.introduction"
+          :description="memorialSelect.description"
+          :detailed-description="memorialSelect.detailed_description"
+          v-on:hide="onMemorialDetailHide">
+        </memorial-card>
+      </aside>
+    </div>
   </div>
 </template>
 
 <script>
-  import {mapStateToPath, pathToMapState} from '../utils';
-  import Map from './Map.vue';
-  import FilterList from './FilterList.vue';
-  import MemorialCard from './MemorialCard.vue';
   import api from '../Api';
   import translate from '../translate';
+  import {mapStateToPath, pathToMapState} from '../utils';
+  import FilterList from './FilterList.vue';
+  import MapComponent from './Map.vue';
+  import MemorialCard from './MemorialCard.vue';
+
 
   export default {
     props: {
@@ -72,7 +76,7 @@
 
     components: {
       MemorialCard,
-      Map,
+      MapComponent,
       FilterList,
     },
 
@@ -152,6 +156,7 @@
     watch: {
       mapStatePath (newMapStatePath) {
         const vm = this;
+        console.log(newMapStatePath, vm.manualRouteTransition);
         if (vm.manualRouteTransition) {
           vm.initialMapState = pathToMapState(newMapStatePath);
         }

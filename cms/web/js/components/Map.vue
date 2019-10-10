@@ -84,10 +84,7 @@
       map.on('moveend', vm.onMoveEnd);
       vm.clusterLayer.on('click', vm.onFeatureSelect);
 
-      vm.$nextTick(() => {
-        // TODO: Quickfix for map not displaying correctly after first load.
-        setTimeout(() => map.invalidateSize(), 1000);
-      });
+      vm.addFeatures();
     },
 
     watch: {
@@ -102,21 +99,7 @@
       },
 
       features (newFeatures) {
-        const vm = this;
-        const newMarkers = newFeatures.map(feature => {
-          const {position: [lng, lat], memorial_types, ...otherProps} = feature;
-          const memorialType = memorial_types[0].id;
-          return L.marker([lat, lng], {
-            icon: L.divIcon({
-              className: 'fa-leaflet-icon',
-              html: marker(memorialType).html,
-            }),
-            ...otherProps
-          });
-        });
-
-        vm.clusterLayer.clearLayers();
-        vm.clusterLayer.addLayers(newMarkers);
+        this.addFeatures();
       }
     },
 
@@ -130,6 +113,24 @@
         const vm = this;
         const {lat, lng} = vm.map.getCenter();
         vm.$emit('moveend', [lng, lat], vm.map.getZoom());
+      },
+
+      addFeatures() {
+        const vm = this;
+        const newMarkers = this.features.map(feature => {
+          const {position: [lng, lat], memorial_types, ...otherProps} = feature;
+          const memorialType = memorial_types[0].id;
+          return L.marker([lat, lng], {
+            icon: L.divIcon({
+              className: 'fa-leaflet-icon',
+              html: marker(memorialType).html,
+            }),
+            ...otherProps
+          });
+        });
+
+        vm.clusterLayer.clearLayers();
+        vm.clusterLayer.addLayers(newMarkers);
       },
 
       onFeatureSelect ({layer}) {

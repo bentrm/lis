@@ -2,6 +2,20 @@ export const round = value => {
   return Math.round(value * 10000) / 10000;
 };
 
+export const humanizePosition = ([lat, lng]) => {
+  return `${round(lat)}, ${round(lng)}`;
+};
+
+export const capitalize = value => {
+  if (!value) return '';
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+export const humanize = value => {
+  if (!value) return '';
+  return value.split('_').join(' ');
+};
+
 
 /**
  * Encodes a map view center as a String.
@@ -10,7 +24,7 @@ export const round = value => {
  * @param zoom
  * @returns {string}
  */
-export const mapStateToPath = ([lon, lat], zoom) => {
+export const mapStateToPath = ([lon, lat], zoom = 18) => {
   lon = round(lon);
   lat = round(lat);
   zoom = Math.round(zoom * 10) / 10;

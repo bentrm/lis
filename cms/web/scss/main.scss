@@ -64,29 +64,6 @@ html, body, .App {
   min-height: 90vh;
 }
 
-.Footer {
-  border-top: 1.5rem solid theme-color-level("primary", -1);
-  background-color: theme-color("primary");
-}
-
-.Footer-content {
-  min-height: 10rem;
-}
-
-.SponsorLogo {
-  max-height: 2.5rem;
-}
-
-.Logo {
-  .fa-bookmark {
-    color: theme-color("light");
-  }
-
-  .fa-globe {
-    color: theme-color("primary");
-  }
-}
-
 .display-1,
 .display-2,
 .display-3,
@@ -148,18 +125,6 @@ dl {
     p {
       margin-bottom: 0.2rem;
     }
-  }
-
-  .Level-Btn.active::after {
-    border-bottom: none;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-top: 15px solid darken(theme-color("primary"), 10%);
-    bottom: -15px;
-    content: ' ';
-    left: 50%;
-    position: absolute;
-    right: 50%;
   }
 }
 

@@ -1,8 +1,28 @@
 <template>
-  <div class="struct-paragraph">
+  <div class="paragraph">
     <h5 v-if="heading">{{ heading }}</h5>
+
+    <div v-if="images.length" class="row">
+      <div
+        v-for="image in images"
+        class="col-12 col-xs-6 col-sm-4 col-md-3 justify-content-center align-items-center"
+      >
+        <user-image
+          :src="image.small"
+          :src-modal="image.large"
+          :alt="image.title"
+          :title="image.title"
+          :caption="image.caption"
+          :copyright="image.copyright"
+          v-on:click="currentImage = image.id"
+        ></user-image>
+
+      </div>
+    </div>
+
     <div v-html="content" ref="content"></div>
-    <footer v-if="footnotes.length" class="footnotes">
+
+    <footer v-if="footnotes.length">
       <ol class="border-left">
         <footnote
           v-for="(footnote, index) in footnotes"
@@ -16,8 +36,10 @@
 
 <script>
   import Vue from 'vue/dist/vue.esm';
-  import Footnote from './Footnote.vue';
   import Bookmark from './Bookmark.vue';
+  import Footnote from './Footnote.vue';
+  import UserImage from './UserImage.vue';
+
 
   const BookmarkComponent = Vue.extend(Bookmark);
 
@@ -47,6 +69,13 @@
     },
     components: {
       Footnote,
+      UserImage,
+    },
+
+    data () {
+      return {
+        currentImage: null,
+      }
     },
 
     computed: {
@@ -65,16 +94,15 @@
         vm.$refs['content'].querySelectorAll('span.footnote').forEach(node => {
           const tag = node.textContent;
           const [index, footnote] = this.dict[tag];
-          const bookmark = new BookmarkComponent();
 
-          bookmark.$slots.default = [index + 1];
+          const bookmark = new BookmarkComponent({
+            propsData: {
+              index: index + 1,
+              content: footnote.footnote
+            }
+          });
           bookmark.$mount();
           node.replaceWith(bookmark.$el);
-
-          // $(bookmark.$el).popover({
-          //   content: $(footnote.footnote).html(),
-          //   delay: {show: 500, hide: 1000}
-          // });
         });
       });
 
@@ -83,12 +111,20 @@
 </script>
 
 <style lang="scss">
-  .rich-text p {
-    hyphens: auto;
-  }
+  @import '../../scss/variables';
 
-  .footnotes p {
-    margin-bottom: .5rem;
-  }
+  .paragraph {
 
+    p {
+      hyphens: auto;
+    }
+
+    footer {
+      font-size: $font-size-sm;
+
+      p {
+        margin-bottom: .5rem;
+      }
+    }
+  }
 </style>

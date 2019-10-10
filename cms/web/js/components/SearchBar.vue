@@ -10,27 +10,36 @@
       >
       <ul
         class="list-unstyled ml-lg-4 search-bar-results"
-        v-if="memorials.length || authors.length"
+        v-show="memorials.length || authors.length"
       >
         <li class="text-muted text-monospace" v-if="memorials.length">
           <u>{{ memorialsHeading }}</u>
         </li>
         <li v-for="result in memorials">
-          <a :href="`/map/@${result.position[0]},${result.position[1]},18z/memorial/${result.id}`" :alt="result.name">
-          {{ result.name }}
-          </a>
+          <router-link
+            :to="{name: 'memorial-detail', params: { mapStatePath: `@${result.position[0]},${result.position[1]},18z`, memorialId: result.id }}"
+            :alt="result.name">
+            {{ result.name }}
+          </router-link>
         </li>
         <li class="text-muted text-monospace" v-if="authors.length">
           <u>{{ authorsHeading }}</u>
         </li>
         <li v-for="result in authors">
-          <a :href="result.url">
+          <router-link
+            :to="{name: 'author-detail', params: { slug: result.slug }}"
+            :alt="result.name">
             {{ result.first_name }} {{ result.last_name }}
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
-    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+    <button
+      class="btn btn-outline-light my-2 my-sm-0"
+      :disabled="query.length < 3"
+      type="button"
+      v-on:click="fetchQueryResults"
+    >
       <i class="fas fa-search"></i>
     </button>
   </form>
@@ -39,6 +48,7 @@
 <script>
   import api from '../Api';
   import translate from '../translate';
+
 
   export default {
     name: 'search-bar',
@@ -64,9 +74,23 @@
       }
     },
     methods: {
+      resetResults () {
+        const vm = this;
+
+        vm.memorials = [];
+        vm.memorialsCount = 0;
+        vm.authors = [];
+        vm.authorsCount = 0;
+      },
+
       fetchQueryResults: function (query) {
         const vm = this;
         const options = {search: query, limit: vm.limit};
+
+        if (query.length < 3) {
+          vm.resetResults();
+          return;
+        }
 
         api
           .getMemorials(options)

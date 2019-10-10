@@ -1,88 +1,99 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="row align-items-stretch">
-    <main class="col m-4">
-      <div class="row">
-        <div class="col-12">
-          <h3>{{ 'Authors' | translate }} ({{ count }})</h3>
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <main class="col m-4">
+        <div class="row">
+          <div class="offset-3 offset-md-2 offset-lg-1 col-9 col-md-10 col-lg-11">
+            <h3>{{ 'Authors' | translate }} ({{ count }})</h3>
+          </div>
+          <div class="offset-3 offset-md-2 offset-lg-1 col-9 col-md-10 col-lg-11">
+            <pagination
+              class="align-content-center"
+              :currentPage="page"
+              :totalPages="totalPages"
+              v-on:change="setPage"></pagination>
+          </div>
+          <ul class="col-12">
+            <li
+              v-for="author in authors"
+              :key="author.id"
+              class="row h4 pb-1"
+            >
+
+              <div class="col-3 col-md-2 col-lg-1 justify-content-center align-content-center">
+                <img
+                  v-if="author.title_image"
+                  :src="author.title_image.thumb"
+                  :alt="author.title_image.title"
+                  :title="author.title_image.title"
+                  class="border border-primary rounded-circle img-fluid">
+              </div>
+
+              <div class="col">
+                <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
+                  <span v-if="author.first_name" class="small text-muted">{{ author.first_name }}</span>
+                  {{ author.last_name }}
+                </router-link>
+              </div>
+            </li>
+          </ul>
+          <div class="offset-3 offset-md-2 offset-lg-1 col-9 col-md-10 col-lg-11">
+            <pagination
+              class="align-content-center"
+              :currentPage="page"
+              :totalPages="totalPages"
+              v-on:change="setPage"></pagination>
+          </div>
         </div>
-        <div class="col-12">
-          <pagination
-            class="align-content-center"
-            :currentPage="page"
-            :totalPages="totalPages"
-            v-on:change="setPage"></pagination>
-        </div>
-        <div
-          v-for="author in authors"
-          :key="author.id"
-          class="col-12"
+      </main>
+      <aside class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
+        <h5>{{ 'Keyword search' | translate }}</h5>
+        <filter-list
+          v-on:change="onGenreFilterChange"
+          :items="genreFilterList"
+          :selection="genreSelection">
+          <template v-slot:header>{{ genreFilterHeader }}</template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onLanguageFilterChange"
+          :items="languageFilterList"
+          :selection="languageSelection">
+          <template v-slot:header>{{ languageFilterHeader }}</template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onPeriodFilterChange"
+          :items="periodFilterList"
+          :selection="periodSelection">
+          <template v-slot:header>{{ periodFilterHeader }}</template>
+        </filter-list>
+
+        <filter-list
+          v-on:change="onGenderFilterChange"
+          :items="genders"
+          :selection="genderSelection"
+          :searchable="false"
+          :collapsable="false"
         >
-          <author-card
-            :image="author.title_image"
-            :url="author.url"
-            :academic_title="author.academic_title"
-            :first_name="author.first_name"
-            :last_name="author.last_name"
-            :birth_name="author.birth_name"></author-card>
-        </div>
-        <div class="col-12">
-          <pagination
-            class="align-content-center"
-            :currentPage="page"
-            :totalPages="totalPages"
-            v-on:change="setPage"></pagination>
-        </div>
-      </div>
-    </main>
-    <aside class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2">
-      <h5>{{ 'Keyword search..' | translate }}</h5>
-      <filter-list
-        v-on:change="onGenreFilterChange"
-        :items="genreFilterList"
-        :selection="genreSelection">
-        <template v-slot:header>{{ genreFilterHeader }}</template>
-      </filter-list>
-
-      <filter-list
-        v-on:change="onLanguageFilterChange"
-        :items="languageFilterList"
-        :selection="languageSelection">
-        <template v-slot:header>{{ languageFilterHeader }}</template>
-      </filter-list>
-
-      <filter-list
-        v-on:change="onPeriodFilterChange"
-        :items="periodFilterList"
-        :selection="periodSelection">
-        <template v-slot:header>{{ periodFilterHeader }}</template>
-      </filter-list>
-
-      <filter-list
-        v-on:change="onGenderFilterChange"
-        :items="genders"
-        :selection="genderSelection"
-        :searchable="false"
-        :collapsable="false"
-      >
-        <template v-slot:header>{{ 'Gender' | translate }}</template>
-      </filter-list>
-    </aside>
+          <template v-slot:header>{{ 'Gender' | translate }}</template>
+        </filter-list>
+      </aside>
+    </div>
   </div>
 </template>
 
 <script>
-  import AuthorCard from './AuthorCard.vue';
-  import Pagination from './Pagination.vue';
-  import FilterList from './FilterList.vue';
-  import FilterItem from './FilterItem.vue';
   import api from '../Api';
   import translate from '../translate';
+  import FilterItem from './FilterItem.vue';
+  import FilterList from './FilterList.vue';
+  import Pagination from './Pagination.vue';
 
 
   export default {
 
     components: {
-      AuthorCard,
       Pagination,
       FilterList,
       FilterItem,

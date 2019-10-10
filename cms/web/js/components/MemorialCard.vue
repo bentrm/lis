@@ -1,25 +1,77 @@
 <template>
   <div class="card memorial-card">
     <span class="close" v-on:click="$emit('hide')">
-          <i class="fas fa-times"></i>
-        </span>
-    <img
-      class="card-img-top"
+      <i class="fas fa-times"></i>
+    </span>
+
+    <user-image
+      class="card-img-top m-0"
       v-if="image"
       :src="image.banner"
-      :alt="image.title">
+      :src-modal="image.large"
+      :alt="image.title"
+      :title="image.title"
+      :captionModal="image.caption"
+      :copyright="image.copyright">
+    </user-image>
+
     <div class="card-body">
-      <h5>{{ title }}</h5>
-      <ul class="list-unstyled">
-        <li v-for="author in authors" :key="author.id">
-          <a :href="author.url">{{author.first_name}} {{author.last_name}}</a>
-        </li>
-      </ul>
-      <p>
-        <b>{{ 'GPS Position' | translate}}: {{ position[0] | round }}, {{ position[1] | round }}</b>
-      </p>
+      <h5>
+        {{ title }}
+        <small class="d-block">
+          <router-link
+            :to="{name: 'memorial-detail', params: { mapStatePath: path }}"
+          >
+            {{ position | humanizePosition }}
+          </router-link>
+        </small>
+      </h5>
+
+      <div>
+        <ul class="list-unstyled">
+          <li
+            v-for="author in authors"
+            :key="author.id"
+          >
+            <div class="author-card media">
+
+              <img
+                v-if="author.title_image"
+                :src="author.title_image.thumb"
+                :alt="author.title_image.title"
+                :title="author.title_image.title"
+                class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center">
+
+              <div class="media-body">
+                <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
+                  <span v-if="author.first_name">{{ author.first_name }}</span>
+                  {{ author.last_name }}
+                </router-link>
+
+                <small class="text-muted d-block">
+                  <pretty-date
+                    v-if="author.yob"
+                    :year="author.yob"
+                    :month="author.mob"
+                    :day="author.dob"
+                    :place="author.pob"></pretty-date>
+
+                  <span v-if="author.yob && author.yod"> - </span>
+
+                  <pretty-date
+                    v-if="author.yod"
+                    :year="author.yod"
+                    :month="author.mod"
+                    :day="author.dod"
+                    :place="author.pod"></pretty-date>
+                </small>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
       <div v-if="introduction">
-        <b>{{ 'Intro' | translate }}</b>
         <div v-html="introduction"></div>
       </div>
       <div v-if="address">
@@ -34,18 +86,17 @@
         <b>{{ 'Directions' | translate }}</b>
         <i v-if="directions" v-html="directions"></i>
       </div>
-      <div v-if="description">
-        <b>{{ 'Description' | translate }}</b>
-        <paragraph v-for="paragraph in description" :key="paragraph.id" v-bind="paragraph.value"></paragraph>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Paragraph from './Paragraph.vue';
   import translate from '../translate';
-  import {round} from '../utils';
+  import {humanizePosition, mapStateToPath} from '../utils';
+  import Paragraph from './Paragraph.vue';
+  import PrettyDate from './PrettyDate.vue';
+  import UserImage from './UserImage.vue';
+
 
   export default {
     props: {
@@ -58,13 +109,28 @@
       directions: String,
       introduction: String,
       description: Array,
+      detailedDescription: Array
     },
     components: {
+      UserImage,
       Paragraph,
+      PrettyDate,
     },
     filters: {
+      humanizePosition,
       translate,
-      round,
+    },
+
+    data() {
+      return {
+        showImage: false
+      };
+    },
+
+    computed: {
+      path () {
+        return mapStateToPath(this.position);
+      }
     }
   };
 </script>
@@ -81,11 +147,21 @@
       filter: drop-shadow(0 0 2px black);
     }
 
+    .blockquote {
+      font-size: .8rem;
+    }
+
     .footnotes {
       font-size: $font-size-sm;
 
       ol {
         padding-left: 1.5rem;
+      }
+    }
+
+    .author-card {
+      .author-img {
+        max-height: 30px;
       }
     }
   }

@@ -19,12 +19,11 @@ from wagtail.api import APIField
 from wagtail.core.blocks import CharBlock, RichTextBlock
 from wagtail.core.fields import StreamField
 from wagtail.core.models import BaseViewRestriction, Page, PageManager
-from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
+from cms.blocks import CustomImageChooserBlock
 from .helpers import TranslatedField
 from ..messages import TXT
-
 
 LOGGER = logging.getLogger("cms.models")
 DB_TABLE_PREFIX = "cms_"
@@ -333,7 +332,7 @@ class BlogPage(I18nPage):
         block_types=[
             ("heading", CharBlock(classname="full title")),
             ("paragraph", RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ("image", ImageChooserBlock()),
+            ("image", CustomImageChooserBlock()),
         ],
         blank=True,
         default=[],
@@ -342,7 +341,7 @@ class BlogPage(I18nPage):
         block_types=[
             ("heading", CharBlock(classname="full title")),
             ("paragraph", RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ("image", ImageChooserBlock()),
+            ("image", CustomImageChooserBlock()),
         ],
         blank=True,
         default=[],
@@ -351,7 +350,7 @@ class BlogPage(I18nPage):
         block_types=[
             ("heading", CharBlock(classname="full title")),
             ("paragraph", RichTextBlock(features=BLOG_EDITOR_FEATURES)),
-            ("image", ImageChooserBlock()),
+            ("image", CustomImageChooserBlock()),
         ],
         blank=True,
         default=[],
