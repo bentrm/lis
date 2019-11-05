@@ -7,6 +7,8 @@ services:
       args:
         NODE_ENV: development
     restart: "no"
+    environment:
+      DEBUG: "True"
     volumes:
       - ./cms:/app
       - ./cms/web/dist:/assets/app
