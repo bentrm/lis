@@ -15,9 +15,9 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from config.helpers import env
+from config.helpers import to_boolean
 
-CMS_VERSION = env("CMS_VERSION", default="latest")
+CMS_VERSION = os.getenv("CMS_VERSION", "latest")
 
 
 # Build paths inside the project like this: os.path.join(SRC_DIR, ...)
@@ -26,30 +26,30 @@ SRC_DIR = os.path.dirname(APP_DIR)
 PROJECT_DIR = os.path.dirname(SRC_DIR)
 
 
-ADMINS = [x.split("=") for x in env("LIS_ADMINS", "").split(";")]
-MANAGERS = [x.split("=") for x in env("LIS_MANAGERS", "").split(";")]
+ADMINS = [x.split("=") for x in os.getenv("LIS_ADMINS", "").split(";")]
+MANAGERS = [x.split("=") for x in os.getenv("LIS_MANAGERS", "").split(";")]
 
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "postmaster@localhost")
-SERVER_EMAIL = env("DEFAULT_FROM_EMAIL", "postmaster@localhost")
-EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = int(env("EMAIL_PORT", 587))
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS", True, parse_to_bool=True)
-EMAIL_USE_SSL = env("EMAIL_USE_SSL", True, parse_to_bool=True)
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "postmaster@localhost")
+SERVER_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "postmaster@localhost")
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = to_boolean(os.getenv("EMAIL_USE_TLS", True))
+EMAIL_USE_SSL = to_boolean(os.getenv("EMAIL_USE_SSL", True))
 
 EMAIL_SUBJECT_PREFIX = "[LIS] "
 
 # SECURITY WARNING: don't run with debug turned on in production!
-ALLOWED_HOSTS = env("VIRTUAL_HOST", "localhost").split(",")
-DEBUG = env("DEBUG", False, parse_to_bool=True)
+ALLOWED_HOSTS = os.getenv("VIRTUAL_HOST", "localhost").split(",")
+DEBUG = to_boolean(os.getenv("DEBUG", False))
 INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", required=True)
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-if env("USE_SSL", True, parse_to_bool=True):
+if to_boolean(os.getenv("USE_SSL", True)):
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -141,12 +141,12 @@ WSGI_APPLICATION = "lis.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": env("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": env("DB_NAME", required=True),
-        "USER": env("DB_USER", required=True),
-        "PASSWORD": env("DB_PASSWORD", required=True),
-        "HOST": env("DB_HOST", required=True),
-        "PORT": env("DB_PORT", "5432"),
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT", "5432"),
         "CONN_MAX_AGE": 360,
     }
 }
@@ -172,19 +172,53 @@ else:
 
 # Logging
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"}
-    },
-    "handlers": {
-        "console": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {name} {message}',
+            'style': '{',
         }
     },
-    "loggers": {"django": {"handlers": ["console"], "propagate": True}},
+    'handlers': {
+        'console': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'gunicorn': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'gunicorn.access': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'lis': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    },
 }
 
 
@@ -210,10 +244,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = "/html/static"
-STATIC_URL = env("STATIC_URL", "/static/")
+STATIC_URL = os.getenv("STATIC_URL", "/static/")
 
 MEDIA_ROOT = "/html/media"
-MEDIA_URL = env("MEDIA_URL", "/media/")
+MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 
 # Wagtail settings
 WAGTAIL_ENABLE_UPDATE_CHECK = False
@@ -243,12 +277,12 @@ MAP_WIDGETS = {
         ("mapCenterLocationName", "Dresden"),
         ("markerFitZoom", 12),
     ),
-    "GOOGLE_MAP_API_KEY": env("GOOGLE_MAP_API_KEY", required=True),
+    "GOOGLE_MAP_API_KEY": os.getenv("GOOGLE_MAP_API_KEY"),
 }
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include "/admin" or a trailing slash
-BASE_URL = env("LIS_BASE_URL", "http://localhost:8000")
+BASE_URL = os.getenv("LIS_BASE_URL", "http://localhost:8000")
 
 # API settings
 REST_FRAMEWORK = {
@@ -257,7 +291,7 @@ REST_FRAMEWORK = {
 }
 
 # Application Settings
-LIS_SIGNUP_KEYWORD = env("LIS_SIGNUP_KEYWORD", required=True)
+LIS_SIGNUP_KEYWORD = os.getenv("LIS_SIGNUP_KEYWORD")
 
 # CORS configuration
 CORS_ORIGIN_REGEX_WHITELIST = [
