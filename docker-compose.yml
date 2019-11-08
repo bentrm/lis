@@ -1,6 +1,11 @@
 version: '3.7'
 
 services:
+  app:
+    build:
+      context: ./app
+      target: prod
+    restart: always
   cms:
     build: ./cms
     ports:

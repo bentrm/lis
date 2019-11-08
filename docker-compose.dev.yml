@@ -1,14 +1,18 @@
 version: '3.7'
 
 services:
-  cms:
+  app:
     build:
-      context: ./cms
-      args:
-        NODE_ENV: development
-    restart: "no"
+      context: ./app
+      target: builder
+    command: ["npm", "start"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/src:/app/src
+  cms:
+    build: ./cms
     environment:
-      DEBUG: "True"
+      DEBUG: 1
     volumes:
       - ./cms:/app
-      - ./cms/web/dist:/assets/app
