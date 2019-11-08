@@ -298,7 +298,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     r"^http://141.56.[0-9]{1,3}\.[0-9]{1,3}(:[0-9]{2,6})?$",
     r"^https://www2.htw-dresden.de(:[0-9]{2,6})?",
 ]
-CORS_URLS_REGEX = r'^/api/.*$'
+CORS_URLS_REGEX = r'^(/en|/de|/cs)?/api/.*$'
 CORS_ALLOW_METHODS = [
     'GET',
     'OPTIONS',
