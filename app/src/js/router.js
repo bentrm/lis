@@ -4,11 +4,20 @@ import AuthorListView from './components/AuthorListView.vue';
 import BlogPageView from './components/BlogPageView.vue';
 import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
+import NotFoundComponent from './components/NotFoundComponent.vue';
+import api from './Api';
 
 
 export default new VueRouter({
   mode: 'history',
   routes: [{
+    path: '/page/:slug?',
+    alias: '/',
+    name: 'blog-page',
+    props: (route) => ({ slug: route.params.slug || 'homepage' }),
+    component: BlogPageView
+  },
+  {
     path: '/map/:mapStatePath?/',
     pathToRegexpOptions: {
       strict: true,
@@ -36,14 +45,8 @@ export default new VueRouter({
       };
     }
   }, {
-    path: '/:slug?/',
-    name: 'blog-page',
-    component: BlogPageView,
-    props: route => {
-      return {
-        slug: route.params.slug || 'homepage'
-      };
-    }
+    path: '*',
+    name: 'not-found',
+    component: NotFoundComponent
   }]
 });
-

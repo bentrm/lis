@@ -1,7 +1,7 @@
 <template>
   <div class="MainNav">
     <b-navbar toggleable="lg" type="dark" variant="primary">
-      <b-navbar-brand :to="{name: 'blog-page'}">
+      <b-navbar-brand :to="'/'">
         <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i>
         {{ 'Literary landscape' | translate }}
       </b-navbar-brand>
@@ -21,23 +21,20 @@
             <b-dropdown-item
               :to="{name: 'blog-page', params: { slug: 'imprint' }}"
             >{{ 'Imprint & data protection' | translate }}</b-dropdown-item>
-            <b-dropdown-item href="/admin">{{ 'Admin' | translate }}</b-dropdown-item>
+            <b-dropdown-item :href="adminLink">{{ 'Admin' | translate }}</b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <form action="/i18n/setlang/" method="POST">
-            <input type="hidden" name="csrfmiddlewaretoken" :value="csrfToken" />
-            <input type="hidden" name="next" :value="$route.fullPath" />
-            <b-nav-item-dropdown :text="selectedLanguage.name">
-              <button
-                v-for="(name, code) in languages"
-                name="language"
-                :key="code"
-                :value="code"
-                type="submit"
-                class="dropdown-item"
-              >{{ name }}</button>
-            </b-nav-item-dropdown>
-          </form>
+          <b-nav-item-dropdown :text="selectedLanguage.name">
+            <button
+              v-for="(name, code) in languages"
+              name="language"
+              :key="code"
+              :value="code"
+              type="button"
+              class="dropdown-item"
+              v-on:click="setLanguage(code)"
+            >{{ name }}</button>
+          </b-nav-item-dropdown>
         </b-navbar-nav>
 
         <search-bar class="flex-grow-1"></search-bar>
@@ -47,38 +44,38 @@
 </template>
 
 <script>
-import translate, { currentLanguage } from '../translate';
+import translate, {
+  availableLanguages,
+  getCurrentLanguage,
+  setCurrentLanguage
+} from '../translate';
+import { cmsHost } from '../config';
 import SearchBar from './SearchBar.vue';
 
 export default {
   components: { SearchBar },
   filters: { translate },
 
-  data() {
-    return {
-      languages: {
-        en: 'English',
-        de: 'Deutsch',
-        cs: 'Česky'
-      }
-    };
-  },
-
   computed: {
+    languages() {
+      return availableLanguages;
+    },
+
     selectedLanguage() {
-      let code = currentLanguage();
-      let name = this.languages[code];
+      let code = getCurrentLanguage();
+      let name = availableLanguages[code];
       return { code, name };
     },
 
-    csrfToken() {
-      const cookies = document.cookie;
-      const dict = cookies.split(';').reduce((acc, cur) => {
-        const [key, value] = cur.trim().split('=');
-        acc[key] = value;
-        return acc;
-      }, {});
-      return dict.csrftoken || '';
+    adminLink() {
+      return `${cmsHost}/admin`;
+    }
+  },
+
+  methods: {
+    setLanguage(lang) {
+      setCurrentLanguage(lang);
+      this.$router.go();
     }
   }
 };

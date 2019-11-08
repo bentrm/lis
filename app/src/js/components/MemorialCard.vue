@@ -4,7 +4,7 @@
       <i class="fas fa-times"></i>
     </span>
 
-    <user-image
+    <figure-image
       class="card-img-top m-0"
       v-if="image"
       :src="image.banner"
@@ -12,8 +12,8 @@
       :alt="image.title"
       :title="image.title"
       :captionModal="image.caption"
-      :copyright="image.copyright">
-    </user-image>
+      :copyright="image.copyright"
+    ></figure-image>
 
     <div class="card-body">
       <h5>
@@ -21,26 +21,21 @@
         <small class="d-block">
           <router-link
             :to="{name: 'memorial-detail', params: { mapStatePath: path }}"
-          >
-            {{ position | humanizePosition }}
-          </router-link>
+          >{{ position | humanizePosition }}</router-link>
         </small>
       </h5>
 
       <div>
         <ul class="list-unstyled">
-          <li
-            v-for="author in authors"
-            :key="author.id"
-          >
+          <li v-for="author in authors" :key="author.id">
             <div class="author-card media">
-
-              <img
-                v-if="author.title_image"
-                :src="author.title_image.thumb"
-                :alt="author.title_image.title"
-                :title="author.title_image.title"
-                class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center">
+              <cms-image
+                  v-if="author.title_image"
+                  :src="author.title_image.thumb"
+                  :alt="author.title_image.title"
+                  :title="author.title_image.title"
+                  class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center"
+                ></cms-image>
 
               <div class="media-body">
                 <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
@@ -54,16 +49,18 @@
                     :year="author.yob"
                     :month="author.mob"
                     :day="author.dob"
-                    :place="author.pob"></pretty-date>
+                    :place="author.pob"
+                  ></pretty-date>
 
-                  <span v-if="author.yob && author.yod"> - </span>
+                  <span v-if="author.yob && author.yod">-</span>
 
                   <pretty-date
                     v-if="author.yod"
                     :year="author.yod"
                     :month="author.mod"
                     :day="author.dod"
-                    :place="author.pod"></pretty-date>
+                    :place="author.pod"
+                  ></pretty-date>
                 </small>
               </div>
             </div>
@@ -91,78 +88,79 @@
 </template>
 
 <script>
-  import translate from '../translate';
-  import {humanizePosition, mapStateToPath} from '../utils';
-  import Paragraph from './Paragraph.vue';
-  import PrettyDate from './PrettyDate.vue';
-  import UserImage from './UserImage.vue';
+import translate from '../translate';
+import { humanizePosition, mapStateToPath } from '../utils';
+import Paragraph from './Paragraph.vue';
+import PrettyDate from './PrettyDate.vue';
+import FigureImage from './FigureImage.vue';
+import CmsImage from './CmsImage.vue';
 
+export default {
+  props: {
+    title: String,
+    image: Object,
+    position: Array,
+    authors: Array,
+    address: String,
+    contactInfo: String,
+    directions: String,
+    introduction: String,
+    description: Array,
+    detailedDescription: Array
+  },
+  components: {
+    CmsImage,
+    FigureImage,
+    Paragraph,
+    PrettyDate
+  },
+  filters: {
+    humanizePosition,
+    translate
+  },
 
-  export default {
-    props: {
-      title: String,
-      image: Object,
-      position: Array,
-      authors: Array,
-      address: String,
-      contactInfo: String,
-      directions: String,
-      introduction: String,
-      description: Array,
-      detailedDescription: Array
-    },
-    components: {
-      UserImage,
-      Paragraph,
-      PrettyDate,
-    },
-    filters: {
-      humanizePosition,
-      translate,
-    },
+  data() {
+    return {
+      showImage: false
+    };
+  },
 
-    data() {
-      return {
-        showImage: false
-      };
-    },
-
-    computed: {
-      path () {
-        return mapStateToPath(this.position);
-      }
+  computed: {
+    path() {
+      return mapStateToPath(this.position);
     }
-  };
+  }
+};
 </script>
 
 <style lang="scss">
-  @import '../../scss/variables';
+@import '../../scss/variables';
 
-  .memorial-card {
-    .close {
-      color: white;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      filter: drop-shadow(0 0 2px black);
-    }
+.memorial-card {
+  .close {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    filter: drop-shadow(0 0 2px black);
+  }
 
-    .blockquote {
-      font-size: .8rem;
-    }
+  .blockquote {
+    font-size: 0.8rem;
+  }
 
-    .footnotes {
-      font-size: $font-size-sm;
+  .footnotes {
+    font-size: $font-size-sm;
 
-      ol {
-        padding-left: 1.5rem;
-      }
-    }
-
-    .author-card {
-      .author-img {
-        max-height: 30px;
-      }
+    ol {
+      padding-left: 1.5rem;
     }
   }
+
+  .author-card {
+    .author-img {
+      max-height: 30px;
+    }
+  }
+}
 </style>

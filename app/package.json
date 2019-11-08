@@ -7,12 +7,15 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "dev": "webpack",
-    "start": "webpack --watch",
+    "start": "webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Benjamin Thurm",
   "license": "EUPL-1.2",
-  "devDependencies": {},
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-dev-server": "^3.9.0"
+  },
   "dependencies": {
     "@babel/core": "^7.6.2",
     "@babel/polyfill": "^7.6.0",

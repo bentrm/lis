@@ -1,5 +1,6 @@
 import queryString from 'query-string';
-import {currentLanguage} from './translate';
+import { getCurrentLanguage } from './translate';
+import { cmsHost } from './config';
 
 
 const filter = (obj) =>
@@ -15,21 +16,21 @@ class Api {
     this.rootUrl = rootUrl;
   }
 
-  getResults(path, options = {}) {
+  async getResults(path, options = {}) {
     const params = filter(options);
     const queryParams = queryString.stringify(params);
-    const url = `${this.rootUrl}${path}?${queryParams}`;
-    return fetch(url, {
+    const url = `${this.rootUrl}/${getCurrentLanguage()}/api/v2${path}?${queryParams}`;
+    const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
-        'Accept-Language': currentLanguage(),
       }
-    }).then(response => {
-      if (response.status !== 200) {
-        throw response;
-      }
-      return response.json()
     });
+
+    if (response.status !== 200) {
+      throw response;
+    }
+
+    return response.json();
   }
 
   getPage(slug, options) {
@@ -57,4 +58,4 @@ class Api {
   }
 }
 
-export default new Api('/api/v2');
+export default new Api(cmsHost);
