@@ -239,8 +239,7 @@ USE_TZ = True
 LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
 
 STATICFILES_DIRS = [
-    os.path.join(SRC_DIR, "static"),
-    "/assets"
+    os.path.join(SRC_DIR, "static")
 ]
 
 STATIC_ROOT = "/html/static"
