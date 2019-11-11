@@ -6,6 +6,7 @@ services:
       context: ./app
       target: prod
     restart: always
+
   cms:
     build: ./cms
     ports:

@@ -12,11 +12,11 @@ from wagtail.documents import urls as wagtaildocs_urls
 logger = logging.getLogger(__name__)
 
 urlpatterns = [
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('wagtail/', include(wagtail_urls)),
-    path('admin/', include(wagtailadmin_urls)),
-    path('documents/', include(wagtaildocs_urls)),
-    path('cms/', include('cms.urls')),
+    path('cms/accounts/', include('django.contrib.auth.urls')),
+    path('cms/wagtail/', include(wagtail_urls)),
+    path('cms/admin/', include(wagtailadmin_urls)),
+    path('cms/documents/', include(wagtaildocs_urls)),
+    path('cms/preview/', include('cms.urls')),
 ]
 
 urlpatterns += i18n_patterns(

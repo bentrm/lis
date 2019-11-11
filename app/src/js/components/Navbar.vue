@@ -68,7 +68,7 @@ export default {
     },
 
     adminLink() {
-      return `${cmsHost}/admin`;
+      return `${cmsHost}/cms/admin`;
     }
   },
 
