@@ -6,8 +6,8 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const env = process.env.NODE_ENV;
 const isProd = env === 'production';
-const cmsHost = process.env.CMS || 'http://localhost:8000';
 const distDir = path.resolve(__dirname, 'dist');
+const cmsHost = process.env.CMS_URL || '';
 
 const plugins = [
   new CleanWebpackPlugin(),
