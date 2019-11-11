@@ -6,6 +6,8 @@ services:
       context: ./app
       target: prod
     restart: always
+    environment:
+      LANG_HOSTS: ${LANG_HOSTS}
 
   cms:
     build: ./cms

@@ -8,6 +8,15 @@ const env = process.env.NODE_ENV;
 const isProd = env === 'production';
 const distDir = path.resolve(__dirname, 'dist');
 const cmsHost = process.env.CMS_URL || '';
+let langHosts = process.env.LANG_HOSTS;
+
+if (langHosts) {
+  const arr = {};
+  langHosts.split(';').map(x => x.split('=')).forEach(([host, lang]) => {
+    arr[host] = lang;
+  });
+  langHosts = arr;
+}
 
 const plugins = [
   new CleanWebpackPlugin(),
@@ -18,6 +27,7 @@ const plugins = [
   new VueLoaderPlugin(),
   new webpack.DefinePlugin({
     __CMS__: JSON.stringify(cmsHost),
+    __LANG_HOSTS__: JSON.stringify(langHosts || {})
   }),
 ];
 

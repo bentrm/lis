@@ -1,7 +1,5 @@
-/**
- * Translation strings
- * @type {{}}
- */
+import { langHosts } from './config';
+
 const library = {
   'About': { de: 'Über' },
   'Address': { de: 'Adresse' },
@@ -66,6 +64,7 @@ export const availableLanguages = Object.freeze({
 
 /**
  * Currently delivered language. Might be different from browser language.
+ * Preconfigured host-specific settings are favoured if no user setting is provided.
  */
 export const getCurrentLanguage = () => {
   const cookies = document.cookie;
@@ -74,7 +73,16 @@ export const getCurrentLanguage = () => {
     acc[key] = value;
     return acc;
   }, {});
-  return dict.lang || 'de';
+
+  if (dict.lang) {
+    return dict.lang;
+  }
+
+  if (langHosts[window.location.hostname]) {
+    return langHosts[window.location.hostname];
+  }
+
+  'de';
 };
 
 export const setCurrentLanguage = lang => {
