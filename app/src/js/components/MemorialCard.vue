@@ -1,9 +1,5 @@
 <template>
   <div class="card memorial-card">
-    <span class="close" v-on:click="$emit('hide')">
-      <i class="fas fa-times"></i>
-    </span>
-
     <figure-image
       class="card-img-top m-0"
       v-if="image"
@@ -30,12 +26,12 @@
           <li v-for="author in authors" :key="author.id">
             <div class="author-card media">
               <cms-image
-                  v-if="author.title_image"
-                  :src="author.title_image.thumb"
-                  :alt="author.title_image.title"
-                  :title="author.title_image.title"
-                  class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center"
-                ></cms-image>
+                v-if="author.title_image"
+                :src="author.title_image.thumb"
+                :alt="author.title_image.title"
+                :title="author.title_image.title"
+                class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center"
+              ></cms-image>
 
               <div class="media-body">
                 <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
@@ -137,14 +133,6 @@ export default {
 @import '../../scss/variables';
 
 .memorial-card {
-  .close {
-    color: white;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    filter: drop-shadow(0 0 2px black);
-  }
-
   .blockquote {
     font-size: 0.8rem;
   }

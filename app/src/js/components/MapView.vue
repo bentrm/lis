@@ -10,61 +10,68 @@
         ></map-component>
       </main>
 
-      <aside
-        v-if="$route.name === 'map'"
-        class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last pt-2"
-      >
-        <h5>{{ 'Keyword search' | translate }}</h5>
-        <filter-list
-          v-on:change="onAuthorSelectionChange"
-          :items="authorFilterList"
-          :selection="authorSelection"
-          :initial-collapse="false"
-        >
-          <template v-slot:header>{{ authorFilterHeader }}</template>
-        </filter-list>
+      <b-card class="Sidebar col-6 col-lg-4 p-0" no-body>
+        <b-tabs card pills small fill>
+          <b-tab :active="$route.name === 'map'">
+            <template v-slot:title>
+              <i class="fas fa-search"></i>
+              {{ 'Filters' | translate }}
+            </template>
+            <h5>{{ 'Keyword search' | translate }}</h5>
+            <filter-list
+              v-on:change="onAuthorSelectionChange"
+              :items="authorFilterList"
+              :selection="authorSelection"
+              :initial-collapse="false"
+            >
+              <template v-slot:header>{{ authorFilterHeader }}</template>
+            </filter-list>
 
-        <filter-list
-          v-on:change="onTypeSelectionChange"
-          :items="typeFilterList"
-          :selection="typeSelection"
-        >
-          <template v-slot:header>{{ typeFilterHeader }}</template>
-        </filter-list>
-      </aside>
+            <filter-list
+              v-on:change="onTypeSelectionChange"
+              :items="typeFilterList"
+              :selection="typeSelection"
+            >
+              <template v-slot:header>{{ typeFilterHeader }}</template>
+            </filter-list>
+          </b-tab>
 
-      <aside
-        v-if="$route.name === 'memorial-detail'"
-        class="Sidebar col-6 col-lg-4 border-bottom border-sm-bottom-0 border-sm-left order-first order-sm-last p-0"
-      >
-        <memorial-card
-          v-if="memorialSelect"
-          class="border-0"
-          :banner="memorialSelect.banner"
-          :title="memorialSelect.name"
-          :image="memorialSelect.title_image"
-          :position="memorialSelect.position"
-          :authors="memorialSelect.authors"
-          :address="memorialSelect.address"
-          :contact-info="memorialSelect.contact_info"
-          :directions="memorialSelect.directions"
-          :introduction="memorialSelect.introduction"
-          :description="memorialSelect.description"
-          :detailed-description="memorialSelect.detailed_description"
-          v-on:hide="onMemorialDetailHide"
-        ></memorial-card>
-      </aside>
+          <b-tab
+            :title="memorialTabTitle"
+            :active="$route.name === 'memorial-detail'"
+            v-if="memorialSelect"
+            no-body
+          >
+            <memorial-card
+              class="border-0"
+              :banner="memorialSelect.banner"
+              :title="memorialSelect.name"
+              :image="memorialSelect.title_image"
+              :position="memorialSelect.position"
+              :authors="memorialSelect.authors"
+              :address="memorialSelect.address"
+              :contact-info="memorialSelect.contact_info"
+              :directions="memorialSelect.directions"
+              :introduction="memorialSelect.introduction"
+              :description="memorialSelect.description"
+              :detailed-description="memorialSelect.detailed_description"
+            ></memorial-card>
+          </b-tab>
+        </b-tabs>
+      </b-card>
     </div>
   </div>
 </template>
 
 <script>
+import { icon } from '@fortawesome/fontawesome-svg-core';
 import api from '../Api';
 import translate from '../translate';
 import { mapStateToPath, pathToMapState } from '../utils';
 import FilterList from './FilterList.vue';
 import MapComponent from './Map.vue';
 import MemorialCard from './MemorialCard.vue';
+import { iconClassName } from '../markers';
 
 export default {
   props: {
@@ -110,6 +117,24 @@ export default {
         ordering: 'name',
         limit: 1000
       };
+    },
+
+    memorialTabTitle() {
+      const name = this.memorialSelect ? this.memorialSelect.name : '';
+
+      if (name.length > 20) {
+        return name.substr(0, 20).trim() + '…';
+      }
+
+      return name;
+    },
+
+    memorialTabIconClassName() {
+      if (this.memorialSelect) {
+        const symbolId = this.memorialSelect.memorial_types[0].id;
+        return iconClassName(symbolId);
+      }
+      return '';
     },
 
     authorFilterHeader() {
@@ -231,16 +256,6 @@ export default {
 
     onTypeSelectionChange(selection) {
       this.typeSelection = selection;
-    },
-
-    onMemorialDetailHide() {
-      const vm = this;
-      vm.$router
-        .push({
-          name: 'map',
-          params: { ...vm.$route.params }
-        })
-        .catch(() => {});
     },
 
     fetchMemorials() {
