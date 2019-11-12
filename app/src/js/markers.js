@@ -1,4 +1,4 @@
-import {icon, layer} from '@fortawesome/fontawesome-svg-core';
+import { icon, layer } from '@fortawesome/fontawesome-svg-core';
 import {
   archive,
   birthdayCake,
@@ -42,6 +42,16 @@ const symbols = {
 };
 
 /**
+ * Returns the CSS class names used to insert FA icon via italic tag.
+ * @param symbolId
+ * @returns {String} CSS class names
+ */
+export const iconClassName = symbolId => {
+  const { prefix, iconName } = symbols[symbolId] || monument;
+  return `${prefix} fa-${iconName}`;
+};
+
+/**
  * Generates a new font awesome svg layer mapping a symbol id to a fa overlay icon.
  * @param symbolId
  * @returns {Layer}
@@ -51,12 +61,12 @@ export default (symbolId) => {
 
   return layer(push => {
     push(icon(mapMarker, {
-      styles: {'color': '#69140e'},
-      transform: {size: 48, x: 0, y: 0},
+      styles: { 'color': '#69140e' },
+      transform: { size: 48, x: 0, y: 0 },
     }));
     push(icon(symbol, {
-      styles: {'color': 'white'},
-      transform: {x: 0, y: -4, size: 16}
+      styles: { 'color': 'white' },
+      transform: { x: 0, y: -4, size: 16 }
     }));
   }, {
     classes: ['fa-fw', 'fa-leaflet-layer', 'drop-shadow']
