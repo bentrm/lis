@@ -10,7 +10,7 @@ services:
       target: prod
     restart: always
     environment:
-      - BASE_URL=${BASE_URL}
+      - CMS_URL=${CMS_URL}
       - LANG_HOSTS=${LANG_HOSTS}
 
   cms:

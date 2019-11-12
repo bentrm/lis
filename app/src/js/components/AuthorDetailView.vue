@@ -102,7 +102,7 @@
           <li v-if="currentLevel !== 'material'">
             <a href="#memorials">{{ 'Memorials' | translate }}</a>
           </li>
-          <li v-if="level" v-for="[heading] in levelContent" :key="heading">
+          <li v-for="[heading] in levelContent" :key="heading">
             <a :href="'#' + heading">{{ heading | humanize | capitalize | translate }}</a>
           </li>
         </ol>
@@ -216,7 +216,10 @@ export default {
     levelContent() {
       const ignoredProperties = ['id'];
       return Object.entries(this.level || []).filter(
-        ([heading]) => ignoredProperties.indexOf(heading) === -1
+        ([heading, paragraphs]) => {
+          console.log(paragraphs);
+          return ignoredProperties.indexOf(heading) === -1 && paragraphs.length;
+        }
       );
     }
   },
