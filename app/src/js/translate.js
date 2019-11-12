@@ -1,59 +1,59 @@
 import { langHosts } from './config';
 
 const library = {
-  'About': { de: 'Über' },
-  'Address': { de: 'Adresse' },
-  'Admin': { de: 'Admin' },
-  'Also known as': { de: 'Auch bekannt als' },
-  'Author': { de: 'Autor/in' },
-  'Authors': { de: 'Autor/innen' },
-  'Back to homepage.': { de: 'Zurück zur Startseite.' },
-  'Biography': { de: 'Biographie' },
-  'Born': { de: 'Geboren' },
-  'Close': { de: 'Schließen' },
-  'Connections': { de: 'Verbindungen' },
-  'Content': { de: 'Inhalt' },
-  'Dedicated': { de: 'Gewidmet' },
-  'Description': { de: 'Beschreibung' },
-  'Detailed description': { de: 'Detaillierte Beschreibung' },
-  'Died': { de: 'Gestorben' },
-  'Directions': { de: 'Wegbeschreibung' },
-  'Discover': { de: 'Entdecken' },
-  'Error': { de: 'Fehler' },
-  'Female': { de: 'Weiblich' },
-  'Full texts': { de: 'Volltexte' },
-  'Gender': { de: 'Geschlecht' },
-  'Genre': { de: 'Genre' },
-  'Genres': { de: 'Genres' },
-  'Imprint & data protection': { de: 'Impressum & Datenschutz' },
-  'Intro': { de: 'Einleitung' },
-  'items selected': { de: 'Elemente ausgewählt' },
-  'Keyword search': { de: 'Schlagwortsuche' },
-  'Keyword search..': { de: 'Schlagwortsuche..' },
-  'Keyword..': { de: 'Schlagwort..' },
-  'Language': { de: 'Sprache' },
-  'Languages': { de: 'Sprachen' },
-  'Literary landscape': { de: 'Literaturlandschaft' },
-  'Male': { de: 'Männlich' },
-  'Map': { de: 'Karte' },
-  'Material': { de: 'Material' },
-  'Memorial': { de: 'Erinnerungsstelle' },
-  'Memorials': { de: 'Erinnerungsstellen' },
-  'More': { de: 'Mehr' },
-  'Narrow search': { de: 'Suche einschränken' },
-  'No filter item available.': { de: 'Kein Schlagwort zur Auswahl.' },
-  'No filter item selected.': { de: 'Kein Schlagwort ausgewählt.' },
-  'Not found': { de: 'Nicht gefunden' },
-  'Periods': { de: 'Epochen' },
-  'Primary literature': { de: 'Primärliteratur' },
-  'Project partner': { de: 'Projektpartner' },
-  'Reception': { de: 'Rezeption' },
-  'Research': { de: 'Vertiefen' },
-  'Search': { de: 'Suche' },
-  'Secondary literature': { de: 'Sekundärliteratur' },
-  'See on map': { de: 'Auf der Karte ansehen' },
-  'Types': { de: 'Arten' },
-  'Works': { de: 'Werk' },
+  'About': { de: 'Über', cs: 'o' },
+  'Address': { de: 'Adresse', cs: 'adresa' },
+  'Admin': { de: 'Admin', cs: 'admin' },
+  'Also known as': { de: 'Auch bekannt als', cs: 'známá také jako' },
+  'Author': { de: 'Autor/in', cs: 'autor/autorka' },
+  'Authors': { de: 'Autor/innen', cs: 'autoři' },
+  'Back to homepage.': { de: 'Zurück zur Startseite.', cs: 'zpět na domovskou stránku' },
+  'Biography': { de: 'Biographie', cs: 'biografie' },
+  'Born': { de: 'Geboren', cs: 'narozen/narozena' },
+  'Close': { de: 'Schließen', cs: 'zavřít' },
+  'Connections': { de: 'Verbindungen', cs: 'spojnice' },
+  'Content': { de: 'Inhalt', cs: 'obsah' },
+  'Dedicated': { de: 'Gewidmet', cs: 'věnováno' },
+  'Description': { de: 'Beschreibung', cs: 'popis' },
+  'Detailed description': { de: 'Detaillierte Beschreibung', cs: 'detailní popis' },
+  'Died': { de: 'Gestorben', cs: 'zemřel/zemřela' },
+  'Directions': { de: 'Wegbeschreibung', cs: 'popis cesty' },
+  'Discover': { de: 'Entdecken', cs: 'objevit' },
+  'Error': { de: 'Fehler', cs: 'chyba' },
+  'Female': { de: 'Weiblich', cs: 'žena' },
+  'Full texts': { de: 'Volltexte', cs: 'fulltexty' },
+  'Gender': { de: 'Geschlecht', cs: 'rod' },
+  'Genre': { de: 'Genre', cs: 'žánr' },
+  'Genres': { de: 'Genres', cs: 'žánry' },
+  'Imprint & data protection': { de: 'Impressum & Datenschutz', cs: 'tiráž' },
+  'Intro': { de: 'Einleitung', cs: 'úvod' },
+  'items selected': { de: 'Elemente ausgewählt', cs: 'vybrané položky' },
+  'Keyword search': { de: 'Schlagwortsuche', cs: 'vyhledávání podle hesel' },
+  'Keyword search..': { de: 'Schlagwortsuche..', cs: 'vyhledávání podle hesel' },
+  'Keyword..': { de: 'Schlagwort..', cs: 'heslo' },
+  'Language': { de: 'Sprache', cs: 'jazyk' },
+  'Languages': { de: 'Sprachen', cs: 'jazyky' },
+  'Literary landscape': { de: 'Literaturlandschaft', cs: 'literární krajina' },
+  'Male': { de: 'Männlich', cs: 'muž' },
+  'Map': { de: 'Karte', cs: 'mapa' },
+  'Material': { de: 'Material', cs: 'materiál' },
+  'Memorial': { de: 'Erinnerungsstelle', cs: 'pamětní místo' },
+  'Memorials': { de: 'Erinnerungsstellen', cs: 'pamětní místa' },
+  'More': { de: 'Mehr', cs: 'více' },
+  'Narrow search': { de: 'Suche einschränken', cs: 'vymezit hledání' },
+  'No filter item available.': { de: 'Kein Schlagwort zur Auswahl.', cs: 'žádné heslo k výběru' },
+  'No filter item selected.': { de: 'Kein Schlagwort ausgewählt.', cs: 'žádé vybrané heslo' },
+  'Not found': { de: 'Nicht gefunden', cs: 'nenalezeno' },
+  'Periods': { de: 'Epochen', cs: 'epochy' },
+  'Primary literature': { de: 'Primärliteratur', cs: 'primární literatura' },
+  'Project partner': { de: 'Projektpartner', cs: 'projektový partner' },
+  'Reception': { de: 'Rezeption', cs: 'recepce' },
+  'Research': { de: 'Vertiefen', cs: 'prohloubení' },
+  'Search': { de: 'Suche', cs: 'hledání' },
+  'Secondary literature': { de: 'Sekundärliteratur', cs: 'sekundární literatura' },
+  'See on map': { de: 'Auf der Karte ansehen', cs: 'zobrazit na mapě' },
+  'Types': { de: 'Arten', cs: 'typy' },
+  'Works': { de: 'Werk', cs: 'díla' },
 };
 
 export const availableLanguages = Object.freeze({
@@ -75,14 +75,19 @@ export const getCurrentLanguage = () => {
   }, {});
 
   if (dict.lang) {
+    console.log(`User defined lang ${dict.lang} set.`);
     return dict.lang;
   }
 
-  if (langHosts[window.location.hostname]) {
-    return langHosts[window.location.hostname];
+  const hostname = window.location.hostname;
+  const predefinedLang = langHosts[hostname];
+  if (predefinedLang) {
+    console.debug(`Falling back to predefined translation ${predefinedLang} for host ${hostname}.`);
+    return predefinedLang;
   }
 
-  'de';
+  console.debug('Falling back to en translation.');
+  return 'en';
 };
 
 export const setCurrentLanguage = lang => {

@@ -1,5 +1,6 @@
 import { dom } from '@fortawesome/fontawesome-svg-core';
 import { ModalPlugin, NavbarPlugin, PopoverPlugin } from 'bootstrap-vue';
+import Meta from 'vue-meta';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import VueRouter from 'vue-router';
@@ -9,6 +10,7 @@ import App from './components/App.vue';
 import './icons';
 
 Vue.use(VueRouter);
+Vue.use(Meta);
 Vue.use(PopoverPlugin);
 Vue.use(ModalPlugin);
 Vue.use(NavbarPlugin);

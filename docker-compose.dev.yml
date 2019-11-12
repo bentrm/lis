@@ -6,15 +6,11 @@ services:
       context: ./app
       target: builder
     command: ["npm", "start"]
-    environment:
-      CMS_URL: ${BASE_URL}
     ports:
       - "3000:3000"
     volumes:
       - ./app/src:/app/src
+
   cms:
-    build: ./cms
-    environment:
-      DEBUG: 1
     volumes:
       - ./cms:/app

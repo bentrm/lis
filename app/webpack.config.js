@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const env = process.env.NODE_ENV;
 const isProd = env === 'production';
 const distDir = path.resolve(__dirname, 'dist');
-const cmsHost = process.env.CMS_URL || '';
+const cmsHost = process.env.CMS_URL;
 let langHosts = process.env.LANG_HOSTS;
 
 if (langHosts) {

@@ -4,10 +4,14 @@ services:
   app:
     build:
       context: ./app
+      args:
+        - BASE_URL
+        - LANG_HOSTS
       target: prod
     restart: always
     environment:
-      LANG_HOSTS: ${LANG_HOSTS}
+      - BASE_URL=${BASE_URL}
+      - LANG_HOSTS=${LANG_HOSTS}
 
   cms:
     build: ./cms

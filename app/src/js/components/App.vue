@@ -54,7 +54,7 @@ import htwLogo from '../../assets/logos/logo_htw_dresden.svg';
 import tudLogo from '../../assets/logos/logo_tu_dresden.svg';
 import tulLogo from '../../assets/logos/logo_tu_liberec.svg';
 import router from '../router';
-import translate from '../translate';
+import translate, { getCurrentLanguage } from '../translate';
 import Navbar from './Navbar.vue';
 import SponsorBar from './SponsorBar.vue';
 
@@ -66,12 +66,24 @@ export default {
   filters: {
     translate
   },
+  metaInfo() {
+    return {
+      htmlAttrs: {
+        lang: getCurrentLanguage()
+      }
+    };
+  },
   data() {
     return {
       htwLogo,
       tudLogo,
       tulLogo
     };
+  },
+  computed: {
+    currentLang() {
+      return currentLang;
+    }
   },
   router
 };
