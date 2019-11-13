@@ -12,8 +12,8 @@
 
       <b-collapse id="header-menu" is-nav>
         <b-navbar-nav>
-          <b-nav-item :to="{name: 'map'}">{{ 'Map' | translate }}</b-nav-item>
-          <b-nav-item :to="{name: 'author-list'}">{{ 'Authors' | translate }}</b-nav-item>
+          <b-nav-item :to="{name: 'map'}" active-class="active">{{ 'Map' | translate }}</b-nav-item>
+          <b-nav-item :to="{name: 'author-list'}" active-class="active">{{ 'Authors' | translate }}</b-nav-item>
           <b-nav-item-dropdown :text="'More' | translate">
             <b-dropdown-item
               :to="{name: 'blog-page', params: { slug: 'about' }}"
