@@ -1,5 +1,5 @@
 import { dom } from '@fortawesome/fontawesome-svg-core';
-import { CardPlugin, ModalPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin } from 'bootstrap-vue';
+import { CardPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue';
 import Meta from 'vue-meta';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -16,6 +16,8 @@ Vue.use(PopoverPlugin);
 Vue.use(ModalPlugin);
 Vue.use(NavbarPlugin);
 Vue.use(TabsPlugin);
+Vue.use(MediaPlugin);
+Vue.use(ImagePlugin);
 
 const AppComponent = Vue.extend(App);
 

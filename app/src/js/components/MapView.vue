@@ -30,7 +30,6 @@
               <i class="fas fa-search"></i>
               {{ 'Filters' | translate }}
             </template>
-            <h5>{{ 'Keyword search' | translate }}</h5>
             <filter-list
               v-on:change="onAuthorSelectionChange"
               :items="authorFilterList"

@@ -1,29 +1,24 @@
 <template>
   <nav v-if="totalPages > 1">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
       <li
         v-for="n in totalPages"
+        :key="n"
         :class="{'page-item': true, 'active': n === currentPage}"
       >
-        <button
-          class="page-link"
-          :data-page="n"
-          v-on:click="emitChange(n)"
-        >
-          {{ n }}
-        </button>
+        <button class="page-link" :data-page="n" v-on:click="emitChange(n)">{{ n }}</button>
       </li>
     </ul>
   </nav>
 </template>
 
 <script>
-  export default {
-    props: ['currentPage', 'totalPages'],
-    methods: {
-      emitChange: function (pageNumber) {
-        this.$emit('change', pageNumber);
-      }
+export default {
+  props: ['currentPage', 'totalPages'],
+  methods: {
+    emitChange: function(pageNumber) {
+      this.$emit('change', pageNumber);
     }
-  };
+  }
+};
 </script>
