@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="MapView row">
-      <main class="col p-0">
+      <main v-if="!isSmallDevice" class="col p-0">
         <map-component
           :initial-map-state="initialMapState"
           :features="memorials"
@@ -10,9 +10,22 @@
         ></map-component>
       </main>
 
-      <b-card class="Sidebar col-6 col-lg-4 p-0" no-body>
+      <b-card class="Sidebar col col-sm-6 col-lg-4 p-0" no-body>
         <b-tabs card pills small fill>
-          <b-tab :active="$route.name === 'map'">
+          <b-tab :active="$route.name === 'map'" no-body lazy v-if="isSmallDevice">
+            <template v-slot:title>
+              <i class="fas fa-map"></i>
+              {{ 'Map' | translate }}
+            </template>
+            <map-component
+              :initial-map-state="initialMapState"
+              :features="memorials"
+              v-on:select="onMapSelect"
+              v-on:moveend="onMapMoveEnd"
+            ></map-component>
+          </b-tab>
+
+          <b-tab>
             <template v-slot:title>
               <i class="fas fa-search"></i>
               {{ 'Filters' | translate }}
@@ -36,12 +49,11 @@
             </filter-list>
           </b-tab>
 
-          <b-tab
-            :title="memorialTabTitle"
-            :active="$route.name === 'memorial-detail'"
-            v-if="memorialSelect"
-            no-body
-          >
+          <b-tab :active="$route.name === 'memorial-detail'" v-if="memorialSelect" no-body>
+            <template v-slot:title>
+              <i class="fas fa-monument"></i>
+              {{ 'Memorial' | translate }}
+            </template>
             <memorial-card
               class="border-0"
               :banner="memorialSelect.banner"
@@ -67,7 +79,7 @@
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import api from '../Api';
 import translate from '../translate';
-import { mapStateToPath, pathToMapState } from '../utils';
+import { mapStateToPath, pathToMapState, getDeviceWidth } from '../utils';
 import FilterList from './FilterList.vue';
 import MapComponent from './Map.vue';
 import MemorialCard from './MemorialCard.vue';
@@ -94,6 +106,7 @@ export default {
 
   data() {
     return {
+      isSmallDevice: getDeviceWidth() < 576,
       initialMapState: undefined,
 
       memorials: [],
@@ -216,6 +229,10 @@ export default {
     // window.onpopstate = vm.onPopState;
   },
 
+  mounted() {
+    window.onresize = this.onWindowResize;
+  },
+
   methods: {
     onMapSelect(memorialId) {
       const vm = this;
@@ -235,6 +252,10 @@ export default {
           })
           .catch(() => {});
       }
+    },
+
+    onWindowResize() {
+      this.isSmallDevice = getDeviceWidth() < 576;
     },
 
     onMapMoveEnd(center, zoom) {
@@ -286,17 +307,26 @@ export default {
 </script>
 
 <style lang="scss">
-.MapView {
-  height: 80vh;
-  max-height: 80vh;
-
+@media (max-width: 576px) {
   .Map {
-    max-height: 80vh;
+    height: 200px;
+    height: 100vw;
   }
+}
 
-  .Sidebar {
+@media (min-width: 576px) {
+  .MapView {
+    height: 80vh;
     max-height: 80vh;
-    overflow-x: scroll;
+
+    .Map {
+      max-height: 80vh;
+    }
+
+    .Sidebar {
+      max-height: 80vh;
+      overflow-x: scroll;
+    }
   }
 }
 </style>

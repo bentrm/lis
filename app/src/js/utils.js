@@ -16,6 +16,13 @@ export const humanize = value => {
   return value.split('_').join(' ');
 };
 
+export const getDeviceWidth = () => {
+  return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+}
+
+export const getDeviceHeight = () => {
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+}
 
 /**
  * Encodes a map view center as a String.
@@ -54,9 +61,9 @@ export const pathToMapState = path => {
  */
 export const debounce = (func, wait, immediate) => {
   let timeout;
-  return function() {
+  return function () {
     const context = this, args = arguments;
-    const later = function() {
+    const later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
