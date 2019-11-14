@@ -23,7 +23,7 @@
                 :to="{name: 'blog-page', params: { slug: 'tu-dresden' }}"
                 class="stretched-link"
               >
-                <img :src="tudLogo" alt="TU Dresden" class="partner-logo img-fluid d-block m-2" />
+                <img :src="tudLogo" alt="TU Dresden" class="partner-logo img-fluid d-block m-4" />
               </router-link>
             </div>
             <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center align-items-center">
@@ -31,7 +31,7 @@
                 :to="{name: 'blog-page', params: { slug: 'tu-liberec' }}"
                 class="stretched-link"
               >
-                <img :src="tulLogo" alt="TU Liberec" class="partner-logo img-fluid d-block m-2" />
+                <img :src="tulLogo" alt="TU Liberec" class="partner-logo img-fluid d-block m-4" />
               </router-link>
             </div>
             <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center align-items-center">
@@ -39,7 +39,7 @@
                 :to="{name: 'blog-page', params: { slug: 'htw-dresden' }}"
                 class="stretched-link"
               >
-                <img :src="htwLogo" alt="HTW Dresden" class="partner-logo img-fluid d-block m-2" />
+                <img :src="htwLogo" alt="HTW Dresden" class="partner-logo img-fluid d-block m-4" />
               </router-link>
             </div>
           </div>
