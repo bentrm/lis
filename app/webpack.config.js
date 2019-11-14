@@ -34,7 +34,7 @@ const plugins = [
 if (isProd) {
   plugins.push(
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: '[name].[contenthash].css',
     })
   );
 }
@@ -63,7 +63,7 @@ module.exports = {
   },
   output: {
     path: distDir,
-    chunkFilename: '[name].bundle.js',
+    filename: '[name].bundle.[contenthash].js',
     publicPath: '/'
   },
   optimization: {
