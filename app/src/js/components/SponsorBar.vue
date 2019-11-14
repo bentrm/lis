@@ -1,18 +1,28 @@
 <template>
-  <div class="navbar navbar-light">
+  <div class="navbar navbar-light py-0">
     <span class="small d-none d-sm-block">
       Gefördert durch
       <br />Podpořeno
     </span>
 
     <a
-      class="navbar-brand ml-md-auto"
+      class="navbar-brand ml-auto p-0"
       href="http://www.sn-cz2020.eu/"
       target="_blank"
       rel="noopener"
     >
-      <img :src="euLogo" alt="Logo EU Fonds" class="eu-logo img img-fluid" />
-      <img :src="snczLogo" alt="Logo SN CZ" class="eu-logo img img-fluid" />
+      <img
+        :src="euLogo"
+        alt="Logo EU Fonds"
+        class="eu-logo img img-fluid"
+        style="max-height: 2.5rem;"
+      />
+      <img
+        :src="snczLogo"
+        alt="Logo SN CZ"
+        class="eu-logo img img-fluid"
+        style="max-height: 4.5rem;"
+      />
     </a>
   </div>
 </template>
@@ -30,9 +40,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.eu-logo {
-  max-height: 2.5rem;
-}
-</style>
