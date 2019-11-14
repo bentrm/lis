@@ -54,19 +54,17 @@
                 <template v-slot:aside>
                   <cms-image
                     v-if="author.title_image"
-                    width="25"
-                    height="25"
                     :src="author.title_image.thumb"
                     :alt="author.title_image.title"
                     :title="author.title_image.title"
-                    class="border border-primary rounded-circle img-fluid"
+                    class="author-thumb border border-primary rounded-circle img-fluid"
                   ></cms-image>
                   <b-img
                     blank
                     width="25"
                     height="25"
                     blank-color="grey"
-                    class="border border-primary rounded-circle img-fluid"
+                    class="author-thumb border border-primary rounded-circle img-fluid"
                     v-else
                   ></b-img>
                 </template>
