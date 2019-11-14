@@ -11,11 +11,11 @@
       </main>
 
       <b-card class="Sidebar col col-sm-6 col-lg-4 p-0" no-body>
-        <b-tabs card pills small fill>
+        <b-tabs card pills small fill :value="activeTabIndex" v-on:activate-tab="onActivateTab">
           <b-tab :active="$route.name === 'map'" no-body lazy v-if="isSmallDevice">
             <template v-slot:title>
               <i class="fas fa-map"></i>
-              {{ 'Map' | translate }}
+              {{ 'Map' | translate }} ({{ memorials.length }})
             </template>
             <map-component
               :initial-map-state="initialMapState"
@@ -84,6 +84,19 @@ import MapComponent from './Map.vue';
 import MemorialCard from './MemorialCard.vue';
 import { iconClassName } from '../markers';
 
+const tabs = {
+  '#filter': 1,
+  '#detail': 2
+};
+
+const tabIndex = hash => {
+  return tabs[hash] || 0;
+};
+
+const tabHash = index => {
+  return Object.keys(tabs).find(key => tabs[key] === index) || '';
+};
+
 export default {
   props: {
     mapStatePath: {
@@ -129,6 +142,10 @@ export default {
         ordering: 'name',
         limit: 1000
       };
+    },
+
+    activeTabIndex() {
+      return tabIndex(this.$store.state.route.hash);
     },
 
     memorialTabTitle() {
@@ -233,6 +250,18 @@ export default {
   },
 
   methods: {
+    onActivateTab(index) {
+      const vm = this;
+      const hash = tabHash(index);
+
+      vm.$router
+        .replace({
+          ...vm.$router.params,
+          hash
+        })
+        .catch(() => {});
+    },
+
     onMapSelect(memorialId) {
       const vm = this;
 
@@ -240,14 +269,16 @@ export default {
         vm.$router
           .push({
             name: 'memorial-detail',
-            params: { ...vm.$route.params, memorialId }
+            params: { ...vm.$route.params, memorialId },
+            hash: '#detail'
           })
           .catch(() => {});
       } else {
         vm.$router
           .push({
             name: 'map',
-            params: { ...vm.$route.params }
+            params: { ...vm.$route.params },
+            hash: ''
           })
           .catch(() => {});
       }
@@ -263,6 +294,7 @@ export default {
 
       vm.$router.push(
         {
+          ...vm.$route,
           name: vm.$route.name,
           params: { ...vm.$route.params, mapStatePath }
         },
