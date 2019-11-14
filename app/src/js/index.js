@@ -1,14 +1,18 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 import { dom } from '@fortawesome/fontawesome-svg-core';
 import { CardPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue';
 import Meta from 'vue-meta';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import VueRouter from 'vue-router';
 import Vue from 'vue/dist/vue.esm';
 import '../scss/main.scss';
 import App from './components/App.vue';
+import Vuex from 'vuex';
 import './icons';
-
+import router from './router';
+import context from './context';
+import { sync } from 'vuex-router-sync'
 import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -22,8 +26,9 @@ Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
-Vue.use(VueRouter);
 Vue.use(Meta);
+Vue.use(Vuex);
+Vue.use(VueRouter);
 Vue.use(CardPlugin);
 Vue.use(PopoverPlugin);
 Vue.use(ModalPlugin);
@@ -32,7 +37,13 @@ Vue.use(TabsPlugin);
 Vue.use(MediaPlugin);
 Vue.use(ImagePlugin);
 
+const store = new Vuex.Store(context);
+sync(store, router);
+
 const AppComponent = Vue.extend(App);
 
-new AppComponent().$mount('#App');
+new AppComponent({
+  store,
+  router
+}).$mount('#App');
 dom.watch();

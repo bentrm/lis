@@ -53,7 +53,6 @@
 import htwLogo from '../../assets/logos/logo_htw_dresden.svg';
 import tudLogo from '../../assets/logos/logo_tu_dresden.svg';
 import tulLogo from '../../assets/logos/logo_tu_liberec.svg';
-import router from '../router';
 import translate, { getCurrentLanguage } from '../translate';
 import Navbar from './Navbar.vue';
 import SponsorBar from './SponsorBar.vue';
@@ -84,8 +83,7 @@ export default {
     currentLang() {
       return currentLang;
     }
-  },
-  router
+  }
 };
 </script>
 
