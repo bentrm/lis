@@ -1,22 +1,50 @@
 <template>
-  <div class="Map"></div>
+  <div class="Map">
+    <l-map
+      ref="mapRef"
+      :zoom="zoom"
+      :center="center"
+      :maxBounds="maxBounds"
+      @moveend="onMapMoveEnd"
+    >
+      <l-control-scale position="bottomleft" :imperial="true" :metric="true"></l-control-scale>
+      <l-layer-extent :layer="$refs.clusterRef ? $refs.clusterRef.mapObject : null"></l-layer-extent>
+      <l-locate-control :options="locateControlOptions"></l-locate-control>
+      <tiled-wms-layer
+        :base-url="baseUrl"
+        :layers="layers"
+        format="image/png"
+        version="1.3.0"
+        :attribution="attribution"
+        :detect-retina="true"
+        :tiled="true"
+        :format_options="format_options"
+        :transparent="true"
+      ></tiled-wms-layer>
+      <l-marker-cluster :options="markerClusterOptions" ref="clusterRef">
+        <l-marker
+          v-for="feature in features"
+          :key="feature.id"
+          :lat-lng="[feature.position[1], feature.position[0]]"
+          :icon="getMarkerIcon(feature)"
+          :options="feature"
+          @click="onMarkerClick"
+        >
+          <l-popup>{{feature.name}}</l-popup>
+        </l-marker>
+      </l-marker-cluster>
+    </l-map>
+  </div>
 </template>
 
 <script>
-import L from 'leaflet';
-import 'leaflet.locatecontrol';
-import 'leaflet.markercluster';
-import Extent from '../leaflet.extentcontrol';
+import { LMap, LMarker, LControlScale, LPopup } from 'vue2-leaflet';
+import LMarkerCluster from 'vue2-leaflet-markercluster';
+import LLayerExtent from './LayerExtent.vue';
+import LLocateControl from './LocateControl.vue';
+import TiledWmsLayer from './TiledWmsLayer.vue';
+import { DivIcon } from 'leaflet';
 import marker from '../markers';
-
-const retina =
-  (window.devicePixelRatio ||
-    window.screen.deviceXDPI / window.screen.logicalXDPI) > 1;
-const attribution =
-  'Rendering <a href="https://geoinformatik.htw-dresden.de">' +
-  'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; ' +
-  '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-  '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
 
 export default {
   props: {
@@ -24,65 +52,73 @@ export default {
     features: Array
   },
 
-  created() {
-    const vm = this;
-    const url = 'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms';
-    const options = {
-      attribution,
-      format: 'image/png',
-      format_options: retina ? 'dpi:180' : 'dpi:90',
-      layers: 'osm:OSM',
-      tiled: true,
-      tileSize: 256,
-      transparent: true,
-      version: '1.3.0',
-      detectRetina: true
-    };
-
-    vm.osmLayer = L.tileLayer.wms(url, options);
-    vm.clusterLayer = L.markerClusterGroup({
-      animate: true,
-      polygonOptions: {
-        color: '#69140e'
-      },
-      spiderLegPolylineOptions: {
-        color: '#69140e'
-      }
-    });
-    vm.scaleControl = L.control.scale();
-    vm.extentControl = new Extent({
-      layer: vm.clusterLayer
-    });
-    vm.locateControl = L.control.locate({
-      flyTo: true,
-      icon: 'fas fa-location-arrow',
-      iconLoading: 'fas fa-spinner fa-spin',
-      iconElementTag: 'i',
-      locateOptions: {
-        enableHighAccuracy: true
-      },
-      showPopup: false
-    });
+  components: {
+    LMap,
+    TiledWmsLayer,
+    LMarker,
+    LMarkerCluster,
+    LLayerExtent,
+    LControlScale,
+    LLocateControl,
+    LPopup
   },
 
-  mounted() {
-    const vm = this;
-    const { center, zoom } = vm.initialMapState;
-    const map = (vm.map = L.map(vm.$el, {
-      center,
-      zoom,
-      layers: [vm.osmLayer, vm.clusterLayer],
-      maxBounds: [[35.0, -10.0], [65.0, 30.0]]
-    }));
-    vm.scaleControl.addTo(map);
-    vm.locateControl.addTo(map);
-    vm.extentControl.addTo(map);
+  data() {
+    const retina =
+      (window.devicePixelRatio ||
+        window.screen.deviceXDPI / window.screen.logicalXDPI) > 1;
+    return {
+      baseUrl: 'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
+      layers: 'osm:OSM',
+      maxBounds: [[35.0, -10.0], [65.0, 30.0]],
+      format_options: retina ? 'dpi:180' : 'dpi:90',
+      attribution:
+        'Rendering <a href="https://geoinformatik.htw-dresden.de">' +
+        'Labor Geoinformatik (HTWD, Fak. GI)</a> | Map data &copy; ' +
+        '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+      locateControlOptions: {
+        flyTo: true,
+        icon: 'fas fa-location-arrow',
+        iconLoading: 'fas fa-spinner fa-spin',
+        iconElementTag: 'i',
+        locateOptions: {
+          enableHighAccuracy: true
+        },
+        showPopup: false
+      },
+      markerClusterOptions: {
+        animate: true,
+        polygonOptions: {
+          color: '#69140e'
+        },
+        spiderLegPolylineOptions: {
+          color: '#69140e'
+        }
+      }
+    };
+  },
 
-    map.on('click', vm.onMapClick);
-    map.on('moveend', vm.onMoveEnd);
-    vm.clusterLayer.on('click', vm.onFeatureSelect);
+  computed: {
+    center() {
+      const vm = this;
+      const { center } = vm.initialMapState;
+      return center;
+    },
 
-    vm.addFeatures();
+    zoom() {
+      const vm = this;
+      const { zoom } = vm.initialMapState;
+      return zoom;
+    },
+
+    layerExtentOptions() {
+      if (this.$refs.clusterRef) {
+        return {
+          layer: this.$refs.clusterRef.mapObject
+        };
+      }
+    }
   },
 
   watch: {
@@ -93,63 +129,42 @@ export default {
      * @param center
      * @param zoom
      */
-    initialMapState({ center, zoom }) {
-      const newCenter = !this.map.getCenter().equals(L.latLng(center), 0.001);
-      const newZoom = this.map.getZoom() != zoom;
-
-      if (newCenter || newZoom) {
-        this.map.flyTo(center, zoom);
-      }
-    },
-
-    features(newFeatures) {
-      this.addFeatures();
-    }
+    // initialMapState({ center, zoom }) {
+    //   const newCenter = !this.map.getCenter().equals(L.latLng(center), 0.001);
+    //   const newZoom = this.map.getZoom() != zoom;
+    //   if (newCenter || newZoom) {
+    //     this.map.flyTo(center, zoom);
+    //   }
+    // },
+    // features(newFeatures) {
+    //   this.addFeatures();
+    // }
   },
 
   methods: {
-    onMapClick() {
-      this.$emit('select', null);
-    },
-
-    onMoveEnd() {
-      const vm = this;
-      const { lat, lng } = vm.map.getCenter();
-      vm.$emit('moveend', [lng, lat], vm.map.getZoom());
-    },
-
-    addFeatures() {
-      const vm = this;
-      const newMarkers = this.features.map(feature => {
-        const {
-          position: [lng, lat],
-          memorial_types,
-          ...otherProps
-        } = feature;
-        const memorialType = memorial_types[0].id;
-        return L.marker([lat, lng], {
-          icon: L.divIcon({
-            className: 'fa-leaflet-icon',
-            html: marker(memorialType).html
-          }),
-          ...otherProps
-        });
+    getMarkerIcon(feature) {
+      const { memorial_types: memorialTypes } = feature;
+      return new DivIcon({
+        className: 'fa-leaflet-icon',
+        html: marker(memorialTypes[0].id).html
       });
-
-      vm.clusterLayer.clearLayers();
-      vm.clusterLayer.addLayers(newMarkers);
     },
 
-    onFeatureSelect({ layer }) {
-      this.$emit('select', layer.options.id);
+    onMapMoveEnd() {
+      const vm = this;
+      const { lat, lng } = vm.$refs.mapRef.mapObject.getCenter();
+      vm.$emit('moveend', [lng, lat], vm.$refs.mapRef.mapObject.getZoom());
+    },
+
+    onMarkerClick({ target }) {
+      console.log(target);
+      this.$emit('select', target.options.id);
     }
   }
 };
 </script>
 
 <style lang="scss">
-@import '~leaflet/dist/leaflet';
-@import '~leaflet.locatecontrol/src/L.Control.Locate';
 @import '../../scss/marker';
 
 .Map {
