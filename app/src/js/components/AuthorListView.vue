@@ -21,6 +21,8 @@
                   <b-img
                     blank
                     blank-color="grey"
+                    :width="25"
+                    :height="25"
                     class="author-thumb border border-primary rounded-circle img-fluid"
                     v-else
                   ></b-img>
@@ -61,8 +63,8 @@
                   ></cms-image>
                   <b-img
                     blank
-                    width="25"
-                    height="25"
+                    :width="25"
+                    :height="25"
                     blank-color="grey"
                     class="author-thumb border border-primary rounded-circle img-fluid"
                     v-else
@@ -156,7 +158,7 @@ export default {
       isSmallDevice: getDeviceWidth() < 576,
 
       page: 1,
-      limit: 10,
+      limit: 20,
       authors: [],
       count: 0,
 
@@ -336,7 +338,6 @@ export default {
 
 <style lang="scss">
 .author-thumb {
-  width: 25px;
-  height: 25px;
+  max-height: 25px;
 }
 </style>
