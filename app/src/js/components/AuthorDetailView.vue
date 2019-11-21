@@ -217,7 +217,6 @@ export default {
       const ignoredProperties = ['id'];
       return Object.entries(this.level || []).filter(
         ([heading, paragraphs]) => {
-          console.log(paragraphs);
           return ignoredProperties.indexOf(heading) === -1 && paragraphs.length;
         }
       );

@@ -128,7 +128,6 @@ export default {
     },
 
     getMarkerIcon(id) {
-      console.log(marker(id));
       if (!iconCache[id]) {
         iconCache[id] = marker(id);
       }

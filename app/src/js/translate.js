@@ -75,18 +75,15 @@ export const getCurrentLanguage = () => {
   }, {});
 
   if (dict.lang) {
-    console.log(`User defined lang ${dict.lang} set.`);
     return dict.lang;
   }
 
   const hostname = window.location.hostname;
   const predefinedLang = langHosts[hostname];
   if (predefinedLang) {
-    console.debug(`Falling back to predefined translation ${predefinedLang} for host ${hostname}.`);
     return predefinedLang;
   }
 
-  console.debug('Falling back to en translation.');
   return 'en';
 };
 
