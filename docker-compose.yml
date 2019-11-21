@@ -5,7 +5,7 @@ services:
     build:
       context: ./app
       args:
-        - BASE_URL
+        - CMS_URL
         - LANG_HOSTS
       target: prod
     restart: always
