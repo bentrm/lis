@@ -26,12 +26,10 @@
           v-for="feature in features"
           :key="feature.id"
           :lat-lng="[feature.position[1], feature.position[0]]"
-          :icon="getMarkerIcon(feature)"
+          :icon="getMarkerIcon(feature.memorial_types[0].id)"
           :options="feature"
           @click="onMarkerClick"
-        >
-          <l-popup>{{feature.name}}</l-popup>
-        </l-marker>
+        ></l-marker>
       </l-marker-cluster>
     </l-map>
   </div>
@@ -45,6 +43,8 @@ import LLocateControl from './LocateControl.vue';
 import TiledWmsLayer from './TiledWmsLayer.vue';
 import { DivIcon } from 'leaflet';
 import marker from '../markers';
+
+const iconCache = {};
 
 export default {
   props: {
@@ -127,11 +127,14 @@ export default {
       map.flyTo(this.center, this.zoom);
     },
 
-    getMarkerIcon(feature) {
-      const { memorial_types: memorialTypes } = feature;
+    getMarkerIcon(id) {
+      console.log(marker(id));
+      if (!iconCache[id]) {
+        iconCache[id] = marker(id);
+      }
       return new DivIcon({
         className: 'fa-leaflet-icon',
-        html: marker(memorialTypes[0].id).html
+        html: iconCache[id].html
       });
     },
 
