@@ -13,8 +13,8 @@
       </main>
 
       <b-card class="Sidebar col col-sm-6 col-lg-4 p-0" no-body>
-        <b-tabs card pills small fill :value="activeTabIndex" @activate-tab="onActivateTab">
-          <b-tab :active="$route.name === 'map'" no-body lazy v-if="isSmallDevice">
+        <b-tabs card pills small fill lazy :value="activeTabIndex" @activate-tab="onActivateTab">
+          <b-tab :active="$route.name === 'map'" no-body v-if="isSmallDevice">
             <template v-slot:title>
               <i class="fas fa-map"></i>
               {{ 'Map' | translate }} ({{ memorials.length }})
