@@ -2,9 +2,9 @@
   <div class="Map">
     <l-map
       ref="mapRef"
-      :zoom="zoom"
       :center="center"
-      :maxBounds="maxBounds"
+      :zoom="zoom"
+      :max-bounds="maxBounds"
       @moveend="onMapMoveEnd"
     >
       <l-control-scale position="bottomleft" :imperial="true" :metric="true"></l-control-scale>
@@ -48,7 +48,9 @@ import marker from '../markers';
 
 export default {
   props: {
-    initialMapState: Object,
+    center: Object,
+    zoom: Number,
+    maxBounds: Array,
     features: Array
   },
 
@@ -64,13 +66,13 @@ export default {
   },
 
   data() {
+    const vm = this;
     const retina =
       (window.devicePixelRatio ||
         window.screen.deviceXDPI / window.screen.logicalXDPI) > 1;
     return {
       baseUrl: 'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
       layers: 'osm:OSM',
-      maxBounds: [[35.0, -10.0], [65.0, 30.0]],
       format_options: retina ? 'dpi:180' : 'dpi:90',
       attribution:
         'Rendering <a href="https://geoinformatik.htw-dresden.de">' +
@@ -99,19 +101,17 @@ export default {
     };
   },
 
+  watch: {
+    center(newCenter) {
+      this.setMapView();
+    },
+
+    zoom(newZoom) {
+      this.setMapView();
+    }
+  },
+
   computed: {
-    center() {
-      const vm = this;
-      const { center } = vm.initialMapState;
-      return center;
-    },
-
-    zoom() {
-      const vm = this;
-      const { zoom } = vm.initialMapState;
-      return zoom;
-    },
-
     layerExtentOptions() {
       if (this.$refs.clusterRef) {
         return {
@@ -121,27 +121,12 @@ export default {
     }
   },
 
-  watch: {
-    /**
-     * Describes the inital map center and zoom.
-     * Updates the map position if the given initial zoom state differs from the
-     * actual map state.
-     * @param center
-     * @param zoom
-     */
-    // initialMapState({ center, zoom }) {
-    //   const newCenter = !this.map.getCenter().equals(L.latLng(center), 0.001);
-    //   const newZoom = this.map.getZoom() != zoom;
-    //   if (newCenter || newZoom) {
-    //     this.map.flyTo(center, zoom);
-    //   }
-    // },
-    // features(newFeatures) {
-    //   this.addFeatures();
-    // }
-  },
-
   methods: {
+    setMapView() {
+      const map = this.$refs.mapRef.mapObject;
+      map.flyTo(this.center, this.zoom);
+    },
+
     getMarkerIcon(feature) {
       const { memorial_types: memorialTypes } = feature;
       return new DivIcon({
@@ -152,12 +137,11 @@ export default {
 
     onMapMoveEnd() {
       const vm = this;
-      const { lat, lng } = vm.$refs.mapRef.mapObject.getCenter();
-      vm.$emit('moveend', [lng, lat], vm.$refs.mapRef.mapObject.getZoom());
+      const center = vm.$refs.mapRef.mapObject.getCenter();
+      vm.$emit('moveend', center, vm.$refs.mapRef.mapObject.getZoom());
     },
 
     onMarkerClick({ target }) {
-      console.log(target);
       this.$emit('select', target.options.id);
     }
   }

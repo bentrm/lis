@@ -5,8 +5,6 @@ import BlogPageView from './components/BlogPageView.vue';
 import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
 import NotFoundComponent from './components/NotFoundComponent.vue';
-import api from './Api';
-
 
 export default new VueRouter({
   mode: 'history',
@@ -18,7 +16,11 @@ export default new VueRouter({
     component: BlogPageView
   },
   {
-    path: '/map/:mapStatePath?/',
+    path: '/map/',
+    redirect: '/map/@13.5901,50.7121,8z/'
+  },
+  {
+    path: '/map/:mapStatePath/',
     pathToRegexpOptions: {
       strict: true,
     },

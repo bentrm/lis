@@ -62,9 +62,11 @@ export default {
     Navbar,
     SponsorBar
   },
+
   filters: {
     translate
   },
+
   metaInfo() {
     return {
       htmlAttrs: {
@@ -72,6 +74,7 @@ export default {
       }
     };
   },
+
   data() {
     return {
       htwLogo,
@@ -79,6 +82,7 @@ export default {
       tulLogo
     };
   },
+
   computed: {
     currentLang() {
       return currentLang;

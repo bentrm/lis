@@ -26,16 +26,16 @@ export const getDeviceHeight = () => {
 
 /**
  * Encodes a map view center as a String.
- * @param lon
+ * @param lng
  * @param lat
  * @param zoom
  * @returns {string}
  */
-export const mapStateToPath = ([lon, lat], zoom = 18) => {
-  lon = round(lon);
+export const mapStateToPath = ({ lng, lat }, zoom = 18) => {
+  lng = round(lng);
   lat = round(lat);
   zoom = Math.round(zoom * 10) / 10;
-  return `@${lon},${lat},${zoom}z`;
+  return `@${lng},${lat},${zoom}z`;
 };
 
 /**
@@ -47,7 +47,7 @@ export const pathToMapState = path => {
   const str = path.trim();
   const [lng, lat, zoom] = path.slice(1, str.length - 1).split(',');
   return {
-    center: [Number(lat), Number(lng)],
+    center: { lat: Number(lat), lng: Number(lng) },
     zoom: Number(zoom)
   };
 };

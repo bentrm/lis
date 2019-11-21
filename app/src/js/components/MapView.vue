@@ -3,25 +3,29 @@
     <div class="MapView row">
       <main v-if="!isSmallDevice" class="col p-0">
         <map-component
-          :initial-map-state="initialMapState"
+          :center="$store.state.mapCenter"
+          :zoom="$store.state.mapZoom"
+          :max-bounds="$store.state.mapMaxBounds"
           :features="memorials"
-          v-on:select="onMapSelect"
-          v-on:moveend="onMapMoveEnd"
+          @select="onMapSelect"
+          @moveend="onMapMoveEnd"
         ></map-component>
       </main>
 
       <b-card class="Sidebar col col-sm-6 col-lg-4 p-0" no-body>
-        <b-tabs card pills small fill :value="activeTabIndex" v-on:activate-tab="onActivateTab">
+        <b-tabs card pills small fill :value="activeTabIndex" @activate-tab="onActivateTab">
           <b-tab :active="$route.name === 'map'" no-body lazy v-if="isSmallDevice">
             <template v-slot:title>
               <i class="fas fa-map"></i>
               {{ 'Map' | translate }} ({{ memorials.length }})
             </template>
             <map-component
-              :initial-map-state="initialMapState"
+              :center="$store.state.mapCenter"
+              :zoom="$store.state.mapZoom"
+              :max-bounds="$store.state.mapMaxBounds"
               :features="memorials"
-              v-on:select="onMapSelect"
-              v-on:moveend="onMapMoveEnd"
+              @select="onMapSelect"
+              @moveend="onMapMoveEnd"
             ></map-component>
           </b-tab>
 
@@ -31,7 +35,7 @@
               {{ 'Filters' | translate }}
             </template>
             <filter-list
-              v-on:change="onAuthorSelectionChange"
+              @change="onAuthorSelectionChange"
               :items="authorFilterList"
               :selection="authorSelection"
               :initial-collapse="false"
@@ -40,7 +44,7 @@
             </filter-list>
 
             <filter-list
-              v-on:change="onTypeSelectionChange"
+              @change="onTypeSelectionChange"
               :items="typeFilterList"
               :selection="typeSelection"
             >
@@ -99,10 +103,6 @@ const tabHash = index => {
 
 export default {
   props: {
-    mapStatePath: {
-      type: String,
-      default: '@14.9304,50.625,7z'
-    },
     memorialId: [String, Number]
   },
 
@@ -119,7 +119,6 @@ export default {
   data() {
     return {
       isSmallDevice: getDeviceWidth() < 576,
-      initialMapState: undefined,
 
       memorials: [],
       memorialSelect: undefined,
@@ -210,11 +209,6 @@ export default {
   },
 
   watch: {
-    mapStatePath(newMapStatePath) {
-      const vm = this;
-      vm.initialMapState = pathToMapState(newMapStatePath);
-    },
-
     memorialId(newMemorialId) {
       const vm = this;
       if (newMemorialId) {
@@ -229,10 +223,9 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     const vm = this;
 
-    vm.initialMapState = pathToMapState(vm.mapStatePath);
     vm.fetchMemorials();
     vm.fetchAuthors();
     vm.fetchTypes();
@@ -241,12 +234,8 @@ export default {
       vm.fetchMemorial();
     }
 
-    // bind back/forward button to event handler
-    // window.onpopstate = vm.onPopState;
-  },
-
-  mounted() {
-    window.onresize = this.onWindowResize;
+    window.onresize = vm.onWindowResize;
+    window.onpopstate = vm.onWindowPopState;
   },
 
   methods: {
@@ -288,18 +277,27 @@ export default {
       this.isSmallDevice = getDeviceWidth() < 576;
     },
 
+    onWindowPopState() {
+      this.$store.commit('syncMapState');
+    },
+
     onMapMoveEnd(center, zoom) {
       const vm = this;
       const mapStatePath = mapStateToPath(center, zoom);
 
-      vm.$router.push(
-        {
-          ...vm.$route,
-          name: vm.$route.name,
-          params: { ...vm.$route.params, mapStatePath }
-        },
-        () => {}
-      );
+      if (!vm.$store.state.syncingMapState) {
+        vm.$router.push(
+          {
+            ...vm.$route,
+            name: vm.$route.name,
+            params: { ...vm.$route.params, mapStatePath }
+          },
+          () => {}
+        );
+        vm.$store.commit('logMapState');
+      } else {
+        vm.$store.commit('endSyncMapState');
+      }
     },
 
     onAuthorSelectionChange(selection) {
