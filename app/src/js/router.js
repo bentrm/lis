@@ -9,18 +9,20 @@ import NotFoundComponent from './components/NotFoundComponent.vue';
 export default new VueRouter({
   mode: 'history',
   routes: [{
-    path: '/page/:slug?',
-    alias: '/',
-    name: 'blog-page',
-    props: (route) => ({ slug: route.params.slug || 'homepage' }),
+    path: '/',
+    name: 'index',
+    props: () => ({ slug: 'homepage' }),
     component: BlogPageView
-  },
-  {
+  }, {
+    path: '/page/:slug',
+    name: 'blog-page',
+    props: true,
+    component: BlogPageView
+  }, {
     path: '/map/',
-    redirect: '/map/@13.5901,50.7121,8z/'
-  },
-  {
-    path: '/map/:mapStatePath/',
+    redirect: '/map/@13.5901,50.7121,8z'
+  }, {
+    path: '/map/:mapStatePath',
     pathToRegexpOptions: {
       strict: true,
     },
@@ -28,12 +30,12 @@ export default new VueRouter({
     name: 'map',
     props: true,
     children: [{
-      path: 'memorial/:memorialId/',
+      path: 'memorial/:memorialId',
       name: 'memorial-detail',
       component: MemorialCard
     }]
   }, {
-    path: '/authors/',
+    path: '/authors',
     component: AuthorListView,
     name: 'author-list',
   }, {
