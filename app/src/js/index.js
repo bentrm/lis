@@ -1,17 +1,17 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import Meta from 'vue-meta';
 import VueRouter from 'vue-router';
-import router from './router';
 import Vuex from 'vuex';
-import context from './context';
-import { sync } from 'vuex-router-sync'
-import { CardPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue';
+import { sync } from 'vuex-router-sync';
+import { CardPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import { dom } from '@fortawesome/fontawesome-svg-core';
+import { Icon } from 'leaflet'
+import routes from './routes';
+import context from './context';
 import './icons';
 import App from './components/App.vue';
-import { Icon } from 'leaflet'
 
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
@@ -34,12 +34,14 @@ Vue.use(MediaPlugin);
 Vue.use(ImagePlugin);
 
 const store = new Vuex.Store(context);
-sync(store, router);
-
+const router = new VueRouter(routes);
 const AppComponent = Vue.extend(App);
+
+sync(store, router);
 
 new AppComponent({
   store,
   router
 }).$mount('#App');
+
 dom.watch();

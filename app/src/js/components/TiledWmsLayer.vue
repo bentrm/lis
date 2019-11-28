@@ -1,15 +1,15 @@
 <script>
-import TileLayer from 'vue2-leaflet/src/mixins/TileLayer';
 import {
+  TileLayerMixin,
+  OptionsMixin,
   optionsMerger,
   propsBinder,
   findRealParent
-} from 'vue2-leaflet/src/utils/utils.js';
-import Options from 'vue2-leaflet/src/mixins/Options.js';
+} from 'vue2-leaflet';
 import { tileLayer, DomEvent } from 'leaflet';
 
 const TiledWmsLayerMixin = {
-  mixins: [TileLayer],
+  mixins: [TileLayerMixin],
   props: {
     layers: {
       type: String,
@@ -64,7 +64,7 @@ const TiledWmsLayerMixin = {
 };
 
 export default {
-  mixins: [TiledWmsLayerMixin, Options],
+  mixins: [TiledWmsLayerMixin, OptionsMixin],
   props: {
     baseUrl: {
       type: String,

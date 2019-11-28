@@ -37,7 +37,7 @@
 
 <script>
 import { LMap, LMarker, LControlScale, LPopup } from 'vue2-leaflet';
-import LMarkerCluster from 'vue2-leaflet-markercluster';
+import LMarkerCluster from 'vue2-leaflet-markercluster/dist/Vue2LeafletMarkercluster';
 import LLayerExtent from './LayerExtent.vue';
 import LLocateControl from './LocateControl.vue';
 import TiledWmsLayer from './TiledWmsLayer.vue';
