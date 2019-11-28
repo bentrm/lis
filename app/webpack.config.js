@@ -47,7 +47,11 @@ module.exports = {
   },
   resolve: {
     alias: {
-      vue$: 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'vue-meta$': 'vue-meta/dist/vue-meta.esm.js',
+      'vue-router$': 'vue-router/dist/vue-router.esm.js',
+      'vuex$': 'vuex/dist/vuex.esm.js',
+      'vue2-leaflet$': 'vue2-leaflet/dist/vue2-leaflet.es'
     }
   },
   devtool: isProd ? 'source-map' : 'eval-source-map',
