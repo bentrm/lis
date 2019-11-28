@@ -1,4 +1,3 @@
-import VueRouter from 'vue-router/dist/vue-router.esm';
 import AuthorDetailView from './components/AuthorDetailView.vue';
 import AuthorListView from './components/AuthorListView.vue';
 import BlogPageView from './components/BlogPageView.vue';
@@ -6,7 +5,7 @@ import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
 import NotFoundComponent from './components/NotFoundComponent.vue';
 
-export default new VueRouter({
+export default {
   mode: 'history',
   routes: [{
     path: '/',
@@ -53,4 +52,4 @@ export default new VueRouter({
     name: 'not-found',
     component: NotFoundComponent
   }]
-});
+};
