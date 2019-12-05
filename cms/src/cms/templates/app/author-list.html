@@ -1,0 +1,11 @@
+{% extends 'app/readable.html' %}
+
+{% load i18n %}
+{%  load wagtailimages_tags %}
+{%  load wagtailcore_tags %}
+
+{% block Content %}
+  <div id="author-list-view-outlet" class="AuthorList container-fluid">
+    <author-list-view></author-list-view>
+  </div>
+{% endblock %}
