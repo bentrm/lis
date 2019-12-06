@@ -1,0 +1,60 @@
+{% extends 'cms/preview/base.html' %}
+
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load cms_tags %}
+
+{% block content_en %}
+  <div class="col-12">
+    <h1>{{ page.i18n_title }}</h1>
+    <article>
+    {% for block in page.i18n_body %}
+      {% if block.block_type == 'heading' %}
+        <h2>{{ block.value }}</h2>
+      {% elif block.block_type == 'image' %}
+        {% image block.value max-100x100 as tmp_image %}
+        {% include 'cms/includes/_image.html' with image=tmp_image %}
+      {% else %}
+        {% include_block block %}
+      {% endif %}
+    {% endfor %}
+    </article>
+  </div>
+{% endblock %}
+
+{% block content_de %}
+  <div class="col-12">
+    <h1>{{ page.i18n_title }}</h1>
+    <article>
+    {% for block in page.i18n_body %}
+      {% if block.block_type == 'heading' %}
+        <h2>{{ block.value }}</h2>
+      {% elif block.block_type == 'image' %}
+        {% image block.value max-100x100 as tmp_image %}
+        {% include 'cms/includes/_image.html' with image=tmp_image %}
+      {% else %}
+        {% include_block block %}
+      {% endif %}
+    {% endfor %}
+    </article>
+  </div>
+{% endblock %}
+
+{% block content_cs %}
+  <div class="col-12">
+    <h1>{{ page.i18n_title }}</h1>
+    <article>
+    {% for block in page.i18n_body %}
+      {% if block.block_type == 'heading' %}
+        <h2>{{ block.value }}</h2>
+      {% elif block.block_type == 'image' %}
+        {% image block.value max-100x100 as tmp_image %}
+        {% include 'cms/includes/_image.html' with image=tmp_image %}
+      {% else %}
+        {% include_block block %}
+      {% endif %}
+    {% endfor %}
+    </article>
+  </div>
+{% endblock %}

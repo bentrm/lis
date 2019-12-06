@@ -16,7 +16,7 @@ class MemorialPathIndex(CategoryPage):
     """Route category page."""
 
     parent_page_types = ['HomePage']
-    template = 'app/map.html'
+    template = "cms/preview/blog.html"
 
     class Meta:
         db_table = DB_TABLE_PREFIX + 'memorial_memorial_paths'

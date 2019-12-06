@@ -1,0 +1,172 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load wagtailcore_tags %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>{{ page }}</title>
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous">
+  <style>
+    dd {
+      border: 1px solid #aaa;
+      padding: .5rem;
+    }
+    .footnotes {
+      font-family: monospace;
+    }
+    .footnotes .rich-text>p {
+      margin-bottom: 0;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+          integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+          crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+          integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+          crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="row bg-light my-2 sticky-top">
+    <div class="col-12 d-flex justify-content-between">
+      <div>
+        <h1>LIS {% trans 'Preview' %}</h1>
+      </div>
+      <div class="btn-group m-2 lang-switch" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-secondary" data-lang="en">English</button>
+        <button type="button" class="btn btn-secondary" data-lang="de">Deutsch</button>
+        <button type="button" class="btn btn-secondary" data-lang="cs">Česky</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 my-4 border-bottom">
+      <span class="lead text-primary">Meta (language independent)</span>
+    </div>
+    <div class="col-12">
+      <dl class="list-unstyled">
+        <dt>{% trans 'Slug' %}</dt>
+        <dd>{{ page.slug }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row" data-display-lang="en">
+	  {% language 'en' %}
+      <div class="col-12 my-4 border-bottom">
+        <span class="lead text-primary">{% trans 'English' %}</span>
+      </div>
+		  {% block content_en %}{% endblock %}
+	  {% endlanguage %}
+  </div>
+
+  <div class="row" data-display-lang="de">
+	  {% language 'de' %}
+      <div class="col-12 my-4 border-bottom">
+      <span class="lead text-primary">{% trans 'German' %}</span>
+      </div>
+		  {% block content_de %}{% endblock %}
+	  {% endlanguage %}
+  </div>
+
+  <div class="row" data-display-lang="cs">
+	  {% language 'cs' %}
+      <div class="col-12 my-4 border-bottom">
+        <span class="lead text-primary">{% trans 'Czech' %}</span>
+      </div>
+		  {% block content_cs %}{% endblock %}
+	  {% endlanguage %}
+  </div>
+
+</div>
+
+
+<script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
+<script src="{% static 'js/cms/footnotes.js' %}"></script>
+<script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
+<script>
+  $('blockquote').addClass('blockquote');
+
+  var $paragraphs = $('section');
+  var footnoteData = {
+    toggle: 'popover',
+    trigger: 'hover',
+    delay: 500,
+    placement: 'top',
+    html: true,
+  };
+
+  $paragraphs.each(function () {
+    var $paragraph = $(this);
+    var $texts = $('.rich-text', $paragraph);
+    var $footnotes = $('.footnotes [data-tag]', $paragraph);
+
+    $footnotes.each(function () {
+      var $footnote = $(this);
+      var tag = $footnote.data('tag');
+
+      $texts.each(function () {
+        var $text = $(this);
+
+        $('span.footnote', $text).each(function () {
+          var $quote = $(this);
+          var template = `
+          <span class="bookmark fa-layers fa-fw mr-1">
+            <i class="fas fa-bookmark footnote"></i>
+            <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-5 up-2">${$footnote.index() + 1}</span>
+          </span>
+        `;
+          var $node = $(template);
+          var $footnoteContent = $('.rich-text', $footnote);
+
+          if ($quote.text() === tag.toString()) {
+            $node.data(footnoteData);
+            $node.popover({
+              content: $footnoteContent.html(),
+              delay: {show: 500, hide: 1000}
+            });
+            $quote.replaceWith($node);
+          }
+        });
+      });
+    });
+  });
+
+  $('.lang-switch>.btn').click(function (e) {
+    var $btn = $(e.target);
+    var lang = $btn.data('lang');
+    var elements = $('[data-display-lang]');
+
+    $('.lang-switch>.btn').removeClass('active');
+    $btn.addClass('active');
+
+    elements.each(function (index, el) {
+      var $el = $(el);
+      if ($el.data('display-lang') === lang) {
+        $el.show();
+      } else {
+        $el.hide();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

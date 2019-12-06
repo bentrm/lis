@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<figure class="figure d-flex p-2 border">
+  <img src="{{ image.url }}" class="figure-img img-fluid mr-2" alt="{{ image.i18n_title }}">
+  <figcaption class="d-inline-block">
+    <span class="d-block">{% trans 'Title' %}: {{ image.image.i18n_title }}</span>
+    <span class="d-block">{% trans 'Caption' %}: {{ image.image.i18n_caption }}</span>
+    <span class="d-block">{% trans 'Copyright' %}: {{ image.image.copyright }}</span>
+    {% if not image.image.copyright %}
+    <div class="alert alert-warning" role="alert">
+	    {% trans 'No image copyright provided!' %}
+    </div>
+    {% endif %}
+  </figcaption>
+</figure>

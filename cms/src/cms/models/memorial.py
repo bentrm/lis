@@ -12,7 +12,6 @@ from wagtail.search import index
 
 from cms.blocks import ParagraphStructBlock
 from cms.edit_handlers import FieldPanelTabs, FieldPanelTab
-
 from cms.messages import TXT
 from cms.widgets import CustomGooglePointFieldWidget
 from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
@@ -22,7 +21,7 @@ class LocationIndex(RoutablePageMixin, CategoryPage):
     """A category page to place locations in."""
 
     parent_page_types = ["HomePage"]
-    template = "app/map.html"
+    template = "cms/preview/blog.html"
 
     @route(r'^$')
     def serve_base_map(self, request):
@@ -43,7 +42,7 @@ class LocationIndex(RoutablePageMixin, CategoryPage):
 class Memorial(I18nPage):
     """A geographic place on earth."""
 
-    template = "cms/memorial_site.html"
+    template = "cms/preview/memorial.html"
     parent_page_types = ["LocationIndex"]
 
     title_image = models.ForeignKey(

@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<section>
+  {% if value.heading %}
+  <h4>{{ value.heading }}</h4>
+  {% endif %}
+
+  <div class="row">
+
+    {% for image in value.images %}
+      <div class="col-12">
+        {% image image max-150x150 as rendition %}
+        {% include 'cms/includes/_image.html' with image=rendition %}
+      </div>
+    {% endfor %}
+
+    <div class="col-12">
+      {% include_block value.content %}
+
+      {% if value.footnotes %}
+        <footer class="footnotes">
+          <ol class="border-left">
+            {% for footnote in value.footnotes %}
+              {% include_block footnote %}
+            {% endfor %}
+          </ol>
+        </footer>
+      {% endif %}
+    </div>
+
+  </div>
+</section>

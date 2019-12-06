@@ -35,10 +35,6 @@ class LevelPage(I18nPage):
             parent
         ) and not parent.get_children().exact_type(cls)
 
-    def serve(self, request, *args, **kwargs):
-        """Defer to the parent pages serve method."""
-        return self.get_parent().specific.serve(request, *args, *kwargs)
-
     def get_texts(self):
         """Return the text type fields of the page as an iterable."""
         texts = []
@@ -76,6 +72,8 @@ class Level1Page(LevelPage):
         TextType("i18n_works", _(TXT["level1.works"])),
     )
     level_order = 1
+
+    template = "cms/preview/discover.html"
 
     biography = StreamField(
         [("paragraph", ParagraphStructBlock())],
@@ -139,6 +137,8 @@ class Level2Page(LevelPage):
     """The 'Deepen' page of the LIS domain."""
 
     PAGE_TITLE = TXT["level2"]
+
+    template = "cms/preview/research.html"
 
     text_types = (
         TextType("i18n_detailed_description", _(TXT["memorial_site"])),
@@ -290,6 +290,8 @@ class Level3Page(LevelPage):
     """The 'Research' page of the LIS domain."""
 
     PAGE_TITLE = TXT["level3"]
+
+    template = "cms/preview/material.html"
 
     text_types = (
         TextType("i18n_primary_literature", _(TXT["level3.primary_literature"])),

@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+
+<div class="col-12">
+  <dl>
+
+    <dt>{% trans 'Biography' %}</dt>
+    <dd>{% include_block page.i18n_biography %}</dd>
+
+    <dt>{% trans 'Literary works' %}</dt>
+    <dd>{% include_block page.i18n_works %}</dd>
+
+    <dt>{% trans 'Reception' %}</dt>
+    <dd>{% include_block page.i18n_reception %}</dd>
+
+    <dt>{% trans 'Connections' %}</dt>
+    <dd>{% include_block page.i18n_connections %}</dd>
+
+    <dt>{% trans 'Full texts' %}</dt>
+    <dd>{% include_block page.i18n_full_texts %}</dd>
+
+  </dl>
+</div>

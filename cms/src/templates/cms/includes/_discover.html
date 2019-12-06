@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+
+<div class="col-12">
+  <dl>
+    <dt>{% trans 'Biography' %}</dt>
+    <dd>{% include_block page.i18n_biography %}</dd>
+
+    <dt>{% trans 'Works' %}</dt>
+    <dd>{% include_block page.i18n_works %}</dd>
+  </dl>
+</div>

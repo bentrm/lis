@@ -1,0 +1,67 @@
+{% load i18n %}
+{% load wagtailimages_tags %}
+
+{% with date_of_birth=author.formatted_date_of_birth date_of_death=author.formatted_date_of_death %}
+<div class="col-12">
+
+  <dl>
+    <dt>{% trans 'Title' %} (generated from author name)</dt>
+    <dd>{{ page }}</dd>
+
+    <dt>{% trans 'Title image' %}</dt>
+    <dd>
+	    {% if page.title_image %}
+		    {% image page.title_image max-200x200 as tmp_image %}
+		    {% include 'cms/includes/_image.html' with image=tmp_image %}
+	    {% else %}
+          <div class="alert alert-warning" role="alert">
+			  {% trans 'No title image!' %}
+          </div>
+	    {% endif %}
+    </dd>
+
+    <dt>{% trans 'Names' %}</dt>
+    <dd>
+        {% for name in author.names.all %}
+          <span class="badge badge-pill badge-secondary mr-1">{{ name }}</span>
+        {% endfor %}
+    </dd>
+
+    <dt>{% trans 'Date of birth' %}</dt>
+    <dd>{{date_of_birth}}</dd>
+
+    <dt>{% trans 'in' %}</dt>
+    <dd>{{ page.i18n_place_of_birth }}</dd>
+
+    <dt>{% trans 'Date of death' %}</dt>
+    <dd>{{date_of_death}}</dd>
+
+    <dt>{% trans 'in' %}</dt>
+    <dd>{{ page.i18n_place_of_death }}</dd>
+
+    <dt>{% trans 'Languages' %}
+    <dd>
+	  {% for language in page.language_tags.all %}
+        <span class="badge badge-pill badge-secondary mr-1">{{ language }}</span>
+	  {% endfor %}
+    </dd>
+
+    <dt>{% trans 'Genre' %}
+    <dd>
+	    {% for genre in page.genre_tags.all %}
+          <span class="badge badge-pill badge-secondary mr-1">{{ genre }}</span>
+	    {% endfor %}
+    </dd>
+
+    <dt>{% trans 'Literary periods' %}
+    <dd>
+	    {% for literary_period in page.literary_period_tags.all %}
+          <span class="badge badge-pill badge-secondary mr-1">{{ literary_period }}</span>
+	    {% endfor %}
+    </dd>
+
+  </dl>
+
+
+</div>
+{% endwith %}

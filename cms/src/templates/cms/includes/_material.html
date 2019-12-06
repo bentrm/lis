@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+
+<div class="col-12">
+  <dl>
+
+    <dt>{% trans 'Primary literature' %}</dt>
+    <dd>{% include_block page.i18n_primary_literature %}</dd>
+
+    <dt>{% trans 'Testimony' %}</dt>
+	  <dd>{% include_block page.i18n_testimony %}</dd>
+
+    <dt>{% trans 'Secondary literature' %}</dt>
+	  <dd>{% include_block page.i18n_secondary_literature %}</dd>
+
+    <dt>{% trans 'Didactic material' %}</dt>
+    <dd>{% include_block page.i18n_didactic_material %}</dd>
+
+  </dl>
+</div>

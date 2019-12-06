@@ -7,7 +7,8 @@ from django.db import models
 from django.utils import dates, text
 from django.utils.translation import gettext_lazy as _, pgettext
 from modelcluster.fields import ParentalManyToManyField, ParentalKey
-from wagtail.admin.edit_handlers import InlinePanel, FieldPanel, MultiFieldPanel, TabbedInterface, ObjectList
+from wagtail.admin.edit_handlers import InlinePanel, FieldPanel, MultiFieldPanel, TabbedInterface, \
+    ObjectList
 from wagtail.core.models import Orderable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
@@ -16,14 +17,13 @@ from cms.edit_handlers import FieldPanelTabs, FieldPanelTab
 from cms.messages import TXT
 from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
 from .helpers import validate_date, format_date
-from .memorial import Memorial
 
 
 class AuthorIndex(CategoryPage):
     """A category page to place author pages in."""
 
     parent_page_types = ["HomePage"]
-    template = "app/author-list.html"
+    template = "cms/preview/blog.html"
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "authors"
@@ -33,7 +33,7 @@ class AuthorIndex(CategoryPage):
 class Author(I18nPage):
     """A page that describes an author."""
 
-    template = "app/author-detail.html"
+    template = "cms/preview/author.html"
 
     GENDER_UNKNOWN = "U"
     GENDER_MALE = "M"
@@ -390,36 +390,6 @@ class Author(I18nPage):
         validate_date(
             self.date_of_death_year, self.date_of_death_month, self.date_of_death_day
         )
-
-    def get_context(self, request, *args, **kwargs):
-        """Add more context information on view requests."""
-        context = super(Author, self).get_context(request, *args, **kwargs)
-        author = self.get_latest_revision_as_page() if request.is_preview else self
-        context["author"] = author
-
-        # add all names of author to context
-        context["author_name"], *context["author_alt_names"] = author.names.order_by(
-            "sort_order"
-        )
-
-        # add level pages
-        levels = self.get_children().specific()
-        if request.is_preview:
-            levels = [x.get_latest_revision_as_page() for x in levels]
-        else:
-            levels = levels.public().live()
-
-        context["levels"] = sorted(levels, key=lambda x: x.level_order)
-
-        # add memorial sites
-        memorial_sites = Memorial.objects.filter(remembered_authors=self)
-        if request.is_preview:
-            memorial_sites = [x.get_latest_revision_as_page() for x in memorial_sites]
-        else:
-            memorial_sites = memorial_sites.live()
-        context["memorial_sites"] = memorial_sites
-
-        return context
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "author"

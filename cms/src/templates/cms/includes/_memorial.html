@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="col-12">
+  <dl>
+    <dt>{% trans 'Title' %}</dt>
+    <dd>{{ page }}</dd>
+
+    <dt>{% trans 'Title image' %}</dt>
+    <dd>
+	    {% if page.title_image %}
+		    {% image page.title_image max-200x200 as tmp_image %}
+		    {% include 'cms/includes/_image.html' with image=tmp_image %}
+	    {% else %}
+          <div class="alert alert-warning" role="alert">
+		      {% trans 'No title image!' %}
+          </div>
+	    {% endif %}
+    </dd>
+
+    <dt>{% trans 'Memorial type' %}</dt>
+    <dd>
+		{% for memorial_type in page.memorial_type_tags.all %}
+          <span class="badge badge-pill badge-secondary mr-1">{{ memorial_type }}</span>
+		{% endfor %}
+    </dd>
+
+    <dt>{% trans 'Address' %}</dt>
+    <dd>{{ page.i18n_address|richtext }}</dd>
+
+    <dt>{% trans 'Contact info' %}</dt>
+    <dd>{{ page.i18n_contact_info|richtext }}</dd>
+
+    <dt>{% trans 'Directions' %}</dt>
+    <dd>{{ page.i18n_directions|richtext }}</dd>
+
+    <dt>{% trans 'Introduction' %}</dt>
+    <dd>{{ page.i18n_introduction|richtext }}</dd>
+
+    <dt>{% trans 'Description' %}</dt>
+    <dd>{% include_block page.i18n_description %}</dd>
+
+    <dt>{% trans 'Detailed description' %}</dt>
+    <dd>{% include_block page.i18n_detailed_description %}</dd>
+  </dl>
+</div>

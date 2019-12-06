@@ -8,7 +8,8 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Case, When, Q, F
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _, get_language, get_supported_language_variant
+from django.utils.translation import gettext_lazy as _, get_language, \
+    get_supported_language_variant
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     ObjectList,
@@ -104,6 +105,8 @@ class I18nPage(Page):
         (ORIGINAL_LANGUAGE_CZECH, _(TXT["language.cs"])),
     )
     RICH_TEXT_FEATURES = ["bold", "italic", "strikethrough", "link"]
+
+    template = "cms/preview/blog.html"
 
     title_de = models.CharField(
         max_length=255,
@@ -286,7 +289,6 @@ class CategoryPage(I18nPage):
     """
 
     # class properties
-    template = "cms/categories/category_page.html"
 
     @classmethod
     def can_create_at(cls, parent):
@@ -295,19 +297,14 @@ class CategoryPage(I18nPage):
             super(CategoryPage, cls).can_create_at(parent) and not cls.objects.exists()
         )
 
-    def get_context(self, request, *args, **kwargs):
-        """Add child pages into the pages context."""
-        context = super(CategoryPage, self).get_context(request, *args, **kwargs)
-        child_pages = self.get_children().specific().live()
-        context["child_pages"] = sorted(child_pages, key=lambda x: str(x.i18n_title))
-        return context
-
     class Meta:
         abstract = True
 
 
 class BlogPage(I18nPage):
     """A page of static content."""
+
+    template = "cms/preview/blog.html"
 
     BLOG_EDITOR_FEATURES = [
         "h3",
@@ -326,7 +323,6 @@ class BlogPage(I18nPage):
     ]
 
     parent_page_types = ["HomePage", "BlogPage"]
-    template = "cms/blog_page.html"
 
     body = StreamField(
         block_types=[
@@ -381,7 +377,7 @@ class HomePage(BlogPage):
     """The root page of the LIS cms site."""
 
     parent_page_types = ["wagtailcore.Page"]
-    template = "cms/blog_page.html"
+    template = "cms/preview/blog.html"
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "homepage"
