@@ -1,38 +1,24 @@
 {% extends "wagtailadmin/base.html" %}
-{% load wagtailadmin_tags wagtailcore_tags staticfiles i18n %}
+{% load static %}
 
-{% block furniture %}
-    <div class="nav-wrapper">
-        <div class="inner">
-          <a href="{% url 'wagtailadmin_home' %}" class="logo" title="LIS CMS {{ CMS_VERSION }}">
-              <div class="fa-4x">
-                {% include "includes/logo-alt.html" with version=CMS_VERSION %}
-              </div>
-            </a>
+{% block branding_logo %}
+  <div class="fa-4x">
+	  {% include "includes/logo-alt.html" with version=CMS_VERSION %}
+  </div>
+{% endblock %}
 
-          {% menu_search %}
-          {% main_nav %}
-
-        </div>
-        <div class="explorer__wrapper" data-explorer-menu></div>
-    </div>
-
-    <div class="content-wrapper">
-        <div class="content">
-            {# Always show messages div so it can be appended to by JS #}
-            <div class="messages">
-                {% if messages %}
-                    <ul>
-                        {% for message in messages %}
-                            <li class="{% message_tags message %}">{{ message|safe }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-
-            <div id="nav-toggle" class="nav-toggle icon text-replace">{% trans "Menu" %}</div>
-
-            {% block content %}{% endblock %}
-        </div>
-    </div>
+{% block extra_css %}
+  {{ block.super }}
+	<style>
+  .tab-content .object {
+    padding-right: 20px;
+  }
+  .object-layout ul.multiple {
+    width: 100%;
+  }
+  .tabbed-fields {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  </style>
 {% endblock %}

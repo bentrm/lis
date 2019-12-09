@@ -1,0 +1,8 @@
+{% extends "wagtailadmin/404.html" %}
+{% load static %}
+
+{% block branding_logo %}
+  <div class="fa-4x">
+	  {% include "includes/logo-alt.html" with version=CMS_VERSION %}
+  </div>
+{% endblock %}
