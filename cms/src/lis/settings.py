@@ -225,7 +225,7 @@ LOGGING = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = "de-de"
+LANGUAGE_CODE = "de"
 LANGUAGES = [("en", "English"), ("de", "Deutsch"), ("cs", "český")]
 
 TIME_ZONE = "Europe/Berlin"

@@ -1,15 +1,10 @@
 """Application wide URL config."""
-import logging
-from urllib.parse import unquote
-
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import include, path, re_path
+from django.urls import include, path
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-
-logger = logging.getLogger(__name__)
 
 urlpatterns = [
     path('cms/accounts/', include('django.contrib.auth.urls')),
@@ -20,7 +15,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('api/', include('api.urls')), prefix_default_language=False
+    path('api/', include('api.urls'))
 )
 
 
