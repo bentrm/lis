@@ -87,10 +87,6 @@ class ParagraphStructBlock(blocks.StructBlock):
         help_text=_("Author or translator of the content."),
     )
 
-    def get_api_representation(self, value, context=None):
-        """ Recursively call get_api_representation on children and return as a plain dict """
-        return super().get_api_representation(value, context)
-
     class Meta:
         label = _("Paragraph")
         form_classname = "paragraph-struct-block struct-block"
