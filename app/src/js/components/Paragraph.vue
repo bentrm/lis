@@ -91,7 +91,13 @@ export default {
     const vm = this;
 
     vm.$nextTick(() => {
-      vm.$refs['content'].querySelectorAll('span.footnote').forEach(node => {
+      const contentEl = vm.$refs['content'];
+
+      contentEl.querySelectorAll('blockquote').forEach(node => {
+        node.className = node.className + ' blockquote text-center';
+      });
+
+      contentEl.querySelectorAll('span.footnote').forEach(node => {
         const tag = node.textContent;
         const [index, footnote] = this.dict[tag];
 
