@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row">
+    <div class="row" v-if="!error">
       <div class="col-12">
         <h1 class="mt-4">{{ page.title }}</h1>
 
@@ -24,16 +24,25 @@
         </article>
       </div>
     </div>
+    <div class="row" v-else>
+      <div class="col">
+        <h1 class="mt-4">404: {{ 'Page not found.' | translate }}</h1>
+        <p>
+          <router-link :to="{name: 'index'}">{{ 'Back to homepage.' | translate }}</router-link>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import api from '../Api';
-import translate from '../translate';
-import Paragraph from './Paragraph.vue';
-import FigureImage from './FigureImage.vue';
+  import api from '../Api';
+  import translate from '../translate';
+  import FigureImage from './FigureImage.vue';
+  import Paragraph from './Paragraph.vue';
 
-export default {
+
+  export default {
   props: {
     slug: String
   },
@@ -49,6 +58,7 @@ export default {
 
   data() {
     return {
+      error: false,
       page: {}
     };
   },
@@ -56,19 +66,30 @@ export default {
   beforeRouteEnter(to, from, next) {
     api
       .getPage(to.params.slug || 'homepage')
-      .then(json => next(vm => (vm.page = json)))
-      .catch(response => next({ name: 'not-found' }));
+      .then(json => {
+        next(vm => {
+          vm.page = json;
+          vm.error = false;
+        })
+      })
+      .catch(() => {
+        next(vm => {
+          vm.error = true
+        })
+      });
   },
   // when route changes and this component is already rendered,
   // the logic will be slightly different.
   beforeRouteUpdate(to, from, next) {
+    const vm = this;
     api
       .getPage(to.params.slug)
       .then(json => {
-        this.page = json;
+        vm.page = json;
+        vm.error = false;
         next();
       })
-      .catch(response => next({ name: 'not-found' }));
+      .catch(() => next(vm => vm.error = true));
   }
 };
 </script>

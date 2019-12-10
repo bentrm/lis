@@ -3,7 +3,7 @@ import AuthorListView from './components/AuthorListView.vue';
 import BlogPageView from './components/BlogPageView.vue';
 import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
-import NotFoundComponent from './components/NotFoundComponent.vue';
+
 
 export default {
   mode: 'history',
@@ -49,7 +49,5 @@ export default {
     }
   }, {
     path: '*',
-    name: 'not-found',
-    component: NotFoundComponent
   }]
 };

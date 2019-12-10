@@ -1,7 +1,7 @@
 <template>
   <div class="MainNav">
     <b-navbar toggleable="lg" type="dark" variant="primary">
-      <b-navbar-brand :to="'/'">
+      <b-navbar-brand :to="{name: 'index'}">
         <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i>
         {{ 'Literary landscape' | translate }}
       </b-navbar-brand>
@@ -44,15 +44,16 @@
 </template>
 
 <script>
-import translate, {
-  availableLanguages,
-  getCurrentLanguage,
-  setCurrentLanguage
-} from '../translate';
-import { cmsHost } from '../config';
-import SearchBar from './SearchBar.vue';
+  import {cmsHost} from '../config';
+  import translate, {
+    availableLanguages,
+    getCurrentLanguage,
+    setCurrentLanguage
+  } from '../translate';
+  import SearchBar from './SearchBar.vue';
 
-export default {
+
+  export default {
   components: { SearchBar },
   filters: { translate },
 
