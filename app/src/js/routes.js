@@ -10,7 +10,7 @@ export default {
   routes: [{
     path: '/',
     name: 'index',
-    props: () => ({ slug: 'homepage' }),
+    props: () => ({slug: 'homepage'}),
     component: BlogPageView
   }, {
     path: '/page/:slug',
@@ -49,5 +49,6 @@ export default {
     }
   }, {
     path: '*',
+    redirect: {name: 'index'}
   }]
 };
