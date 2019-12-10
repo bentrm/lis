@@ -19,6 +19,17 @@
   .tabbed-fields {
     font-family: inherit;
     font-size: inherit;
+    padding: 0;
+  }
+  .tabbed-fields .field-content {
+    width: 100%;
+  }
+  /* Quickfix to improve map widget size in admin interface. */
+  .point_field .field-content {
+    width: 100%;
+  }
+  .point_field .field-content .mw-wrap {
+    width: 100%;
   }
   </style>
 {% endblock %}
