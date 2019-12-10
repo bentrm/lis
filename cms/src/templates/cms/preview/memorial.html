@@ -1,13 +1,21 @@
 {% extends "cms/preview/base.html" %}
+{% load i18n %}
+
+{% block content_meta %}
+  <dt>{% trans 'Authors' %}</dt>
+  {% for author in page.remembered_authors.all %}
+    {% include 'cms/includes/_pagelink.html' with page=author name=author.i18n_title %}
+  {% endfor %}
+{% endblock %}
 
 {% block content_en %}
   {% include 'cms/includes/_memorial.html' %}
 {% endblock %}
 
 {% block content_de %}
-	{% include 'cms/includes/_memorial.html' %}
+  {% include 'cms/includes/_memorial.html' %}
 {% endblock %}
 
 {% block content_cs %}
-	{% include 'cms/includes/_memorial.html' %}
+  {% include 'cms/includes/_memorial.html' %}
 {% endblock %}

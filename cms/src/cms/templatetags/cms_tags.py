@@ -1,11 +1,16 @@
-from django import template
-from django.utils.translation import gettext
-from django.urls import reverse
 from html.parser import HTMLParser
 
+from django import template
+from django.urls import reverse
+from django.utils.translation import gettext
 from wagtail.core.templatetags.wagtailcore_tags import pageurl
 
 register = template.Library()
+
+
+@register.simple_tag
+def get_verbose_name(object):
+    return object._meta.verbose_name
 
 
 @register.simple_tag(name="cmsurl", takes_context=True)

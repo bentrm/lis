@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load wagtailcore_tags %}
+{% load cms_tags %}
 
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -20,7 +21,7 @@
         crossorigin="anonymous">
   <style>
     dd {
-      border: 1px solid #aaa;
+      border: 1px solid gainsboro;
       padding: .5rem;
     }
     .footnotes {
@@ -57,20 +58,23 @@
   </div>
 
   <div class="row">
-    <div class="col-12 my-4 border-bottom">
+    <div class="col-12 my-4">
       <span class="lead text-primary">Meta (language independent)</span>
     </div>
     <div class="col-12">
       <dl class="list-unstyled">
         <dt>{% trans 'Slug' %}</dt>
         <dd>{{ page.slug }}</dd>
+
+        {% block content_meta %}
+        {% endblock %}
       </dl>
     </div>
   </div>
 
   <div class="row" data-display-lang="en">
 	  {% language 'en' %}
-      <div class="col-12 my-4 border-bottom">
+      <div class="col-12 my-4">
         <span class="lead text-primary">{% trans 'English' %}</span>
       </div>
 		  {% block content_en %}{% endblock %}
@@ -79,7 +83,7 @@
 
   <div class="row" data-display-lang="de">
 	  {% language 'de' %}
-      <div class="col-12 my-4 border-bottom">
+      <div class="col-12 my-4">
       <span class="lead text-primary">{% trans 'German' %}</span>
       </div>
 		  {% block content_de %}{% endblock %}

@@ -5,14 +5,36 @@
 {% load wagtailimages_tags %}
 {% load cms_tags %}
 
+{% block content_meta %}
+  <dt>{% trans 'Title' %} (generated from author name)</dt>
+  <dd>{{ page }}</dd>
+
+  <dt>{% trans 'Names' %}</dt>
+  <dd>
+	  {% for name in author.names.all %}
+        <span class="badge badge-pill badge-secondary mr-1">{{ name }}</span>
+	  {% endfor %}
+  </dd>
+
+  <dt>{% trans 'pages' %}</dt>
+  {% for child in page.get_children.specific %}
+    {% include 'cms/includes/_pagelink.html' with page=child name=child.i18n_title %}
+  {% endfor %}
+
+  <dt>{% trans 'Memorial sites' %}</dt>
+  {% for memorial in memorials %}
+    {% include 'cms/includes/_pagelink.html' with page=memorial name=memorial.i18n_title %}
+  {% endfor %}
+{% endblock %}
+
 {% block content_en %}
   {% include 'cms/includes/_author.html' %}
 {% endblock %}
 
 {% block content_de %}
-	{% include 'cms/includes/_author.html' %}
+  {% include 'cms/includes/_author.html' %}
 {% endblock %}
 
 {% block content_cs %}
-	{% include 'cms/includes/_author.html' %}
+  {% include 'cms/includes/_author.html' %}
 {% endblock %}

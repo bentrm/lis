@@ -17,6 +17,7 @@ from cms.edit_handlers import FieldPanelTabs, FieldPanelTab
 from cms.messages import TXT
 from .base import CategoryPage, DB_TABLE_PREFIX, I18nPage, TranslatedField
 from .helpers import validate_date, format_date
+from .memorial import Memorial
 
 
 class AuthorIndex(CategoryPage):
@@ -390,6 +391,17 @@ class Author(I18nPage):
         validate_date(
             self.date_of_death_year, self.date_of_death_month, self.date_of_death_day
         )
+
+    def get_context(self, request, *args, **kwargs):
+        """Add furthor context information to preview requests."""
+        context = super(Author, self).get_context(request, *args, **kwargs)
+
+        # add linked memorials
+        if request.is_preview:
+            context["memorials"] = Memorial.objects.filter(remembered_authors=self)
+
+        return context
+
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "author"

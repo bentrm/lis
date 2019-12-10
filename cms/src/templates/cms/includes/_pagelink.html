@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load cms_tags %}
+
+<dd class="d-flex justify-content-between">
+  <span>
+    {{  name }}
+    {% if page.live %}
+      <span class="badge badge-pill badge-success mr-1">{% trans 'live' %}</span>
+    {% endif %}
+    {% if page.has_unpublished_changes %}
+      <span class="badge badge-pill badge-warning mr-1">{% trans 'draft' %}</span>
+    {% endif %}
+  </span>
+  <a class="btn btn-sm btn-secondary" target="_blank" href="{% url 'wagtailadmin_pages:edit' page.id %}">
+      {% trans 'Edit' %}
+  </a>
+</dd>
