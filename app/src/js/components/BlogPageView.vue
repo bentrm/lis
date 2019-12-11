@@ -36,17 +36,13 @@
 </template>
 
 <script>
-  import api from '../Api';
-  import translate from '../translate';
-  import FigureImage from './FigureImage.vue';
-  import Paragraph from './Paragraph.vue';
+import store from '../state/store';
+import { fetchPage } from '../state/actions';
+import translate from '../translate';
+import Paragraph from './Paragraph.vue';
+import FigureImage from './FigureImage.vue';
 
-
-  export default {
-  props: {
-    slug: String
-  },
-
+export default {
   components: {
     FigureImage,
     Paragraph
@@ -56,40 +52,20 @@
     translate
   },
 
-  data() {
-    return {
-      error: false,
-      page: {}
-    };
+  computed: {
+    page() {
+      return this.$store.state.page.current;
+    }
   },
 
   beforeRouteEnter(to, from, next) {
-    api
-      .getPage(to.params.slug || 'homepage')
-      .then(json => {
-        next(vm => {
-          vm.page = json;
-          vm.error = false;
-        })
-      })
-      .catch(() => {
-        next(vm => {
-          vm.error = true
-        })
-      });
+    const slug = to.params.slug || 'homepage';
+    store.dispatch(fetchPage, { slug }).then(() => next());
   },
-  // when route changes and this component is already rendered,
-  // the logic will be slightly different.
+
   beforeRouteUpdate(to, from, next) {
-    const vm = this;
-    api
-      .getPage(to.params.slug)
-      .then(json => {
-        vm.page = json;
-        vm.error = false;
-        next();
-      })
-      .catch(() => next(vm => vm.error = true));
+    const slug = to.params.slug || 'homepage';
+    store.dispatch(fetchPage, { slug }).then(() => next());
   }
 };
 </script>

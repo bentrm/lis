@@ -84,86 +84,105 @@
         </dl>
       </div>
 
-      <div v-if="author.levels" class="col-12">
-        <div class="level-btn-group btn-group d-flex" role="group">
-          <button
-            v-for="(url, name) in author.levels"
-            :key="name"
-            v-on:click="onClick(name)"
-            type="button"
-            :class="['btn', 'btn-primary', {'active': currentLevel === name}]"
-          >{{ name | capitalize | translate }}</button>
-        </div>
+      <div class="col-12">
+        <b-button-group class="level-btn-group d-flex">
+          <b-button
+            v-if="author.levels.discover"
+            :active="level === 'discover'"
+            :to="{ params: {level: 'discover'}}"
+            variant="primary"
+          >{{'Discover' | translate}}</b-button>
+          <b-button
+            v-if="author.levels.research"
+            :active="level === 'research'"
+            :to="{ params: {level: 'research'}}"
+            variant="primary"
+          >{{'Research' | translate}}</b-button>
+          <b-button
+            v-if="author.levels.material"
+            :active="level === 'material'"
+            :to="{ params: {level: 'material'}}"
+            variant="primary"
+          >{{'Material' | translate}}</b-button>
+        </b-button-group>
       </div>
 
       <div class="col-12">
-        <h3>{{ 'Content' | translate }}</h3>
+        <h3 class="mt-2">{{ 'Content' | translate }}</h3>
         <ol>
-          <li v-if="currentLevel !== 'material'">
+          <li>
             <a href="#memorials">{{ 'Memorials' | translate }}</a>
           </li>
-          <li v-for="[heading] in levelContent" :key="heading">
+          <li v-for="[heading] in detail" :key="heading">
             <a :href="'#' + heading">{{ heading | humanize | capitalize | translate }}</a>
           </li>
         </ol>
       </div>
 
-      <div v-if="currentLevel !== 'material'" class="col-12">
-        <h4 id="memorials">{{ 'Memorials' | translate }}</h4>
+      <div v-if="level !== 'material'" class="col-12">
+        <h4 id="memorials" class="mt-2">{{ 'Memorials' | translate }}</h4>
 
-        <div class="list-group my-4">
-          <button
-            type="button"
-            class="list-group-item list-group-item-action"
-            v-for="memorial in memorials"
-            v-on:click="onMemorialSelect(memorial.id)"
-            :key="memorial.id"
-            :class="{'active': currentMemorial && (memorial.id === currentMemorial.id)}"
+        <b-card v-for="(memorial, index) in memorials" :key="memorial.id" no-body class="mb-1">
+          <b-card-header header-tag="header" class="p-0" role="tab">
+            <b-button
+              block
+              href="#"
+              v-b-toggle="'memorial-accordion-' + index"
+              variant="primary-outline"
+            >
+              <cms-image
+                v-if="memorial.title_image"
+                :src="memorial.title_image.thumb"
+                :alt="memorial.title_image.title"
+                :title="memorial.title_image.title"
+                class="memorial-img rounded-circle img-fluid mr-2"
+              ></cms-image>
+              {{ memorial.name }}
+            </b-button>
+          </b-card-header>
+          <b-collapse
+            :id="'memorial-accordion-' + index"
+            @show="onMemorialShow(memorial.id)"
+            accordion="memorial-accordion"
+            role="tabpanel"
           >
-            <cms-image
-              v-if="memorial.title_image"
-              :src="memorial.title_image.thumb"
-              :alt="memorial.title_image.title"
-              :title="memorial.title_image.title"
-              class="memorial-img rounded-circle img-fluid mr-2"
-            ></cms-image>
-            {{ memorial.name }}
-          </button>
-        </div>
+            <b-card-body v-if="currentMemorial">
+              <router-link
+                :to="{name: 'memorial-detail', params: { mapStatePath: toPath(currentMemorial.position), memorialId: currentMemorial.id }}"
+              >
+                <h4>{{ currentMemorial.name }}</h4>
+                <small
+                  class="text-muted d-block"
+                >{{ 'See on map' | translate }}: {{ currentMemorial.position| humanizePosition }}</small>
+              </router-link>
+
+              <div v-if="level === 'discover' && currentMemorial.description.length">
+                <paragraph
+                  v-for="paragraph in currentMemorial.description"
+                  :key="paragraph.id"
+                  v-bind="paragraph.value"
+                ></paragraph>
+              </div>
+              <div v-if="level === 'research' && currentMemorial.detailed_description.length">
+                <paragraph
+                  v-for="paragraph in currentMemorial.detailed_description"
+                  :key="paragraph.id"
+                  v-bind="paragraph.value"
+                ></paragraph>
+              </div>
+            </b-card-body>
+          </b-collapse>
+        </b-card>
       </div>
 
-      <div v-if="currentMemorial" class="col-12">
-        <router-link
-          :to="{name: 'memorial-detail', params: { mapStatePath: toPath(currentMemorial.position), memorialId: currentMemorial.id }}"
-        >
-          <h4>{{ currentMemorial.name }}</h4>
-          <small
-            class="text-muted d-block"
-          >{{ 'See on map' | translate }}: {{ currentMemorial.position| humanizePosition }}</small>
-        </router-link>
-
-        <div v-if="currentLevel === 'discover' && currentMemorial.description.length">
-          <paragraph
-            v-for="paragraph in currentMemorial.description"
-            :key="paragraph.id"
-            v-bind="paragraph.value"
-          ></paragraph>
-        </div>
-        <div v-if="currentLevel === 'research' && currentMemorial.detailed_description.length">
-          <paragraph
-            v-for="paragraph in currentMemorial.detailed_description"
-            :key="paragraph.id"
-            v-bind="paragraph.value"
-          ></paragraph>
-        </div>
-      </div>
-
-      <author-article class="col-12" :content="levelContent"></author-article>
+      <author-article class="col-12" :content="detail"></author-article>
     </div>
   </div>
 </template>
 
 <script>
+import store from '../state/store';
+import { fetchAuthor, fetchMemorial } from '../state/actions';
 import api from '../Api';
 import translate from '../translate';
 import {
@@ -181,11 +200,6 @@ import PrettyDate from './PrettyDate.vue';
 import CmsImage from './CmsImage.vue';
 
 export default {
-  props: {
-    slug: String,
-    currentLevel: String
-  },
-
   components: {
     CmsImage,
     AuthorArticle,
@@ -203,72 +217,53 @@ export default {
     round
   },
 
-  data() {
-    return {
-      author: null,
-      memorials: [],
-      currentMemorial: null,
-      level: null
-    };
-  },
-
   computed: {
-    levelContent() {
+    level() {
+      return this.$route.params.level;
+    },
+
+    author() {
+      return store.state.author.current;
+    },
+
+    detail() {
       const ignoredProperties = ['id'];
-      return Object.entries(this.level || []).filter(
+      return Object.entries(store.state.author.detail || []).filter(
         ([heading, paragraphs]) => {
           return ignoredProperties.indexOf(heading) === -1 && paragraphs.length;
         }
       );
+    },
+
+    memorials() {
+      return store.state.author.memorials;
+    },
+
+    currentMemorial() {
+      return store.state.memorial.current;
     }
   },
 
-  created() {
-    this.fetchAuthor(this.slug);
-    this.fetchLevel(this.slug, this.currentLevel);
+  beforeRouteEnter(to, from, next) {
+    const slug = to.params.slug;
+    const level = to.params.level;
+    store.dispatch(fetchAuthor, { slug, level }).then(() => next());
   },
 
-  watch: {
-    author() {
-      this.fetchMemorials();
-    },
-    slug() {
-      this.fetchAuthor(this.slug);
-    },
-    currentLevel() {
-      this.fetchLevel(this.slug, this.currentLevel);
-    }
+  beforeRouteUpdate(to, from, next) {
+    const slug = to.params.slug;
+    const level = to.params.level;
+    store.dispatch(fetchAuthor, { slug, level }).then(() => next());
   },
 
   methods: {
-    fetchAuthor(slug) {
-      api.getAuthor(slug).then(json => (this.author = json));
-    },
-    fetchMemorials() {
-      api
-        .getMemorials({
-          author: this.author.id,
-          limit: 25
-        })
-        .then(json => (this.memorials = json.results));
-    },
-    fetchLevel(slug, level) {
-      api.getLevel(slug, level).then(json => (this.level = json));
-    },
-    onClick(level) {
-      const vm = this;
-      vm.$router.push({
-        name: 'author-detail',
-        params: { ...vm.$route.params, level }
-      });
-    },
-
-    onMemorialSelect(id) {
-      api.getMemorial(id).then(json => (this.currentMemorial = json));
+    onMemorialShow(id) {
+      store.dispatch(fetchMemorial, { id });
     },
 
     toPath(position) {
-      return mapStateToPath(position);
+      const [lng, lat] = position;
+      return mapStateToPath({ lng, lat });
     }
   }
 };
@@ -280,7 +275,7 @@ export default {
 .level-btn-group {
   margin-bottom: 20px;
 
-  button.active::after {
+  .btn.active::after {
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-top: 15px solid darken(theme-color('primary'), 10%);

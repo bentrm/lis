@@ -27,7 +27,7 @@
         </li>
         <li v-for="result in authors" :key="result.id">
           <router-link
-            :to="{name: 'author-detail', params: { slug: result.slug }}"
+            :to="{name: 'author-detail', params: { slug: result.slug, level: 'discover' }}"
             :alt="result.name"
             v-on:click.native="hideResults"
           >{{ result.first_name }} {{ result.last_name }}</router-link>

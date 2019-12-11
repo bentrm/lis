@@ -3,13 +3,11 @@ import 'regenerator-runtime/runtime';
 import Vue from 'vue';
 import Meta from 'vue-meta';
 import VueRouter from 'vue-router';
-import Vuex from 'vuex';
-import { sync } from 'vuex-router-sync';
-import { CardPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
+import { ButtonPlugin, ButtonGroupPlugin, CardPlugin, CollapsePlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import { dom } from '@fortawesome/fontawesome-svg-core';
 import { Icon } from 'leaflet'
-import routes from './routes';
-import context from './context';
+import router from './router';
+import store from './state/store';
 import './icons';
 import App from './components/App.vue';
 
@@ -23,9 +21,11 @@ Icon.Default.mergeOptions({
 });
 
 Vue.use(Meta);
-Vue.use(Vuex);
 Vue.use(VueRouter);
+Vue.use(ButtonPlugin);
+Vue.use(ButtonGroupPlugin);
 Vue.use(CardPlugin);
+Vue.use(CollapsePlugin);
 Vue.use(PopoverPlugin);
 Vue.use(ModalPlugin);
 Vue.use(NavbarPlugin);
@@ -33,11 +33,7 @@ Vue.use(TabsPlugin);
 Vue.use(MediaPlugin);
 Vue.use(ImagePlugin);
 
-const store = new Vuex.Store(context);
-const router = new VueRouter(routes);
 const AppComponent = Vue.extend(App);
-
-sync(store, router);
 
 new AppComponent({
   store,

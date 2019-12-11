@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import Router from 'vue-router';
 import AuthorDetailView from './components/AuthorDetailView.vue';
 import AuthorListView from './components/AuthorListView.vue';
 import BlogPageView from './components/BlogPageView.vue';
@@ -5,26 +7,23 @@ import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
 
 
-export default {
+Vue.use(Router);
+
+export default new Router({
   mode: 'history',
   routes: [{
     path: '/',
     name: 'index',
-    props: () => ({slug: 'homepage'}),
     component: BlogPageView
   }, {
     path: '/page/:slug',
     name: 'blog-page',
-    props: true,
     component: BlogPageView
   }, {
     path: '/map/',
     redirect: '/map/@13.5901,50.7121,8z'
   }, {
     path: '/map/:mapStatePath',
-    pathToRegexpOptions: {
-      strict: true,
-    },
     component: MapView,
     name: 'map',
     props: true,
@@ -38,17 +37,14 @@ export default {
     component: AuthorListView,
     name: 'author-list',
   }, {
-    path: '/authors/:slug/:level?',
+    path: '/authors/:slug',
+    redirect: '/authors/:slug/discover',
+  }, {
+    path: '/authors/:slug/:level',
     name: 'author-detail',
-    component: AuthorDetailView,
-    props: route => {
-      return {
-        slug: route.params.slug,
-        currentLevel: route.params.level || 'discover'
-      };
-    }
+    component: AuthorDetailView
   }, {
     path: '*',
     redirect: {name: 'index'}
   }]
-};
+});

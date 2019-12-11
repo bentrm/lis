@@ -123,7 +123,8 @@ export default {
 
   computed: {
     path() {
-      return mapStateToPath(this.position);
+      const [lng, lat] = this.position;
+      return mapStateToPath({ lng, lat });
     }
   }
 };

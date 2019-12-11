@@ -9,7 +9,13 @@
 
           <div class="col-12">
             <ul class="list-unstyled">
-              <b-media v-for="author in authors" :key="author.id" tag="li" vertical-align="center">
+              <b-media
+                v-for="author in authors"
+                :key="author.id"
+                tag="li"
+                vertical-align="center"
+                class="display-4 mb-2"
+              >
                 <template v-slot:aside>
                   <cms-image
                     v-if="author.title_image"
@@ -28,12 +34,12 @@
                   ></b-img>
                 </template>
 
-                <h4>
-                  <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
-                    <span v-if="author.first_name" class="small text-muted">{{ author.first_name }}</span>
-                    {{ author.last_name }}
-                  </router-link>
-                </h4>
+                <router-link
+                  :to="{name: 'author-detail', params: { slug: author.slug, level: 'discover' }}"
+                >
+                  <span v-if="author.first_name" class="small text-muted">{{ author.first_name }}</span>
+                  {{ author.last_name }}
+                </router-link>
               </b-media>
             </ul>
           </div>
