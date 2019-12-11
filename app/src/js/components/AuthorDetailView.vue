@@ -119,10 +119,10 @@
         </ol>
       </div>
 
-      <div v-if="level !== 'material'" class="col-12">
+      <div v-if="level !== 'material'" class="col-12 mb-4">
         <h4 id="memorials" class="mt-2">{{ 'Memorials' | translate }}</h4>
 
-        <b-card v-for="(memorial, index) in memorials" :key="memorial.id" no-body class="mb-1">
+        <b-card v-for="(memorial, index) in memorials" :key="memorial.id" no-body>
           <b-card-header header-tag="header" class="p-0" role="tab">
             <b-button
               block
@@ -146,7 +146,7 @@
             accordion="memorial-accordion"
             role="tabpanel"
           >
-            <b-card-body v-if="currentMemorial">
+            <b-card-body v-if="currentMemorial && memorial.id === currentMemorial.id">
               <router-link
                 :to="{name: 'memorial-detail', params: { mapStatePath: toPath(currentMemorial.position), memorialId: currentMemorial.id }}"
               >

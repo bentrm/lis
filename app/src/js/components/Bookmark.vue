@@ -1,8 +1,8 @@
 <template>
-  <span>
+  <span class="bookmark-wrapper">
     <span
       :id="bookmarkId"
-      class="bookmark fa-layers fa-fw mr-1"
+      class="bookmark fa-layers fa-fw"
       ref="bookmark"
     >
       <i class="fas fa-bookmark"></i>
@@ -35,6 +35,10 @@
 
 <style lang="scss">
   @import '../../scss/variables';
+
+  .bookmark-wrapper {
+    white-space: nowrap;
+  }
 
   .bookmark {
     color: theme-color('primary');

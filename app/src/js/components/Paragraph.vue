@@ -23,7 +23,7 @@
     <div v-html="content" ref="content"></div>
 
     <footer v-if="footnotes.length">
-      <ol class="border-left">
+      <ol>
         <footnote
           v-for="(footnote, index) in footnotes"
           :key="index"
@@ -124,10 +124,10 @@ export default {
   }
 
   footer {
-    font-size: $font-size-sm;
+    font-size: .7rem;
 
     p {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0;
     }
   }
 }

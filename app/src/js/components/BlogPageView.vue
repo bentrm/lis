@@ -53,6 +53,10 @@ export default {
   },
 
   computed: {
+    error() {
+      return this.$store.state.page.error;
+    },
+
     page() {
       return this.$store.state.page.current;
     }

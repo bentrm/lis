@@ -6,8 +6,20 @@ import { pathToMapState } from '../utils';
 
 Vue.use(Vuex);
 
+const defaultMapCenter = { lng: 13.6811, lat: 51.0526 };
+const defaultMapZoom = 8;
+
 export default new Vuex.Store({
   state: {
+    // deprecated
+    syncingMapState: false,
+    mapCenter: defaultMapCenter,
+    mapZoom: defaultMapZoom,
+    mapMaxBounds: [{ lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
+    latestMapCenter: defaultMapCenter,
+    latestMapZoom: defaultMapZoom,
+    // -
+
     memorial: {
       current: null,
       byId: {}
@@ -27,6 +39,7 @@ export default new Vuex.Store({
     },
 
     page: {
+      error: false,
       current: null,
       bySlug: {}
     },
@@ -45,6 +58,30 @@ export default new Vuex.Store({
   },
 
   mutations: {
+    // deprecated
+    logMapState (state, {route}) {
+      if (route.params.mapStatePath) {
+          const { center, zoom } = pathToMapState(route.params.mapStatePath);
+          state.syncingMapState = true;
+          state.mapCenter = center;
+          state.mapZoom = zoom;
+        }
+    },
+
+    syncMapState(state, {route}) {
+      if (route.params.mapStatePath) {
+          const { center, zoom } = pathToMapState(route.params.mapStatePath);
+          state.syncingMapState = true;
+          state.mapCenter = center;
+          state.mapZoom = zoom;
+        }
+    },
+
+    endSyncMapState: state => {
+      state.syncingMapState = false;
+    },
+    // -
+
     ADD_MEMORIAL_BY_ID(state, { id, memorial }) {
       state.memorial.byId[id] = memorial;
     },
@@ -71,7 +108,8 @@ export default new Vuex.Store({
       state.page.bySlug[slug] = page;
     },
 
-    SET_CURRENT_PAGE(state, { page }) {
+    SET_CURRENT_PAGE(state, { page, error }) {
+      state.page.error = error;
       state.page.current = page;
     },
 
@@ -115,15 +153,19 @@ export default new Vuex.Store({
       commit('SET_CURRENT_AUTHOR', { author, detail, memorials });
     },
 
-    async [fetchPage]({ commit, state }, { slug }) {
+    [fetchPage]({ commit, state }, { slug }) {
       let page = state.page.bySlug[slug];
 
       if (!page) {
-        page = await api.getPage(slug);
-        commit('ADD_PAGE_BY_SLUG', { slug, page });
+        return api
+          .getPage(slug)
+          .then(page => commit('ADD_PAGE_BY_SLUG', { slug, page }))
+          .then(() => commit('SET_CURRENT_PAGE', { page: state.page.bySlug[slug], error: false }))
+          .catch(() => commit('SET_CURRENT_PAGE', {page: null, error: true}));
+      } else {
+        return commit('SET_CURRENT_PAGE', { page });
       }
 
-      commit('SET_CURRENT_PAGE', { page });
     }
   }
 });

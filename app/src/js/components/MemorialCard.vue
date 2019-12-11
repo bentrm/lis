@@ -34,7 +34,7 @@
               ></cms-image>
 
               <div class="media-body">
-                <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
+                <router-link :to="{name: 'author-detail', params: { slug: author.slug, level: 'discover' }}">
                   <span v-if="author.first_name">{{ author.first_name }}</span>
                   {{ author.last_name }}
                 </router-link>

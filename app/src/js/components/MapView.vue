@@ -12,7 +12,7 @@
         ></map-component>
       </main>
 
-      <b-card class="Sidebar col col-sm-6 col-lg-4 p-0" no-body>
+      <b-card class="Sidebar col col-md-5 col-lg-4 p-0" no-body>
         <b-tabs card pills small fill lazy :value="activeTabIndex" @activate-tab="onActivateTab">
           <b-tab :active="$route.name === 'map'" no-body v-if="isSmallDevice">
             <template v-slot:title>
@@ -82,7 +82,7 @@
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import api from '../Api';
 import translate from '../translate';
-import { mapStateToPath, pathToMapState, getDeviceWidth } from '../utils';
+import { mapStateToPath, getDeviceWidth } from '../utils';
 import FilterList from './FilterList.vue';
 import MapComponent from './Map.vue';
 import MemorialCard from './MemorialCard.vue';
@@ -118,7 +118,7 @@ export default {
 
   data() {
     return {
-      isSmallDevice: getDeviceWidth() < 576,
+      isSmallDevice: getDeviceWidth() < 768,
 
       memorials: [],
       memorialSelect: undefined,
@@ -144,7 +144,7 @@ export default {
     },
 
     activeTabIndex() {
-      return tabIndex(this.$store.state.route.hash);
+      return tabIndex(this.$route.hash);
     },
 
     memorialTabTitle() {
@@ -274,11 +274,11 @@ export default {
     },
 
     onWindowResize() {
-      this.isSmallDevice = getDeviceWidth() < 576;
+      this.isSmallDevice = getDeviceWidth() < 768;
     },
 
     onWindowPopState() {
-      this.$store.commit('syncMapState');
+      this.$store.commit('syncMapState', {route: this.$route});
     },
 
     onMapMoveEnd(center, zoom) {
@@ -294,9 +294,9 @@ export default {
           },
           () => {}
         );
-        vm.$store.commit('logMapState');
+        vm.$store.commit('logMapState', {route: vm.$route});
       } else {
-        vm.$store.commit('endSyncMapState');
+        vm.$store.commit('endSyncMapState', {route: vm.$route});
       }
     },
 
@@ -336,7 +336,7 @@ export default {
 </script>
 
 <style lang="scss">
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .Map {
     height: 200px;
     height: 100vw;
