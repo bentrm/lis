@@ -226,7 +226,7 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = "de"
-LANGUAGES = [("en", "English"), ("de", "Deutsch"), ("cs", "český")]
+LANGUAGES = [("en", "English"), ("de", "Deutsch"), ("cs", "Český")]
 
 TIME_ZONE = "Europe/Berlin"
 
@@ -236,7 +236,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = [os.path.join(SRC_DIR, "locale")]
+LOCALE_PATHS = [
+    os.path.join(SRC_DIR, "locale")
+]
 
 STATICFILES_DIRS = [
     os.path.join(SRC_DIR, "static")
