@@ -15,10 +15,7 @@
 
   <title>{{ page }}</title>
 
-  <link rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-        crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
   <style>
     dd {
       border: 1px solid gainsboro;
@@ -31,15 +28,9 @@
       margin-bottom: 0;
     }
   </style>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-          integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-          crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-          crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-          integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-          crossorigin="anonymous"></script>
+  <script src="{% static 'vendor/jquery/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'fontawesome-custom.js' %}"></script>
 </head>
 <body>
 
@@ -101,10 +92,6 @@
 
 </div>
 
-
-<script src="{% static 'vendor/holder/js/holder.min.js' %}"></script>
-<script src="{% static 'js/cms/footnotes.js' %}"></script>
-<script defer src="{% static 'vendor/fontawesome/js/fontawesome-all.js' %}"></script>
 <script>
   $('blockquote').addClass('blockquote');
 
@@ -131,6 +118,14 @@
 
         $('span.footnote', $text).each(function () {
           var $quote = $(this);
+
+          var quoteId = $quote.text().trim();
+
+          // remove legacy footnote brackets
+          if (quoteId.startsWith('[')) quoteId = quoteId.substring(1);
+          if (quoteId.endsWith(']')) quoteId = quoteId.substring(0, quoteId.length - 1);
+          quoteId = quoteId.trim();
+
           var template = `
           <span class="bookmark fa-layers fa-fw mr-1">
             <i class="fas fa-bookmark footnote"></i>
@@ -140,7 +135,7 @@
           var $node = $(template);
           var $footnoteContent = $('.rich-text', $footnote);
 
-          if ($quote.text() === tag.toString()) {
+          if (quoteId === tag.toString()) {
             $node.data(footnoteData);
             $node.popover({
               content: $footnoteContent.html(),

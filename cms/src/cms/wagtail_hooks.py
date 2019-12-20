@@ -75,16 +75,7 @@ PageRevision.as_page_object = as_page_object
 @hooks.register("insert_global_admin_js")
 def global_admin_js():
     """Add custom JavaScript logic to the admin."""
-    return format_html(
-        "<script defer src='{}'></script>",
-        static("vendor/fontawesome/js/fontawesome-all.js"),
-    )
-
-
-@hooks.register("insert_editor_css")
-def editor_css():
-    """Add custom CSS styles to the admins editor."""
-    return format_html("<link rel='stylesheet' href='{}'>", static("css/cms/admin.css"))
+    return format_html("<script defer src='{}'></script>", static("fontawesome-custom.js"))
 
 
 @hooks.register("register_rich_text_features")
