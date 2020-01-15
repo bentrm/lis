@@ -6,10 +6,9 @@ import BlogPageView from './components/BlogPageView.vue';
 import MapView from './components/MapView.vue';
 import MemorialCard from './components/MemorialCard.vue';
 
-
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [{
     path: '/',
@@ -48,3 +47,5 @@ export default new Router({
     redirect: {name: 'index'}
   }]
 });
+
+export default router;

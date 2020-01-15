@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime';
 import Vue from 'vue';
 import Meta from 'vue-meta';
 import VueRouter from 'vue-router';
-import { ButtonPlugin, ButtonGroupPlugin, CardPlugin, CollapsePlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
+import { ButtonPlugin, ButtonGroupPlugin, CardPlugin, CollapsePlugin, FormInputPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin, InputGroupPlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import { dom } from '@fortawesome/fontawesome-svg-core';
 import { Icon } from 'leaflet'
 import router from './router';
@@ -26,12 +26,14 @@ Vue.use(ButtonPlugin);
 Vue.use(ButtonGroupPlugin);
 Vue.use(CardPlugin);
 Vue.use(CollapsePlugin);
+Vue.use(FormInputPlugin);
 Vue.use(PopoverPlugin);
 Vue.use(ModalPlugin);
 Vue.use(NavbarPlugin);
 Vue.use(TabsPlugin);
 Vue.use(MediaPlugin);
 Vue.use(ImagePlugin);
+Vue.use(InputGroupPlugin);
 
 const AppComponent = Vue.extend(App);
 

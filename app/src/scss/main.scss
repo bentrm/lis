@@ -122,19 +122,3 @@ dl {
     }
   }
 }
-
-.leaflet-marker-icon {
-  .drop-shadow {
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, .7));
-    transition: filter 0.2s ease-in-out;
-
-    &:hover {
-      filter: drop-shadow(0 0 5px rgba(0, 0, 0, .7));
-    }
-  }
-
-  &.leaflet-marker-icon-selected .drop-shadow {
-    filter: drop-shadow(0 0 10px rgba(163, 22, 33, .7));
-  }
-
-}

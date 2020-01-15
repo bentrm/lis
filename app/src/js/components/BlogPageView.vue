@@ -16,6 +16,7 @@
               :src="value.mid"
               :src-modal="value.large"
               :alt="value.title"
+              :title="value.title"
               :caption="value.caption"
               :copyright="value.copyright"
               class="figure d-block text-center"
@@ -50,6 +51,16 @@ export default {
 
   filters: {
     translate
+  },
+
+  metaInfo() {
+    let title = 'LIS - Blog';
+    if (this.$store.state.page.current) {
+      title = this.$store.state.page.current.title;
+    }
+    return {
+      title,
+    };
   },
 
   computed: {

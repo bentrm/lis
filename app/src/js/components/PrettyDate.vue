@@ -3,8 +3,10 @@
 </template>
 
 <script>
+  import moment from 'moment';
+  import 'moment/locale/de';
+  import 'moment/locale/cs'
   import {getCurrentLanguage} from '../translate';
-
 
   export default {
     props: {
@@ -19,7 +21,8 @@
         const vm = this;
         let output = '';
         if (vm.year && vm.month && vm.day) {
-          output += new Date(vm.year, (vm.month - 1), vm.day).toLocaleDateString(getCurrentLanguage());
+          moment.locale(getCurrentLanguage());
+          output += moment([vm.year, vm.month, vm.day]).format('LL');
         }
         if (vm.place) {
           output += ` (${vm.place})`;

@@ -2,31 +2,26 @@
   <figure class="figure-image figure d-flex flex-column align-items-center">
     <cms-image
       :src="src"
-      :alt="alt"
-      :title="label"
-      v-on:click.native="e => srcModal && onThumbnailClick()"
+      :alt="alt + copyrightSuffix"
+      :title="title + copyrightSuffix"
+      v-b-modal="modalId"
       class="preview figure-img img-fluid"
       :class="{'has-modal': srcModal}"
     />
     <figcaption
       class="figure-caption d-block small text-center p-1"
-      v-if="caption"
-      v-text="caption"
+      v-if="caption || title"
+      v-text="(caption || title) + copyrightSuffix"
     ></figcaption>
 
-    <b-modal :title="title" size="lg" title-tag="b" :ok-only="true" v-model="modalOpen">
+    <b-modal :id="modalId" :title="title" size="lg" title-tag="b" :ok-only="true">
       <div class="col-12 align-content-center">
         <figure class="figure d-flex flex-column align-items-center">
-          <cms-image :src="srcModal" :alt="alt" :title="label" class="figure-img img-fluid"></cms-image>
+          <cms-image :src="srcModal" :alt="alt + copyrightSuffix" :title="title + copyrightSuffix" class="figure-img img-fluid"></cms-image>
           <figcaption
             class="figure-caption text-center p-1"
-            v-if="captionModal || caption"
-            v-text="captionModal || caption"
-          ></figcaption>
-          <figcaption
-            class="figure-caption text-center p-1"
-            v-if="copyrightLabel"
-            v-text="copyrightLabel"
+            v-if="captionModal || caption || title"
+            v-text="(captionModal || caption || title) + copyrightSuffix"
           ></figcaption>
         </figure>
       </div>
@@ -36,6 +31,8 @@
 
 <script>
 import CmsImage from './CmsImage.vue';
+
+let id = 0;
 
 export default {
   props: {
@@ -57,33 +54,18 @@ export default {
 
   data() {
     return {
-      modalOpen: false
+      modalId: `figure-image-modal-${id++}`
     };
   },
 
   computed: {
-    copyrightLabel() {
+    copyrightSuffix() {
       const value = '';
       if (this.copyright) {
-        return `© ${this.copyright}`;
+        return ` (© ${this.copyright})`;
       }
       return value;
     },
-
-    label() {
-      let value = this.title;
-
-      if (this.copyrightLabel) {
-        value += ` (${this.copyrightLabel})`;
-      }
-      return value;
-    }
-  },
-
-  methods: {
-    onThumbnailClick() {
-      this.modalOpen = !!this.srcModal;
-    }
   }
 };
 </script>

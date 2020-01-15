@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import translate from '../translate';
 import { fetchMemorial, fetchPage, fetchAuthor, levels } from './actions';
 import api from '../Api';
 import { pathToMapState } from '../utils';

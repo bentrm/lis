@@ -116,6 +116,10 @@ export default {
     translate
   },
 
+  metaInfo: {
+    title: translate('Map'),
+  },
+
   data() {
     return {
       isSmallDevice: getDeviceWidth() < 768,

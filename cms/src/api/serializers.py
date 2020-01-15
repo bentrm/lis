@@ -84,7 +84,7 @@ class AuthorListSerializer(serializers.ModelSerializer):
     dob = serializers.IntegerField(source='date_of_birth_day')
     mob = serializers.IntegerField(source='date_of_birth_month')
     yob = serializers.IntegerField(source='date_of_birth_year')
-    pob = serializers.CharField(source='place_of_death')
+    pob = serializers.CharField(source='place_of_birth')
     dod = serializers.IntegerField(source='date_of_death_day')
     mod = serializers.IntegerField(source='date_of_death_month')
     yod = serializers.IntegerField(source='date_of_death_year')

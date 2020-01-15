@@ -159,6 +159,10 @@ export default {
     translate
   },
 
+  metaInfo: {
+    title: translate('Authors'),
+  },
+
   data() {
     return {
       isSmallDevice: getDeviceWidth() < 576,

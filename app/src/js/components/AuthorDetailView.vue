@@ -14,7 +14,7 @@
       </div>
 
       <div class="col-12 col-sm-8">
-        <h3 class="mt-0">{{ author.title }} {{ author.first_name }} {{ author.last_name }}</h3>
+        <h3 class="mt-0">{{ name }}</h3>
 
         <dl>
           <template v-if="author.also_known_as.length">
@@ -217,6 +217,12 @@ export default {
     round
   },
 
+  metaInfo() {
+    return {
+      title: this.name
+    };
+  },
+
   computed: {
     level() {
       return this.$route.params.level;
@@ -224,6 +230,11 @@ export default {
 
     author() {
       return store.state.author.current;
+    },
+
+    name() {
+      const vm = this;
+      return [vm.author.title, vm.author.first_name, vm.author.last_name].filter(x => x).join(' ');
     },
 
     detail() {

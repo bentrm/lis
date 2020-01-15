@@ -1,7 +1,7 @@
 <template>
   <div class="MainNav">
     <b-navbar toggleable="lg" type="dark" variant="primary">
-      <b-navbar-brand :to="{name: 'index'}">
+      <b-navbar-brand :to="{name: 'index'}" tabindex="0">
         <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i>
         {{ 'Literary landscape' | translate }}
       </b-navbar-brand>

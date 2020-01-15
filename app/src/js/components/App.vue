@@ -69,8 +69,10 @@ export default {
 
   metaInfo() {
     return {
+      title: translate('Home'),
+      titleTemplate: `%s | ${translate('Literary landscape')}`,
       htmlAttrs: {
-        lang: getCurrentLanguage()
+        lang: getCurrentLanguage(),
       }
     };
   },
