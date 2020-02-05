@@ -1,6 +1,8 @@
 import {langHosts} from './config';
 
 const library = {
+  'Search term..': { de: 'Suchbegriff..', cs: 'klíčových slov' },
+  'Please enter a search term..': { de: 'Bitte geben Sie einen Suchbegriff ein..', cs: 'Zadejte hledaný výraz.' },
   'References': { de: 'Einzelnachweise', cs: 'Poznámky pod čarou' },
   'About': { de: 'Über', cs: 'o' },
   'Accessibility': { de: 'Erklärung zur Barrierefreiheit', cs: 'Prohlášení o přístupnosti' },

@@ -1,7 +1,10 @@
 <template>
   <div class="Author container mt-4">
     <div v-if="author" class="row">
-      <author-profile :author="author"></author-profile>
+
+      <div class="col-12">
+        <author-profile :author="author"></author-profile>
+      </div>
 
       <div class="col-12">
         <b-button-group class="level-btn-group d-flex">

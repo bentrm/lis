@@ -2,7 +2,7 @@
   <page-layout class="mb-5">
     <div class="row p-4">
       <div class="col-12">
-        <h3>{{ 'Search results' | translate }}</h3>
+        <h3>{{ 'Search' | translate }}</h3>
         <search-bar class="mb-2" v-on:submit="fetchQueryResults"></search-bar>
       </div>
 

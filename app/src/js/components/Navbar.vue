@@ -1,6 +1,6 @@
 <template>
   <div class="MainNav">
-    <b-navbar toggleable="md" type="dark" variant="primary">
+    <b-navbar toggleable="lg" type="dark" variant="primary">
       <b-navbar-brand :to="{name: 'index'}" tabindex="0">
         <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i>
         {{ 'Literary landscape' | translate }}
@@ -15,13 +15,11 @@
           <b-nav-item to="/map" active-class="active">{{ 'Map' | translate }}</b-nav-item>
           <b-nav-item :to="{name: 'author-list'}" active-class="active">{{ 'Authors' | translate }}</b-nav-item>
           <b-nav-item :to="{name: 'search'}" active-class="active">{{ 'Search' | translate }}</b-nav-item>
+          <b-nav-item :to="{name: 'blog-page', params: { slug: 'imprint' }}">{{ 'Imprint & data protection' | translate }}</b-nav-item>
           <b-nav-item-dropdown :text="'More' | translate">
             <b-dropdown-item
               :to="{name: 'blog-page', params: { slug: 'about' }}"
             >{{ 'About' | translate }}</b-dropdown-item>
-            <b-dropdown-item
-              :to="{name: 'blog-page', params: { slug: 'imprint' }}"
-            >{{ 'Imprint & data protection' | translate }}</b-dropdown-item>
             <b-dropdown-item :to="{name: 'blog-page', params: { slug: 'accessibility' }}">
               {{ 'Accessibility' | translate }}
             </b-dropdown-item>
