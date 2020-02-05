@@ -71,10 +71,10 @@
 </template>
 
 <script>
-import FilterItem from './FilterItem.vue';
-import translate from '../translate';
+  import FilterItem from './FilterItem.vue';
+  import translate from '../translate';
 
-const normalizeString = (str = '') => str.toLowerCase().trim();
+  const normalizeString = (str = '') => str.toLowerCase().trim();
 
 export default {
   props: {
@@ -83,6 +83,11 @@ export default {
       default() {
         return [];
       }
+    },
+
+    toSearchableString: {
+      type: Function,
+      default: (x) => normalizeString(x.title)
     },
 
     selection: {
@@ -148,7 +153,7 @@ export default {
 
       const normalizedSearchTerm = normalizeString(vm.searchTerm);
       const matchedItems = vm.items.filter(x => {
-        const normalizedTitle = normalizeString(x.title);
+        const normalizedTitle = normalizeString(vm.toSearchableString(x));
         return (
           !vm.selection.has(x.id) &&
           normalizedTitle.indexOf(normalizedSearchTerm) > -1

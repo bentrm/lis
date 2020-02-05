@@ -1,6 +1,6 @@
 <template>
   <div class="MainNav">
-    <b-navbar toggleable="lg" type="dark" variant="primary">
+    <b-navbar toggleable="md" type="dark" variant="primary">
       <b-navbar-brand :to="{name: 'index'}" tabindex="0">
         <i class="fas fa-globe" data-fa-transform="shrink-10 up-2" data-fa-mask="fas fa-bookmark"></i>
         {{ 'Literary landscape' | translate }}
@@ -14,6 +14,7 @@
         <b-navbar-nav>
           <b-nav-item to="/map" active-class="active">{{ 'Map' | translate }}</b-nav-item>
           <b-nav-item :to="{name: 'author-list'}" active-class="active">{{ 'Authors' | translate }}</b-nav-item>
+          <b-nav-item :to="{name: 'search'}" active-class="active">{{ 'Search' | translate }}</b-nav-item>
           <b-nav-item-dropdown :text="'More' | translate">
             <b-dropdown-item
               :to="{name: 'blog-page', params: { slug: 'about' }}"
@@ -21,6 +22,9 @@
             <b-dropdown-item
               :to="{name: 'blog-page', params: { slug: 'imprint' }}"
             >{{ 'Imprint & data protection' | translate }}</b-dropdown-item>
+            <b-dropdown-item :to="{name: 'blog-page', params: { slug: 'accessibility' }}">
+              {{ 'Accessibility' | translate }}
+            </b-dropdown-item>
             <b-dropdown-item :href="adminLink">{{ 'Admin' | translate }}</b-dropdown-item>
           </b-nav-item-dropdown>
 
@@ -36,8 +40,6 @@
             >{{ name }}</button>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-
-        <search-bar class="flex-grow-1"></search-bar>
       </b-collapse>
     </b-navbar>
   </div>
@@ -48,7 +50,7 @@
   import translate, {
     availableLanguages,
     getCurrentLanguage,
-    setCurrentLanguage
+    setCurrentLanguage,
   } from '../translate';
   import SearchBar from './SearchBar.vue';
 

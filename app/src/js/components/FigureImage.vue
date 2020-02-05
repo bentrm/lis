@@ -6,7 +6,7 @@
       :title="title + copyrightSuffix"
       v-b-modal="modalId"
       class="preview figure-img img-fluid"
-      :class="{'has-modal': srcModal}"
+      :class="{'has-modal': srcModal, 'img-thumbnail': thumb}"
     />
     <figcaption
       class="figure-caption d-block small text-center p-1"
@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import CmsImage from './CmsImage.vue';
+  import CmsImage from './CmsImage.vue';
 
-let id = 0;
+  let id = 0;
 
 export default {
   props: {
@@ -45,7 +45,11 @@ export default {
     title: String,
     caption: String,
     captionModal: String,
-    copyright: String
+    copyright: String,
+    thumb: {
+      type: Boolean,
+      default: false
+    },
   },
 
   components: {

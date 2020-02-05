@@ -9,6 +9,7 @@
         class="col-12 col-xs-6 col-sm-4 col-md-3 justify-content-center align-items-center"
       >
         <figure-image
+          :thumb="true"
           :src="image.small"
           :src-modal="image.large"
           :alt="image.title"
@@ -22,26 +23,30 @@
 
     <div v-html="content" ref="content"></div>
 
-    <footer v-if="footnotes.length">
-      <ol>
-        <footnote
-          v-for="(footnote, index) in footnotes"
-          :key="index"
-          :tag="footnote.tag"
-          :content="footnote.footnote"
-        ></footnote>
-      </ol>
-    </footer>
+    <div v-if="footnotes.length">
+      <h6>{{ 'References' | translate }}</h6>
+      <footer class="footnotes">
+        <ol>
+          <footnote
+            v-for="(footnote, index) in footnotes"
+            :key="index"
+            :tag="footnote.tag"
+            :content="footnote.footnote"
+          ></footnote>
+        </ol>
+      </footer>
+    </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue/dist/vue.esm';
-import Bookmark from './Bookmark.vue';
-import Footnote from './Footnote.vue';
-import FigureImage from './FigureImage.vue';
+  import Vue from 'vue/dist/vue.esm';
+  import Bookmark from './Bookmark.vue';
+  import Footnote from './Footnote.vue';
+  import FigureImage from './FigureImage.vue';
+  import translate from '../translate';
 
-const BookmarkComponent = Vue.extend(Bookmark);
+  const BookmarkComponent = Vue.extend(Bookmark);
 
 export default {
   props: {
@@ -72,6 +77,10 @@ export default {
     FigureImage
   },
 
+  filters: {
+    translate
+  },
+
   data() {
     return {
       currentImage: null
@@ -94,7 +103,7 @@ export default {
       const contentEl = vm.$refs['content'];
 
       contentEl.querySelectorAll('blockquote').forEach(node => {
-        node.className = node.className + ' blockquote text-center';
+        node.className = node.className + ' blockquote text-right';
       });
 
       contentEl.querySelectorAll('span.footnote').forEach(node => {
@@ -123,8 +132,16 @@ export default {
     hyphens: auto;
   }
 
-  footer {
-    font-size: .7rem;
+  footer.footnotes {
+    font-size: .8rem;
+
+    li {
+      padding: .2rem 0;
+    }
+
+    li.active {
+      background-color: gray("200");
+    }
 
     p {
       margin-bottom: 0;

@@ -36,11 +36,15 @@
             </template>
             <filter-list
               @change="onAuthorSelectionChange"
-              :items="authorFilterList"
+              :items="authors"
+              :to-searchable-string="author => author.also_known_as[0].first_name + ' ' + author.also_known_as[0].last_name"
               :selection="authorSelection"
               :initial-collapse="false"
             >
               <template v-slot:header>{{ authorFilterHeader }}</template>
+              <template v-slot:item="slotProps">
+                <author-name :show-details="false" :isPseudonym="slotProps.item.also_known_as[0].is_pseudonym" :title="slotProps.item.also_known_as[0].title" :firstName="slotProps.item.also_known_as[0].first_name" :lastName="slotProps.item.also_known_as[0].last_name" />
+              </template>
             </filter-list>
 
             <filter-list
@@ -59,6 +63,7 @@
             </template>
             <memorial-card
               class="border-0"
+              :id="memorialId"
               :banner="memorialSelect.banner"
               :title="memorialSelect.name"
               :image="memorialSelect.title_image"
@@ -79,16 +84,17 @@
 </template>
 
 <script>
-import { icon } from '@fortawesome/fontawesome-svg-core';
-import api from '../Api';
-import translate from '../translate';
-import { mapStateToPath, getDeviceWidth } from '../utils';
-import FilterList from './FilterList.vue';
-import MapComponent from './Map.vue';
-import MemorialCard from './MemorialCard.vue';
-import { iconClassName } from '../markers';
+  import api from '../Api';
+  import translate from '../translate';
+  import {getDeviceWidth, mapStateToPath} from '../utils';
+  import FilterList from '../components/FilterList.vue';
+  import MapComponent from '../components/Map.vue';
+  import MemorialCard from '../components/MemorialCard.vue';
+  import {iconClassName} from '../markers';
+  import AuthorName from '../components/AuthorName.vue';
+  import SearchBar from '../components/SearchBar.vue';
 
-const tabs = {
+  const tabs = {
   '#filter': 1,
   '#detail': 2
 };
@@ -107,9 +113,11 @@ export default {
   },
 
   components: {
+    AuthorName,
     MemorialCard,
     MapComponent,
-    FilterList
+    FilterList,
+    SearchBar,
   },
 
   filters: {
@@ -142,7 +150,6 @@ export default {
       return {
         author: [...this.authorSelection],
         memorial_type: [...this.typeSelection],
-        ordering: 'name',
         limit: 1000
       };
     },

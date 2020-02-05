@@ -15,9 +15,9 @@
       <h5>
         {{ title }}
         <small class="d-block">
-          <router-link
-            :to="{name: 'memorial-detail', params: { mapStatePath: path }}"
-          >{{ position | humanizePosition }}</router-link>
+          <router-link :to="{name: 'memorial-detail', params: { mapStatePath: path }}">
+            {{ position | humanizePosition }}
+          </router-link>
         </small>
       </h5>
 
@@ -34,11 +34,14 @@
               ></cms-image>
 
               <div class="media-body">
-                <router-link :to="{name: 'author-detail', params: { slug: author.slug, level: 'discover' }}">
-                  <span v-if="author.first_name">{{ author.first_name }}</span>
-                  {{ author.last_name }}
-                </router-link>
+                <router-link
+                  :to="{name: 'author-memorial-detail', hash: '#current-memorial', params: { slug: author.slug, level: 'discover', memorialId: id }}">
+                  <author-name :show-details="false" :title="author.also_known_as[0].title"
+                               :firstName="author.also_known_as[0].first_name"
+                               :lastName="author.also_known_as[0].last_name"
+                               :birthName="author.also_known_as[0].birth_name"/>
 
+                </router-link>
                 <small class="text-muted d-block">
                   <pretty-date
                     v-if="author.yob"
@@ -84,72 +87,75 @@
 </template>
 
 <script>
-import translate from '../translate';
-import { humanizePosition, mapStateToPath } from '../utils';
-import Paragraph from './Paragraph.vue';
-import PrettyDate from './PrettyDate.vue';
-import FigureImage from './FigureImage.vue';
-import CmsImage from './CmsImage.vue';
+  import translate from '../translate';
+  import {humanizePosition, mapStateToPath} from '../utils';
+  import Paragraph from './Paragraph.vue';
+  import PrettyDate from './PrettyDate.vue';
+  import FigureImage from './FigureImage.vue';
+  import CmsImage from './CmsImage.vue';
+  import AuthorName from './AuthorName.vue';
 
-export default {
-  props: {
-    title: String,
-    image: Object,
-    position: Array,
-    authors: Array,
-    address: String,
-    contactInfo: String,
-    directions: String,
-    introduction: String,
-    description: Array,
-    detailedDescription: Array
-  },
-  components: {
-    CmsImage,
-    FigureImage,
-    Paragraph,
-    PrettyDate
-  },
-  filters: {
-    humanizePosition,
-    translate
-  },
+  export default {
+    props: {
+      id: [Number, String],
+      title: String,
+      image: Object,
+      position: Array,
+      authors: Array,
+      address: String,
+      contactInfo: String,
+      directions: String,
+      introduction: String,
+      description: Array,
+      detailedDescription: Array,
+    },
+    components: {
+      AuthorName,
+      CmsImage,
+      FigureImage,
+      Paragraph,
+      PrettyDate,
+    },
+    filters: {
+      humanizePosition,
+      translate,
+    },
 
-  data() {
-    return {
-      showImage: false
-    };
-  },
+    data() {
+      return {
+        showImage: false,
+      };
+    },
 
-  computed: {
-    path() {
-      const [lng, lat] = this.position;
-      return mapStateToPath({ lng, lat });
-    }
-  }
-};
+    computed: {
+      path() {
+        const [lng, lat] = this.position;
+        return mapStateToPath({lng, lat});
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
-@import '../../scss/variables';
+  @import '../../scss/variables';
 
-.memorial-card {
-  .blockquote {
-    font-size: 0.8rem;
-  }
+  .memorial-card {
+    .blockquote {
+      font-size: 0.8rem;
+    }
 
-  .footnotes {
-    font-size: $font-size-sm;
+    .footnotes {
+      font-size: $font-size-sm;
 
-    ol {
-      padding-left: 1.5rem;
+      ol {
+        padding-left: 1.5rem;
+      }
+    }
+
+    .author-card {
+      .author-img {
+        max-height: 30px;
+      }
     }
   }
-
-  .author-card {
-    .author-img {
-      max-height: 30px;
-    }
-  }
-}
 </style>

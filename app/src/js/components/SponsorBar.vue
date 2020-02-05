@@ -1,12 +1,12 @@
 <template>
-  <div class="navbar navbar-light py-0">
-    <span class="small d-none d-sm-block">
+  <div class="d-flex justify-content-between align-items-center px-3 py-0">
+    <p class="small m-0 p-0">
       Gefördert durch
-      <br />Podpořeno
-    </span>
+    <br />Podpořeno
+    </p>
 
     <a
-      class="navbar-brand ml-auto p-0"
+      class="p-0"
       href="http://www.sn-cz2020.eu/"
       target="_blank"
       rel="noopener"
@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import euLogo from '../../assets/logos/logo_eu.svg';
-import snczLogo from '../../assets/logos/logo_sn_cz.svg';
+  import euLogo from '../../assets/logos/logo_eu.svg';
+  import snczLogo from '../../assets/logos/logo_sn_cz.svg';
 
-export default {
+  export default {
   data() {
     return {
       euLogo,

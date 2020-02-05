@@ -3,13 +3,29 @@ import 'regenerator-runtime/runtime';
 import Vue from 'vue';
 import Meta from 'vue-meta';
 import VueRouter from 'vue-router';
-import { ButtonPlugin, ButtonGroupPlugin, CardPlugin, CollapsePlugin, FormInputPlugin, ModalPlugin, MediaPlugin, NavbarPlugin, PopoverPlugin, TabsPlugin, ImagePlugin, InputGroupPlugin } from 'bootstrap-vue/dist/bootstrap-vue.esm';
-import { dom } from '@fortawesome/fontawesome-svg-core';
-import { Icon } from 'leaflet'
+import {
+  AlertPlugin,
+  ButtonGroupPlugin,
+  ButtonPlugin,
+  CardPlugin,
+  CollapsePlugin,
+  FormInputPlugin,
+  ImagePlugin,
+  InputGroupPlugin,
+  LayoutPlugin,
+  LinkPlugin,
+  MediaPlugin,
+  ModalPlugin,
+  NavbarPlugin,
+  PopoverPlugin,
+  TabsPlugin,
+} from 'bootstrap-vue/dist/bootstrap-vue.esm';
+import {dom} from '@fortawesome/fontawesome-svg-core';
+import {Icon} from 'leaflet';
 import router from './router';
 import store from './state/store';
 import './icons';
-import App from './components/App.vue';
+import AppView from './views/AppView.vue';
 
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
@@ -22,20 +38,23 @@ Icon.Default.mergeOptions({
 
 Vue.use(Meta);
 Vue.use(VueRouter);
-Vue.use(ButtonPlugin);
+Vue.use(AlertPlugin);
 Vue.use(ButtonGroupPlugin);
+Vue.use(ButtonPlugin);
 Vue.use(CardPlugin);
 Vue.use(CollapsePlugin);
 Vue.use(FormInputPlugin);
-Vue.use(PopoverPlugin);
-Vue.use(ModalPlugin);
-Vue.use(NavbarPlugin);
-Vue.use(TabsPlugin);
-Vue.use(MediaPlugin);
 Vue.use(ImagePlugin);
 Vue.use(InputGroupPlugin);
+Vue.use(LayoutPlugin);
+Vue.use(LinkPlugin);
+Vue.use(MediaPlugin);
+Vue.use(ModalPlugin);
+Vue.use(NavbarPlugin);
+Vue.use(PopoverPlugin);
+Vue.use(TabsPlugin);
 
-const AppComponent = Vue.extend(App);
+const AppComponent = Vue.extend(AppView);
 
 new AppComponent({
   store,

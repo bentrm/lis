@@ -1,3 +1,6 @@
+import moment from 'moment';
+import {getCurrentLanguage} from './translate';
+
 export const round = value => {
   return Math.round(value * 10000) / 10000;
 };
@@ -16,13 +19,27 @@ export const humanize = value => {
   return value.split('_').join(' ');
 };
 
+export const humanizeDate = (day, month, year, place) => {
+  let output = '';
+  if (year && month && day) {
+    moment.locale(getCurrentLanguage());
+    output += moment([year, month, day]).format('LL');
+  } else if (year) {
+    output += year;
+  }
+  if (place) {
+    output += ` (${place})`;
+  }
+  return output;
+};
+
 export const getDeviceWidth = () => {
   return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-}
+};
 
 export const getDeviceHeight = () => {
   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-}
+};
 
 /**
  * Encodes a map view center as a String.

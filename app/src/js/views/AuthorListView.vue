@@ -5,47 +5,12 @@
         <div class="row">
           <div class="col-12">
             <h3>{{ 'Authors' | translate }} ({{ count }})</h3>
-          </div>
 
-          <div class="col-12">
-            <ul class="list-unstyled">
-              <b-media
-                v-for="author in authors"
-                :key="author.id"
-                tag="li"
-                vertical-align="center"
-                class="display-4 mb-2"
-              >
-                <template v-slot:aside>
-                  <cms-image
-                    v-if="author.title_image"
-                    :src="author.title_image.thumb"
-                    :alt="author.title_image.title"
-                    :title="author.title_image.title"
-                    class="author-thumb border border-primary rounded-circle img-fluid"
-                  ></cms-image>
-                  <b-img
-                    blank
-                    blank-color="grey"
-                    :width="25"
-                    :height="25"
-                    class="author-thumb border border-primary rounded-circle img-fluid"
-                    v-else
-                  ></b-img>
-                </template>
-
-                <router-link
-                  :to="{name: 'author-detail', params: { slug: author.slug, level: 'discover' }}"
-                >
-                  <span v-if="author.first_name" class="small text-muted">{{ author.first_name }}</span>
-                  {{ author.last_name }}
-                </router-link>
-              </b-media>
-            </ul>
-          </div>
-
-          <div class="col-12">
-            <pagination :currentPage="page" :totalPages="totalPages" v-on:change="setPage"></pagination>
+            <author-list
+              :authors="authors"
+              :page="page"
+              :totalPages="totalPages"
+              v-on:change="setPage" />
           </div>
         </div>
       </main>
@@ -57,40 +22,12 @@
               <i class="fas fa-book"></i>
               {{ 'Authors' | translate }} ({{ count }})
             </template>
-            <ul class="list-unstyled">
-              <b-media v-for="author in authors" :key="author.id" tag="li" vertical-align="center">
-                <template v-slot:aside>
-                  <cms-image
-                    v-if="author.title_image"
-                    :src="author.title_image.thumb"
-                    :alt="author.title_image.title"
-                    :title="author.title_image.title"
-                    class="author-thumb border border-primary rounded-circle img-fluid"
-                  ></cms-image>
-                  <b-img
-                    blank
-                    :width="25"
-                    :height="25"
-                    blank-color="grey"
-                    class="author-thumb border border-primary rounded-circle img-fluid"
-                    v-else
-                  ></b-img>
-                </template>
-
-                <h4>
-                  <router-link :to="{name: 'author-detail', params: { slug: author.slug }}">
-                    <span v-if="author.first_name" class="small text-muted">{{ author.first_name }}</span>
-                    {{ author.last_name }}
-                  </router-link>
-                </h4>
-              </b-media>
-            </ul>
-            <pagination
-              class="align-content-center"
-              :currentPage="page"
+            <author-list
+              :authors="authors">
+              :page="page"
               :totalPages="totalPages"
               v-on:change="setPage"
-            ></pagination>
+            </author-list>
           </b-tab>
 
           <b-tab>
@@ -139,20 +76,16 @@
 </template>
 
 <script>
-import api from '../Api';
-import translate from '../translate';
-import CmsImage from './CmsImage.vue';
-import FilterItem from './FilterItem.vue';
-import FilterList from './FilterList.vue';
-import Pagination from './Pagination.vue';
-import { getDeviceWidth } from '../utils';
+  import api from '../Api';
+  import translate from '../translate';
+  import FilterList from '../components/FilterList.vue';
+  import {getDeviceWidth} from '../utils';
+  import AuthorList from '../components/AuthorList.vue';
 
-export default {
+  export default {
   components: {
-    CmsImage,
-    Pagination,
+    AuthorList,
     FilterList,
-    FilterItem
   },
 
   filters: {
@@ -347,7 +280,9 @@ export default {
 </script>
 
 <style lang="scss">
-.author-thumb {
-  max-height: 25px;
-}
+  @import 'src/scss/variables';
+
+  .author-thumb {
+    max-height: 25px;
+  }
 </style>

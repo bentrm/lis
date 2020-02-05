@@ -1,7 +1,9 @@
-import { langHosts } from './config';
+import {langHosts} from './config';
 
 const library = {
+  'References': { de: 'Einzelnachweise', cs: 'Poznámky pod čarou' },
   'About': { de: 'Über', cs: 'o' },
+  'Accessibility': { de: 'Erklärung zur Barrierefreiheit', cs: 'Prohlášení o přístupnosti' },
   'Address': { de: 'Adresse', cs: 'adresa' },
   'Admin': { de: 'Admin', cs: 'admin' },
   'Also known as': { de: 'Auch bekannt als', cs: 'známá také jako' },
@@ -10,6 +12,7 @@ const library = {
   'Back to homepage.': { de: 'Zurück zur Startseite.', cs: 'zpět na domovskou stránku' },
   'Biography': { de: 'Biographie', cs: 'biografie' },
   'Born': { de: 'Geboren', cs: 'narozen/narozena' },
+  'born': { de: 'geboren', cs: 'narozený' },
   'Close': { de: 'Schließen', cs: 'zavřít' },
   'Connections': { de: 'Verbindungen', cs: 'spojnice' },
   'Content': { de: 'Inhalt', cs: 'obsah' },
@@ -21,10 +24,12 @@ const library = {
   'Discover': { de: 'Entdecken', cs: 'objevit' },
   'Error': { de: 'Fehler', cs: 'chyba' },
   'Female': { de: 'Weiblich', cs: 'žena' },
+  'Filters': { de: 'Filter', cs: 'Filtr' },
   'Full texts': { de: 'Volltexte', cs: 'fulltexty' },
   'Gender': { de: 'Geschlecht', cs: 'rod' },
   'Genre': { de: 'Genre', cs: 'žánr' },
   'Genres': { de: 'Genres', cs: 'žánry' },
+  'Home': { de: 'Startseite', cs: 'Domů' },
   'Imprint & data protection': { de: 'Impressum & Datenschutz', cs: 'tiráž' },
   'Intro': { de: 'Einleitung', cs: 'úvod' },
   'items selected': { de: 'Elemente ausgewählt', cs: 'vybrané položky' },
@@ -44,16 +49,20 @@ const library = {
   'No filter item available.': { de: 'Kein Schlagwort zur Auswahl.', cs: 'žádné heslo k výběru' },
   'No filter item selected.': { de: 'Kein Schlagwort ausgewählt.', cs: 'žádé vybrané heslo' },
   'Not found': { de: 'Nicht gefunden', cs: 'nenalezeno' },
+  'Page not found.': { de: 'Seite nicht gefunden.', cs: 'Stránka nenalezena.'},
   'Periods': { de: 'Epochen', cs: 'epochy' },
   'Primary literature': { de: 'Primärliteratur', cs: 'primární literatura' },
   'Project partner': { de: 'Projektpartner', cs: 'projektový partner' },
+  'pseudonym': { de: 'Pseudonym', 'cs': 'pseudonym' },
   'Reception': { de: 'Rezeption', cs: 'recepce' },
   'Research': { de: 'Vertiefen', cs: 'prohloubení' },
   'Search': { de: 'Suche', cs: 'hledání' },
   'Secondary literature': { de: 'Sekundärliteratur', cs: 'sekundární literatura' },
   'See on map': { de: 'Auf der Karte ansehen', cs: 'zobrazit na mapě' },
+  'Testimony': { de: 'Zeugnisse', cs: 'Svědectví' },
   'Types': { de: 'Arten', cs: 'typy' },
   'Works': { de: 'Werk', cs: 'díla' },
+  'Zoom to feature extent': { de: 'Auf gesamte Ausbreitung zoomen', cs: 'Přibližte rozsah funkce' },
 };
 
 export const availableLanguages = Object.freeze({
