@@ -11,7 +11,7 @@
           autocomplete="off"
         />
         <b-input-group-append>
-          <b-button :disabled="query.length < 2" type="submit">{{ 'Search' | translate }}</b-button>
+          <b-button :disabled="query.length < 1" type="submit">{{ 'Search' | translate }}</b-button>
         </b-input-group-append>
       </b-input-group>
     </div>
@@ -36,6 +36,12 @@
   methods: {
     onSubmit(e) {
       this.$emit('submit', this.query);
+    }
+  },
+
+  watch: {
+    query(val) {
+      this.$emit('change', val)
     }
   }
 };

@@ -3,7 +3,7 @@
     <div class="row p-4">
       <div class="col-12">
         <h3>{{ 'Search' | translate }}</h3>
-        <search-bar class="mb-2" v-on:submit="fetchQueryResults"></search-bar>
+        <search-bar class="mb-2" v-on:submit="fetchQueryResults" v-on:change="fetchQueryResults"></search-bar>
       </div>
 
       <div class="col-12 col-md-6" v-if="memorials.length">
