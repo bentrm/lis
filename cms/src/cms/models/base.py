@@ -162,8 +162,10 @@ class I18nPage(Page):
     is_creatable = False
 
     search_fields = Page.search_fields + [
-        index.SearchField("title_de", boost=2),
-        index.SearchField("title_cs", boost=2),
+        index.SearchField("title_de", partial_match=True, boost=2),
+        index.AutocompleteField("title_de"),
+        index.SearchField("title_cs", partial_match=True, boost=2),
+        index.AutocompleteField("title_cs"),
         index.FilterField("title_de"),
         index.FilterField("title_cs"),
     ]
@@ -366,6 +368,12 @@ class BlogPage(I18nPage):
             ObjectList(I18nPage.meta_panels, heading=_(TXT["heading.meta"])),
         ]
     )
+
+    search_fields = I18nPage.search_fields + [
+        index.SearchField("body"),
+        index.SearchField("body_de"),
+        index.SearchField("body_cs"),
+    ]
 
     class Meta:
         db_table = DB_TABLE_PREFIX + "_content_pages"

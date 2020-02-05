@@ -1,12 +1,10 @@
 import django_filters
 from django.db.models import Q
 from django.template import loader
-from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import SearchFilter
 from rest_framework_gis.filters import InBBoxFilter, DistanceToPointFilter
-from wagtail.api.v2.utils import BadRequestError
 from wagtail.search.backends import get_search_backend
 
 from cms.models import Author, Memorial, GenreTag, LanguageTag, PeriodTag, MemorialTag
@@ -69,18 +67,7 @@ class PostgresSearchFilter(SearchFilter):
             search_query = request.GET['search']
             search_operator = request.GET.get('search_operator', None)
             order_by_relevance = 'ordering' not in request.GET
-
-            language_code = get_language()
-            if language_code == 'en':
-                search_backend = 'default'
-            elif language_code == 'de':
-                search_backend = 'german'
-            elif language_code == 'cs':
-                search_backend = 'default'
-            else:
-                raise BadRequestError("Unsupported language for searching: " + str(language_code))
-
-            sb = get_search_backend(search_backend)
+            sb = get_search_backend()
             queryset = sb.autocomplete(
                 search_query,
                 queryset,

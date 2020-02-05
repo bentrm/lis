@@ -262,11 +262,7 @@ WAGTAIL_GRAVATAR_PROVIDER_URL = None
 WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "wagtail.contrib.postgres_search.backend",
-        'SEARCH_CONFIG': 'english',
-    },
-    "german": {
-        "BACKEND": "wagtail.contrib.postgres_search.backend",
-        'SEARCH_CONFIG': 'german',
+        'SEARCH_CONFIG': 'simplesearch',
     }
 }
 WAGTAILAPI_LIMIT_MAX = None
