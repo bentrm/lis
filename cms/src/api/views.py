@@ -9,12 +9,14 @@ from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
 from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, \
-    AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, MemorialPathListSerializer, \
+    AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, \
+    MemorialPathListSerializer, \
     Level1Serializer, Level2Serializer, Level3Serializer
-from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, MemorialPath, \
+from cms.models import LanguageTag, PeriodTag, GenreTag, MemorialTag, Memorial, Author, AuthorName, \
+    MemorialPath, \
     Level1Page, Level2Page, Level3Page
 # Notice: All views in this page override the get_queryset method to make sure the language code
-#         is set appropriately. Otherwise the querset will be prepared before any language
+#         is set appropriately. Otherwise the queryset will be prepared before any language
 #         information is available to the custom translation processor.
 from cms.models.base import BlogPage
 

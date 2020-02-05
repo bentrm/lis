@@ -1,7 +1,8 @@
 from django.db.models import Subquery, OuterRef
 from rest_framework import serializers
 
-from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, MemorialPath, \
+from cms.models import MemorialTag, LanguageTag, GenreTag, PeriodTag, Author, Memorial, AuthorName, \
+    MemorialPath, \
     Level1Page, Level2Page, Level3Page
 from cms.models.base import BlogPage
 from cms.serializers import TranslationField, ImageSerializer
@@ -77,6 +78,7 @@ class AuthorNameSerializer(serializers.ModelSerializer):
 
 class AuthorListSerializer(serializers.ModelSerializer):
     title_image = ImageSerializer()
+    also_known_as = serializers.SerializerMethodField()
     academic_title = serializers.CharField(read_only=True)
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
@@ -92,6 +94,11 @@ class AuthorListSerializer(serializers.ModelSerializer):
 
     url = serializers.SerializerMethodField()
 
+    def get_also_known_as(self, obj):
+        names = obj.names.all()
+        serializer = AuthorNameSerializer(instance=names, many=True)
+        return serializer.data
+
     def get_url(self, obj):
         return obj.get_url()
 
@@ -104,6 +111,7 @@ class AuthorListSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'birth_name',
+            'also_known_as',
             'dob', 'mob', 'yob', 'pob',
             'dod', 'mod', 'yod', 'pod',
             'url',
@@ -112,16 +120,10 @@ class AuthorListSerializer(serializers.ModelSerializer):
 
 
 class AuthorDetailSerializer(AuthorListSerializer):
-    also_known_as = serializers.SerializerMethodField()
     genres = GenreSerializer(source="genre_tags", many=True)
     languages = GenreSerializer(source="language_tags", many=True)
     periods = PeriodSerializer(source="literary_period_tags", many=True)
     levels = serializers.SerializerMethodField()
-
-    def get_also_known_as(self, obj):
-        names = obj.names.all()[1:]
-        serializer = AuthorNameSerializer(instance=names, many=True)
-        return serializer.data
 
     def get_levels(self, obj):
         value = {}
