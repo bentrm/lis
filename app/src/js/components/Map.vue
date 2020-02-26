@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import { LMap, LMarker, LControlScale, LPopup } from 'vue2-leaflet';
-import LMarkerCluster from 'vue2-leaflet-markercluster/dist/Vue2LeafletMarkercluster';
-import LLayerExtent from './LayerExtent.vue';
-import LLocateControl from './LocateControl.vue';
-import TiledWmsLayer from './TiledWmsLayer.vue';
-import { DivIcon } from 'leaflet';
-import marker from '../markers';
+  import {LControlScale, LMap, LMarker, LPopup} from 'vue2-leaflet';
+  import LMarkerCluster from 'vue2-leaflet-markercluster/dist/Vue2LeafletMarkercluster';
+  import LLayerExtent from './LayerExtent.vue';
+  import LLocateControl from './LocateControl.vue';
+  import TiledWmsLayer from './TiledWmsLayer.vue';
+  import {DivIcon} from 'leaflet';
+  import marker from '../markers';
 
-const iconCache = {};
+  const iconCache = {};
 
 export default {
   props: {
@@ -91,7 +91,8 @@ export default {
         showPopup: false
       },
       markerClusterOptions: {
-        animate: true,
+        animate: false,
+        maxClusterRadius: 40,
         polygonOptions: {
           color: '#69140e'
         },
