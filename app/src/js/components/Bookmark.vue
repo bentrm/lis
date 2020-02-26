@@ -10,7 +10,7 @@
     </span>
     <b-popover
       :target="bookmarkId"
-      triggers="hover focus">
+      triggers="hover click focus">
       <div v-html="content"></div>
     </b-popover>
   </span>
