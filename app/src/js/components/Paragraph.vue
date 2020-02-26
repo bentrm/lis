@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div v-html="content" ref="content"></div>
+    <div v-html="parsedContent" ref="content"></div>
 
     <div v-if="footnotes.length">
       <h6>{{ 'References' | translate }}</h6>
@@ -93,6 +93,10 @@ export default {
         acc[cur.tag.toString()] = [index, cur];
         return acc;
       }, {});
+    },
+
+    parsedContent() {
+      return this.content.replace(/\[([a-zA-Z0-9]*)]/g, '<span class="footnote">$1</span>');
     }
   },
 
