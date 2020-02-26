@@ -23,11 +23,10 @@
               {{ 'Authors' | translate }} ({{ count }})
             </template>
             <author-list
-              :authors="authors">
+              :authors="authors"
               :page="page"
               :totalPages="totalPages"
-              v-on:change="setPage"
-            </author-list>
+              v-on:change="setPage"/>
           </b-tab>
 
           <b-tab>
