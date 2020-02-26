@@ -17,6 +17,7 @@ import {
   MediaPlugin,
   ModalPlugin,
   NavbarPlugin,
+  PaginationPlugin,
   PopoverPlugin,
   TabsPlugin,
 } from 'bootstrap-vue/dist/bootstrap-vue.esm';
@@ -51,6 +52,7 @@ Vue.use(LinkPlugin);
 Vue.use(MediaPlugin);
 Vue.use(ModalPlugin);
 Vue.use(NavbarPlugin);
+Vue.use(PaginationPlugin);
 Vue.use(PopoverPlugin);
 Vue.use(TabsPlugin);
 

@@ -9,6 +9,7 @@
             <author-list
               :authors="authors"
               :page="page"
+              :count="count"
               :totalPages="totalPages"
               v-on:change="setPage" />
           </div>
@@ -25,8 +26,9 @@
             <author-list
               :authors="authors"
               :page="page"
+              :count="count"
               :totalPages="totalPages"
-              v-on:change="setPage"/>
+              v-on:change="setPage" />
           </b-tab>
 
           <b-tab>

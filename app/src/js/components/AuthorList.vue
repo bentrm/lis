@@ -1,27 +1,26 @@
 <template>
   <div class="Author-list">
-    <ul class="list-unstyled">
+    <ul class="list-unstyled" id="author-list">
       <author-list-row v-for="author in authors" :key="author.id" :author="author"/>
     </ul>
 
-    <pagination
+    <b-pagination
+      aria-controls="#author-list"
+      align="center"
       v-if="totalPages > 1"
-      :currentPage="page"
-      :totalPages="totalPages"
-      v-on:change="e => $emit('change', e)">
-    </pagination>
+      v-model="page"
+      :total-rows="count"
+      v-on:change="e => $emit('change', e)" />
   </div>
 </template>
 
 <script>
   import translate from '../translate';
-  import Pagination from '../components/Pagination.vue';
   import AuthorListRow from '../components/AuthorListRow.vue';
 
   export default {
     components: {
-      AuthorListRow,
-      Pagination,
+      AuthorListRow
     },
 
     props: {
@@ -30,19 +29,13 @@
         default: [],
       },
       page: Number,
+      count: Number,
       totalPages: Number,
       setPage: Function,
     },
 
     filters: {
       translate,
-    },
-
-    methods: {
-      onChange(event) {
-        const vm = this;
-        vm.onChange(event)
-      }
     }
   };
 </script>
