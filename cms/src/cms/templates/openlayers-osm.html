@@ -1,0 +1,122 @@
+{% load i18n l10n %}
+<style type="text/css">{% block map_css %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+#{{ id }}_map { width: 100%; height: {{ map_height }}px; }
+#{{ id }}_map .aligned label { float: inherit; }
+#{{ id }}_div_map { width: 100%; position: relative; vertical-align: top; float: {{ LANGUAGE_BIDI|yesno:"right,left" }}; }
+#{{ id }}_div_map button { margin-right: 5px; margin-bottom: 5px; }
+{% if not display_raw %}#{{ id }} { display: none; }{% endif %}
+{% endblock %}
+</style>
+
+<div id="{{ id }}_div_map">
+  {% if not disabled %}<button id="{{ id }}-clear" class="button">{% trans "Delete coordinates" %}</button>{% endif %}
+  <button id="{{ id }}-preview" class="button" disabled="disabled">{% trans "No coordinates selected" %}</button>
+  <div id="{{ id }}_map" class="map"></div>
+  <textarea id="{{ id }}" class="vSerializedField required" cols="150" rows="10" name="{{ name }}">{{ serialized }}</textarea>
+  <script type="text/javascript">
+    {% block map_options %}var map_options = {};{% endblock %}
+    {% block base_layer %}
+      var base_layer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: 'https://kosm.geoinformation.htw-dresden.de/geoserver/osm/wms',
+          params: {'LAYERS': 'osm:OSM', 'TILED': true},
+          serverType: 'geoserver',
+          attributions:
+            'Rendering <a href="https://geoinformatik.htw-dresden.de">' +
+            'Labor Geoinformatik (HTWD, Fak. GI)</a><br> ' +
+            'Map data &copy; ' +
+            '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+        })
+      });
+    {% endblock %}
+    {% block options %}var options = {
+      base_layer: base_layer,
+      default_lon: 13.73,
+      default_lat: 51.05,
+      default_zoom: 10,
+      geom_name: '{{ geom_type }}',
+      id: '{{ id }}',
+      map_id: '{{ id }}_map',
+      map_options: map_options,
+      map_srid: {{ map_srid|unlocalize }},
+      name: '{{ name }}'
+    };
+    {% endblock %}
+
+    var previewBtn = document.getElementById(options.id + "-preview");
+    function previewCoordinates(coordinates) {
+      var lon = Math.round((coordinates[0] + Number.EPSILON) * 10000) / 10000;
+      var lat = Math.round((coordinates[1] + Number.EPSILON) * 10000) / 10000;
+      previewBtn.textContent = "{% trans 'Zoom to' %}: " + lon + "°, " + lat + "°";
+      previewBtn.hidden = false;
+      previewBtn.disabled = false;
+    }
+
+    function disabledPreviewBtn() {
+      previewBtn.textContent = "{% trans 'No coordinates selected' %}";
+      previewBtn.hidden = true;
+      previewBtn.disabled = true;
+    }
+
+    var i = 0;
+    var serializeFeatures = MapWidget.prototype.serializeFeatures;
+    MapWidget.prototype.serializeFeatures = function () {
+      serializeFeatures.call(this);
+      var features = this.featureOverlay.getSource().getFeatures();
+      if (features.length) {
+        var geometry = features[0].getGeometry().clone();
+        var coordinates = geometry.transform("EPSG:900913", "EPSG:4326").getCoordinates();
+        previewCoordinates(coordinates);
+      } else {
+        disabledPreviewBtn();
+      }
+    };
+
+    MapWidget.prototype.goToFeature = function() {
+      var features = this.featureOverlay.getSource().getFeatures();
+      if (features.length) {
+        var coordinates = features[0].getGeometry().getCoordinates();
+        this.map.getView().setCenter(coordinates);
+        this.map.getView().setZoom(14);
+      }
+    };
+
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 0, 0, 0.5)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'black'
+        })
+      })
+    });
+    var {{ module }} = new MapWidget(options);
+    {{ module }}.featureOverlay.setStyle(style);
+
+    var initialValue = document.getElementById(options.id).value;
+    if (initialValue) {
+      var format = new ol.format.GeoJSON();
+      var initialFeature = format.readFeature(initialValue, {
+        dataProjection: "EPSG:900913",
+        featureProjection: "EPSG:4326"
+      });
+      previewCoordinates(initialFeature.getGeometry().getCoordinates());
+    }
+
+    var preview = document.getElementById(options.id + "-preview");
+    preview.onclick = function (e) {
+      e.preventDefault();
+      {{ module }}.goToFeature();
+    };
+
+    var clearFeature = document.getElementById(options.id + "-clear");
+    clearFeature.onclick = function (e) {
+      e.preventDefault();
+      {{ module }}.clearFeatures();
+      disabledPreviewBtn();
+    };
+  </script>
+</div>

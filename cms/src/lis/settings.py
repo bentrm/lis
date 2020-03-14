@@ -82,7 +82,6 @@ INSTALLED_APPS = [
     "wagtail.core",
     "modelcluster",
     "taggit",
-    "mapwidgets",
     "rest_framework",
     "rest_framework_gis",
     "corsheaders",
@@ -266,16 +265,6 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 WAGTAILAPI_LIMIT_MAX = None
-
-# Map widgets
-MAP_WIDGETS = {
-    "GooglePointFieldWidget": (
-        ("zoom", 15),
-        ("mapCenterLocationName", "Dresden"),
-        ("markerFitZoom", 12),
-    ),
-    "GOOGLE_MAP_API_KEY": os.getenv("GOOGLE_MAP_API_KEY"),
-}
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include "/admin" or a trailing slash

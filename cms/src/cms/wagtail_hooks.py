@@ -1,7 +1,7 @@
 """Custom hooks to add functionality to the Wagtail framework."""
 
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -17,6 +17,7 @@ from wagtail.contrib.modeladmin.options import (
 from wagtail.core import hooks
 from wagtail.core.models import PageRevision
 
+from cms.models import Author
 from .models import (
     AgeGroupTag,
     GenreTag,
@@ -25,7 +26,6 @@ from .models import (
     PeriodTag,
     MemorialTag,
 )
-from cms.models import Author
 
 
 def as_page_object(self):
