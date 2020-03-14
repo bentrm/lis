@@ -1,36 +1,38 @@
 // Explicit imports used here to reduce bundle size.
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
-import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
-import { faBirthdayCake } from '@fortawesome/free-solid-svg-icons/faBirthdayCake';
-import { faBook } from '@fortawesome/free-solid-svg-icons/faBook';
-import { faBookmark } from '@fortawesome/free-solid-svg-icons/faBookmark';
-import { faBuilding } from '@fortawesome/free-solid-svg-icons/faBuilding';
-import { faChurch } from '@fortawesome/free-solid-svg-icons/faChurch';
-import { faCross } from '@fortawesome/free-solid-svg-icons/faCross';
-import { faExpandArrowsAlt } from '@fortawesome/free-solid-svg-icons/faExpandArrowsAlt';
-import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
-import { faGraduationCap } from '@fortawesome/free-solid-svg-icons/faGraduationCap';
-import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo';
-import { faLandmark } from '@fortawesome/free-solid-svg-icons/faLandmark';
-import { faLightbulb } from '@fortawesome/free-solid-svg-icons/faLightbulb';
-import { faLocationArrow } from '@fortawesome/free-solid-svg-icons/faLocationArrow';
-import { faMap } from '@fortawesome/free-solid-svg-icons/faMap';
-import { faMapMarker } from '@fortawesome/free-solid-svg-icons/faMapMarker';
-import { faMonument } from '@fortawesome/free-solid-svg-icons/faMonument';
-import { faMountain } from '@fortawesome/free-solid-svg-icons/faMountain';
-import { faPalette } from '@fortawesome/free-solid-svg-icons/faPalette';
-import { faRoad } from '@fortawesome/free-solid-svg-icons/faRoad';
-import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
-import { faSquare } from '@fortawesome/free-solid-svg-icons/faSquare';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faArchive} from '@fortawesome/free-solid-svg-icons/faArchive';
+import {faArrowRight} from '@fortawesome/free-solid-svg-icons/faArrowRight';
+import {faBars} from '@fortawesome/free-solid-svg-icons/faBars';
+import {faBirthdayCake} from '@fortawesome/free-solid-svg-icons/faBirthdayCake';
+import {faBook} from '@fortawesome/free-solid-svg-icons/faBook';
+import {faBookmark} from '@fortawesome/free-solid-svg-icons/faBookmark';
+import {faBuilding} from '@fortawesome/free-solid-svg-icons/faBuilding';
+import {faChurch} from '@fortawesome/free-solid-svg-icons/faChurch';
+import {faCross} from '@fortawesome/free-solid-svg-icons/faCross';
+import {faExpandArrowsAlt} from '@fortawesome/free-solid-svg-icons/faExpandArrowsAlt';
+import {faEye} from '@fortawesome/free-solid-svg-icons/faEye';
+import {faEyeSlash} from '@fortawesome/free-solid-svg-icons/faEyeSlash';
+import {faGlobe} from '@fortawesome/free-solid-svg-icons/faGlobe';
+import {faGraduationCap} from '@fortawesome/free-solid-svg-icons/faGraduationCap';
+import {faInfo} from '@fortawesome/free-solid-svg-icons/faInfo';
+import {faLandmark} from '@fortawesome/free-solid-svg-icons/faLandmark';
+import {faLightbulb} from '@fortawesome/free-solid-svg-icons/faLightbulb';
+import {faLocationArrow} from '@fortawesome/free-solid-svg-icons/faLocationArrow';
+import {faMap} from '@fortawesome/free-solid-svg-icons/faMap';
+import {faMapMarker} from '@fortawesome/free-solid-svg-icons/faMapMarker';
+import {faMonument} from '@fortawesome/free-solid-svg-icons/faMonument';
+import {faMountain} from '@fortawesome/free-solid-svg-icons/faMountain';
+import {faPalette} from '@fortawesome/free-solid-svg-icons/faPalette';
+import {faRoad} from '@fortawesome/free-solid-svg-icons/faRoad';
+import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
+import {faSquare} from '@fortawesome/free-solid-svg-icons/faSquare';
+import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
+import {faTimesCircle} from '@fortawesome/free-solid-svg-icons/faTimesCircle';
+import {faFile} from '@fortawesome/free-solid-svg-icons';
 
 
 library.add(
+  faFile,
   faArchive,
   faArrowRight,
   faBars,

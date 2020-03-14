@@ -1,6 +1,15 @@
 <template>
   <div class="paragraph">
-    <h5 v-if="heading">{{ heading }}</h5>
+    <h5 v-if="heading">
+      <a v-if="document.url"
+         :href="document.url"
+         :alt="document.title"
+      >
+        <i class="fas fa-file"></i>
+        {{ heading }}
+      </a>
+      <span v-else>{{ heading }}</span>
+    </h5>
 
     <div v-if="images.length" class="row">
       <div
@@ -21,6 +30,7 @@
       </div>
     </div>
 
+    <div class="text-muted" v-if="document && document.copyright">© {{ document.copyright }}</div>
     <div v-html="parsedContent" ref="content"></div>
 
     <div v-if="footnotes.length">
@@ -59,6 +69,9 @@ export default {
       default() {
         return [];
       }
+    },
+    document: {
+      type: Object,
     },
     content: {
       type: String,

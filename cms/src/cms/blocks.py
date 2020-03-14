@@ -93,13 +93,19 @@ class ParagraphStructBlock(blocks.StructBlock):
         template = "cms/blocks/paragraph_struct_block.html"
 
 
+class APIDocumentChooserBlock(DocumentChooserBlock):
+    def get_api_representation(self, value, context=None):
+        from cms.serializers import DocumentSerializer
+        return DocumentSerializer(context=context).to_representation(value)
+
+
 class DidacticMaterialStructBlock(blocks.StructBlock):
     heading = blocks.CharBlock(
         required=True,
         label=_("Heading"),
         help_text=_("A heading that describes the linked document replacing or complementing the files title."),
     )
-    document = DocumentChooserBlock(
+    document = APIDocumentChooserBlock(
         required=True,
         label=_("Document"),
     )

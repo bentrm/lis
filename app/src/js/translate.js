@@ -38,6 +38,7 @@ const library = {
   'Language': { de: 'Sprache', cs: 'jazyk' },
   'Languages': { de: 'Sprachen', cs: 'jazyky' },
   'Literary landscape': { de: 'Literaturlandschaft', cs: 'literární krajina' },
+  'Didactic material': { de: 'Didaktisches Material', cs: 'Didaktický materiál' },
   'Male': { de: 'Männlich', cs: 'muž' },
   'Map': { de: 'Karte', cs: 'mapa' },
   'Material': { de: 'Material', cs: 'materiály' },

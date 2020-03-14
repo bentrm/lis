@@ -9,7 +9,7 @@ from django.utils.encoding import force_text
 from rest_framework import serializers
 from wagtail.core.fields import RichTextField, StreamField
 
-from cms.models import ImageMedia
+from cms.models import ImageMedia, DocumentMedia
 
 
 def generate_signature(image_id, filter_spec, key=None):
@@ -68,9 +68,7 @@ class TranslationField(serializers.Field):
             else:
                 return ''
         elif isinstance(field, StreamField):
-            # TODO: Translate
             return field.stream_block.get_api_representation(value, self.context)
-            # return value.stream_data if value else []
         else:
             return value
 
@@ -115,4 +113,20 @@ class ImageSerializer(serializers.ModelSerializer):
             'small',
             'mid',
             'large',
+        )
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    title = TranslationField()
+    copyright = serializers.CharField()
+    summary = TranslationField()
+
+    class Meta:
+        model = DocumentMedia
+        fields = (
+            "id",
+            "title",
+            "copyright",
+            "summary",
+            "url",
         )

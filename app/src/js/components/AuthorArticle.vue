@@ -5,7 +5,7 @@
       <paragraph
         v-for="block in blocks"
         :key="block.id"
-        v-if="block.type === 'paragraph'"
+        v-if="block.type === 'paragraph' || block.type === 'material'"
         v-bind="block.value"></paragraph>
     </template>
   </article>
