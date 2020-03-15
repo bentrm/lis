@@ -7,6 +7,7 @@
           :zoom="$store.state.mapZoom"
           :max-bounds="$store.state.mapMaxBounds"
           :features="memorials"
+          :extent="extent"
           @select="onMapSelect"
           @moveend="onMapMoveEnd"
         ></map-component>
@@ -24,6 +25,7 @@
               :zoom="$store.state.mapZoom"
               :max-bounds="$store.state.mapMaxBounds"
               :features="memorials"
+              :extent="extent"
               @select="onMapSelect"
               @moveend="onMapMoveEnd"
             ></map-component>
@@ -141,7 +143,12 @@ export default {
 
       // types
       types: [],
-      typeSelection: new Set()
+      typeSelection: new Set(),
+
+      extent: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
+      defaultMapCenter: { lng: 13.6811, lat: 51.0526 },
+      defaultMapZoom: 8,
+      mapMaxBounds: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
     };
   },
 
@@ -323,7 +330,11 @@ export default {
       const vm = this;
       api
         .getMemorials(vm.memorialParams)
-        .then(json => (vm.memorials = json.results));
+        .then(json => {
+          const bbox = json.bbox;
+          vm.memorials = json.results;
+          vm.extent = [[bbox[0][1], bbox[0][0]], [bbox[1][1], bbox[1][0]]];
+        });
     },
 
     fetchMemorial() {

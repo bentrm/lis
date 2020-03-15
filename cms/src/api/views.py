@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from api.filters import BoundingBoxFilter, PostgresSearchFilter, \
     DistanceFilter, MemorialFilterSet, AuthorFilterSet
+from api.pagination import MemorialPagination
 from api.serializers import LanguageSerializer, PeriodSerializer, \
     MemorialTypeSerializer, GenreSerializer, MemorialDetailSerializer, AuthorDetailSerializer, \
     AuthorListSerializer, MemorialListSerializer, MemorialPathDetailSerializer, \
@@ -116,6 +117,7 @@ class AuthorViewSet(ActionAwareReadOnlyModelViewSet):
 
 
 class MemorialViewSet(ActionAwareReadOnlyModelViewSet):
+    pagination_class = MemorialPagination
     filter_backends = (
         BoundingBoxFilter,
         DistanceFilter,

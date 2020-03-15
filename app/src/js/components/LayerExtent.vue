@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import ExtentControl from '../leaflet.extentcontrol';
-import { findRealParent, propsBinder } from 'vue2-leaflet';
-import { DomEvent } from 'leaflet';
+  import ExtentControl from '../leaflet.extentcontrol';
+  import {findRealParent, propsBinder} from 'vue2-leaflet';
+  import {DomEvent} from 'leaflet';
 
-export default {
+  export default {
   props: {
-    layer: Object
+    extent: Array,
   },
   data() {
     return {
@@ -19,8 +19,8 @@ export default {
     };
   },
   watch: {
-    layer(newLayer) {
-      this.mapObject.setLayer(newLayer);
+    extent(newExtent) {
+      this.mapObject.setExtent(newExtent);
     }
   },
   mounted() {

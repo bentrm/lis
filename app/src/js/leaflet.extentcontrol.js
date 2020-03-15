@@ -1,15 +1,15 @@
 import translate from './translate';
-import { DomUtil, DomEvent, Control } from 'leaflet';
+import {Control, DomEvent, DomUtil} from 'leaflet';
 
 export default Control.extend({
 
   options: {
     title: translate('Zoom to feature extent'),
-    layer: null
+    extent: null
   },
 
-  setLayer(layer) {
-    this.options.layer = layer;
+  setExtent(extent) {
+    this.options.extent = extent;
   },
 
   onAdd(map) {
@@ -38,8 +38,8 @@ export default Control.extend({
   },
 
   _onClick() {
-    if (this.options.layer.getLayers().length) {
-      this._map.fitBounds(this.options.layer.getBounds());
+    if (this.options.extent) {
+      this._map.fitBounds(this.options.extent);
     }
   }
 

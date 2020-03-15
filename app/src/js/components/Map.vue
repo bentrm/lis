@@ -5,10 +5,9 @@
       :center="center"
       :zoom="zoom"
       :max-bounds="maxBounds"
-      @moveend="onMapMoveEnd"
     >
       <l-control-scale position="bottomleft" :imperial="true" :metric="true"></l-control-scale>
-      <l-layer-extent :layer="$refs.clusterRef ? $refs.clusterRef.mapObject : null"></l-layer-extent>
+      <l-layer-extent :extent="extent"></l-layer-extent>
       <l-locate-control :options="locateControlOptions"></l-locate-control>
       <tiled-wms-layer
         :base-url="baseUrl"
@@ -52,7 +51,8 @@ export default {
     center: Object,
     zoom: Number,
     maxBounds: Array,
-    features: Array
+    features: Array,
+    extent: Array,
   },
 
   components: {
@@ -110,6 +110,10 @@ export default {
 
     zoom(newZoom) {
       this.setMapView();
+    },
+
+    extent(newExtent) {
+      this.setMapViewFromExtent();
     }
   },
 
@@ -129,6 +133,11 @@ export default {
       map.flyTo(this.center, this.zoom);
     },
 
+    setMapViewFromExtent() {
+      const map = this.$refs.mapRef.mapObject;
+      map.fitBounds(this.extent);
+    },
+
     getMarkerIcon(id) {
       if (!iconCache[id]) {
         iconCache[id] = marker(id);
@@ -137,12 +146,6 @@ export default {
         className: 'fa-leaflet-icon',
         html: iconCache[id].html
       });
-    },
-
-    onMapMoveEnd() {
-      const vm = this;
-      const center = vm.$refs.mapRef.mapObject.getCenter();
-      vm.$emit('moveend', center, vm.$refs.mapRef.mapObject.getZoom());
     },
 
     onMarkerClick({ target }) {
