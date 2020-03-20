@@ -15,7 +15,9 @@ from wagtail.contrib.modeladmin.options import (
     modeladmin_register,
 )
 from wagtail.core import hooks
+from wagtail.core.blocks import RichTextBlock
 from wagtail.core.models import PageRevision
+from wagtail.core.rich_text import expand_db_html
 
 from cms.models import Author
 from .models import (
@@ -70,6 +72,15 @@ def as_page_object(self):
 
 # Patches the Wagtail PageRevision to work with our custom i18n implementation
 PageRevision.as_page_object = as_page_object
+
+
+def get_api_representation(self, value, context=None):
+    return expand_db_html(self.get_prep_value(value))
+
+
+# Patches the default output of richtext blocks to include valid html elements
+# instead of wagtail internal entity tags
+RichTextBlock.get_api_representation = get_api_representation
 
 
 @hooks.register("insert_global_admin_js")

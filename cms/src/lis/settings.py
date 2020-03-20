@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     "cms",
     "dal",
     "dal_select2",
-    "wagtail.api.v2",
     "wagtail.contrib.modeladmin",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",

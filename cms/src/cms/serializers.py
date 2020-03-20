@@ -38,6 +38,8 @@ def generate_image_url(image, filter_spec, viewname='wagtailimages_serve', key=N
 
 
 class TextExtractor(HTMLParser):
+    """Used to check for emtpy HTML"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""

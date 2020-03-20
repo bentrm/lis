@@ -15,6 +15,7 @@ RICH_TEXT_FEATURES_CONTENT = [
     "ul",
     "hr",
     "link",
+    "document-link",
     "blockquote",
 ]
 

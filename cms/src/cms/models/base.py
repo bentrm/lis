@@ -30,17 +30,6 @@ LOGGER = logging.getLogger("cms.models")
 DB_TABLE_PREFIX = "cms_"
 GENDER = NewType("Gender", str)
 GENDER_OPTION = Tuple[GENDER, str]
-EDITOR_FEATURES = [
-    "bold",
-    "italic",
-    "strikethrough",
-    "sup",
-    "ol",
-    "ul",
-    "hr",
-    "blockquote",
-    "link",
-]
 
 ContentFilter = namedtuple("ContentFilter", ("name", "field", "endpoint", "label"))
 TextType = namedtuple("TextType", ("field", "heading"))
@@ -322,6 +311,7 @@ class BlogPage(I18nPage):
         "hr",
         "blockquote",
         "link",
+        "document-link"
     ]
 
     parent_page_types = ["HomePage", "BlogPage"]
