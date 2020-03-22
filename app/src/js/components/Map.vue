@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import {LControlScale, LMap, LMarker, LTooltip, LPopup} from 'vue2-leaflet';
+  import {LControlScale, LMap, LMarker, LPopup, LTooltip} from 'vue2-leaflet';
   import LMarkerCluster from 'vue2-leaflet-markercluster/dist/Vue2LeafletMarkercluster';
   import LLayerExtent from './LayerExtent.vue';
   import LLocateControl from './LocateControl.vue';
@@ -100,6 +100,17 @@ export default {
         }
       }
     };
+  },
+
+  mounted() {
+    const vm = this;
+    vm.$nextTick(() => {
+      if (vm.mapPosition) {
+        vm.setMapView();
+      } else {
+        vm.setMapViewFromExtent();
+      }
+    })
   },
 
   watch: {

@@ -14,7 +14,7 @@
 
       <b-card class="Sidebar col col-md-5 col-lg-4 p-0" no-body>
         <b-card-header header-tag="nav">
-          <b-nav pills class="small">
+          <b-nav pills justified class="small">
             <b-nav-item :to="{ name: 'map' }" v-if="isSmallDevice" :active="isSmallDevice && $route.name === 'map'">
               <i class="fas fa-map"></i>
               {{ 'Map' | translate }} ({{ memorials.length }})
@@ -34,14 +34,12 @@
             <keep-alive>
               <map-component
                 v-if="$route.name === 'map'"
-                :is-small-device="isSmallDevice"
                 :map-position="mapPosition"
                 :max-bounds="mapMaxBounds"
                 :features="memorials"
                 :initialExtent="initialExtent"
                 :featureExtent="featureExtent"
-                @click="onZoomToSelect"
-                @dblclick="onMapSelect"
+                @click="onMapSelect"
               />
             </keep-alive>
           </div>
@@ -243,7 +241,7 @@
           vm.memorial = memorial;
           vm.mapPosition = {
             center: {lat: memorial.position[1], lng: memorial.position[0] },
-            zoom: 16,
+            zoom: 18,
           }
         } else {
           vm.initialExtent = extent;
@@ -256,11 +254,10 @@
       const memorialId = to.name === 'map-detail' ? to.params.memorialId : null;
 
       if (memorialId) {
-        const memorial = await api.getMemorial(memorialId);
-        vm.memorial = memorial;
+        await vm.fetchMemorial(memorialId);
         vm.mapPosition = {
-          center: { lat: memorial.position[1], lng: memorial.position[0] },
-          zoom: 16,
+          center: { lat: vm.memorial.position[1], lng: vm.memorial.position[0] },
+          zoom: 18,
         }
       }
       next();
@@ -269,24 +266,23 @@
     mounted() {
       const vm = this;
       window.onresize = vm.onWindowResize;
-      window.onpopstate = vm.onWindowPopState;
     },
 
     methods: {
-      onZoomToSelect(feature) {
+      async fetchMemorial(memorialId) {
         const vm = this;
-        const latLng = feature.getLatLng();
-
-        vm.mapPosition = { center: latLng, zoom: 16 };
+        vm.memorial = await api.getMemorial(memorialId);
       },
 
-      onMapSelect(feature) {
+      async onMapSelect(feature) {
         const vm = this;
         const {options: { id }} = feature;
 
-        if (feature.options.id) {
-          vm.$router
-            .push({
+        if (vm.isSmallDevice) {
+          await vm.fetchMemorial(id);
+          vm.mapPosition = { center: feature.getLatLng(), zoom: 18 };
+        } else {
+          vm.$router.push({
               name: 'map-detail',
               params: { ...vm.$route.params, memorialId: id }
             })

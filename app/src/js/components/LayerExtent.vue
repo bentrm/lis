@@ -10,26 +10,30 @@
   import {DomEvent} from 'leaflet';
 
   export default {
-  props: {
-    extent: Array,
-  },
-  data() {
-    return {
-      ready: false
-    };
-  },
-  watch: {
-    extent(newExtent) {
-      this.mapObject.setExtent(newExtent);
+    props: {
+      extent: Array,
+    },
+    data() {
+      return {
+        ready: false
+      };
+    },
+
+    watch: {
+      extent(newExtent) {
+        this.mapObject.setExtent(newExtent);
+      }
+    },
+    mounted() {
+      const vm = this;
+      vm.mapObject = new ExtentControl(vm.options);
+      DomEvent.on(vm.mapObject, vm.$listeners);
+      propsBinder(vm, vm.mapObject, vm.props);
+      vm.ready = true;
+      vm.parentContainer = findRealParent(vm.$parent);
+      vm.mapObject.addTo(this.parentContainer.mapObject);
+
+      vm.mapObject.setExtent(vm.extent);
     }
-  },
-  mounted() {
-    this.mapObject = new ExtentControl(this.options);
-    DomEvent.on(this.mapObject, this.$listeners);
-    propsBinder(this, this.mapObject, this.props);
-    this.ready = true;
-    this.parentContainer = findRealParent(this.$parent);
-    this.mapObject.addTo(this.parentContainer.mapObject);
-  }
-};
+  };
 </script>
