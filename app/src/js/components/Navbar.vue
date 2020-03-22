@@ -83,4 +83,7 @@
 </script>
 
 <style lang="scss">
+  .MainNav .dropdown-menu {
+    z-index: 1010;
+  }
 </style>
