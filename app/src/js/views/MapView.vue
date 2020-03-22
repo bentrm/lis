@@ -3,39 +3,50 @@
     <div class="MapView row">
       <main v-if="!isSmallDevice" class="col p-0">
         <map-component
-          :center="$store.state.mapCenter"
-          :zoom="$store.state.mapZoom"
-          :max-bounds="$store.state.mapMaxBounds"
+          :map-position="mapPosition"
+          :max-bounds="mapMaxBounds"
           :features="memorials"
-          :extent="extent"
-          @select="onMapSelect"
-          @moveend="onMapMoveEnd"
-        ></map-component>
+          :initialExtent="initialExtent"
+          :featureExtent="featureExtent"
+          @click="onMapSelect"
+        />
       </main>
 
       <b-card class="Sidebar col col-md-5 col-lg-4 p-0" no-body>
-        <b-tabs card pills small fill lazy :value="activeTabIndex" @activate-tab="onActivateTab">
-          <b-tab :active="$route.name === 'map'" no-body v-if="isSmallDevice">
-            <template v-slot:title>
+        <b-card-header header-tag="nav">
+          <b-nav pills class="small">
+            <b-nav-item :to="{ name: 'map' }" v-if="isSmallDevice" :active="isSmallDevice && $route.name === 'map'">
               <i class="fas fa-map"></i>
               {{ 'Map' | translate }} ({{ memorials.length }})
-            </template>
-            <map-component
-              :center="$store.state.mapCenter"
-              :zoom="$store.state.mapZoom"
-              :max-bounds="$store.state.mapMaxBounds"
-              :features="memorials"
-              :extent="extent"
-              @select="onMapSelect"
-              @moveend="onMapMoveEnd"
-            ></map-component>
-          </b-tab>
-
-          <b-tab>
-            <template v-slot:title>
+            </b-nav-item>
+            <b-nav-item :to="{ name: 'map-filter' }" :active="!isSmallDevice && $route.name === 'map' || $route.name === 'map-filter'">
               <i class="fas fa-search"></i>
               {{ 'Filters' | translate }}
-            </template>
+            </b-nav-item>
+            <b-nav-item :to="{ name: 'map-detail', params: { memorialId: memorial.id } }" v-if="memorial" :active="$route.name === 'map-detail'">
+              <i class="fas" :class="memorialTabIconClassName"></i>
+              {{ memorialTabTitle }}
+            </b-nav-item>
+          </b-nav>
+        </b-card-header>
+        <b-card-body class="m-0 p-0">
+          <div v-if="isSmallDevice">
+            <keep-alive>
+              <map-component
+                v-if="$route.name === 'map'"
+                :is-small-device="isSmallDevice"
+                :map-position="mapPosition"
+                :max-bounds="mapMaxBounds"
+                :features="memorials"
+                :initialExtent="initialExtent"
+                :featureExtent="featureExtent"
+                @click="onZoomToSelect"
+                @dblclick="onMapSelect"
+              />
+            </keep-alive>
+          </div>
+
+          <div v-if="!isSmallDevice && $route.name === 'map' || $route.name === 'map-filter'" class="p-3">
             <filter-list
               @change="onAuthorSelectionChange"
               :items="authors"
@@ -56,30 +67,25 @@
             >
               <template v-slot:header>{{ typeFilterHeader }}</template>
             </filter-list>
-          </b-tab>
+          </div>
 
-          <b-tab :active="$route.name === 'memorial-detail'" v-if="memorialSelect" no-body>
-            <template v-slot:title>
-              <i class="fas fa-monument"></i>
-              {{ 'Memorial' | translate }}
-            </template>
-            <memorial-card
-              class="border-0"
-              :id="memorialId"
-              :banner="memorialSelect.banner"
-              :title="memorialSelect.name"
-              :image="memorialSelect.title_image"
-              :position="memorialSelect.position"
-              :authors="memorialSelect.authors"
-              :address="memorialSelect.address"
-              :contact-info="memorialSelect.contact_info"
-              :directions="memorialSelect.directions"
-              :introduction="memorialSelect.introduction"
-              :description="memorialSelect.description"
-              :detailed-description="memorialSelect.detailed_description"
-            ></memorial-card>
-          </b-tab>
-        </b-tabs>
+          <memorial-card
+            v-else-if="memorial && $route.name === 'map-detail'"
+            class="border-0"
+            :id="memorial.id"
+            :banner="memorial.banner"
+            :title="memorial.name"
+            :image="memorial.title_image"
+            :position="memorial.position"
+            :authors="memorial.authors"
+            :address="memorial.address"
+            :contact-info="memorial.contact_info"
+            :directions="memorial.directions"
+            :introduction="memorial.introduction"
+            :description="memorial.description"
+            :detailed-description="memorial.detailed_description"
+          />
+        </b-card-body>
       </b-card>
     </div>
   </div>
@@ -88,7 +94,7 @@
 <script>
   import api from '../Api';
   import translate from '../translate';
-  import {getDeviceWidth, mapStateToPath} from '../utils';
+  import {getDeviceWidth} from '../utils';
   import FilterList from '../components/FilterList.vue';
   import MapComponent from '../components/Map.vue';
   import MemorialCard from '../components/MemorialCard.vue';
@@ -96,288 +102,234 @@
   import AuthorName from '../components/AuthorName.vue';
   import SearchBar from '../components/SearchBar.vue';
 
-  const tabs = {
-  '#filter': 1,
-  '#detail': 2
-};
-
-const tabIndex = hash => {
-  return tabs[hash] || 0;
-};
-
-const tabHash = index => {
-  return Object.keys(tabs).find(key => tabs[key] === index) || '';
-};
-
-export default {
-  props: {
-    memorialId: [String, Number]
-  },
-
-  components: {
-    AuthorName,
-    MemorialCard,
-    MapComponent,
-    FilterList,
-    SearchBar,
-  },
-
-  filters: {
-    translate
-  },
-
-  metaInfo: {
-    title: translate('Map'),
-  },
-
-  data() {
-    return {
-      isSmallDevice: getDeviceWidth() < 768,
-
-      memorials: [],
-      memorialSelect: undefined,
-
-      // authors
-      authors: [],
-      authorSelection: new Set(),
-
-      // types
-      types: [],
-      typeSelection: new Set(),
-
-      extent: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
-      defaultMapCenter: { lng: 13.6811, lat: 51.0526 },
-      defaultMapZoom: 8,
-      mapMaxBounds: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
-    };
-  },
-
-  computed: {
-    memorialParams() {
-      return {
-        author: [...this.authorSelection],
-        memorial_type: [...this.typeSelection],
-        limit: 1000
-      };
-    },
-
-    activeTabIndex() {
-      return tabIndex(this.$route.hash);
-    },
-
-    memorialTabTitle() {
-      const name = this.memorialSelect ? this.memorialSelect.name : '';
-
-      if (name.length > 20) {
-        return name.substr(0, 20).trim() + '…';
-      }
-
-      return name;
-    },
-
-    memorialTabIconClassName() {
-      if (this.memorialSelect) {
-        const symbolId = this.memorialSelect.memorial_types[0].id;
-        return iconClassName(symbolId);
-      }
-      return '';
-    },
-
-    authorFilterHeader() {
-      const vm = this;
-      return `${translate('Authors')} (${vm.authorSelection.size} / ${
-        vm.authors.length
-      })`;
-    },
-
-    authorFilterList() {
-      return this.authors.map(x => ({
-        id: x.id,
-        title: `${x.last_name}, ${x.first_name}`
+  const fetchMemorials = async (params = { limit: 1000 }) => api
+      .getMemorials(params)
+      .then(({bbox, results}) => ({
+        memorials: results,
+        extent: [[bbox[0][1], bbox[0][0]], [bbox[1][1], bbox[1][0]]],
       }));
+
+  const fetchAuthors = async (params = { ordering: 'last_name,first_name', limit: 1000}) => api
+    .getAuthors(params)
+    .then(({results}) => results);
+
+  const fetchTypes = async (params = { ordering: 'name', limit: 1000 }) => api
+      .getResults('/memorialTypes', params)
+      .then(({results}) => results);
+
+  export default {
+    components: {
+      AuthorName,
+      MemorialCard,
+      MapComponent,
+      FilterList,
+      SearchBar,
     },
 
-    authorParams() {
+    filters: {
+      translate
+    },
+
+    metaInfo: {
+      title: translate('Map'),
+    },
+
+    data() {
       return {
-        ordering: 'last_name,first_name',
-        limit: 1000
+        isSmallDevice: getDeviceWidth() < 768,
+
+        memorials: [],
+        memorial: undefined,
+
+        // authors
+        authors: [],
+        authorSelection: new Set(),
+
+        // types
+        types: [],
+        typeSelection: new Set(),
+
+        initialExtent: null,
+        featureExtent: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
+        mapPosition: {
+          center: { lng: 13.6811, lat: 51.0526 },
+          zoom: 8,
+        },
+        mapMaxBounds: [{lng: -10.0, lat: 35.0 }, { lng: 30.0, lat: 65.0 }],
       };
     },
 
-    typeFilterHeader() {
-      const vm = this;
-      return `${translate('Types')} (${vm.typeSelection.size} / ${
-        vm.types.length
-      })`;
-    },
+    computed: {
+      memorialParams() {
+        return {
+          author: [...this.authorSelection],
+          memorial_type: [...this.typeSelection],
+          limit: 1000
+        };
+      },
 
-    typeFilterList() {
-      return this.types.map(x => ({
-        id: x.id,
-        title: x.name
-      }));
-    },
+      memorialTabTitle() {
+        const name = this.memorial ? this.memorial.name : '';
 
-    typeParams() {
-      return {
-        ordering: 'name',
-        limit: 1000
-      };
-    }
-  },
+        if (name.length > 20) {
+          return name.substr(0, 20).trim() + '…';
+        }
 
-  watch: {
-    memorialId(newMemorialId) {
-      const vm = this;
-      if (newMemorialId) {
-        vm.fetchMemorial();
-      } else {
-        vm.memorialSelect = null;
+        return name;
+      },
+
+      memorialTabIconClassName() {
+        if (this.memorial) {
+          const symbolId = this.memorial.memorial_types[0].id;
+          return iconClassName(symbolId);
+        }
+        return '';
+      },
+
+      authorFilterHeader() {
+        const vm = this;
+        return `${translate('Authors')} (${vm.authorSelection.size} / ${
+          vm.authors.length
+        })`;
+      },
+
+      authorFilterList() {
+        return this.authors.map(x => ({
+          id: x.id,
+          title: `${x.last_name}, ${x.first_name}`
+        }));
+      },
+
+      typeFilterHeader() {
+        const vm = this;
+        return `${translate('Types')} (${vm.typeSelection.size} / ${
+          vm.types.length
+        })`;
+      },
+
+      typeFilterList() {
+        return this.types.map(x => ({
+          id: x.id,
+          title: x.name
+        }));
       }
     },
 
-    memorialParams(newFilters) {
-      this.fetchMemorials();
-    }
-  },
-
-  mounted() {
-    const vm = this;
-
-    vm.fetchMemorials();
-    vm.fetchAuthors();
-    vm.fetchTypes();
-
-    if (vm.memorialId) {
-      vm.fetchMemorial();
-    }
-
-    window.onresize = vm.onWindowResize;
-    window.onpopstate = vm.onWindowPopState;
-  },
-
-  methods: {
-    onActivateTab(index) {
-      const vm = this;
-      const hash = tabHash(index);
-
-      vm.$router
-        .replace({
-          ...vm.$router.params,
-          hash
-        })
-        .catch(() => {});
+    watch: {
+      async memorialParams(newFilters) {
+        const vm = this;
+        const {memorials, extent} = await fetchMemorials(newFilters);
+        vm.memorials = memorials;
+        vm.featureExtent = extent;
+      }
     },
 
-    onMapSelect(memorialId) {
+    async beforeRouteEnter (to, from, next) {
+      const memorialId = to.name === 'map-detail' ? to.params.memorialId : null;
+      const [{extent, memorials}, memorial, authors, types] = await Promise.all([
+        fetchMemorials(),
+        memorialId ? api.getMemorial(memorialId) : null,
+        fetchAuthors(),
+        fetchTypes(),
+      ]);
+
+      next(vm => {
+        vm.memorials = memorials;
+        vm.featureExtent = extent;
+        vm.authors = authors;
+        vm.types = types;
+
+        if (memorial) {
+          vm.memorial = memorial;
+          vm.mapPosition = {
+            center: {lat: memorial.position[1], lng: memorial.position[0] },
+            zoom: 16,
+          }
+        } else {
+          vm.initialExtent = extent;
+        }
+      });
+    },
+
+    async beforeRouteUpdate (to, from, next) {
       const vm = this;
+      const memorialId = to.name === 'map-detail' ? to.params.memorialId : null;
 
       if (memorialId) {
-        vm.$router
-          .push({
-            name: 'memorial-detail',
-            params: { ...vm.$route.params, memorialId },
-            hash: '#detail'
-          })
-          .catch(() => {});
-      } else {
-        vm.$router
-          .push({
-            name: 'map',
-            params: { ...vm.$route.params },
-            hash: ''
-          })
-          .catch(() => {});
+        const memorial = await api.getMemorial(memorialId);
+        vm.memorial = memorial;
+        vm.mapPosition = {
+          center: { lat: memorial.position[1], lng: memorial.position[0] },
+          zoom: 16,
+        }
       }
+      next();
     },
 
-    onWindowResize() {
-      this.isSmallDevice = getDeviceWidth() < 768;
-    },
-
-    onWindowPopState() {
-      this.$store.commit('syncMapState', {route: this.$route});
-    },
-
-    onMapMoveEnd(center, zoom) {
+    mounted() {
       const vm = this;
-      const mapStatePath = mapStateToPath(center, zoom);
+      window.onresize = vm.onWindowResize;
+      window.onpopstate = vm.onWindowPopState;
+    },
 
-      if (!vm.$store.state.syncingMapState) {
-        vm.$router.push(
-          {
-            ...vm.$route,
-            name: vm.$route.name,
-            params: { ...vm.$route.params, mapStatePath }
-          },
-          () => {}
-        );
-        vm.$store.commit('logMapState', {route: vm.$route});
-      } else {
-        vm.$store.commit('endSyncMapState', {route: vm.$route});
+    methods: {
+      onZoomToSelect(feature) {
+        const vm = this;
+        const latLng = feature.getLatLng();
+
+        vm.mapPosition = { center: latLng, zoom: 16 };
+      },
+
+      onMapSelect(feature) {
+        const vm = this;
+        const {options: { id }} = feature;
+
+        if (feature.options.id) {
+          vm.$router
+            .push({
+              name: 'map-detail',
+              params: { ...vm.$route.params, memorialId: id }
+            })
+            .catch(() => {});
+        }
+      },
+
+      onWindowResize() {
+        this.isSmallDevice = getDeviceWidth() < 768;
+      },
+
+      onAuthorSelectionChange(selection) {
+        this.authorSelection = selection;
+      },
+
+      onTypeSelectionChange(selection) {
+        this.typeSelection = selection;
       }
-    },
-
-    onAuthorSelectionChange(selection) {
-      this.authorSelection = selection;
-    },
-
-    onTypeSelectionChange(selection) {
-      this.typeSelection = selection;
-    },
-
-    fetchMemorials() {
-      const vm = this;
-      api
-        .getMemorials(vm.memorialParams)
-        .then(json => {
-          const bbox = json.bbox;
-          vm.memorials = json.results;
-          vm.extent = [[bbox[0][1], bbox[0][0]], [bbox[1][1], bbox[1][0]]];
-        });
-    },
-
-    fetchMemorial() {
-      const vm = this;
-      api.getMemorial(vm.memorialId).then(json => (vm.memorialSelect = json));
-    },
-
-    fetchAuthors() {
-      const vm = this;
-      api.getAuthors(vm.authorParams).then(json => (vm.authors = json.results));
-    },
-
-    fetchTypes() {
-      const vm = this;
-      api
-        .getResults('/memorialTypes', vm.typeParams)
-        .then(json => (vm.types = json.results));
     }
-  }
-};
+  };
 </script>
 
 <style lang="scss">
-@media (max-width: 768px) {
-  .Map {
-    height: 200px;
-    height: 100vw;
-  }
-}
-
-@media (min-width: 576px) {
-  .MapView {
-    height: 80vh;
-    max-height: 80vh;
-
+  @media (max-width: 768px) {
     .Map {
-      max-height: 80vh;
-    }
-
-    .Sidebar {
-      max-height: 80vh;
-      overflow-x: scroll;
+      height: 200px;
+      height: 100vw;
     }
   }
-}
+
+  @media (min-width: 576px) {
+    .MapView {
+      height: 80vh;
+      max-height: 80vh;
+
+      .Map {
+        max-height: 80vh;
+      }
+
+      .Sidebar {
+        max-height: 80vh;
+        overflow-x: scroll;
+      }
+    }
+  }
 </style>

@@ -77,7 +77,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <h5 class="m-0 p-0">{{ currentMemorial.name }}</h5>
                     <b-button
-                      :to="{name: 'memorial-detail', params: { memorialId: currentMemorial.id, mapStatePath: toPath(currentMemorial.position) }}">
+                      :to="{name: 'map-detail', params: { memorialId: currentMemorial.id }}">
                       <i class="fas fa-map-marker"></i>
                       {{ 'See on map' | translate }}
                     </b-button>

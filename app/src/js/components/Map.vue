@@ -1,14 +1,9 @@
 <template>
   <div class="Map">
-    <l-map
-      ref="mapRef"
-      :center="center"
-      :zoom="zoom"
-      :max-bounds="maxBounds"
-    >
-      <l-control-scale position="bottomleft" :imperial="true" :metric="true"></l-control-scale>
-      <l-layer-extent :extent="extent"></l-layer-extent>
-      <l-locate-control :options="locateControlOptions"></l-locate-control>
+    <l-map ref="mapRef" :max-bounds="maxBounds">
+      <l-control-scale position="bottomleft" :imperial="true" :metric="true"/>
+      <l-layer-extent :extent="featureExtent"/>
+      <l-locate-control :options="locateControlOptions"/>
       <tiled-wms-layer
         :base-url="baseUrl"
         :layers="layers"
@@ -19,24 +14,27 @@
         :tiled="true"
         :format_options="format_options"
         :transparent="true"
-      ></tiled-wms-layer>
+      />
       <l-marker-cluster :options="markerClusterOptions" ref="clusterRef">
         <l-marker
           v-for="feature in features"
           :key="feature.id"
           :lat-lng="[feature.position[1], feature.position[0]]"
-          :icon="getMarkerIcon(feature.memorial_types[0].id)"
-          :options="feature"
+          :icon="getMarkerIcon(feature)"
+          :options="{id: feature.id, title: feature.name, alt: feature.name}"
           @click="onMarkerClick"
+          @dblclick="onMarkerDblClick"
           @keydown="onMarkerClick"
-        ></l-marker>
+        >
+          <l-tooltip :options="{direction: 'top', offset: [0, -10]}">{{ feature.name }}</l-tooltip>
+        </l-marker>
       </l-marker-cluster>
     </l-map>
   </div>
 </template>
 
 <script>
-  import {LControlScale, LMap, LMarker, LPopup} from 'vue2-leaflet';
+  import {LControlScale, LMap, LMarker, LTooltip, LPopup} from 'vue2-leaflet';
   import LMarkerCluster from 'vue2-leaflet-markercluster/dist/Vue2LeafletMarkercluster';
   import LLayerExtent from './LayerExtent.vue';
   import LLocateControl from './LocateControl.vue';
@@ -48,17 +46,19 @@
 
 export default {
   props: {
-    center: Object,
-    zoom: Number,
+    isSmallDevice: Boolean,
+    mapPosition: Object,
     maxBounds: Array,
     features: Array,
-    extent: Array,
+    initialExtent: Array,
+    featureExtent: Array,
   },
 
   components: {
     LMap,
     TiledWmsLayer,
     LMarker,
+    LTooltip,
     LMarkerCluster,
     LLayerExtent,
     LControlScale,
@@ -67,7 +67,6 @@ export default {
   },
 
   data() {
-    const vm = this;
     const retina =
       (window.devicePixelRatio ||
         window.screen.deviceXDPI / window.screen.logicalXDPI) > 1;
@@ -104,15 +103,11 @@ export default {
   },
 
   watch: {
-    center(newCenter) {
+    mapPosition() {
       this.setMapView();
     },
 
-    zoom(newZoom) {
-      this.setMapView();
-    },
-
-    extent(newExtent) {
+    initialExtent(newExtent) {
       this.setMapViewFromExtent();
     }
   },
@@ -129,19 +124,24 @@ export default {
 
   methods: {
     setMapView() {
-      const map = this.$refs.mapRef.mapObject;
-      map.flyTo(this.center, this.zoom);
+      const vm = this;
+      const map = vm.$refs.mapRef.mapObject;
+      const {center, zoom} = vm.mapPosition;
+      map.flyTo(center, zoom, { duration: .8, easeLinearity: 1 });
     },
 
     setMapViewFromExtent() {
       const map = this.$refs.mapRef.mapObject;
-      map.fitBounds(this.extent);
+      map.fitBounds(this.initialExtent);
     },
 
-    getMarkerIcon(id) {
+    getMarkerIcon(feature) {
+      const id = feature.memorial_types[0].id;
+
       if (!iconCache[id]) {
         iconCache[id] = marker(id);
       }
+
       return new DivIcon({
         className: 'fa-leaflet-icon',
         html: iconCache[id].html
@@ -149,8 +149,12 @@ export default {
     },
 
     onMarkerClick({ target }) {
-      this.$emit('select', target.options.id);
-    }
+      this.$emit('click', target);
+    },
+
+    onMarkerDblClick({ target }) {
+      this.$emit('dblclick', target);
+    },
   }
 };
 </script>

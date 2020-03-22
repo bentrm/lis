@@ -15,7 +15,7 @@
             :key="memorial.id"
             :imgThumb="memorial.title_image && memorial.title_image.thumb"
             :imgTitle="memorial.title_image && memorial.title_image.title"
-            :to="{name: 'memorial-detail', params: { mapStatePath: `@${memorial.position[0]},${memorial.position[1]},18z`, memorialId: memorial.id }}"
+            :to="{name: 'map-detail', params: { memorialId: memorial.id }}"
           >
             {{ memorial.name }}
           </list-row>

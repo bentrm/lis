@@ -14,11 +14,7 @@
     <div class="card-body">
       <h5>
         {{ title }}
-        <small class="d-block">
-          <router-link :to="{name: 'memorial-detail', params: { mapStatePath: path }}">
-            {{ position | humanizePosition }}
-          </router-link>
-        </small>
+        <small class="d-block text-monospace">{{ position | humanizePosition }}</small>
       </h5>
 
       <div>
@@ -31,7 +27,7 @@
                 :alt="author.title_image.title"
                 :title="author.title_image.title"
                 class="author-img border border-primary rounded-circle img-fluid mr-2 align-self-center"
-              ></cms-image>
+              />
 
               <div class="media-body">
                 <router-link
@@ -49,7 +45,7 @@
                     :month="author.mob"
                     :day="author.dob"
                     :place="author.pob"
-                  ></pretty-date>
+                  />
 
                   <span v-if="author.yob && author.yod">-</span>
 
@@ -59,7 +55,7 @@
                     :month="author.mod"
                     :day="author.dod"
                     :place="author.pod"
-                  ></pretty-date>
+                  />
                 </small>
               </div>
             </div>

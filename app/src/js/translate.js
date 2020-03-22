@@ -13,6 +13,7 @@ const library = {
   'Born': { de: 'Geboren', cs: 'narozen/narozena' },
   'born': { de: 'geboren', cs: 'narozený' },
   'Close': { de: 'Schließen', cs: 'zavřít' },
+  'Contact info': { de: 'Kontaktinformationen', cs: 'kontaktní informace' },
   'Connections': { de: 'Verbindungen', cs: 'spojnice' },
   'Content': { de: 'Inhalt', cs: 'obsah' },
   'Dedicated': { de: 'Gewidmet', cs: 'věnováno' },
