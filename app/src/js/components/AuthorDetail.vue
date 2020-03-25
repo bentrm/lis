@@ -129,7 +129,7 @@
 
 <script>
   import translate from '../translate';
-  import {capitalize, humanize, humanizePosition, mapStateToPath, round} from '../utils';
+  import {capitalize, humanize, humanizePosition, round} from '../utils';
   import AuthorArticle from '../components/AuthorArticle.vue';
   import Paragraph from '../components/Paragraph.vue';
   import CmsImage from '../components/CmsImage.vue';
@@ -199,12 +199,7 @@
 
       getMemorialIcon(memorial) {
         return iconClassName(memorial.memorial_types[0].id);
-      },
-
-      toPath(position) {
-        const [lng, lat] = position;
-        return mapStateToPath({lng, lat});
-      },
+      }
     },
   };
 </script>

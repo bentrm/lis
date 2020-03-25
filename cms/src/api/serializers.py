@@ -166,7 +166,7 @@ class MemorialListSerializer(TitleSerializerMixin):
 
     def get_position(self, obj):
         lat, lng = obj.coordinates.coords
-        return round(lat, 4), round(lng, 4)
+        return round(lat, 5), round(lng, 5)
 
     class Meta:
         fields = (

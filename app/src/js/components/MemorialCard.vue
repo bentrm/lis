@@ -84,7 +84,7 @@
 
 <script>
   import translate from '../translate';
-  import {humanizePosition, mapStateToPath} from '../utils';
+  import {humanizePosition} from '../utils';
   import Paragraph from './Paragraph.vue';
   import PrettyDate from './PrettyDate.vue';
   import FigureImage from './FigureImage.vue';
@@ -121,14 +121,7 @@
       return {
         showImage: false,
       };
-    },
-
-    computed: {
-      path() {
-        const [lng, lat] = this.position;
-        return mapStateToPath({lng, lat});
-      },
-    },
+    }
   };
 </script>
 

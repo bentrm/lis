@@ -46,8 +46,8 @@
 
     var previewBtn = document.getElementById(options.id + "-preview");
     function previewCoordinates(coordinates) {
-      var lon = Math.round((coordinates[0] + Number.EPSILON) * 10000) / 10000;
-      var lat = Math.round((coordinates[1] + Number.EPSILON) * 10000) / 10000;
+      var lon = Math.round((coordinates[0] + Number.EPSILON) * 100000) / 100000;
+      var lat = Math.round((coordinates[1] + Number.EPSILON) * 100000) / 100000;
       previewBtn.textContent = "{% trans 'Zoom to' %}: " + lon + "°, " + lat + "°";
       previewBtn.hidden = false;
       previewBtn.disabled = false;
