@@ -34,10 +34,10 @@ echo "Archiving media files to $MEDIA_ARCHIVE..."
 docker exec -i "$DOCKER_STATIC_CONTAINER" \
     sh -c "cd /usr/share/nginx/html/media && tar --exclude ./images -cf - ." > "$MEDIA_ARCHIVE"
 
-echo "Pruning renditions..."
-DOCKER_CMS_CONTAINER=$(docker ps -q -f LABEL=com.docker.compose.project=lis -f LABEL=com.docker.compose.service=cms)
-docker exec -i "$DOCKER_CMS_CONTAINER" \
-    python manage.py prunerenditions
+#echo "Pruning renditions..."
+#DOCKER_CMS_CONTAINER=$(docker ps -q -f LABEL=com.docker.compose.project=lis -f LABEL=com.docker.compose.service=cms)
+#docker exec -i "$DOCKER_CMS_CONTAINER" \
+#    python manage.py prunerenditions
 
 echo "Dumping database to $DUMP_FILE"
 POSTGRES_DB=$DB_NAME
