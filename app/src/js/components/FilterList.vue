@@ -1,13 +1,14 @@
 <template>
   <div class="filter-list">
-    <span class="filter-list-heading d-flex justify-content-between mb-1">
-      <span class="filter-list-heading-title text-muted">
+    <div class="filter-list-heading d-flex justify-content-between mb-1">
+      <div class="filter-list-heading-title text-muted">
         <slot name="header">{{ defaultHeader }}</slot>
-      </span>
+      </div>
       <div class="btn-group" role="group" aria-label="Basic example">
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary"
+          :title="'Reset filter' | translate"
           :key="'btn-reset'"
           v-if="selection.size"
           v-on:click="resetFilter"
@@ -17,6 +18,7 @@
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary"
+          :title="'Show filter list' | translate"
           :key="'btn-collapse'"
           v-if="collapsable && collapsed"
           v-on:click="collapsed = false"
@@ -26,6 +28,7 @@
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary"
+          :title="'Collapse filter list' | translate"
           :key="'btn-show'"
           v-else-if="collapsable && !collapsed"
           v-on:click="collapsed = true"
@@ -33,12 +36,13 @@
           <i class="fas fa-fw fa-eye"></i>
         </button>
       </div>
-    </span>
+    </div>
     <div v-if="searchable && !collapsed" class="filter-list-search">
       <input
         type="text"
         class="form-control border-bottom-0 w-100"
         :placeholder="searchPlaceholder"
+        :title="searchPlaceholder"
         v-model="searchTerm"
       />
     </div>
@@ -60,10 +64,16 @@
           <slot name="item" v-bind:item="item">{{item.title}}</slot>
         </template>
       </filter-item>
-      <filter-item v-if="!items.length">
+
+      <filter-item
+        :title="'No filter item available.' | translate"
+        v-if="!items.length"
+      >
         <slot name="empty">{{ 'No filter item available.' | translate }}</slot>
       </filter-item>
+
       <filter-item
+        :title="'No filter item selected.' | translate"
         v-else-if="!expanded && !visibleItems.length"
       >{{ 'No filter item selected.' | translate }}</filter-item>
     </ul>
@@ -71,10 +81,10 @@
 </template>
 
 <script>
-  import FilterItem from './FilterItem.vue';
-  import translate from '../translate';
+import FilterItem from './FilterItem.vue';
+import translate from '../translate';
 
-  const normalizeString = (str = '') => str.toLowerCase().trim();
+const normalizeString = (str = '') => str.toLowerCase().trim();
 
 export default {
   props: {
