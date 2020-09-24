@@ -2,6 +2,8 @@
   <span class="bookmark-wrapper">
     <span
       :id="bookmarkId"
+      :aria-label="content"
+      tabindex="0"
       class="bookmark fa-layers fa-fw"
       ref="bookmark"
     >
