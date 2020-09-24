@@ -68,6 +68,18 @@
   font-family: $font-family-monospace;
 }
 
+.navbar-dark {
+  .navbar-nav {
+    .show > .nav-link,
+    .active > .nav-link,
+    .nav-link.show,
+    .nav-link.active {
+      color: $navbar-dark-active-color;
+      text-decoration: underline;
+    }
+  }
+}
+
 dl {
   font-size: .8rem;
 }
