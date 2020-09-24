@@ -17,6 +17,7 @@
         blank-color="grey"
         :width="25"
         :height="25"
+        title="Placeholder"
         class="author-thumb border border-primary rounded-circle img-fluid"
         v-else
       ></b-img>
@@ -37,10 +38,10 @@
 </template>
 
 <script>
-  import CmsImage from './CmsImage.vue';
-  import AuthorName from './AuthorName.vue';
+import CmsImage from './CmsImage.vue';
+import AuthorName from './AuthorName.vue';
 
-  export default {
+export default {
     props: {
       author: Object,
     },
