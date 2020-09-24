@@ -35,7 +35,7 @@
       <div class="col-12">
         <h3 class="mt-2">{{ 'Content' | translate }}</h3>
         <ol>
-          <li>
+          <li v-if="level !== 'material'">
             <a href="#memorials">{{ 'Memorials' | translate }}</a>
           </li>
           <li v-for="[heading] in currentLevelParagraphs" :key="heading">
@@ -128,16 +128,16 @@
 </template>
 
 <script>
-  import translate from '../translate';
-  import {capitalize, humanize, humanizePosition, round} from '../utils';
-  import AuthorArticle from '../components/AuthorArticle.vue';
-  import Paragraph from '../components/Paragraph.vue';
-  import CmsImage from '../components/CmsImage.vue';
-  import AuthorProfile from './AuthorProfile.vue';
-  import {iconClassName} from '../markers';
-  import FigureImage from './FigureImage.vue';
+import translate from '../translate';
+import {capitalize, humanize, humanizePosition, round} from '../utils';
+import AuthorArticle from '../components/AuthorArticle.vue';
+import Paragraph from '../components/Paragraph.vue';
+import CmsImage from '../components/CmsImage.vue';
+import AuthorProfile from './AuthorProfile.vue';
+import {iconClassName} from '../markers';
+import FigureImage from './FigureImage.vue';
 
-  const ignoredProperties = ['id'];
+const ignoredProperties = ['id'];
 
   export default {
 
