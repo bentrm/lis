@@ -1,5 +1,11 @@
 <template>
-  <li :class="['filter-item', {'active': enabled}, 'rounded']" v-on:click="onClick">
+  <li
+      :class="['filter-item', {'active': enabled}, 'rounded']"
+      :title="title"
+      tabindex="0"
+      v-on:click="onClick"
+      v-on:keyup.enter="onClick"
+  >
     <slot></slot>
   </li>
 </template>
