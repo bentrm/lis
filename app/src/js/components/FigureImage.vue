@@ -90,6 +90,11 @@ export default {
 
 <style lang="scss">
 .figure-image {
+  figcaption {
+    line-break: loose;
+    word-break: break-word;
+  }
+
   .preview.has-modal {
     cursor: pointer;
   }
