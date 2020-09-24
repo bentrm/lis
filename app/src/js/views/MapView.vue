@@ -54,7 +54,7 @@
             >
               <template v-slot:header>{{ authorFilterHeader }}</template>
               <template v-slot:item="slotProps">
-                <author-name :show-details="false" :isPseudonym="slotProps.item.also_known_as[0].is_pseudonym" :title="slotProps.item.also_known_as[0].title" :firstName="slotProps.item.also_known_as[0].first_name" :lastName="slotProps.item.also_known_as[0].last_name" />
+                {{ [slotProps.item.title, slotProps.item.first_name, slotProps.item.last_name].filter(x => x).join(' ') }}
               </template>
             </filter-list>
 
@@ -90,17 +90,17 @@
 </template>
 
 <script>
-  import api from '../Api';
-  import translate from '../translate';
-  import {getDeviceWidth} from '../utils';
-  import FilterList from '../components/FilterList.vue';
-  import MapComponent from '../components/Map.vue';
-  import MemorialCard from '../components/MemorialCard.vue';
-  import {iconClassName} from '../markers';
-  import AuthorName from '../components/AuthorName.vue';
-  import SearchBar from '../components/SearchBar.vue';
+import api from '../Api';
+import translate from '../translate';
+import {getDeviceWidth} from '../utils';
+import FilterList from '../components/FilterList.vue';
+import MapComponent from '../components/Map.vue';
+import MemorialCard from '../components/MemorialCard.vue';
+import {iconClassName} from '../markers';
+import AuthorName from '../components/AuthorName.vue';
+import SearchBar from '../components/SearchBar.vue';
 
-  const fetchMemorials = async (params = { limit: 1000 }) => api
+const fetchMemorials = async (params = { limit: 1000 }) => api
       .getMemorials(params)
       .then(({bbox, results}) => ({
         memorials: results,
