@@ -9,10 +9,15 @@
       :class="{'has-modal': srcModal, 'img-thumbnail': thumb}"
     />
     <figcaption
+      :id="figcaptionId"
       class="figure-caption d-block small text-center p-1"
-      v-if="caption || title"
-      v-text="(caption || title) + copyrightSuffix"
-    ></figcaption>
+      :aria-label="figcaption"
+      v-if="figcaption"
+      v-text="figcaption.length > 100 ? figcaption.substring(0, 100) + '...' : figcaption"
+    />
+    <b-popover :target="figcaptionId" triggers="hover" v-if="figcaption.length > 100">
+      {{ figcaption }}
+    </b-popover>
 
     <b-modal :id="modalId" :title="title" size="lg" title-tag="b" :ok-only="true">
       <div class="col-12 align-content-center">
@@ -30,9 +35,9 @@
 </template>
 
 <script>
-  import CmsImage from './CmsImage.vue';
+import CmsImage from './CmsImage.vue';
 
-  let id = 0;
+let id = 0;
 
 export default {
   props: {
@@ -57,16 +62,25 @@ export default {
   },
 
   data() {
+    const currentId = id++;
     return {
-      modalId: `figure-image-modal-${id++}`
+      figcaptionId: `figure-image-caption-${currentId}`,
+      modalId: `figure-image-modal-${currentId}`
     };
   },
 
   computed: {
     copyrightSuffix() {
-      const value = '';
+      let value = "";
       if (this.copyright) {
-        return ` (© ${this.copyright})`;
+        value += ` (©${this.copyright})`;
+      }
+      return value;
+    },
+    figcaption() {
+      let value = (this.caption || this.title);
+      if (this.copyright) {
+        value += ` (©${this.copyright})`;
       }
       return value;
     },
