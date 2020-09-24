@@ -7,7 +7,7 @@ const library = {
   'Admin': { de: 'Admin', cs: 'admin' },
   'Also known as': { de: 'Auch bekannt als', cs: 'známá také jako' },
   'Author': { de: 'Autor/in', cs: 'autor/autorka' },
-  'Authors': { de: 'Autor/innen', cs: 'autoři' },
+  'Authors': { de: 'Autorinnen & Autoren', cs: 'autoři' },
   'Back to homepage.': { de: 'Zurück zur Startseite.', cs: 'zpět na domovskou stránku' },
   'Biography': { de: 'Biographie', cs: 'biografie' },
   'Born': { de: 'Geboren', cs: 'narozen/narozena' },
