@@ -125,6 +125,11 @@ export default {
 
       contentEl.querySelectorAll('span.footnote').forEach(node => {
         const tag = node.textContent;
+        if (!this.dict.hasOwnProperty(tag)) {
+          console.warn(`Footnote tagged ${tag} not found.`, node);
+          return;
+        }
+
         const [index, footnote] = this.dict[tag];
 
         const bookmark = new BookmarkComponent({
