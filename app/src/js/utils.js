@@ -23,7 +23,8 @@ export const humanizeDate = (day, month, year, place) => {
   let output = '';
   if (year && month && day) {
     moment.locale(getCurrentLanguage());
-    output += moment([year, month, day]).format('LL');
+    // moment.js uses 0-indexed months
+    output += moment([year, month - 1, day]).format('LL');
   } else if (year) {
     output += year;
   }
