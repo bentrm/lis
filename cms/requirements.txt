@@ -11,4 +11,4 @@ djangorestframework==3.12.2
 gunicorn==20.0.4
 psycopg2==2.8.6
 python-memcached==1.59
-wagtail==2.9.3
+wagtail==2.11.6
