@@ -94,9 +94,14 @@ insert into cms__content_pages (i18npage_ptr_id, body, body_de, body_cs)
 values (2, '[]', '[]', '[]');
 
 insert into cms_homepage values (2);
+`````
 
-select id from django_content_type 
-where  app_label = 'cms' and model = 'homepage'
+Also, there seems to be a bug in django-modelcluster when renaming models that are
+linked via ParentalManyToMany fields. Update the reference column manually for now:
+
+`````sql
+alter table cms_memorial_site_tag_memorial_type
+rename column locationtypetag_id to memorialtag_id;
 `````
 
 6. Finish up
@@ -135,3 +140,9 @@ Prune renditions
 `````
 $ docker-compose exec cms python manage.py prunerenditions
 `````
+
+Fix Wagtail page tree
+`````
+$ docker-compose exec cms python manage.py fixtree
+`````
+
