@@ -11,6 +11,10 @@ services:
     volumes:
       - ./app/src:/app/src
 
+  db:
+    ports: 
+      - "5432:5432"
+
   cms:
     volumes:
       - ./cms:/app
